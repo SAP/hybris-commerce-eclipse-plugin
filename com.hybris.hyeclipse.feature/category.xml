@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/com.hybris.hyeclipse.feature_1.0.0.qualifier.jar" id="com.hybris.hyeclipse.feature" version="1.0.0.qualifier">
+      <category name="com.hybris.hyeclipse.feature"/>
+   </feature>
+   <category-def name="com.hybris.hyeclipse.feature" label="SAP Hybris Commerce, development tools for Eclipse">
+      <description>
+         A suite of plugins that make developers more efficient by taking care of some of the common issues of developing with the Hybris Commerce Suite.
+      </description>
+   </category-def>
+</site>

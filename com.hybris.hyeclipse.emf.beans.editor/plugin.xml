@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <!-- @generated beans -->
+      <category
+            id="sapHybris"
+             name="SAP Hybris [y]"/>
+      <wizard
+            id="com.hybris.hyeclipse.emf.beans.presentation.BeansModelWizardID"
+            name="%_UI_BeansModelWizard_label"
+            class="com.hybris.hyeclipse.emf.beans.presentation.platformdependent.BeansModelWizard"
+            category="sapHybris"
+            icon="icons/full/obj16/BeansModelFile.gif">
+         <description>%_UI_BeansModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <!-- @generated beans -->
+      <editor
+            id="com.hybris.hyeclipse.emf.beans.presentation.BeansEditorID"
+            name="%_UI_BeansEditor_label"
+            icon="icons/full/obj16/BeansModelFile.gif"
+            extensions="beans"
+            class="com.hybris.hyeclipse.emf.beans.presentation.BeansEditor"
+            contributorClass="com.hybris.hyeclipse.emf.beans.presentation.BeansActionBarContributor">
+         <contentTypeBinding
+               contentTypeId="com.hybris.hyeclipse.emf.beans.descriptor">
+         </contentTypeBinding>
+      </editor>
+   </extension>
+
+</plugin>

@@ -1,0 +1,207 @@
+# Einheiten
+# Hier werden alle Einheiten wie g, Kg, ml, usw. eingetragen. Dabei mĂĽssen alle Einheiten die aus der
+# "20130524_ Checkliste Compexpflege mit Datentyp IDs.xlsx" (aus allen Wertelisten) entnommen werden hintereinander weg aufgezĂ¤hlt werden.
+# Jede Einheit muss dazu mit einer eineindeutigen ID versehen werden. In unserem Beispiel ist das 1,2,3,4,5,6. ZusĂ¤tzlich kann ein Einheitentyp
+# angegeben werden hier gewicht, lĂ¤nge... der fĂĽr spĂ¤tere konvertierungen genutzt werden kann. Das Typ-Feld ist dabei kann pflichtfeld.
+# Der englische und der deutsche name wurden hier auf den Wert des Symbols gesetzt. Auf der grafischen OberflĂ¤che wird spĂ¤ter nur das Symbol angezeigt.
+# INSERT_UPDATE ClassificationAttributeUnit -> Ein Befehl zum erstellen/aktuallisieren von Merkmalseinheiten. Unterhalb des Headers bleiben die Zeilen leer.
+# code[unique=true] -> Eine eineindeutige ID fĂĽr die Einheit. Unterhalb des Headers werden alle Einheiten ID's eingetragen.
+# name[lang=de] -> Der deutsche Name der Einheit. Unterhalb des Headers werden alle deutschen Namen der Einheit eingetragen.
+# name[lang=en] -> Der englische Name der Einheit. Unterhalb des Headers werden alle englischen Namen der Einheit eingetragen.
+# unitType -> Der Typ der Einheit. Unterhalb des Headers werden die Typen eingetragen, falls notwendig.
+# $classSystemVersion -> Die Version der Klassifizierung. Unterhalb des Headers bleiben die Zeilen leer. -> von SL mit default gesetzt
+
+# Pflichtfelder: code[unique=true]  name[lang=de]  name[lang=en]  symbol
+
+INSERT_UPDATE Order; code[unique=true]; \
+   @template1[translator=de.hybris.jakarta.ext.impex.jalo.translators.VelocityTranslator, expr='$item.user.getUID()']; \
+   @template2[translator=de.hybris.jakarta.ext.impex.jalo.translators.VelocityTranslator, expr='$item.user.name']; \
+   "@template3[translator=de.hybris.jakarta.ext.impex.jalo.translators.VelocityTranslator, expr='$item.paymentAddress.getAttribute(""streetname"")']"; \
+   @template4[translator=de.hybris.jakarta.ext.impex.jalo.translators.VelocityTranslator, expr='$item.paymentAddress.country.IsoCode'] 
+
+INSERT_UPDATE ClassificationAttributeUnit;code[unique=true];name[lang=de];name[lang=en];symbol;unitType;$classSystemVersion
+;1;ml;ml;ml;Fuellmenge
+;2;g;g;g;Gewicht
+;3;kg;kg;kg;Gewicht
+;4;L;L;L;Fuellmenge
+;5;WL;WL;WL;Fuellmenge
+;6;m;m;m;Laenge
+
+
+
+# Wertelisten
+# Hier werden alle Wertelisten, die spĂ¤ter aus einem DropDown-MenĂĽ gewĂ¤hlt werden kĂ¶nnen, eingetragen. Die Beispieldaten wurden aus der
+# "20130524_ Checkliste Compexpflege mit Datentyp IDs.xlsx" entnommen. Es ist zu beachten, dass nur nichtkomplexe Wertelisten eingetragen werden.
+# Nicht komplexe Wertelisten sind Wertelisten, die nur eine ID und einen Bezeichner enthalten. Komplexere Wertelisten werden spĂ¤ter als Objekte in der Hybris
+# abgebildet und an das Produkt gehĂ¤ngt. (Beispiel komplexe Werteliste: Operative Einheit). Alle Werte aus den nicht komplexen Wertelisten werden hier aufgelistet.
+# Jeder Wert muss dazu mit einer eineindeutigen ID versehen werden (code[unique=true]). In unserem Beispiel ist das WL1,WL2,WL3,... . Das Feld "externalid" enthĂ¤lt
+# die CompexID's wie diese in der Datei "20130524_ Checkliste Compexpflege mit Datentyp IDs.xlsx" mitgeliefert wurden.
+# Bei nicht vorhandener ID wurde der Bezeichner als ID eingetragen.
+# INSERT_UPDATE ClassificationAttributeValue -> Ein Befehl zum erstellen/aktuallisieren von Wertelisten. Unterhalb des Headers bleiben die Zeilen leer.
+# code[unique=true] -> Eine eineindeutige ID fĂĽr den Wert. Unterhalb des Headers werden alle Werte ID's eingetragen.
+# externalid -> Eine nicht eineindeutige Compex ID. Unterhalb des Headers werden alle Compex ID's eingetragen.
+# name[lang=de] -> Der deutsche Name des Wertes. Unterhalb des Headers werden alle deutschen Namen der Werte eingetragen.
+# name[lang=en] -> Der englische Name des Wertes. Unterhalb des Headers werden alle englischen Namen der Werte eingetragen.
+# $classSystemVersion -> Die Version der Klassifizierung. Unterhalb des Headers bleiben die Zeilen leer. -> von SL mit default gesetzt
+
+# Pflichtfelder: code[unique=true]  externalid  name[lang=de]  name[lang=en]
+
+INSERT_UPDATE ClassificationAttributeValue;code[unique=true];externalid;name[lang=de];name[lang=en];$classSystemVersion
+;WL1;1;Basis 1 KG;Basis 1 KG
+;WL2;100;Basis 100 gr;Basis 100 gr
+;WL3;0;keine Zuordnung;keine Zuordnung
+;WL4;2;GemĂĽse;GemĂĽse
+;WL5;3;TrockenfrĂĽchte/NĂĽsse;TrockenfrĂĽchte/NĂĽsse
+;WL6;4;Frische KrĂ¤uter;Frische KrĂ¤uter
+;WL7;5;vom Schwein;vom Schwein
+;WL8;6;vom Rind;vom Rind
+;WL9;7;vom Kalb;vom Kalb
+;WL10;8;vom  Lamm;vom  Lamm
+;WL11;9;GeflĂĽgel;GeflĂĽgel
+;WL12;10;Hackfleisch;Hackfleisch
+;WL13;11;Sonstiges Fleisch;Sonstiges Fleisch
+;WL14;12;WĂĽrstchen;WĂĽrstchen
+;WL15;13;Speck  & Schinken;Speck  & Schinken
+;WL16;14;Salami & Dauerwurst;Salami & Dauerwurst
+;WL17;15;Streichwurst;Streichwurst
+;WL18;16;Aufschnitt;Aufschnitt
+
+# Klassifizierende Merkmale
+# Hier werden alle Merkmale aufgelistet, die in den Klassifikationen auftauchen kĂ¶nnen (ohne die Klassifikation: AllgemeingĂĽltige Attribute).
+# Diese Merkmale wurden aus der XML-Datei (Klassifizierung  Stand 08.07.2013.xlsx) extrahiert.
+# Die ID's wie "ARKU_400_0018" wurden von Softlution als Provisorium erstellt um ID's wie "Erfasser des Artikels" zu vermeiden.
+# INSERT_UPDATE ClassificationAttribute -> Ein Befehl zum erstellen/aktualisieren von Klassifikationensattributen. Unterhalb des Headers bleiben die Zeilen leer.
+# code[unique=true] -> Eine eineindeutige ID fĂĽr die Klassifikation. Unterhalb des Headers werden alle Klassifikations ID's eingetragen.
+# name[lang=de] -> Der deutsche Name der Klassifikation. Unterhalb des Headers werden alle deutschen Namen der Klassifikationen eingetragen.
+# name[lang=en] -> Der englische Name der Klassifikation. Unterhalb des Headers werden alle englischen Namen der Klassifikationen eingetragen.
+# Als Namen wurden die Hybris Bezeichner aus der XML-Datei (20130524_ Checkliste Compexpflege mit Datentyp IDs.xlsx) genommen.
+# $classSystemVersion -> Die Version der Klassifizierung. Unterhalb des Headers bleiben die Zeilen leer. -> von SL mit default gesetzt
+
+# Pflichtfelder: code[unique=true]  name[lang=de]  name[lang=en]
+
+INSERT_UPDATE ClassificationAttribute;code[unique=true];name[lang=de];name[lang=en];$classSystemVersion
+;ARKU_400_0018;Waagen Zuordnung;Waagen Zuordnung
+;ARKU_423_0001;Grundpreis Basis;Grundpreis Basis
+;ARKU_423_0002;gĂĽltig ab;gĂĽltig ab 
+;ARKU_423_0003;gĂĽltig bis;gĂĽltig bis
+;ARKU_423_0004;Grundpreis Inhalt;Grundpreis Inhalt
+;ARKU_423_0005;Nettoinhalt/Abtropfgewicht;Nettoinhalt/Abtropfgewicht
+;ARKU_400_0026;Nachkommastellen;Nachkommastellen
+;ARKU_400_0031;Pfand;Pfand
+;ARKU_400_0032;Leergut;Leergut
+;ARKU_400_0033;Gefahrgut;Gefahrgut
+;ARKU_432_0004;Durchschnittsgewicht;Durchschnittsgewicht
+;ARKU_432_0005;Erfasser des Artikels;Erfasser des Artikels
+
+# Klassifikationen
+# Hier werden zunĂ¤chst alle Klassifizierungen angelegt.
+# INSERT_UPDATE ClassificationClass -> Ein Befehl zum erstellen/aktuallisieren von Klassifikationen. Unterhalb des Headers bleiben die Zeilen leer.
+# code[unique=true] -> Eine eineindeutige ID fĂĽr die Klassifikation. Unterhalb des Headers werden alle Klassifikations ID's eingetragen.
+# name[lang=de] -> Der deutsche Name der Klassifikation. Unterhalb des Headers werden alle deutschen Namen der Klassifikationen eingetragen.
+# name[lang=en] -> Der englische Name der Klassifikation. Unterhalb des Headers werden alle englischen Namen der Klassifikationen eingetragen.
+# Als Namen wurden die Bezeichner aus der XML-Datei (Klassifizierung  Stand 08.07.2013.xlsx) genommen.
+# allowedPrincipals(uid)[default='customergroup'] -> Die Nutzergruppe, die auf die Klassifikation zugreifen dĂĽrfen. Unterhalb des Headers kĂ¶nnen berechtigte Gruppen eingetragen werden. -> von SL mit default gesetzt
+# $classCatalogVersion -> Die Version der Klassifizierung. Unterhalb des Headers bleiben die Zeilen leer. -> von SL mit default gesetzt
+
+# Pflichtfelder: code[unique=true]  name[lang=de]  name[lang=en]
+
+INSERT_UPDATE ClassificationClass;code[unique=true];name[lang=de];name[lang=en];$classCatalogVersion;allowedPrincipals(uid)[default='customergroup']
+;Zuordnungspflichtig;Zuordnungspflichtig;Zuordnungspflichtig
+;Sortimentsartikel;Sortimentsartikel;Sortimentsartikel
+;Lebensmittel und lebenmittelnahe Produkte;Lebensmittel und lebenmittelnahe Produkte;Lebensmittel und lebenmittelnahe Produkte
+;nicht Lebensmittel (NF II);nicht Lebensmittel (NF II);nicht Lebensmittel (NF II)
+;Obst/GemĂĽse/Blumen;Obst/GemĂĽse/Blumen;Obst/GemĂĽse/Blumen
+;Obst/GemĂĽse;Obst/GemĂĽse;Obst/GemĂĽse
+;Fresh Cut;Fresh Cut;Fresh Cut
+;Blumen;Blumen;Blumen
+;Bedienung;Bedienung;Bedienung
+;interne Artikel;interne Artikel;interne Artikel
+;systemtechnische Artikel;systemtechnische Artikel;systemtechnische Artikel
+;Ladehilfsmittel und Transporthilfsmittel;Ladehilfsmittel und Transporthilfsmittel;Ladehilfsmittel und Transporthilfsmittel
+;Verbrauchsmaterial;Verbrauchsmaterial;Verbrauchsmaterial
+;technische Artikel;technische Artikel;technische Artikel
+;nicht logistische Artikel;nicht logistische Artikel;nicht logistische Artikel
+;Gruppenartikel Wert;Gruppenartikel Wert;Gruppenartikel Wert
+;Gruppenartikel Menge/ Wert;Gruppenartikel Menge/ Wert;Gruppenartikel Menge/ Wert
+;Pfand/Leergut Artikel;Pfand/Leergut Artikel;Pfand/Leergut Artikel
+;Zusatz;Zusatz;Zusatz
+;Eigenmarken;Eigenmarken;Eigenmarken
+;Gefahrgut;Gefahrgut;Gefahrgut
+;KĂĽhlpflichtig;KĂĽhlpflichtig;KĂĽhlpflichtig
+;Online Artikel;Online Artikel;Online Artikel
+;Pfandbehaftet;Pfandbehaftet;Pfandbehaftet
+
+# Klassifikationsbaum
+# Hier wird der Klassifikationsbaum aus der Excel-Datei (Klassifizierung  Stand 08.07.2013.xlsx) aufgebaut. Dazu wurden die Spalten B bis E genutzt.
+# Die Spalte A wurde ignoriert, da die dort aufgelisteten Attribute schon am Produkt existieren sollen.
+# INSERT_UPDATE CategoryCategoryRelation -> Ein Befehl zum erstellen/aktuallisieren von KlassifikationensabhĂ¤ngigkeiten. Unterhalb des Headers bleiben die Zeilen leer.
+# $categories -> Die ID einer Subklassifikation
+# $supercategories -> Die ID einer Oberkategorie
+# Beispiel ($categories <-> $supercategories): Blumen <-> Obst/GemĂĽse/Blumen
+
+# Pflichtfelder: $categories $supercategories
+
+INSERT_UPDATE CategoryCategoryRelation;$categories;$supercategories
+;Sortimentsartikel;Zuordnungspflichtig
+;interne Artikel;Zuordnungspflichtig
+;technische Artikel;Zuordnungspflichtig
+
+;Lebensmittel und lebenmittelnahe Produkte;Sortimentsartikel
+;nicht Lebensmittel (NF II);Sortimentsartikel
+;Obst/GemĂĽse/Blumen;Sortimentsartikel
+;Bedienung;Sortimentsartikel
+
+;Obst/GemĂĽse;Obst/GemĂĽse/Blumen
+;Fresh Cut;Obst/GemĂĽse/Blumen
+;Blumen;Obst/GemĂĽse/Blumen
+
+;systemtechnische Artikel;interne Artikel
+;Ladehilfsmittel und Transporthilfsmittel;interne Artikel
+;Verbrauchsmaterial;interne Artikel
+
+;nicht logistische Artikel;technische Artikel
+;Gruppenartikel Wert;nicht logistische Artikel
+;Gruppenartikel Menge/ Wert;nicht logistische Artikel
+;Pfand/Leergut Artikel;technische Artikel
+
+;Eigenmarken;Zusatz
+;Gefahrgut;Zusatz
+;KĂĽhlpflichtig;Zusatz
+;Online Artikel;Zusatz
+;Pfandbehaftet;Zusatz
+
+# Wertelisten
+# Hier werden alle Wertelisten, die spĂ¤ter aus einem DropDown-MenĂĽ gewĂ¤hlt werden kĂ¶nnen, eingetragen. Die Beispieldaten wurden aus der
+# "20130524_ Checkliste Compexpflege mit Datentyp IDs.xlsx" entnommen. Es ist zu beachten, dass nur nichtkomplexe Wertelisten eingetragen werden.
+# Nicht komplexe Wertelisten sind Wertelisten, die nur eine ID und einen Bezeichner enthalten. Komplexere Wertelisten werden spĂ¤ter als Objekte in der Hybris
+# abgebildet und an das Produkt gehĂ¤ngt. (Beispiel komplexe Werteliste: Operative Einheit). Alle Werte aus den nicht komplexen Wertelisten werden hier aufgelistet.
+# Jeder Wert muss dazu mit einer eineindeutigen ID versehen werden (code[unique=true]). In unserem Beispiel ist das WL1,WL2,WL3,... . Das Feld "externalid" enthĂ¤lt
+# die CompexID's wie diese in der Datei "20130524_ Checkliste Compexpflege mit Datentyp IDs.xlsx" mitgeliefert wurden.
+# Bei nicht vorhandener ID wurde der Bezeichner als ID eingetragen.
+# INSERT_UPDATE ClassAttributeAssignment -> Ein Befehl zum erstellen/aktuallisieren von Zuweisungen zwischen Merkmal und Klassifikation. Unterhalb des Headers bleiben die Zeilen leer.
+# $class -> Die Klasse der ein Merkmal zugewiesen werden soll.
+# $attribute - Das Merkmal, dass einer Klassifizierung zugewiesen werden soll.
+# attributeType(code) -> Der Typ eines Merkmals. Hierbei ist zu beachten, dass Hybris nur die Typen date, number, string, boolean und enum kennt.
+# Enums sind die oben angelegten Wertelisten, die als DropDown-MenĂĽ angezeigt werden sollen. FĂĽr jeden wert, muss dabei eine neue Zeile angelegt werden.
+# $attributeValues -> Der Wert aus einer Werteliste, der einem Merkmal zugeordnet werden soll. Dieses Feld wird nur ausgefĂĽllt, wenn der Merkmalstyp 'enum' gewĂ¤hlt wurde. Bleibt sonst leer
+# $unit -> Die ID einer Einheit, die neben dem Merkmal angeziegt/gewĂ¤hlt werden kann.
+# multivalued[default=false] -> Dieses Feld kann auf 'true' gesetzt werden, falls mehrere Werte aus einer DropDown-Liste gewĂ¤hlt werden sollen.
+
+# Pflichtfelder: $class  $attribute  attributeType(code)   $attributeValues {nur bei enum}     multivalued[default=false] {nur wenn mehrere Werte gewĂ¤hlt werden sollen}
+
+INSERT_UPDATE ClassAttributeAssignment;$class;$attribute;attributeType(code);$attributeValues;$unit;multivalued[default=false];$classSystemVersion
+;Sortimentsartikel;ARKU_423_0001;enum;WL1;
+;Sortimentsartikel;ARKU_423_0001;enum;WL2;
+;Sortimentsartikel;ARKU_423_0002;date;;
+;Sortimentsartikel;ARKU_423_0003;date;;
+;Sortimentsartikel;ARKU_423_0004;number;;1
+;Sortimentsartikel;ARKU_423_0005;number;;1
+;Sortimentsartikel;ARKU_415_0007;boolean;;
+;Sortimentsartikel;ARKU_415_0008;boolean;;
+;Sortimentsartikel;ARKU_415_0025;number;;
+;Sortimentsartikel;ARKU_415_0026;number;;
+;Sortimentsartikel;LILA_501_0001;string;;
+;Sortimentsartikel;LILA_501_0002;date;;
+;Sortimentsartikel;LILA_501_0003;string;;
+;Sortimentsartikel;LILA_501_0004;date;;
+

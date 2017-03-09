@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>com.hybris.hyeclipse.parent</artifactId>
+    <groupId>com.hybris.hyeclipse</groupId>
+    <version>1.0.3</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  
+  <artifactId>com.hybris.hyeclipse.product</artifactId>
+  <!-- Release version goes here. -->
+  <version>1.0.3-SNAPSHOT</version>
+  <packaging>eclipse-repository</packaging>
+  <build>
+	<plugins>
+	<plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-p2-director-plugin</artifactId>
+        <version>${tycho-version}</version>
+        <executions>
+          <execution>
+            <!-- install the product for all configured os/ws/arch environments 
+              using p2 director -->
+            <id>materialize-products</id>
+            <phase>package</phase>
+            <goals>
+              <goal>materialize-products</goal>
+            </goals>
+          </execution>
+            <!-- (optional) create product zips (one per os/ws/arch) -->
+          <execution>
+            <id>archive-products</id>
+			<phase>verify</phase>
+            <goals>
+              <goal>archive-products</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <name>SAP Hybris Commerce, development tools for Eclipse (product)</name>
+  <url>https://wiki.hybris.com/display/hyps/SAP+Hybris+Commerce+development+tools+for+Eclipse</url>
+  <description>SAP Hybris Commerce, development tools for Eclipse (product)</description>
+  <organization>
+  	<name>SAP Hybris Expert Services</name>
+  	<url>https://wiki.hybris.com/display/hyps</url>
+  </organization>
+</project>

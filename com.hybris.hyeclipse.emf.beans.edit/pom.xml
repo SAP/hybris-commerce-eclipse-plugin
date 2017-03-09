@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<groupId>com.hybris.hyeclipse</groupId>
+		<artifactId>com.hybris.hyeclipse.parent</artifactId>
+		<version>1.0.3</version>
+	</parent>
+	
+	<artifactId>com.hybris.hyeclipse.emf.beans.edit</artifactId>
+	<packaging>eclipse-plugin</packaging>
+	<name>SAP Hybris Commerce, development tools for Eclipse beans edit plugin</name>
+	<description>Beans Edit Plugin</description>
+	<version>1.0.3-SNAPSHOT</version>
+	<organization>
+		<url>https://wiki.hybris.com/display/hyps</url>
+		<name>SAP Hybris Expert Services</name>
+	</organization>
+	<url>https://wiki.hybris.com/display/hyps/SAP+Hybris+Commerce+development+tools+for+Eclipse</url>
+</project>
+

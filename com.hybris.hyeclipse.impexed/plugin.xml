@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+	<extension
+		point="org.eclipse.ui.editors">
+		<editor
+			name="Impex Editor"
+            extensions="impex"
+            icon="icon/hybris.ico"
+            contributorClass="com.hybris.impexformatter.editors.MultiPageEditorContributor"
+            class="com.hybris.impexformatter.editors.ImpexPageEditor"
+            id="com.hybris.impexformatter.editors.ImpexPageEditor">
+        </editor>
+       >
+	</extension>
+	
+	<extension
+		point="org.eclipse.ui.newWizards">
+		<category
+        icon="icon/hybris.ico"
+        id="sapHybris"
+        name="SAP Hybris [y]">
+		</category>
+		<wizard
+			name="New impex file"
+            icon="icon/hybris.ico"
+            category="sapHybris"
+            class="com.hybris.impexformatter.wizards.NewImpexWizard"
+            id="com.hybris.impexformatter.wizards.NewImpexWizard">
+		</wizard>
+	</extension>
+	
+	<extension
+		point = "org.eclipse.ui.editorActions">
+		<editorContribution
+			id="org.eclipse.ui.examples.readmetool.ec1"
+			targetID="com.hybris.impexformatter.editors.ImpexPageEditor">
+			<action
+				id="impex.format.action"
+				label="[y]format impex"
+				class="com.hybris.impexformatter.editors.ImpexFormatAction"
+				definitionId="impexFormatter"/>
+		</editorContribution>
+	</extension>
+	
+	<extension
+		point="org.eclipse.ui.commands">
+		<category
+			id="impexCategory"
+			name="[y] Impex source"
+			description="Category for impex"/>
+		<command
+            id="impexFormatter"
+            name="[y] Impex Format"
+            categoryId="impexCategory">
+		</command>
+		<command
+            id="com.hybris.impexformatter.wizards.NewImpexWizard"
+            defaultHandler="com.hybris.impexformatter.handlers.NewImpexWizardHandler"
+            name="[y] Impex Wizard"
+            categoryId="impexCategory">
+		</command>
+	</extension>
+	
+	<extension
+		point="org.eclipse.ui.bindings">
+		<key
+			commandId="impexFormatter"
+            sequence="M1+Shift+F"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            contextId="org.eclipse.ui.textEditorScope">
+		</key>
+		<key
+			commandId="com.hybris.impexformatter.wizards.NewImpexWizard"
+            sequence="M1+Shift+Y"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            contextId="org.eclipse.ui.contexts.window">
+		</key>
+	</extension>
+	
+	<extension
+	      point="org.eclipse.ui.menus">
+	      <menuContribution locationURI="popup:#TextEditorContext?after=additions">
+	      	<command
+	      		icon="icon/hybris.ico"
+	      		commandId="impexFormatter">
+	      		<visibleWhen>
+	      			<with variable="activeEditorId">
+       					<equals value="com.hybris.impexformatter.editors.ImpexPageEditor"/>
+   				 	</with>
+               </visibleWhen>
+	      	</command>
+	      </menuContribution>
+	</extension>
+	
+	<extension
+		point="org.eclipse.ui.preferencePages">
+		<page
+			class="com.hybris.impexformatter.preferences.ImpexPreferencePage"
+            id="com.hybris.impexformatter.preferences.ImpexPreferencePage"
+            category="com.hybris.yps.hyeclipse.preferences.HyEclipsePreferencePage"
+            name="[y] Impex Editor Preferences">
+		</page>
+	</extension>
+	
+	<extension
+		point="org.eclipse.core.runtime.preferences">
+		<initializer
+			class="com.hybris.impexformatter.preferences.PreferenceInitializer"/>
+	</extension>
+	
+</plugin>

@@ -1,0 +1,665 @@
+package com.hybris.yps.hyeclipse.utils;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
+
+import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
+
+import com.hybris.yps.hyeclipse.Activator;
+import com.hybris.yps.hyeclipse.ExtensionHolder;
+
+public class Importer {
+	
+	private static Activator plugin = Activator.getDefault();
+	private static final boolean debug = Activator.getDefault().isDebugging();
+	
+	private static final String HYBRIS_NATURE_ID = "com.hybris.hyeclipse.tsv.hybris";
+	private static final String SETTINGS_FILE = ".settings/org.eclipse.jdt.core.prefs";
+	
+	private static final double JVM8_VERSION = 5.6d;
+	
+	public void resetProjectsFromLocalExtensions(File platformHome, IProgressMonitor monitor) throws CoreException {
+		plugin.resetPlatform(platformHome.getAbsolutePath());
+		importExtensionsNotInWorkspace(monitor, platformHome);
+		closeProjectsThatAreNotReferenced(monitor, platformHome);
+		fixMissingProjectDependencies(monitor, platformHome);
+		fixMissingProjectResources(monitor, platformHome);
+		fixProjectClasspaths(monitor, platformHome);
+		addAllHybrisProjectsToBuildPathForCustomProjects(monitor);
+		fixBuilders(monitor);
+	}
+
+	private void importExtensionsNotInWorkspace(IProgressMonitor monitor, File platformHome) throws CoreException {
+		if (debug)
+			Activator.log("Retrieving extensions not in workspace");
+		 
+		double version = getPlatformVersion(platformHome);
+		
+		Collection<ExtensionHolder> extensions = FixProjectsUtils.getExtensionsNotInWorkspace(platformHome.getAbsolutePath());
+		if (extensions != null && extensions.isEmpty() == false) {
+			monitor.setTaskName("Importing extensions");
+			monitor.beginTask("Importing extensions", extensions.size());
+			int progress = 0;
+			for (ExtensionHolder extensionHolder : extensions) {
+				Path path = new Path(extensionHolder.getPath() + "/.project");
+				if (path.toFile().exists()) {
+					
+					if (debug)
+						Activator.log("Importing project [" + extensionHolder + "]");
+					importProject(monitor, path, version);
+					// fix the modules (e.g. remove hmc module if not needed)
+					fixModules(monitor, extensionHolder);
+				}
+				else {
+					if (debug)
+						Activator.log("Not importing extension [" + extensionHolder + "] because it is not an eclipse project");
+				}
+				progress++;
+				monitor.worked(progress);
+			}
+		}
+	}
+
+	private void closeProjectsThatAreNotReferenced(IProgressMonitor monitor, File platformHome) throws CoreException {
+		if (debug)
+			Activator.log("Retrieving projects not in localextensions using platformhome [" + platformHome.getAbsolutePath() + "]");
+		Set<IProject> projectsToClose = FixProjectsUtils.getProjectsNotInLocalExtensionsFile(platformHome.getAbsolutePath());
+
+		// close projects from the above set that are not referenced by a
+		// project that is not scheduled for closing
+		if (projectsToClose != null) {
+			for (IProject projectToClose : projectsToClose) {
+
+				// check if this project is a dependency of another project that
+				// is not scheduled to be closed
+				IProject[] referencingProjects = projectToClose.getReferencingProjects();
+				boolean abortClose = false;
+				if (referencingProjects != null) {
+					for (IProject proj : referencingProjects) {
+						if (!projectsToClose.contains(proj)) {
+							if (debug)
+								Activator.log("Aborting close of project [" + projectToClose.getName() + "] because it is referenced by [" + proj.getName() + "]");
+							abortClose = true;
+						}
+					}
+				}
+
+				// close projects
+				if (!abortClose) {
+					if (debug)
+						Activator.log("Closing project [" + projectToClose.getName() + "]");
+					projectToClose.close(monitor);
+				}
+			}
+		}
+	}
+
+	private IProject importProject(IProgressMonitor monitor, Path path, double version) throws CoreException {
+		final SubMonitor progress = SubMonitor.convert(monitor, 120);
+		IProjectDescription description = ResourcesPlugin.getWorkspace().loadProjectDescription(path);
+		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(description.getName());
+		project.create(description, progress.newChild(30));
+		fixProjectCompilerSettings(monitor, project, version);
+		project.open(progress.newChild(30));
+		FixProjectsUtils.removeBuildersFromProject(progress.newChild(30), project);
+		addHybrisNature(project, progress.newChild(30));
+		return project;
+	}
+	
+	private double getPlatformVersion(File platformHome)  {
+		try (FileReader fr = new FileReader(platformHome + "/build.number");
+				BufferedReader br = new BufferedReader(fr);) {
+			String s = null;
+			while ((s = br.readLine()) != null) {
+				if (s.startsWith("version=")) {
+					String[] split = s.split("=");
+					return Double.valueOf(split[1].substring(0, 3));
+				}
+			}
+			return 6.3;
+		} catch (IOException e) {
+			throw new IllegalStateException("Error reading file " + platformHome + "/build.number", e);
+		}
+	}
+	
+	private void fixProjectCompilerSettings(IProgressMonitor monitor, IProject project, double platformVersion) {
+		// don't fix project or custom extensions
+		if (FixProjectsUtils.isAPlatformExtension(project) && !FixProjectsUtils.isATemplateExtension(project)) {
+			List<String> compileProblems = Arrays.asList("org.eclipse.jdt.core.compiler.problem.autoboxing",
+					"org.eclipse.jdt.core.compiler.problem.emptyStatement",
+					"org.eclipse.jdt.core.compiler.problem.unusedLocal",
+					"org.eclipse.jdt.core.compiler.problem.unnecessaryTypeCheck",
+					"org.eclipse.jdt.core.compiler.problem.undocumentedEmptyBlock");
+
+			File settingsFile = new File(project.getLocation() + "/" + (SETTINGS_FILE));
+			if (settingsFile.exists()) {
+
+				String s;
+				final StringBuilder strBuilder = new StringBuilder();
+				boolean fileHasBeenModified = false;
+				try (FileReader fr = new FileReader(settingsFile); BufferedReader br = new BufferedReader(fr);) {
+					while ((s = br.readLine()) != null) {
+						boolean thisLineChanged = false;
+						for (String compileProblem : compileProblems) {
+							if (s.startsWith(compileProblem)) {
+								if (s.endsWith("error")) {
+									fileHasBeenModified = true;
+									thisLineChanged = true;
+									strBuilder.append(s.replaceAll("error", "warning")).append("\n");
+									break;
+								}
+							}
+							// make sure all 1.7 settins are substitute for 1.8
+							// for versions 5.6 and higher
+							if (platformVersion >= JVM8_VERSION && s.indexOf("1.7") > 0) {
+								fileHasBeenModified = true;
+								thisLineChanged = true;
+								strBuilder.append(s.replaceAll("1\\.7", "1\\.8")).append("\n");
+								break;
+							}
+						}
+						if (!thisLineChanged) {
+							strBuilder.append(s).append("\n");
+						}
+					}
+
+				} catch (IOException e) {
+					throw new IllegalStateException(
+							"Error while fixing the compiler settings in " + settingsFile.toString(), e);
+				}
+
+				// write the settings if they have changed
+				if (fileHasBeenModified) {
+					try (FileWriter fw = new FileWriter(settingsFile)) {
+						fw.write(strBuilder.toString());
+					} catch (IOException e) {
+						throw new IllegalStateException(
+								"Error while fixing the compiler settings in " + settingsFile.toString(), e);
+					}
+				}
+
+			}
+		}
+	}
+	
+	
+	private void addHybrisNature(IProject project, IProgressMonitor monitor) throws CoreException {
+		IProjectDescription description = project.getDescription();
+		String[] natures = description.getNatureIds();
+
+		for (int i = 0; i < natures.length; ++i) {
+			if (HYBRIS_NATURE_ID.equals(natures[i])) {
+				return;
+			}
+		}
+
+		// Add the nature
+		String[] newNatures = new String[natures.length + 1];
+		System.arraycopy(natures, 0, newNatures, 0, natures.length);
+		newNatures[natures.length] = HYBRIS_NATURE_ID;
+		description.setNatureIds(newNatures);
+		project.setDescription(description, monitor);
+	}
+	
+	
+	
+	private void fixBuilders(IProgressMonitor monitor) throws CoreException
+	{
+		monitor.setTaskName("Fixing builders");
+		Set<IProject> hybrisProjects = FixProjectsUtils.getAllOpenHybrisProjects();
+		monitor.beginTask("Fixing builders", hybrisProjects.size());
+		int i = 0;
+		for (IProject project : hybrisProjects)
+		{
+			FixProjectsUtils.removeBuildersFromProject(monitor, project);
+			monitor.internalWorked(i++);
+		}
+	}
+	
+	/**
+	 * We remove any libraries from the Project that don't exist and automatically add any libraries from the lib directory of the extension
+	 * @param monitor
+	 * @param extensionHolders
+	 */
+	private void fixProjectClasspaths(IProgressMonitor monitor, File platformHome)
+	{
+		if (ResourcesPlugin.getWorkspace().getRoot().getProjects() == null)
+		{
+			return;
+		}
+		
+		monitor.setTaskName("Fixing project classpaths");
+		monitor.beginTask("Fixing project classpaths",   ResourcesPlugin.getWorkspace().getRoot().getProjects().length);
+		monitor.worked(0);
+		int projCnt = 0;
+		for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects())
+		{	
+			{
+				try {
+					if (FixProjectsUtils.isAHybrisExtension(project) && project.isOpen() && project.hasNature(JavaCore.NATURE_ID)) {
+						IJavaProject javaProject = JavaCore.create(project);
+						removeJarFilesThatDontExist(monitor, project, javaProject);
+						addJarFilesNotInClasspath(monitor, project, javaProject);
+						FixProjectsUtils.addSourceDirectoriesIfExisting(monitor, project, javaProject);
+						FixProjectsUtils.removeSourceDirectoriesIfNotExisting(monitor, project, javaProject);
+						fixBackofficeJars(monitor, javaProject);
+						fixAddons(monitor,javaProject);
+						fixMissingJavaRuntime(monitor,javaProject);	 
+					}				
+				} catch (CoreException e) {
+					throw new IllegalStateException(e);
+				}
+			}
+			projCnt++;
+			monitor.worked(projCnt);
+		}
+	}
+
+	/**
+	 * Sometimes the project configuration is corrupt and a Java runtime is not on the classpath
+	 * @param monitor
+	 * @param javaProject
+	 * @throws JavaModelException
+	 */
+	private void fixMissingJavaRuntime(IProgressMonitor monitor, IJavaProject javaProject) throws JavaModelException {
+		
+		if (!javaProject.getProject().getName().equals("config")) {
+			IClasspathEntry[] classPathEntries = javaProject.getRawClasspath();
+			boolean found = false;
+			for (IClasspathEntry classpathEntry : classPathEntries) {
+				// fix missing runtime
+				if (classpathEntry.getEntryKind() == IClasspathEntry.CPE_CONTAINER) {
+					if (classpathEntry.getPath().toString().startsWith("org.eclipse.jdt.launching.JRE_CONTAINER")) {
+						found = true;
+						break;
+					}
+				}
+			}
+			
+			if (!found) {
+				IClasspathEntry entry = JavaCore.newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER"),
+						false);
+				Set<IClasspathEntry> entries = new HashSet<IClasspathEntry>(Arrays.asList(classPathEntries));
+				entries.add(entry);
+				FixProjectsUtils.setClasspath(entries.toArray(new IClasspathEntry[entries.size()]), javaProject,
+						monitor);
+			}
+		}
+	}
+	
+	/**
+	 * Some addons don't have their classpath correctly configured in Eclipse and won't compile
+	 * 
+	 * @param monitor
+	 * @param javaProject
+	 * @throws JavaModelException
+	 */
+	private void fixAddons(IProgressMonitor monitor, IJavaProject javaProject) throws JavaModelException {
+		
+		final String projectName = javaProject.getProject().getName();
+		
+		if (projectName.equals("orderselfserviceaddon") || projectName.equals("notificationaddon")
+				|| projectName.equals("customerinterestsaddon") || projectName.equals("consignmenttrackingaddon")) {
+			
+			IProject acceleratorstorefrontcommonsProject = ResourcesPlugin.getWorkspace().getRoot()
+					.getProject("acceleratorstorefrontcommons");
+			if (acceleratorstorefrontcommonsProject != null && acceleratorstorefrontcommonsProject.exists()) {
+				if (!javaProject.isOnClasspath(acceleratorstorefrontcommonsProject)) {
+					FixProjectsUtils.addToClassPath(acceleratorstorefrontcommonsProject, IClasspathEntry.CPE_PROJECT,
+							javaProject, monitor);
+				}
+			}
+		}
+		
+		if (projectName.equals("stocknotificationaddon")) {
+			IProject notificationfacadesProject = ResourcesPlugin.getWorkspace().getRoot()
+					.getProject("notificationfacades");
+			if (notificationfacadesProject != null && notificationfacadesProject.exists()) {
+				if (!javaProject.isOnClasspath(notificationfacadesProject)) {
+					FixProjectsUtils.addToClassPath(notificationfacadesProject, IClasspathEntry.CPE_PROJECT,
+							javaProject, monitor);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Make sure all the relevant backoffice jars are exported
+	 * 
+	 * @param monitor
+	 * @param javaProject
+	 * @throws JavaModelException
+	 */
+	private void fixBackofficeJars(IProgressMonitor monitor, IJavaProject javaProject) throws JavaModelException
+	{
+		if (javaProject.getProject().getName().equalsIgnoreCase("backoffice"))
+		{
+			List<IClasspathEntry> entries = new LinkedList<IClasspathEntry>();
+			IClasspathEntry[] classPathEntries = javaProject.getRawClasspath();
+			boolean change = false;
+			for (IClasspathEntry classpathEntry : classPathEntries) {
+				// fix jar files
+				if (classpathEntry.getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
+					if (classpathEntry.getPath().toString().contains("/backoffice/web/webroot/WEB-INF/lib/backoffice-core-") || 
+							classpathEntry.getPath().toString().contains("/backoffice/web/webroot/WEB-INF/lib/backoffice-widgets-") ||
+							classpathEntry.getPath().toString().contains("/backoffice/web/webroot/WEB-INF/lib/cockpitframework-") ||
+							classpathEntry.getPath().toString().contains("/backoffice/web/webroot/WEB-INF/lib/cockpitcore-") ||
+							classpathEntry.getPath().toString().contains("/backoffice/web/webroot/WEB-INF/lib/cockpittesting-") ||
+							classpathEntry.getPath().toString().contains("/backoffice/web/webroot/WEB-INF/lib/cockpitwidgets-") ||
+							classpathEntry.getPath().toString().contains("/backoffice/web/webroot/WEB-INF/lib/cockpit-") ||
+							classpathEntry.getPath().toString().contains("/backoffice/web/webroot/WEB-INF/lib/zk") ||
+							classpathEntry.getPath().toString().contains("/backoffice/web/webroot/WEB-INF/lib/zul-") ||
+							classpathEntry.getPath().toString().contains("/backoffice/web/webroot/WEB-INF/lib/zcommon-"))
+					{
+						if (!classpathEntry.isExported())
+						{
+							change = true;
+							IClasspathEntry clonedEntry = JavaCore.newLibraryEntry(classpathEntry.getPath(), classpathEntry.getSourceAttachmentPath(), classpathEntry.getSourceAttachmentRootPath(), classpathEntry.getAccessRules(), classpathEntry.getExtraAttributes(), true);
+							entries.add(clonedEntry);
+							continue;
+						}			
+					}
+				}
+				entries.add(classpathEntry);	
+			}
+			if (change)
+			{
+				FixProjectsUtils.setClasspath(entries.toArray(new IClasspathEntry[entries.size()]), javaProject, monitor);	
+			}
+		}
+	}
+	
+
+	private void removeJarFilesThatDontExist(IProgressMonitor monitor, IProject project, IJavaProject javaProject) throws JavaModelException {
+		IClasspathEntry[] classPathEntries = javaProject.getRawClasspath();
+		List<IClasspathEntry> newClassPathEntries = new LinkedList<IClasspathEntry>();
+		boolean changedClassPath = false;
+		for (IClasspathEntry classpathEntry : classPathEntries) {
+			// fix jar files
+			if (classpathEntry.getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
+				classpathEntry.getPath();
+				File classpathEntryFile = classpathEntry.getPath().toFile();
+				
+				// remove JAR if it doesn't exist, only do this if the jar file is located in this project, we leave jars references from different projects
+				if (classpathEntryFile.getPath().endsWith(".jar") && classpathEntryFile.getPath().startsWith("/" + project.getName() + "/") && !project.getFile(classpathEntryFile.getPath().replace("/" + project.getName() + "/", "/")).exists()) {
+					changedClassPath = true;
+					if (debug)
+						Activator.log("libary [" + classpathEntry.getPath() + "] not found for project [ " + project.getName() + "]");
+				}
+				else {
+					newClassPathEntries.add(classpathEntry);
+				}
+			} 
+			else {
+				newClassPathEntries.add(classpathEntry);
+			}	
+		}
+		
+		// we have a change to the classpath so now push the change
+		if (changedClassPath) {
+			if (newClassPathEntries.isEmpty()) {
+				FixProjectsUtils.setClasspath(new IClasspathEntry[0], javaProject, monitor);	
+			}
+			else {
+				FixProjectsUtils.setClasspath(newClassPathEntries.toArray(new IClasspathEntry[newClassPathEntries.size()]), javaProject, monitor);	
+			}
+		}
+	}
+
+	private void fixMissingProjectDependencies(IProgressMonitor monitor, File platformHome) throws JavaModelException
+	{
+		Set<ExtensionHolder> extensions = FixProjectsUtils.getAllExtensionsForPlatform(platformHome.getAbsolutePath());
+		Set<IProject> projects = FixProjectsUtils.getAllOpenHybrisProjects();
+		for (IProject project : projects)
+		{
+			for (ExtensionHolder extHolder : extensions)
+			{
+				if (extHolder.getName().equalsIgnoreCase(project.getName()))
+				{
+					addMissingProjectDependencies(monitor, project, extHolder);
+					continue;
+				}
+			}
+		}
+	}
+	
+	private void addMissingProjectDependencies(IProgressMonitor monitor, IProject project, ExtensionHolder extHolder) throws JavaModelException
+	{
+		IJavaProject javaProject = JavaCore.create(project);
+
+		IClasspathEntry[] classPathEntries = javaProject.getRawClasspath();
+		if (!extHolder.getDependentExtensions().isEmpty()) {
+			for (String ext : extHolder.getDependentExtensions()) {
+				boolean found = false;
+				for (IClasspathEntry classpathEntry : classPathEntries) {
+					// fix jar files
+					if (classpathEntry.getEntryKind() == IClasspathEntry.CPE_PROJECT) {
+						if (classpathEntry.getPath().toString().replaceFirst("/", "").equalsIgnoreCase(ext)) {
+							found = true;
+							break;
+						}
+					}
+				}
+				if (!found) {
+					IProject dependentProject = ResourcesPlugin.getWorkspace()
+							.getRoot().getProject(ext);
+					if (dependentProject.exists() && dependentProject.isOpen())
+					{	
+						FixProjectsUtils.addToClassPath(dependentProject, IClasspathEntry.CPE_PROJECT, javaProject, monitor);
+					}
+				}
+			}
+		}
+	}
+	
+	private void fixMissingProjectResources(IProgressMonitor monitor, File platformHome) throws CoreException
+	{
+		Set<IProject> projects = FixProjectsUtils.getAllHybrisProjects();
+		IProject config = null;
+		IProject platform = null;
+		for(IProject proj: projects) {
+			if( "config".equals(proj.getName()) ) {
+				config = proj;
+			}
+			if( "platform".equals(proj.getName()) ) {
+				platform = proj;
+			}
+		}
+		if( config != null && platform != null ) {
+			IFile activeRoleEnvPropertyFile = platform.getFile("active-role-env.properties");
+			IFile instancePropertiesLink = config.getFile("instance.properties");
+			
+			if( instancePropertiesLink.exists() ) {
+				// Remove the instance.properties link if existing
+				instancePropertiesLink.delete(IResource.NEVER_DELETE_PROJECT_CONTENT, monitor);
+			}
+			if( activeRoleEnvPropertyFile.exists() ) {
+				// extract currently enabled role & instance from active-role-env.properties
+				// https://wiki.hybris.com/display/RD/hybris+server+roles)
+				Properties prop = new Properties();
+				InputStream input = null;
+				try {
+					input = new FileInputStream(activeRoleEnvPropertyFile.getLocation().toFile());
+					prop.load(input);
+				}
+				catch (IOException e) {
+					throw new IllegalStateException(e);
+				}
+				finally {
+					if (input != null) {
+						try {
+							input.close();
+						} catch (IOException e) {
+							throw new IllegalStateException(e);
+						}
+					}
+				}
+				String activeRole = prop.getProperty("ACTIVE_ROLE").replace("${platformhome}", platformHome.toString());
+				String activeInstance = prop.getProperty("ACTIVE_ROLE_INSTANCE").replace("${platformhome}", platformHome.toString());
+
+				// Create the instance.properties link
+				File hybrisRootDir = platform.getLocation().toFile().getParentFile().getParentFile();
+			    File instanceConfigDir = new File(new File(new File(new File(hybrisRootDir, "roles"), activeRole), activeInstance), "config");
+			    File instancePropertiesFile = new File(instanceConfigDir, "instance.properties");
+			    
+			   IPath location = new Path(instancePropertiesFile.toString());
+			   if (debug) {
+				   Activator.log("location = "+location.toString());
+				   Activator.log("instancePropertiesLink = "+instancePropertiesLink.toString());
+			   }
+			   
+			   instancePropertiesLink.createLink(location, IResource.NONE, null);
+			}
+		}
+	}
+	
+	private void addJarFilesNotInClasspath(IProgressMonitor monitor, IProject project, IJavaProject javaProject) throws CoreException
+	{
+		 addMembersOfFolderToClasspath("/lib", monitor, javaProject);
+		 // check if this is a backoffice extension
+		 IFolder backofficeFolder = javaProject.getProject().getFolder("/resources/backoffice");
+		 if (backofficeFolder != null && backofficeFolder.exists())
+		 {
+			 IResource backofficeJar = backofficeFolder.findMember(javaProject.getProject().getName() + "_bof.jar");
+			 if (backofficeJar != null && backofficeJar.exists())
+			 {
+				 if (!isClasspathEntryForJar(javaProject, backofficeJar))
+				 {
+					 Activator.log("Adding library [" + backofficeJar.getFullPath() + "] to classpath for project [" + javaProject.getProject().getName() + "]");
+					 FixProjectsUtils.addToClassPath(backofficeJar, IClasspathEntry.CPE_LIBRARY, javaProject, monitor);
+				 }
+			 }
+		 }
+		 
+		 // add db drivers for platform/lib/dbdriver directory
+		 if (project.getName().equalsIgnoreCase("platform"))
+		 {
+			 addMembersOfFolderToClasspath("/lib/dbdriver", monitor, javaProject);
+		 }
+	}
+	
+	private void addMembersOfFolderToClasspath(String path, IProgressMonitor monitor, IJavaProject javaProject) throws CoreException, JavaModelException {
+		IFolder folder = javaProject.getProject().getFolder(path);
+		 if (folder != null && folder.exists())
+		 {
+			 for (IResource res : folder.members())
+			 {
+				 if (res.getFileExtension() != null && res.getFileExtension().equals("jar") && res.exists())
+				 {
+					 // check if this Resource is on the classpath
+					 if (!javaProject.isOnClasspath(res)) {
+						 if (debug)
+							 Activator.log("Adding library [" + res.getFullPath() + "] to classpath for project [" + javaProject.getProject().getName() + "]");
+						 FixProjectsUtils.addToClassPath(res, IClasspathEntry.CPE_LIBRARY, javaProject, monitor);
+					 }
+				 }
+			 }
+		 }
+	}
+	
+	/**
+	 * 
+	 * @param javaProject
+	 * @param jar
+	 * @return
+	 * @throws JavaModelException
+	 */
+	private boolean isClasspathEntryForJar(IJavaProject javaProject, IResource jar) throws JavaModelException
+	{
+		IClasspathEntry[] classPathEntries = javaProject.getRawClasspath();
+		if (classPathEntries != null) {
+			for (IClasspathEntry classpathEntry : classPathEntries) {
+				// fix jar files
+				if (classpathEntry.getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
+					if (classpathEntry.getPath().equals(jar.getFullPath())) {
+						return true;
+					}
+
+				}
+			}
+
+		}
+		return false;
+	}
+	
+	/**
+	 * We need to add all hybris projects to the build path of each project so that all configured extensions will be on the Eclipse classpath and the extensions will be loaded correctly
+	 * @return
+	 */
+	private void addAllHybrisProjectsToBuildPathForCustomProjects(IProgressMonitor monitor) throws JavaModelException {
+		monitor.setTaskName("Fixing build path");
+		Set<IProject> customProjects = FixProjectsUtils.getAllCustomerProjects();
+		monitor.beginTask("Fixing build path", customProjects.size());
+		int i = 0;
+		for (IProject sourceProject : customProjects) {
+					
+			if (sourceProject.isOpen()) {
+				IJavaProject javaSourceProject = JavaCore.create(sourceProject);
+				List<IClasspathEntry> entries = new LinkedList<IClasspathEntry>(
+						Arrays.asList(javaSourceProject.getRawClasspath()));
+
+				for (IProject targetProject : FixProjectsUtils.getAllPlatformProjects()) {
+					if (!sourceProject.equals(targetProject)) {
+						IClasspathEntry entry = JavaCore.newProjectEntry(targetProject.getFullPath(), true);
+						addToListIfNotExisting(entries, entry);
+					}
+				}
+				FixProjectsUtils.setClasspath(entries.toArray(new IClasspathEntry[entries.size()]), javaSourceProject,
+						monitor);
+				monitor.internalWorked(i++);
+			}
+			}
+	}
+	
+	private void addToListIfNotExisting(final List<IClasspathEntry> entries, final IClasspathEntry entry)
+	{
+		for (IClasspathEntry e :entries)
+		{
+			if (e.getPath().equals(entry.getPath()))
+			{
+				return;
+			}
+		}
+		entries.add(entry);
+	}
+	
+	/**
+	 * Some extensions have modules that they don't need and can cause compilation errors (e.g. hmc modules)
+	 */
+	private void fixModules(IProgressMonitor monitor, ExtensionHolder extension) throws JavaModelException {
+		
+		if (extension.getName().equals("eventtrackingwsaddon"))
+		{
+			extension.setHmcModule(false);
+			FixProjectsUtils.updateExtensionModules(extension, monitor);
+		}	
+	}
+		
+}

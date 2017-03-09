@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            id="com.hybris.hyeclipse.tsv.hybris.category"
+            name="Hybris Project Nature commands">
+      </category>
+      <command
+            categoryId="com.hybris.hyeclipse.tsv.hybris.category"
+            defaultHandler="com.hybris.hyeclipse.tsv.builder.AddRemoveHybrisNatureHandler"
+            id="com.hybris.hyeclipse.tsv.addRemoveHybrisNature"
+            name="Add/RemoveHybris Project Nature">
+      </command>
+   </extension>
+   
+   
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="popup:org.eclipse.ui.projectConfigure?after=additions">
+         <command
+               commandId="com.hybris.hyeclipse.tsv.addRemoveHybrisNature"
+               label="Disable SAP Hybris Nature"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="selection">
+                  <count
+                        value="1">
+                  </count>
+                  <iterate>
+                     <adapt
+                           type="org.eclipse.core.resources.IProject">
+                        <test
+                              property="org.eclipse.core.resources.projectNature"
+                              value="com.hybris.hyeclipse.tsv.hybris">
+                        </test>
+                     </adapt>
+                  </iterate>
+               </with>
+            </visibleWhen>
+         </command>
+         <command
+               commandId="com.hybris.hyeclipse.tsv.addRemoveHybrisNature"
+               label="Enable SAP Hybris Nature"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="selection">
+                  <count
+                        value="1">
+                  </count>
+                  <iterate>
+                     <adapt
+                           type="org.eclipse.core.resources.IProject">
+                        <not>
+                           <test
+                                 property="org.eclipse.core.resources.projectNature"
+                                 value="com.hybris.hyeclipse.tsv.hybris">
+                           </test>
+                        </not>
+                     </adapt>
+                  </iterate>
+               </with>
+            </visibleWhen>
+         </command>
+      </menuContribution>
+   </extension>
+   
+   
+   
+   
+   
+   <extension
+         id="builder"
+         name="TSV Validation Project Builder"
+         point="org.eclipse.core.resources.builders">
+      <builder
+            hasNature="true">
+         <run
+               class="com.hybris.hyeclipse.tsv.builder.StandardTsvBuilder">
+         </run>
+      </builder>
+   </extension>
+   <extension
+         id="hybris"
+         name="Hybris Project Nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="com.hybris.hyeclipse.tsv.builder.HybrisNature">
+         </run>
+      </runtime>
+      <builder
+            id="com.hybris.hyeclipse.tsv.builder">
+      </builder>
+   </extension>
+   <extension
+         id="tsvproblem"
+         name="TSV Validation Problem"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.problemmarker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
+
+</plugin>

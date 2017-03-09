@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            commandId="com.hybris.yps.hyeclipse.GenerateNewExtension"
+            class="com.hybris.hyeclipse.extgen.handlers.ExtensionWizardHandler">
+            <enabledWhen>
+         	<with variable="com.hybris.hyeclipse.properties.platformHome">
+         		<equals value="ENABLED">
+                </equals>
+         	</with>
+         </enabledWhen>
+      </handler>
+   </extension>
+   
+   <!--
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution locationURI="menu:org.eclipse.ui.main.menu?after=additions">
+         <menu label="SAP Hybris [y]"
+               id="com.hybris.yps.hyeclipse.menu">
+     		 	<command
+            		label="Generate New Extension"
+            		commandId="com.hybris.yps.hyeclipse.GenerateNewExtension"
+                	tooltip="Start new extension wizard"
+                	id="com.hybris.yps.hyeclipse.menu.GenerateNewExtension">
+      			</command>
+      	 </menu>
+      </menuContribution>
+   </extension>
+   -->
+   
+   <extension
+		point="org.eclipse.ui.newWizards">
+		<category
+        icon="icon/hybris.ico"
+        id="sapHybris"
+        name="SAP Hybris [y]">
+		</category>
+		<wizard
+			name="New Extension"
+            icon="icon/hybris.ico"
+            category="sapHybris"
+            class="com.hybris.hyeclipse.extgen.wizards.NewExtensionWizard"
+            id="com.hybris.hyeclipse.extgen.wizards.NewExtensionWizard">
+		</wizard>
+	</extension>
+</plugin>

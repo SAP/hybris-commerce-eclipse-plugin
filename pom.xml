@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.hybris.hyeclipse</groupId>
+	<artifactId>com.hybris.hyeclipse.parent</artifactId>
+	<version>1.0.3</version>
+	<packaging>pom</packaging>
+	<name>SAP Hybris Commerce, development tools for Eclipse (parent)</name>
+
+	<developers>
+		<developer>
+			<id>brendan.dobbs@hybris.com</id>
+			<name>Brendan Dobbs</name>
+			<email>brendan.dobbs@hybris.com</email>
+			<organization>hybris.com</organization>
+			<roles>
+				<role>Author</role>
+			</roles>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>i305480</id>
+			<name>John Barrow</name>
+			<email>john.barrow@hybris.com</email>
+			<organization>hybris.com</organization>
+			<roles>
+				<role>Author</role>
+			</roles>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>i303764</id>
+			<name>Pawel Wolanski</name>
+			<email>Pawel.Wolanski@hybris.com</email>
+			<organization>hybris.com</organization>
+			<roles>
+				<role>Author</role>
+			</roles>
+			<timezone>+1</timezone>
+		</developer>
+	</developers>
+	<contributors>
+	</contributors>
+
+	<prerequisites>
+		<maven>3.0</maven>
+	</prerequisites>
+
+	<properties>
+		<tycho-version>0.21.0</tycho-version>
+
+		<!-- PROJECT SETTINGS -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+	</properties>
+
+
+	<modules>
+		<module>com.hybris.hyeclipse.impexed</module>
+		<module>com.hybris.hyeclipse.importer</module>
+		<module>com.hybris.hyeclipse.product</module>
+		<module>com.hybris.hyeclipse.site</module>
+		<module>com.hybris.hyeclipse.feature</module>
+		<module>com.hybris.hyeclipse.ytypesystem</module>
+		<module>com.hybris.hyeclipse.platform</module>
+		<module>com.hybris.hyeclipse.tsv</module>
+		<module>com.hybris.hyeclipse.tsv.extended</module>
+		<module>com.hybris.hyeclipse.emf.beans</module>
+		<module>com.hybris.hyeclipse.emf.beans.edit</module>
+		<module>com.hybris.hyeclipse.emf.beans.editor</module>
+		<module>com.hybris.hyeclipse.extgen</module>
+	</modules>
+
+	<repositories>
+		<repository>
+			<id>kepler</id>
+			<layout>p2</layout>
+			<url>http://download.eclipse.org/releases/kepler</url>
+		</repository>
+		 
+	</repositories>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-maven-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<extensions>true</extensions>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-compiler-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>target-platform-configuration</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<environments>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86</arch>
+						</environment>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86</arch>
+						</environment>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>macosx</os>
+							<ws>cocoa</ws>
+							<arch>x86_64</arch>
+						</environment>
+					</environments>
+				</configuration>
+			</plugin>
+			
+		</plugins>
+	</build>
+
+
+</project>
