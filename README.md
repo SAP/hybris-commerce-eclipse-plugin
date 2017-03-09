@@ -1,0 +1,1 @@
+# hybris-commerce-eclipse-plugin
