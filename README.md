@@ -19,9 +19,9 @@ Features
 * Type System Validation
 
 User Guide
--------
-See the relevant page on the Application Lifecycle Framework for Commerce: [SAP Hybris Commerce development tools for Eclipse](https://wiki.hybris.com/display/hybrisALF/SAP+Hybris+Commerce+development+tools+for+Eclipse).
+----------
+This GitHub repository is for managing the source code of the plugin. To get the access installation binaries and user guide goto the relevant page on the Application Lifecycle Framework for Commerce: [SAP Hybris Commerce development tools for Eclipse](https://wiki.hybris.com/display/hybrisALF/SAP+Hybris+Commerce+development+tools+for+Eclipse).
 
-Install it
--------
+Compile and Install From Source
+-------------------------------
 Execute "mvn install" to create an Eclipse local update site archive in com.hybris.hyeclipse.site/target. Import it in Eclipse by going to Help -> Install New Software then click the "Add" button
