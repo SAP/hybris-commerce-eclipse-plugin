@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ScriptExecutor
+Bundle-SymbolicName: com.hybris.hyeclipse.script.executor;singleton:=true
+Bundle-Version: 1.0.3.qualifier
+Bundle-Activator: com.hybris.hyeclipse.script.executor.Activator
+Bundle-Vendor: HYBRIS
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ com.hybris.hyeclipse.hac,
+ org.eclipse.core.expressions,
+ org.eclipse.jface.text,
+ org.eclipse.core.resources
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy

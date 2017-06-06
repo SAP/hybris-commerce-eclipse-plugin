@@ -30,39 +30,7 @@ public class CreateExtensionWorkingSetsHandler extends AbstractHandler {
 		IWizard wizard = new CreateWorkingSetWizard();
 		
 		WizardDialog dialog = new WizardDialog(activeShell, wizard);
-		dialog.open();
-		
+		dialog.open();	
 		return null;
-		
-//		IRunnableWithProgress op = new IRunnableWithProgress() {
-//
-//			@Override
-//			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-//				setCommentsFound(WorkingSetsUtils.organizeWorkingSetsFromLocalExtensions(monitor));
-//			}
-//		};
-//
-//		try {
-//			new ProgressMonitorDialog(new Shell()).run(true, false, op);
-//
-//			if (!commentsFound) {
-//				Shell shell = new Shell();
-//				MessageBox dialog = new MessageBox(shell, SWT.ICON_WARNING | SWT.OK);
-//				dialog.setText("No comments found in localextensions.xml");
-//				dialog.setMessage(
-//						"Working Sets are created based on the comments in your localextensions.xml (see accelerator for examples).\n\n Please add some comments and try again.");
-//				dialog.open();
-//			}
-//		} catch (InvocationTargetException e) {
-//			Activator.logError("InvocationTargetException", e);
-//		} catch (InterruptedException e) {
-//			Activator.logError("InterruptedException", e);
-//		}
-//		return null;
 	}
-
-	private void setCommentsFound(boolean b) {
-		commentsFound = b;
-	}
-
 }

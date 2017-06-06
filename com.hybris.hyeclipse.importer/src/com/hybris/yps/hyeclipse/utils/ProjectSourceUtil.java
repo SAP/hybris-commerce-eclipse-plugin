@@ -115,7 +115,13 @@ public class ProjectSourceUtil
 				// Logic:
 				// (1) Filter for kind=lib: entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY
 				// (2) Filter for path ending in server.jar
-				if( entry.getPath().lastSegment().endsWith( "server.jar" ) && entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY )
+				// (2.bis) Hybris JAR are : ybootstrap.jar or ytomcat.jar or yant.jar
+				boolean isLibrary = entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY;
+				String entryFileName = entry.getPath().lastSegment();
+				boolean isServerJar = entryFileName.endsWith( "server.jar" );
+				boolean isHybrisJar = entryFileName.equals( "ybootstrap.jar" ) || entryFileName.equals( "ytomcat.jar" ) || entryFileName.equals( "yant.jar" );
+				boolean isJarWithSource = isServerJar || isHybrisJar;
+				if( isJarWithSource && isLibrary )
 				{
 					IClasspathEntry newEntry = null;
 					if (attach) 

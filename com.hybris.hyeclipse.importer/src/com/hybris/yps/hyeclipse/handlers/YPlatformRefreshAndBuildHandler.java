@@ -9,6 +9,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
+import com.hybris.yps.hyeclipse.Activator;
 import com.hybris.yps.hyeclipse.utils.BuildUtils;
 
 public class YPlatformRefreshAndBuildHandler extends AbstractHandler {
@@ -27,7 +28,8 @@ public class YPlatformRefreshAndBuildHandler extends AbstractHandler {
 					monitor.done();
 					return Status.OK_STATUS;
 				} catch (Exception e) {
-					throw new IllegalStateException("Failed to synchronize with the platform", e);
+					Activator.logError("Failed to refresh and build", e);
+					throw new IllegalStateException("Failed to refresh and build the platform, see the workspace logs for more details", e);
 				}
 
 			}

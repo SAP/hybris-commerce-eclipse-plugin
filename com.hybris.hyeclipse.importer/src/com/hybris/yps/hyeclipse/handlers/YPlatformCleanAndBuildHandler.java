@@ -9,6 +9,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
+import com.hybris.yps.hyeclipse.Activator;
 import com.hybris.yps.hyeclipse.utils.BuildUtils;
 
 public class YPlatformCleanAndBuildHandler extends AbstractHandler {
@@ -28,6 +29,7 @@ public class YPlatformCleanAndBuildHandler extends AbstractHandler {
 					monitor.done();
 					return Status.OK_STATUS;
 				} catch (Exception e) {
+					Activator.logError("Failed to synchronize with the platform, see workspace logs for more details", e);
 					throw new IllegalStateException("Failed to synchronize with the platform", e);
 				}
 

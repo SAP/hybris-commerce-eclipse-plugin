@@ -13,6 +13,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 
+import com.hybris.yps.hyeclipse.Activator;
 import com.hybris.yps.hyeclipse.utils.BuildUtils;
 import com.hybris.yps.hyeclipse.utils.FixProjectsUtils;
 
@@ -38,7 +39,8 @@ public class ExtensionBuildHandler extends AbstractHandler {
 						return Status.CANCEL_STATUS;
 					}
 				} catch (Exception e) {
-					throw new IllegalStateException("Failed to build project", e);
+					Activator.logError("Failed to build project", e);
+					throw new IllegalStateException("Failed to build project, see workspace logs for details", e);
 				}
 
 			}

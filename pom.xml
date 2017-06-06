@@ -58,7 +58,10 @@
 
 
 	<modules>
+		<module>com.hybris.hyeclipse.hac</module>
+		<module>com.hybris.hyeclipse.script.executor</module>
 		<module>com.hybris.hyeclipse.impexed</module>
+		<module>com.hybris.hyeclipse.impex.importer</module>
 		<module>com.hybris.hyeclipse.importer</module>
 		<module>com.hybris.hyeclipse.product</module>
 		<module>com.hybris.hyeclipse.site</module>

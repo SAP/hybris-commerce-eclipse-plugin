@@ -240,6 +240,7 @@ public class NewExtensionWizard extends Wizard implements INewWizard {
 				try {
 					ExtensionUtils.runExtgen(monitor, extension.getName(), packageName, templateName);
 				} catch (InvocationTargetException e) {
+					Activator.logError("Failed to generate extension", e);
 					throw new IllegalStateException("Failed to generate extension. Check the console output.", e);
 				}
 			}
