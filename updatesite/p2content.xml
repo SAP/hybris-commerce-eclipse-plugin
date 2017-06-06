@@ -1,16 +1,16 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <units size='1'>
-  <unit id='201705301053.com.hybris.hyeclipse' version='1.0.0.2-5cKk6nh7735G3C9353C9'>
+  <unit id='201706062130.com.hybris.hyeclipse' version='1.0.0.2-5cKk6nh7735G3E3E7593'>
     <properties size='3'>
       <property name='org.eclipse.equinox.p2.name' value='SAP Hybris Commerce, development tools for Eclipse'/>
       <property name='org.eclipse.equinox.p2.description' value='SAP Hybris Commerce, development tools for Eclipse is a suite of Eclipse plugins for SAP Hybris Commerce projects that improves developer productivity.'/>
       <property name='org.eclipse.equinox.p2.type.category' value='true'/>
     </properties>
     <provides size='1'>
-      <provided namespace='org.eclipse.equinox.p2.iu' name='201705301053.com.hybris.hyeclipse' version='1.0.0.2-5cKk6nh7735G3C9353C9'/>
+      <provided namespace='org.eclipse.equinox.p2.iu' name='201706062130.com.hybris.hyeclipse' version='1.0.0.2-5cKk6nh7735G3E3E7593'/>
     </provides>
     <requires size='1'>
-      <required namespace='org.eclipse.equinox.p2.iu' name='com.hybris.hyeclipse.feature.feature.group' range='[1.0.3.201705301053,1.0.3.201705301053]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='com.hybris.hyeclipse.feature.feature.group' range='[1.0.3.201706062130,1.0.3.201706062130]'/>
     </requires>
     <touchpoint id='null' version='0.0.0'/>
   </unit>

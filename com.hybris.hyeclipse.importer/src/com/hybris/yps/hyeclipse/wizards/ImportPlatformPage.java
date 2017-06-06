@@ -2,20 +2,36 @@ package com.hybris.yps.hyeclipse.wizards;
 
 import java.io.File;
 
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.osgi.service.prefs.BackingStoreException;
+import org.osgi.service.prefs.Preferences;
+
+/**
+ * TODO refactor, duplicate code in SynchronizePlatformPage 
+ */
 
 public class ImportPlatformPage extends WizardPage
 {
+	public static final String REMOVE_EXISTING_PROJECTS_PREFERENCE = "removeExistingProjectsPreference";
+	public static final String REMOVE_HYBRIS_BUILDER_PREFERENCE = "removeHybrisBuilderPreference";
+	public static final String FIX_CLASS_PATH_ISSUES_PREFERENCE = "fixClassPathIssuesPreference";
+	public static final String CREATE_WORKING_SETS_PREFERENCE = "createWorkingSetsPreference";
+	
 	private DirectoryFieldEditor	platformDirectoryField;
 	private Button						removeExistingProjects;
+	private Button fixClasspathIssuesButton;
+	private Button removeHybrisItemsXmlGeneratorButton;
+	private Button createWorkingSetsButton;
 
 	public ImportPlatformPage()
 	{
@@ -26,9 +42,25 @@ public class ImportPlatformPage extends WizardPage
 
 	public void createControl( Composite parent )
 	{
-		Composite container = new Composite( parent, SWT.NONE );
-		container.setLayout( new GridLayout( 2, false ) );
+
+		final Composite container = new Composite(parent, SWT.NONE);
+		{
+			GridLayout layout = new GridLayout();
+			layout.numColumns = 3;
+			layout.verticalSpacing = 12;
+			container.setLayout(layout);
+
+			GridData data = new GridData();
+			data.verticalAlignment = GridData.FILL;
+			data.grabExcessVerticalSpace = true;
+			data.horizontalAlignment = GridData.FILL;
+			container.setLayoutData(data);
+		}
+		
 		this.platformDirectoryField = new DirectoryFieldEditor( "fileSelect", "[y] Platform Home: ", container );
+		GridData span2 = new GridData();
+		span2.horizontalSpan = 2;
+		
 		
 		platformDirectoryField.getTextControl( container ).addModifyListener( new ModifyListener() 
 		{
@@ -49,11 +81,48 @@ public class ImportPlatformPage extends WizardPage
 			}
 		} );
 		
+	
+		Preferences preferences = InstanceScope.INSTANCE.getNode("com.hybris.hyeclipse.preferences");
+		boolean removeExistingProjectsPref = preferences.getBoolean(REMOVE_EXISTING_PROJECTS_PREFERENCE, true);
+		boolean fixClasspathIssuesPref = preferences.getBoolean(FIX_CLASS_PATH_ISSUES_PREFERENCE, true);
+		boolean removeHybrisBuilderPref = preferences.getBoolean(REMOVE_HYBRIS_BUILDER_PREFERENCE, true);
+		boolean createWorkingSetsPref = preferences.getBoolean(CREATE_WORKING_SETS_PREFERENCE, true);
+		
+		GridData gdFillHorizontal = new GridData(GridData.FILL_HORIZONTAL);
+		gdFillHorizontal.horizontalSpan=2;
+		
 		Label removeExistingProjectsLabel = new Label( container, 0 );
 		removeExistingProjectsLabel.setText( "Remove existing projects" );
+		removeExistingProjectsLabel.setToolTipText("Do a clean import removing any existing projects");
+		
 		removeExistingProjects = new Button( container, 32 );
-		removeExistingProjects.setSelection( true );
-
+		removeExistingProjects.setSelection( removeExistingProjectsPref );
+		removeExistingProjects.setLayoutData(gdFillHorizontal);
+		
+		Label fixClasspathIssuesLabel = new Label( container, 0 );
+		fixClasspathIssuesLabel.setText( "Fix classpath issues (recommended)" );
+		fixClasspathIssuesLabel.setToolTipText("This will try to fix the project classpath by using the classpath used by the hybris platform and also fixing a number of other common classpath issues");
+		
+		fixClasspathIssuesButton = new Button( container, 32 );
+		fixClasspathIssuesButton.setSelection( fixClasspathIssuesPref );
+		fixClasspathIssuesButton.setLayoutData(gdFillHorizontal);
+		
+		
+		
+		Label removeHybrisItemsXmlGeneratorLabel = new Label( container, 0 );
+		removeHybrisItemsXmlGeneratorLabel.setText( "Remove Hybris Builder (recommended)" );
+		removeHybrisItemsXmlGeneratorLabel.setToolTipText("The Hybris Builder will run a build to generate classes on every items.xml save. This generally slows down development and it's usually better to generate the classes by running a build manually");
+		removeHybrisItemsXmlGeneratorButton = new Button( container, 32 );
+		removeHybrisItemsXmlGeneratorButton.setSelection( removeHybrisBuilderPref );
+		removeHybrisItemsXmlGeneratorButton.setLayoutData(gdFillHorizontal);
+		
+		Label createWorkingSetsLabel = new Label( container, 0 );
+		createWorkingSetsLabel.setText( "Update Working Sets" );
+		createWorkingSetsLabel.setToolTipText("Create from directories of extensions (e.g. ext-commerce)");
+		createWorkingSetsButton = new Button( container, 32 );
+		createWorkingSetsButton.setSelection( createWorkingSetsPref );
+		createWorkingSetsButton.setLayoutData(gdFillHorizontal);
+		
 		setControl( container );
 		setPageComplete( false );
 	}
@@ -61,6 +130,21 @@ public class ImportPlatformPage extends WizardPage
 	public boolean isRemoveExistingProjects()
 	{
 		return removeExistingProjects.getSelection();
+	}
+	
+	public boolean isFixClasspath()
+	{
+		return fixClasspathIssuesButton.getSelection();
+	}
+	
+	public boolean isRemoveHybrisGenerator()
+	{
+		return removeHybrisItemsXmlGeneratorButton.getSelection();
+	}
+	
+	public boolean isCreateWorkingSets()
+	{
+		return createWorkingSetsButton.getSelection();
 	}
 
 	public File getPlatformDirectory()
@@ -81,6 +165,7 @@ public class ImportPlatformPage extends WizardPage
 	 * Validation method of this page.
 	 * 
 	 * @return true if the platform directory is existent and looks correct, false otherwise
+	 * @throws  
 	 */
 	public boolean validatePage()
 	{
@@ -108,6 +193,22 @@ public class ImportPlatformPage extends WizardPage
 		//clumsy to set to null rather than clearErrorMessage() similar
 		setErrorMessage(null);
 		
+		persistSelections();
+		
 		return true;
+	}
+
+	private void persistSelections() {
+		// persist checkbox selections for next time
+		Preferences preferences = InstanceScope.INSTANCE.getNode("com.hybris.hyeclipse.preferences");
+		preferences.putBoolean(FIX_CLASS_PATH_ISSUES_PREFERENCE, fixClasspathIssuesButton.getSelection());
+		preferences.putBoolean(REMOVE_HYBRIS_BUILDER_PREFERENCE, removeHybrisItemsXmlGeneratorButton.getSelection());
+		preferences.putBoolean(REMOVE_EXISTING_PROJECTS_PREFERENCE, removeExistingProjects.getSelection());
+		preferences.putBoolean(ImportPlatformPage.CREATE_WORKING_SETS_PREFERENCE, createWorkingSetsButton.getSelection());
+		try {
+			preferences.flush();
+		} catch (BackingStoreException e) {
+			throw new IllegalStateException("Could not save preferences", e);
+		}
 	}
 }

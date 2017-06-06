@@ -304,10 +304,13 @@ public class Activator extends AbstractUIPlugin {
 		Set<ExtensionHolder> allExtensions = new HashSet<ExtensionHolder>();
 		List<ExtensionInfo> allExtensionInfos = getPlatformConfig().getExtensionInfosInBuildOrder();
 		for (ExtensionInfo extension : allExtensionInfos) {
+			// sanity check, should never be null
+			if (extension != null) {
 			ExtensionHolder extHolder = createExtensionHolderFromExtensionInfo(extension);
 			if (extHolder != null) {
 				allExtensions.add(extHolder);
 			}
+		}
 		}
 		return allExtensions;
 	}
@@ -316,6 +319,13 @@ public class Activator extends AbstractUIPlugin {
 		
 		ExtensionHolder extHolder = null;
 		if (!extension.isCoreExtension()) {
+			
+			// some extensions appear to not have a directory so we skip them
+			if (extension.getExtensionDirectory() == null)
+			{
+				log("extension [" + extension.getName() + "] doesn't have an extension directory, skipping");
+				return null;
+			}
 			String path = extension.getExtensionDirectory().getAbsolutePath();
 			extHolder = new ExtensionHolder(path, extension.getName());
 			if (extension.getCoreModule() != null) {

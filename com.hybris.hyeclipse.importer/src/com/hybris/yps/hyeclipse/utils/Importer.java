@@ -15,12 +15,13 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
-import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -41,19 +42,35 @@ public class Importer {
 	private static final boolean debug = Activator.getDefault().isDebugging();
 	
 	private static final String HYBRIS_NATURE_ID = "com.hybris.hyeclipse.tsv.hybris";
+	private static final String SPRING_NATURE_ID = "org.springframework.ide.eclipse.core.springnature";
 	private static final String SETTINGS_FILE = ".settings/org.eclipse.jdt.core.prefs";
+	private static final String SPRINGBEANS_FILE = ".springBeans";
 	
 	private static final double JVM8_VERSION = 5.6d;
 	
-	public void resetProjectsFromLocalExtensions(File platformHome, IProgressMonitor monitor) throws CoreException {
+	public void resetProjectsFromLocalExtensions(File platformHome, IProgressMonitor monitor,  boolean fixClasspath, boolean removeHybrisGenerator, boolean createWorkingSets) throws CoreException {
 		plugin.resetPlatform(platformHome.getAbsolutePath());
+		
 		importExtensionsNotInWorkspace(monitor, platformHome);
 		closeProjectsThatAreNotReferenced(monitor, platformHome);
+	
+		if (fixClasspath)
+		{
 		fixMissingProjectDependencies(monitor, platformHome);
 		fixMissingProjectResources(monitor, platformHome);
 		fixProjectClasspaths(monitor, platformHome);
-		addAllHybrisProjectsToBuildPathForCustomProjects(monitor);
+		}
+		
+		if (removeHybrisGenerator)
+		{
 		fixBuilders(monitor);
+	}
+		
+		if (createWorkingSets)
+		{
+			WorkingSetsUtils.organizeWorkingSetsFromExtensionDirectories(monitor);
+		}	
+		fixSpringBeans(monitor, platformHome);
 	}
 
 	private void importExtensionsNotInWorkspace(IProgressMonitor monitor, File platformHome) throws CoreException {
@@ -269,6 +286,7 @@ public class Importer {
 						addJarFilesNotInClasspath(monitor, project, javaProject);
 						FixProjectsUtils.addSourceDirectoriesIfExisting(monitor, project, javaProject);
 						FixProjectsUtils.removeSourceDirectoriesIfNotExisting(monitor, project, javaProject);
+						FixProjectsUtils.setOutputDirectory(monitor, project, javaProject);
 						fixBackofficeJars(monitor, javaProject);
 						fixAddons(monitor,javaProject);
 						fixMissingJavaRuntime(monitor,javaProject);	 
@@ -280,6 +298,99 @@ public class Importer {
 			projCnt++;
 			monitor.worked(projCnt);
 		}
+	}
+
+	private void fixSpringBeans(IProgressMonitor monitor, File platformHome) {
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		IWorkspaceRoot root = workspace.getRoot();
+		IProject[] projects = root.getProjects();
+		if (projects == null) {
+			return;
+		}
+
+		monitor.setTaskName("Fixing Spring Beans");
+		monitor.beginTask("Fixing Spring Beans", projects.length);
+		monitor.worked(0);
+		int projCnt = 0;
+		for (IProject project : projects) {
+			monitor.worked(projCnt++);
+
+			try {
+
+				if (!project.isOpen()) {
+					continue;
+				}
+
+				if (!FixProjectsUtils.isAHybrisExtension(project)) {
+					continue;
+				}
+
+				if (!project.hasNature(SPRING_NATURE_ID)) {
+					continue;
+				}
+
+				IPath location = project.getLocation();
+
+				File springBeansFile = new File(location + "/" + (SPRINGBEANS_FILE));
+				// rewriting the lines between : <configs> & </configs>
+				// It is very crude, but it works since the file should be
+				// formatted nicely.
+				File springBeansFileNew = new File(location + "/" + (SPRINGBEANS_FILE) + ".new");
+
+				// We don't care about the existing one. Just overwrite it
+				// bluntly
+				try (FileWriter fw = new FileWriter(springBeansFileNew);) {
+					fw.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+					fw.write("<beansProjectDescription>\n");
+					fw.write("\t<version>1</version>\n");
+					fw.write("\t<pluginVersion><![CDATA[3.1.0.201210040510-RELEASE]]></pluginVersion>\n");
+					fw.write("\t<configSuffixes>\n");
+					fw.write("\t\t<configSuffix><![CDATA[xml]]></configSuffix>\n");
+					fw.write("\t</configSuffixes>\n");
+					fw.write("\t<enableImports><![CDATA[true]]></enableImports>\n");
+
+					// Recursively find *-spring.xml files
+					String[] beansFiles = getAllSpringXmlFiles(project);
+
+					fw.write("\t<configs>\n");
+					for (String beansFile : beansFiles) {
+						File beanFile = new File(location + "/" + beansFile);
+						if (!beanFile.exists()) {
+							continue;
+						}
+
+						fw.write("\t\t<config>");
+						fw.write(beansFile);
+						fw.write("</config>");
+						fw.write("\n");
+					}
+					fw.write("\t</configs>\n");
+
+					fw.write("\t<configSets>\n");
+					fw.write("\t</configSets>\n");
+					fw.write("</beansProjectDescription>\n");
+
+				} catch (IOException e) {
+					throw new IllegalStateException("Error while fixing the compiler settings in " + springBeansFile.toString(), e);
+				}
+
+				springBeansFileNew.renameTo(springBeansFile);
+
+			} catch (CoreException e) {
+				throw new IllegalStateException(e);
+			}
+
+		}
+
+	}
+
+	private String[] getAllSpringXmlFiles(IProject project) {
+		String projectName = project.getName();
+		String[] allfiles = { //
+				"resources/" + projectName + "-spring.xml", //
+				"web/webroot/WEB-INF/" + projectName + "-web-spring.xml", //
+		};
+		return allfiles;
 	}
 
 	/**
@@ -543,6 +654,7 @@ public class Importer {
 	private void addJarFilesNotInClasspath(IProgressMonitor monitor, IProject project, IJavaProject javaProject) throws CoreException
 	{
 		 addMembersOfFolderToClasspath("/lib", monitor, javaProject);
+		 addMembersOfFolderToClasspath("/web/webroot/WEB-INF/lib", monitor, javaProject);
 		 // check if this is a backoffice extension
 		 IFolder backofficeFolder = javaProject.getProject().getFolder("/resources/backoffice");
 		 if (backofficeFolder != null && backofficeFolder.exists())

@@ -90,7 +90,7 @@ public class Activator extends AbstractUIPlugin {
 			preferences.flush();
 		}
 		catch (BackingStoreException e) {
-			e.printStackTrace();
+			logError("Failed to persist platform_home", e);
 		}
 		
 		getTypeSystemExporter().setPlatformHome(null);

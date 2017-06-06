@@ -278,14 +278,9 @@
                id="com.hybris.hyeclipse.impexed.importer.menu.contributor"
                icon="icon/hybris.ico">
          	<visibleWhen>
-               <with
-                     variable="activeMenuSelection">
-                  <iterate>
-                     <adapt
-                           type="org.eclipse.core.resources.IProject">
-                     </adapt>
-                  </iterate>
-               </with>
+               <test forcePluginActivation="true"
+                     property="com.hybris.hyeclipse.importer.isExtension">
+                  </test>
             </visibleWhen>
          <command
                commandId="com.hybris.yps.hyeclipse.ExtensionBuildCommand"
@@ -299,6 +294,17 @@
          </command>
          </menu>
       </menuContribution>
+   </extension>
+   
+   	<extension
+         point="org.eclipse.core.expressions.propertyTesters">
+      <propertyTester
+            class="com.hybris.yps.hyeclipse.ExtensionPropertyTester"
+            id="com.hybris.hyeclipse.importer.extension"
+            namespace="com.hybris.hyeclipse.importer"
+            properties="isExtension"
+            type="java.lang.Object">
+      </propertyTester>
    </extension>
 
 

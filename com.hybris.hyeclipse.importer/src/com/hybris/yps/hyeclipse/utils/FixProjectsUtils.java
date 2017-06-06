@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 
-
+import org.apache.tools.ant.util.StringUtils;
 import org.eclipse.core.resources.ICommand;
 
 import javax.xml.XMLConstants;
@@ -33,6 +33,7 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
@@ -100,8 +101,10 @@ public class FixProjectsUtils {
 			{
 				if (debug)
 					Activator.log("No match in localextensions for project [" + project.getName() + "] path [" + project.getLocation().toFile().getAbsolutePath() + "]");
+				if (!project.getName().equals("platform") && !project.getName().equals("config")) {
 				projectsNotInLocalExts.add(project);
 			}
+		}
 		}
 		return projectsNotInLocalExts;
 	}
@@ -270,10 +273,18 @@ public class FixProjectsUtils {
 		}
 	}
 	
+	/**
+	 * Add *all* the *currently existing* sources directories to the project.
+	 * They will be pruned later in updateExtensionModules().
+	 */
 	public static void addSourceDirectoriesIfExisting(IProgressMonitor monitor, IProject project, IJavaProject javaProject) throws JavaModelException {
 		// fix sources directories (if src and gensrc exist in the project then add then)
 		addSourceDirectoriesIfExistingForDir(monitor, project, javaProject, "/src");
 		addSourceDirectoriesIfExistingForDir(monitor, project, javaProject, "/gensrc");
+		addSourceDirectoriesIfExistingForDir(monitor, project, javaProject, "/testsrc");
+		addSourceDirectoriesIfExistingForDir(monitor, project, javaProject, "/web/src");
+		addSourceDirectoriesIfExistingForDir(monitor, project, javaProject, "/hmc/src");
+		addSourceDirectoriesIfExistingForDir(monitor, project, javaProject, "/web/testsrc");
 		addSourceDirectoriesIfExistingForDir(monitor, project, javaProject, "/acceleratoraddon/web/src");
 	}
 	
@@ -437,6 +448,8 @@ public class FixProjectsUtils {
 					removeSourceFolder(monitor, project, "src", "src");
 					//Remove 'gensrc' directory
 					removeSourceFolder(monitor, project, "gensrc", "gensrc");
+					//Remove 'testsrc' directory
+					removeSourceFolder(monitor, project, "testsrc", "testsrc");
 					
 					//Remove *-items.xml, *-spring.xml
 					project.getFile("resources/" + extension.getName() + "-spring.xml").delete(true, false, monitor);
@@ -450,6 +463,7 @@ public class FixProjectsUtils {
 					
 					//Remove 'web' directory
 					removeSourceFolder(monitor, project, "web", "web/src");
+					removeSourceFolder(monitor, project, "web", "web/testsrc");
 
 					updateProject = true;
 				}
@@ -537,5 +551,24 @@ public class FixProjectsUtils {
 		Document doc = parent.getOwnerDocument();
 		Comment comment = doc.createComment(fragment);
 		parent.appendChild(comment);
+	}
+
+	public static void setOutputDirectory(IProgressMonitor monitor, IProject project, IJavaProject javaProject) {
+
+		IPath outputLocation = null, newOutputLocation = null;
+		try {
+			outputLocation = javaProject.getOutputLocation();
+
+			// Only change the output location if it is the eclipse default one "bin"
+			if ("bin".equals(outputLocation.lastSegment())) {
+				newOutputLocation = outputLocation.removeLastSegments(1).append("eclipsebin");
+				javaProject.setOutputLocation(newOutputLocation, monitor);
+			}
+		} catch (JavaModelException e) {
+			System.err.println("project:" + project.getName());
+			System.err.println("outputLocation:" + outputLocation);
+			System.err.println("newOutputLocation:" + newOutputLocation);
+			Activator.logError("Could not set output directory", e);
+		}
 	}
 }

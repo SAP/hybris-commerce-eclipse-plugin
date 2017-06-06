@@ -22,6 +22,9 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.osgi.service.prefs.BackingStoreException;
+
+import com.hybris.yps.hyeclipse.Activator;
+
 import org.eclipse.core.resources.IBuildConfiguration;
 
 public class EclipseRefreshAndBuildHandler extends AbstractHandler{
@@ -51,7 +54,7 @@ public class EclipseRefreshAndBuildHandler extends AbstractHandler{
 	        	}
 	        	catch (Exception e)
 	        	{
-	        		throw new IllegalStateException("Failed to synchronize with the platform", e);
+	        		throw new IllegalStateException("Failed to synchronize with the platform, see workspace logs for details", e);
 	        	}
 	        	
 	        }
@@ -89,6 +92,7 @@ public class EclipseRefreshAndBuildHandler extends AbstractHandler{
 	      }
 	      catch (CoreException e)
 	      {
+	    	Activator.logError("Failed to synchronize with the platform", e);
 	        throw new InvocationTargetException(e);
 	      }
 		 if (isAutoBuildEnabled)
@@ -117,6 +121,7 @@ public class EclipseRefreshAndBuildHandler extends AbstractHandler{
 		}
 		catch (BackingStoreException e)
 		{
+			Activator.logError("Failed to enable auto build", e);
 			throw new IllegalStateException(e);
 		}
 	}

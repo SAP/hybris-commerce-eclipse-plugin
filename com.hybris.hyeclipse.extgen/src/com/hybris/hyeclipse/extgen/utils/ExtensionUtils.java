@@ -52,6 +52,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
+import com.hybris.yps.hyeclipse.Activator;
 import com.hybris.yps.hyeclipse.ExtensionHolder;
 import com.hybris.yps.hyeclipse.extensionmods.ExtensionModuleTrimmer;
 import com.hybris.yps.hyeclipse.utils.FixProjectsUtils;
@@ -291,7 +292,7 @@ public class ExtensionUtils {
 							&& value.getNodeValue().equals("true");
 				}
 			} catch (SAXException | IOException | ParserConfigurationException e) {
-				e.printStackTrace();
+				Activator.logError("Failed to parse extensioninfo.xml for project " + extensionProject.getName() , e);
 			}
 
 		}
@@ -332,7 +333,7 @@ public class ExtensionUtils {
 				workingSets.add(workingSet);
 			}
 		} catch (ParserConfigurationException | SAXException | IOException | XPathExpressionException e) {
-			e.printStackTrace();
+			Activator.logError("Couldn't parse working sets file", e);
 		}
 		return workingSets;
 	}

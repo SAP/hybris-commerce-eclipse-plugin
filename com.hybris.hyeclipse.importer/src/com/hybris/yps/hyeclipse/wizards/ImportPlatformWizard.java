@@ -33,6 +33,7 @@ import org.eclipse.ui.services.ISourceProviderService;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
+import com.hybris.yps.hyeclipse.Activator;
 import com.hybris.yps.hyeclipse.CommandState;
 import com.hybris.yps.hyeclipse.utils.FixProjectsUtils;
 import com.hybris.yps.hyeclipse.utils.Importer;
@@ -153,6 +154,10 @@ public class ImportPlatformWizard extends Wizard implements IImportWizard
 		boolean autobuildEnabled = isAutoBuildEnabled();
 		enableAutoBuild( false );
 		final boolean removeExistingProjects = page1.isRemoveExistingProjects();
+		final boolean fixClasspath = page1.isFixClasspath();
+		final boolean removeHybrisBuilder = page1.isRemoveHybrisGenerator();
+		final boolean createWorkingSet = page1.isCreateWorkingSets();
+		
 		final File platformDir = page1.getPlatformDirectory();
 		
 		//Set platform home as workspace preference
@@ -196,7 +201,7 @@ public class ImportPlatformWizard extends Wizard implements IImportWizard
 						monitor.worked( progress );
 					}
 				}
-				importPlatform( monitor, projects, platformDir );
+				importPlatform( monitor, projects, platformDir, fixClasspath, removeHybrisBuilder, createWorkingSet);
 				// fix JRE settings to make it easier to run tests
 				fixRuntimeEnvironment( platformDir.getAbsolutePath() );
 				
@@ -215,6 +220,7 @@ public class ImportPlatformWizard extends Wizard implements IImportWizard
 		}
 		catch( InvocationTargetException | InterruptedException e )
 		{
+			Activator.logError("Failed to import the platform",e);
 			Throwable t = (e instanceof InvocationTargetException) ? e.getCause() : e;
 			MessageDialog.openError( this.page1.getControl().getShell(), "Error", t.toString() );
 			enableAutoBuild( autobuildEnabled );
@@ -246,14 +252,15 @@ public class ImportPlatformWizard extends Wizard implements IImportWizard
 		}
 	}
 
-	protected void importPlatform( IProgressMonitor monitor, List<IProject> projects, File platformDir ) throws InvocationTargetException
+	protected void importPlatform( IProgressMonitor monitor, List<IProject> projects, File platformDir , boolean fixClasspath, boolean removeHybrisGenerator, boolean createWorkingSets) throws InvocationTargetException
 	{
 		try
 		{
-			new Importer().resetProjectsFromLocalExtensions( platformDir, monitor );
+			new Importer().resetProjectsFromLocalExtensions( platformDir, monitor, fixClasspath, removeHybrisGenerator, createWorkingSets);
 		}
 		catch( CoreException e )
 		{
+			Activator.logError("Failed to import the platform",e);
 			throw new InvocationTargetException( e );
 		}
 	}
@@ -265,7 +272,10 @@ public class ImportPlatformWizard extends Wizard implements IImportWizard
 		IVMInstall javaInstall = null;
 		try
 		{
+			if(javaProject.isOpen())
+			{
 			javaInstall = JavaRuntime.getVMInstall( javaProject );
+		}
 		}
 		catch( CoreException e )
 		{
