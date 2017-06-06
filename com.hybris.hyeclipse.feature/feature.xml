@@ -2,7 +2,7 @@
 <feature
       id="com.hybris.hyeclipse.feature"
       label="SAP Hybris Commerce, development tools for Eclipse"
-      version="1.0.3.qualifier"
+      version="1.0.4.qualifier"
       provider-name="SAP Hybris Expert Services">
 
    <description url="https://wiki.hybris.com/display/hyps/SAP+Hybris+Commerce+development+tools+for+Eclipse">

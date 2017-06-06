@@ -5,41 +5,11 @@
 
 	<groupId>com.hybris.hyeclipse</groupId>
 	<artifactId>com.hybris.hyeclipse.parent</artifactId>
-	<version>1.0.3</version>
+	<version>1.0.4</version>
 	<packaging>pom</packaging>
 	<name>SAP Hybris Commerce, development tools for Eclipse (parent)</name>
 
 	<developers>
-		<developer>
-			<id>brendan.dobbs@hybris.com</id>
-			<name>Brendan Dobbs</name>
-			<email>brendan.dobbs@hybris.com</email>
-			<organization>hybris.com</organization>
-			<roles>
-				<role>Author</role>
-			</roles>
-			<timezone>+1</timezone>
-		</developer>
-		<developer>
-			<id>i305480</id>
-			<name>John Barrow</name>
-			<email>john.barrow@hybris.com</email>
-			<organization>hybris.com</organization>
-			<roles>
-				<role>Author</role>
-			</roles>
-			<timezone>+1</timezone>
-		</developer>
-		<developer>
-			<id>i303764</id>
-			<name>Pawel Wolanski</name>
-			<email>Pawel.Wolanski@hybris.com</email>
-			<organization>hybris.com</organization>
-			<roles>
-				<role>Author</role>
-			</roles>
-			<timezone>+1</timezone>
-		</developer>
 	</developers>
 	<contributors>
 	</contributors>

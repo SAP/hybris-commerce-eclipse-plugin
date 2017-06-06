@@ -6,13 +6,13 @@
   <parent>
     <artifactId>com.hybris.hyeclipse.parent</artifactId>
     <groupId>com.hybris.hyeclipse</groupId>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   
   <artifactId>com.hybris.hyeclipse.product</artifactId>
   <!-- Release version goes here. -->
-  <version>1.0.3-SNAPSHOT</version>
+  <version>1.0.4-SNAPSHOT</version>
   <packaging>eclipse-repository</packaging>
   <build>
 	<plugins>
