@@ -51,10 +51,6 @@ public class CopyrightUpdaterCleanUp implements ICleanUp {
 		if (options.isEnabled(CopyrightConstants.CLEANUP_ADD_COPYRIGHTS)) {
 			status = new RefactoringStatus();
 		}
-		if (options.isEnabled(CopyrightConstants.CLEANUP_ADD_COPYRIGHTS)
-				&& options.isEnabled(CopyrightConstants.CLEANUP_OVERRIDE_COPYRIGHTS)) {
-			status = new RefactoringStatus();
-		}
 		return new RefactoringStatus();
 	}
 
@@ -64,12 +60,13 @@ public class CopyrightUpdaterCleanUp implements ICleanUp {
 	@Override
 	public ICleanUpFix createFix(final CleanUpContext cleanUpCtx) throws CoreException {
 		final CompilationUnit compilationUnit = cleanUpCtx.getAST();
-		if (compilationUnit == null) {
-			return null;
+		ICleanUpFix fix = null;
+		if (compilationUnit != null) {
+			fix = CopyrightFix.createCleanUp(compilationUnit,
+					options.isEnabled(CopyrightConstants.CLEANUP_ADD_COPYRIGHTS),
+					options.isEnabled(CopyrightConstants.CLEANUP_OVERRIDE_COPYRIGHTS));
 		}
-		return CopyrightFix.createCleanUp(compilationUnit,
-				options.isEnabled(CopyrightConstants.CLEANUP_ADD_COPYRIGHTS),
-				options.isEnabled(CopyrightConstants.CLEANUP_OVERRIDE_COPYRIGHTS));
+		return fix;
 	}
 
 	/**
@@ -87,14 +84,15 @@ public class CopyrightUpdaterCleanUp implements ICleanUp {
 	 */
 	@Override
 	public String[] getStepDescriptions() {
+		String[] descriptions = null;
 		if (options.isEnabled(CopyrightConstants.CLEANUP_ADD_COPYRIGHTS)) {
 			if (options.isEnabled(CopyrightConstants.CLEANUP_OVERRIDE_COPYRIGHTS)) {
-				return new String[] { ADD_COPYRIGHTS_DESCRIPTION, OVERRIDE_COPYRIGHTS_DESCRIPTION };
+				descriptions = new String[] { ADD_COPYRIGHTS_DESCRIPTION, OVERRIDE_COPYRIGHTS_DESCRIPTION };
 			} else {
-				return new String[] { ADD_COPYRIGHTS_DESCRIPTION };
+				descriptions = new String[] { ADD_COPYRIGHTS_DESCRIPTION };
 			}
 		}
-		return null;
+		return descriptions;
 	}
 
 	/**

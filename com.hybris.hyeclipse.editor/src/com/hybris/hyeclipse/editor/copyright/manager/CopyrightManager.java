@@ -47,11 +47,11 @@ public class CopyrightManager {
 		final String lastLine = Activator.getDefault().getPreferenceStore()
 				.getString(CopyrightPreferenceConstants.COPYRIGHT_LAST_LINE);
 		final StringBuilder copyrightBuilder = new StringBuilder();
-		copyrightBuilder.append(firstLine + NEW_LINE_SEPARATOR);
+		copyrightBuilder.append(firstLine).append(NEW_LINE_SEPARATOR);
 		for (final String line : contents) {
-			copyrightBuilder.append(prefix + line + NEW_LINE_SEPARATOR);
+			copyrightBuilder.append(prefix).append(line).append(NEW_LINE_SEPARATOR);
 		}
-		copyrightBuilder.append(lastLine + NEW_LINE_SEPARATOR);
+		copyrightBuilder.append(lastLine).append(NEW_LINE_SEPARATOR);
 		return copyrightBuilder.toString();
 	}
 
@@ -101,13 +101,14 @@ public class CopyrightManager {
 	 */
 	public boolean hasCopyrightsComment(final CompilationUnit compilationUnit) {
 		final List<Comment> comments = getCommentList(compilationUnit);
-		if (comments.isEmpty()) {
-			return false;
+		boolean hasCopyrights = false;
+		if (!comments.isEmpty()) {
+			final PackageDeclaration packageNode = compilationUnit.getPackage();
+			final boolean commentBeforePackage = comments.get(0).getStartPosition() < packageNode.getStartPosition();
+			final boolean hasJavaDoc = packageNode.getJavadoc() != null;
+			hasCopyrights = commentBeforePackage || hasJavaDoc;
 		}
-		final PackageDeclaration packageNode = compilationUnit.getPackage();
-		final boolean commentBeforePackage = comments.get(0).getStartPosition() < packageNode.getStartPosition();
-		final boolean hasJavaDoc = packageNode.getJavadoc() != null;
-		return commentBeforePackage || hasJavaDoc;
+		return hasCopyrights;
 	}
 
 	/**
@@ -117,10 +118,9 @@ public class CopyrightManager {
 	 *            compilation unit to be analyzed
 	 * @return lists of comments
 	 */
+	@SuppressWarnings("unchecked")
 	private List<Comment> getCommentList(final CompilationUnit compilationUnit) {
-		@SuppressWarnings("unchecked")
-		final List<Comment> comments = compilationUnit.getCommentList();
-		return comments;
+		return compilationUnit.getCommentList();
 	}
 
 	/**
@@ -133,17 +133,17 @@ public class CopyrightManager {
 	 * @return new compilation unit's source
 	 */
 	private String getNewUnitSource(final ICompilationUnit unit, final Comment comment) {
+		String source = null;
 		try {
-			final String source = unit.getSource();
+			source = unit.getSource();
 			if (comment != null) {
 				final int endOfComment = comment.getLength();
-				return source.replace(source.substring(0, endOfComment + 1), getCopyrightText());
+				source = source.replace(source.substring(0, endOfComment + 1), getCopyrightText());
 			}
-			return source;
 		} catch (final JavaModelException e) {
 			ConsoleUtils.printError(e.getMessage());
 		}
-		return null;
+		return source;
 	}
 
 	/**

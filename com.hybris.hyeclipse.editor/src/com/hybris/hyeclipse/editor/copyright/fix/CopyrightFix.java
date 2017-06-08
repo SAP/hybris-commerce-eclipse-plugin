@@ -41,15 +41,15 @@ public class CopyrightFix implements ICleanUpFix {
 	 */
 	public static CopyrightFix createCleanUp(final CompilationUnit compilationUnit, final boolean enabled,
 			final boolean override) {
-		if (!enabled) {
-			return null;
+		CopyrightFix fix = null;
+		if (enabled) {
+			if (!copyrightManager.hasCopyrightsComment(compilationUnit)) {
+				fix = new CopyrightFix(copyrightManager.addCopyrightsHeader(compilationUnit));
+			} else if (override) {
+				fix = new CopyrightFix(copyrightManager.replaceCopyrightsHeader(compilationUnit));
+			}
 		}
-		if (!copyrightManager.hasCopyrightsComment(compilationUnit)) {
-			return new CopyrightFix(copyrightManager.addCopyrightsHeader(compilationUnit));
-		} else if (override) {
-			return new CopyrightFix(copyrightManager.replaceCopyrightsHeader(compilationUnit));
-		}
-		return null;
+		return fix;
 	}
 
 }

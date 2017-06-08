@@ -3,7 +3,7 @@ package com.hybris.hyeclipse.editor.preferences;
 /**
  * Class holding constants for copyright preference page
  */
-public class CopyrightPreferenceConstants {
+public final class CopyrightPreferenceConstants {
 
 	public static final String COPYRIGHT_CONTENT = "copyright_content";
 	public static final String COPYRIGHT_FIRST_LINE = "copyright_first_line";
