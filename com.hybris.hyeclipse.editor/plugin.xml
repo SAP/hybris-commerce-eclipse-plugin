@@ -19,16 +19,16 @@
 	
 	<extension
       point = "org.eclipse.ui.preferencePages">
-       <page id="com.hybris.hyeclipse.editor.preferences.EditorPreferencePage"
-	    	class="com.hybris.hyeclipse.editor.preferences.EditorPreferencePage"
+       <page id="com.hybris.hyeclipse.editor.preferences.CopyrightPreferencePage"
+	    	class="com.hybris.hyeclipse.editor.preferences.CopyrightPreferencePage"
         	category="com.hybris.yps.hyeclipse.preferences.HyEclipsePreferencePage"
-        	name="[y] Editor Preferences">
+        	name="[y] Copyright Preferences">
        </page>
    </extension>
    
    	<extension
 		point="org.eclipse.core.runtime.preferences">
 		<initializer
-			class="com.hybris.hyeclipse.editor.preferences.EditorPreferenceInitializer"/>
+			class="com.hybris.hyeclipse.editor.preferences.CopyrightPreferenceInitializer"/>
 	</extension>
 </plugin>

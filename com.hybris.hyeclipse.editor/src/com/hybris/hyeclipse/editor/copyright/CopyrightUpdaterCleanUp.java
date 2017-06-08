@@ -16,13 +16,19 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import com.hybris.hyeclipse.editor.copyright.constant.CopyrightConstants;
 import com.hybris.hyeclipse.editor.copyright.fix.CopyrightFix;
 
+/**
+ * Implementation of {@link ICleanUp} performing copyright clean up
+ */
 public class CopyrightUpdaterCleanUp implements ICleanUp {
 
-	private static final String UPDATE_COPYRIGHTS_DESCRIPTION = "Update Copyrights";
+	private static final String ADD_COPYRIGHTS_DESCRIPTION = "Add Copyrights";
 	private static final String OVERRIDE_COPYRIGHTS_DESCRIPTION = "Override existing copyrights";
 	private CleanUpOptions options;
 	private RefactoringStatus status;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public RefactoringStatus checkPostConditions(final IProgressMonitor monitor) throws CoreException {
 		try {
@@ -36,19 +42,25 @@ public class CopyrightUpdaterCleanUp implements ICleanUp {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public RefactoringStatus checkPreConditions(final IJavaProject project, final ICompilationUnit[] compliationUnits,
 			final IProgressMonitor monitor) throws CoreException {
-		if (options.isEnabled(CopyrightConstants.CLEANUP_UPDATE_COPYRIGHTS)) {
+		if (options.isEnabled(CopyrightConstants.CLEANUP_ADD_COPYRIGHTS)) {
 			status = new RefactoringStatus();
 		}
-		if (options.isEnabled(CopyrightConstants.CLEANUP_UPDATE_COPYRIGHTS)
+		if (options.isEnabled(CopyrightConstants.CLEANUP_ADD_COPYRIGHTS)
 				&& options.isEnabled(CopyrightConstants.CLEANUP_OVERRIDE_COPYRIGHTS)) {
 			status = new RefactoringStatus();
 		}
 		return new RefactoringStatus();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ICleanUpFix createFix(final CleanUpContext cleanUpCtx) throws CoreException {
 		final CompilationUnit compilationUnit = cleanUpCtx.getAST();
@@ -56,29 +68,38 @@ public class CopyrightUpdaterCleanUp implements ICleanUp {
 			return null;
 		}
 		return CopyrightFix.createCleanUp(compilationUnit,
-				options.isEnabled(CopyrightConstants.CLEANUP_UPDATE_COPYRIGHTS),
+				options.isEnabled(CopyrightConstants.CLEANUP_ADD_COPYRIGHTS),
 				options.isEnabled(CopyrightConstants.CLEANUP_OVERRIDE_COPYRIGHTS));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public CleanUpRequirements getRequirements() {
 		final boolean changedRegionsRequired = true;
-		final boolean isUpdateCopyrights = options.isEnabled(CopyrightConstants.CLEANUP_UPDATE_COPYRIGHTS);
+		final boolean isUpdateCopyrights = options.isEnabled(CopyrightConstants.CLEANUP_ADD_COPYRIGHTS);
 		return new CleanUpRequirements(isUpdateCopyrights, isUpdateCopyrights, changedRegionsRequired, null);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String[] getStepDescriptions() {
-		if (options.isEnabled(CopyrightConstants.CLEANUP_UPDATE_COPYRIGHTS)) {
+		if (options.isEnabled(CopyrightConstants.CLEANUP_ADD_COPYRIGHTS)) {
 			if (options.isEnabled(CopyrightConstants.CLEANUP_OVERRIDE_COPYRIGHTS)) {
-				return new String[] { UPDATE_COPYRIGHTS_DESCRIPTION, OVERRIDE_COPYRIGHTS_DESCRIPTION };
+				return new String[] { ADD_COPYRIGHTS_DESCRIPTION, OVERRIDE_COPYRIGHTS_DESCRIPTION };
 			} else {
-				return new String[] { UPDATE_COPYRIGHTS_DESCRIPTION };
+				return new String[] { ADD_COPYRIGHTS_DESCRIPTION };
 			}
 		}
 		return null;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setOptions(final CleanUpOptions options) {
 		Assert.isLegal(options != null);

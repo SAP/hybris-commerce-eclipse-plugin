@@ -17,9 +17,12 @@ import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
 
 import com.hybris.hyeclipse.editor.Activator;
-import com.hybris.hyeclipse.editor.preferences.EditorPreferenceConstants;
+import com.hybris.hyeclipse.editor.preferences.CopyrightPreferenceConstants;
 import com.hybris.hyeclipse.hac.utils.ConsoleUtils;
 
+/**
+ * Class handling Copyright operations
+ */
 public class CopyrightManager {
 
 	private static final String ADD_COPYRIGHT = "Add Copyright";
@@ -29,15 +32,20 @@ public class CopyrightManager {
 	private ASTRewrite rewriter;
 	private CompilationUnitChange change;
 
+	/**
+	 * Gets copyright text from preference page
+	 *
+	 * @return copyright text
+	 */
 	public String getCopyrightText() {
 		final String[] contents = Activator.getDefault().getPreferenceStore()
-				.getString(EditorPreferenceConstants.COPYRIGHT_CONTENT).split(NEW_LINE_SEPARATOR);
+				.getString(CopyrightPreferenceConstants.COPYRIGHT_CONTENT).split(NEW_LINE_SEPARATOR);
 		final String firstLine = Activator.getDefault().getPreferenceStore()
-				.getString(EditorPreferenceConstants.COPYRIGHT_FIRST_LINE);
+				.getString(CopyrightPreferenceConstants.COPYRIGHT_FIRST_LINE);
 		final String prefix = Activator.getDefault().getPreferenceStore()
-				.getString(EditorPreferenceConstants.COPYRIGHT_LINE_PREFIX);
+				.getString(CopyrightPreferenceConstants.COPYRIGHT_LINE_PREFIX);
 		final String lastLine = Activator.getDefault().getPreferenceStore()
-				.getString(EditorPreferenceConstants.COPYRIGHT_LAST_LINE);
+				.getString(CopyrightPreferenceConstants.COPYRIGHT_LAST_LINE);
 		final StringBuilder copyrightBuilder = new StringBuilder();
 		copyrightBuilder.append(firstLine + NEW_LINE_SEPARATOR);
 		for (final String line : contents) {
@@ -47,6 +55,13 @@ public class CopyrightManager {
 		return copyrightBuilder.toString();
 	}
 
+	/**
+	 * Adds copyright header to the compilation unit
+	 *
+	 * @param compilationUnit
+	 *            compilation unit affected
+	 * @return compilation unit change
+	 */
 	public CompilationUnitChange addCopyrightsHeader(final CompilationUnit compilationUnit) {
 		final ICompilationUnit unit = (ICompilationUnit) compilationUnit.getJavaElement();
 		change = new CompilationUnitChange(ADD_COPYRIGHT, unit);
@@ -60,6 +75,13 @@ public class CopyrightManager {
 		return change;
 	}
 
+	/**
+	 * Replaces copyright header to the compilation unit
+	 *
+	 * @param compilationUnit
+	 *            compilation unit affected
+	 * @return compilation unit change
+	 */
 	public CompilationUnitChange replaceCopyrightsHeader(final CompilationUnit compilationUnit) {
 		final ICompilationUnit unit = (ICompilationUnit) compilationUnit.getJavaElement();
 		change = new CompilationUnitChange(OVERRIDE_COPYRIGHT, unit);
@@ -70,6 +92,13 @@ public class CopyrightManager {
 		return change;
 	}
 
+	/**
+	 * Checks whether {@link CompilationUnit} has copyright header
+	 *
+	 * @param compilationUnit
+	 *            checked compilation unit
+	 * @return true if {@link CompilationUnit} has copyright header
+	 */
 	public boolean hasCopyrightsComment(final CompilationUnit compilationUnit) {
 		final List<Comment> comments = getCommentList(compilationUnit);
 		if (comments.isEmpty()) {
@@ -81,12 +110,28 @@ public class CopyrightManager {
 		return commentBeforePackage || hasJavaDoc;
 	}
 
+	/**
+	 * Returns list of {@link Comment}
+	 *
+	 * @param compilationUnit
+	 *            compilation unit to be analyzed
+	 * @return lists of comments
+	 */
 	private List<Comment> getCommentList(final CompilationUnit compilationUnit) {
 		@SuppressWarnings("unchecked")
 		final List<Comment> comments = compilationUnit.getCommentList();
 		return comments;
 	}
 
+	/**
+	 * Gets compilation unit's source
+	 *
+	 * @param unit
+	 *            affected compilation unit
+	 * @param comment
+	 *            comment to be replaced; set null if comment is not present
+	 * @return new compilation unit's source
+	 */
 	private String getNewUnitSource(final ICompilationUnit unit, final Comment comment) {
 		try {
 			final String source = unit.getSource();
@@ -101,6 +146,14 @@ public class CopyrightManager {
 		return null;
 	}
 
+	/**
+	 * Rewrites compilation unit with new source
+	 *
+	 * @param unit
+	 *            compilation unit to be rewritten
+	 * @param source
+	 *            new source of compilation unit
+	 */
 	private void rewriteCompilationUnit(final ICompilationUnit unit, final String source) {
 		try {
 			final TextEdit edits = rewriter.rewriteAST();

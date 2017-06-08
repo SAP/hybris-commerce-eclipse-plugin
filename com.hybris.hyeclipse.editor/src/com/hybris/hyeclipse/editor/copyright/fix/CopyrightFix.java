@@ -8,6 +8,9 @@ import org.eclipse.jdt.ui.cleanup.ICleanUpFix;
 
 import com.hybris.hyeclipse.editor.copyright.manager.CopyrightManager;
 
+/**
+ * Implementation of {@link ICleanUpFix} handling Copyright fixes
+ */
 public class CopyrightFix implements ICleanUpFix {
 
 	private final static CopyrightManager copyrightManager = new CopyrightManager();
@@ -17,11 +20,25 @@ public class CopyrightFix implements ICleanUpFix {
 		this.change = change;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public CompilationUnitChange createChange(final IProgressMonitor monitor) throws CoreException {
 		return change;
 	}
 
+	/**
+	 * Creates {@link CopyrightFix} according to preferences
+	 *
+	 * @param compilationUnit
+	 *            compilation unit for which fix is applied
+	 * @param enabled
+	 *            information if copyright fix is enabled
+	 * @param override
+	 *            information if copyrights should be overriden
+	 * @return copyright fix; null if fix was not applied
+	 */
 	public static CopyrightFix createCleanUp(final CompilationUnit compilationUnit, final boolean enabled,
 			final boolean override) {
 		if (!enabled) {
@@ -33,7 +50,6 @@ public class CopyrightFix implements ICleanUpFix {
 			return new CopyrightFix(copyrightManager.replaceCopyrightsHeader(compilationUnit));
 		}
 		return null;
-
 	}
 
 }

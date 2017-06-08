@@ -14,6 +14,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
+/**
+ * String editor allowing display of multiple lines
+ */
 public class MultiLineStringFieldEditor extends StringFieldEditor {
 	private static final String UNKNOWN_VALIDATE_STRATEGY = "Unknown validate strategy";
 	private Text textFieldML = null;
@@ -35,6 +38,9 @@ public class MultiLineStringFieldEditor extends StringFieldEditor {
 		this(name, labelText, UNLIMITED, parent);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setValidateStrategy(final int value) {
 		super.setValidateStrategy(value);
@@ -42,12 +48,18 @@ public class MultiLineStringFieldEditor extends StringFieldEditor {
 		validateStrategyML = value;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setTextLimit(final int limit) {
 		super.setTextLimit(limit);
 		textLimitML = limit;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Text getTextControl(final Composite parent) {
 		textFieldML = super.getTextControl();

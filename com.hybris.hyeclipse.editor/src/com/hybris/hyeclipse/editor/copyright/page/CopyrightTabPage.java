@@ -25,11 +25,14 @@ import org.eclipse.swt.widgets.Layout;
 import com.hybris.hyeclipse.editor.copyright.constant.CopyrightConstants;
 import com.hybris.hyeclipse.editor.copyright.manager.CopyrightManager;
 
+/**
+ * Implementation of {@link ICleanUpConfigurationUI} Save Actions tab with
+ * copyright options
+ */
 public class CopyrightTabPage implements ICleanUpConfigurationUI {
 	private static final int CLEANUP_COUNT = 2;
 	private static final double VERTICAL_SPACING_MULTIPLIER = 1.5;
-	private static final String COPYRIGHT_UPDATE = "Copyright Update";
-	private static final String UPDATE_THE_COPYRIGHTS = "Update the Copyrights";
+	private static final String ADD_COPYRIGHT = "Add Copyrights";
 	private static final String NO_COPYRIGHTS = "";
 	private static final String OVERRIDE_THE_COPYRIGHTS = "Override existing copyrights";
 	private PixelConverter pixelConverter;
@@ -40,6 +43,9 @@ public class CopyrightTabPage implements ICleanUpConfigurationUI {
 		super();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Composite createContents(final Composite parent) {
 		final int numColumns = 2;
@@ -119,11 +125,11 @@ public class CopyrightTabPage implements ICleanUpConfigurationUI {
 		final Group group = new Group(composite, SWT.NONE);
 		group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		group.setLayout(new GridLayout(1, false));
-		group.setText(COPYRIGHT_UPDATE);
+		group.setText(ADD_COPYRIGHT);
 		final Button updateCheckbox = new Button(group, SWT.CHECK);
 		updateCheckbox.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
-		updateCheckbox.setText(UPDATE_THE_COPYRIGHTS);
-		updateCheckbox.setSelection(options.isEnabled(CopyrightConstants.CLEANUP_UPDATE_COPYRIGHTS));
+		updateCheckbox.setText(ADD_COPYRIGHT);
+		updateCheckbox.setSelection(options.isEnabled(CopyrightConstants.CLEANUP_ADD_COPYRIGHTS));
 		final Button overrideCheckbox = new Button(group, SWT.CHECK);
 		overrideCheckbox.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
 		overrideCheckbox.setText(OVERRIDE_THE_COPYRIGHTS);
@@ -134,7 +140,7 @@ public class CopyrightTabPage implements ICleanUpConfigurationUI {
 		updateCheckbox.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
-				options.setOption(CopyrightConstants.CLEANUP_UPDATE_COPYRIGHTS,
+				options.setOption(CopyrightConstants.CLEANUP_ADD_COPYRIGHTS,
 						updateCheckbox.getSelection() ? CleanUpOptions.TRUE : CleanUpOptions.FALSE);
 				overrideCheckbox.setEnabled(updateCheckbox.getSelection());
 			}
@@ -148,15 +154,21 @@ public class CopyrightTabPage implements ICleanUpConfigurationUI {
 		});
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getCleanUpCount() {
 		return CLEANUP_COUNT;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getPreview() {
 		final StringBuffer buf = new StringBuffer();
-		if (options.isEnabled(CopyrightConstants.CLEANUP_UPDATE_COPYRIGHTS)) {
+		if (options.isEnabled(CopyrightConstants.CLEANUP_ADD_COPYRIGHTS)) {
 			buf.append(copyrightManager.getCopyrightText());
 		} else {
 			buf.append(NO_COPYRIGHTS);
@@ -164,10 +176,13 @@ public class CopyrightTabPage implements ICleanUpConfigurationUI {
 		return buf.toString();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getSelectedCleanUpCount() {
 		int optionsCount = 0;
-		if (options.isEnabled(CopyrightConstants.CLEANUP_UPDATE_COPYRIGHTS)) {
+		if (options.isEnabled(CopyrightConstants.CLEANUP_ADD_COPYRIGHTS)) {
 			optionsCount = 1;
 		}
 		if (options.isEnabled(CopyrightConstants.CLEANUP_OVERRIDE_COPYRIGHTS)) {
@@ -176,6 +191,9 @@ public class CopyrightTabPage implements ICleanUpConfigurationUI {
 		return optionsCount;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setOptions(final CleanUpOptions options) {
 		this.options = options;
@@ -197,6 +215,9 @@ public class CopyrightTabPage implements ICleanUpConfigurationUI {
 			fMinimalHight = minimalHight;
 		}
 
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public Point computeSize(final Composite composite, final int wHint, final int hHint, final boolean force) {
 			if (wHint != SWT.DEFAULT && hHint != SWT.DEFAULT) {
@@ -235,6 +256,9 @@ public class CopyrightTabPage implements ICleanUpConfigurationUI {
 			return new Point(x, y);
 		}
 
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public void layout(final Composite composite, final boolean force) {
 			final Rectangle rect = composite.getClientArea();
