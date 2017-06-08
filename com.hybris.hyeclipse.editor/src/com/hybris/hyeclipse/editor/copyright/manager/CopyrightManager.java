@@ -26,6 +26,9 @@ public class CopyrightManager {
 	private static final String OVERRIDE_COPYRIGHT = "Override Copyright";
 	private static final String NEW_LINE_SEPARATOR = "\n";
 
+	private ASTRewrite rewriter;
+	private CompilationUnitChange change;
+
 	public String getCopyrightText() {
 		final String[] contents = Activator.getDefault().getPreferenceStore()
 				.getString(EditorPreferenceConstants.COPYRIGHT_CONTENT).split(NEW_LINE_SEPARATOR);
@@ -46,52 +49,29 @@ public class CopyrightManager {
 
 	public CompilationUnitChange addCopyrightsHeader(final CompilationUnit compilationUnit) {
 		final ICompilationUnit unit = (ICompilationUnit) compilationUnit.getJavaElement();
-		final CompilationUnitChange change = new CompilationUnitChange(ADD_COPYRIGHT, unit);
-		final ASTRewrite rewriter = ASTRewrite.create(compilationUnit.getAST());
+		change = new CompilationUnitChange(ADD_COPYRIGHT, unit);
+		rewriter = ASTRewrite.create(compilationUnit.getAST());
 		final ListRewrite listRewrite = rewriter.getListRewrite(compilationUnit.getPackage(),
 				PackageDeclaration.ANNOTATIONS_PROPERTY);
 		final Comment placeHolder = (Comment) rewriter.createStringPlaceholder(getCopyrightText(),
 				ASTNode.BLOCK_COMMENT);
 		listRewrite.insertFirst(placeHolder, null);
-		try {
-			final TextEdit edits = rewriter.rewriteAST();
-			final Document document = new Document(unit.getSource());
-			edits.apply(document);
-			unit.getBuffer().setContents(document.get());
-			change.setEdit(edits);
-		} catch (final MalformedTreeException | JavaModelException | BadLocationException e) {
-			ConsoleUtils.printError(e.getMessage());
-		}
+		rewriteCompilationUnit(unit, getNewUnitSource(unit, null));
 		return change;
 	}
 
 	public CompilationUnitChange replaceCopyrightsHeader(final CompilationUnit compilationUnit) {
-		@SuppressWarnings("unchecked")
-		final List<Comment> comments = compilationUnit.getCommentList();
-		final Comment copyrightComment = comments.get(0);
 		final ICompilationUnit unit = (ICompilationUnit) compilationUnit.getJavaElement();
-		final CompilationUnitChange change = new CompilationUnitChange(OVERRIDE_COPYRIGHT, unit);
-		if (copyrightComment != null) {
-			final int endOfComment = copyrightComment.getLength();
-			try {
-				final ASTRewrite rewriter = ASTRewrite.create(compilationUnit.getAST());
-				final TextEdit edits = rewriter.rewriteAST();
-				final String source = unit.getSource();
-				final Document document = new Document(
-						source.replace(source.substring(0, endOfComment + 1), getCopyrightText()));
-				edits.apply(document);
-				unit.getBuffer().setContents(document.get());
-				change.setEdit(edits);
-			} catch (final JavaModelException | MalformedTreeException | BadLocationException e) {
-				ConsoleUtils.printError(e.getMessage());
-			}
-		}
+		change = new CompilationUnitChange(OVERRIDE_COPYRIGHT, unit);
+		rewriter = ASTRewrite.create(compilationUnit.getAST());
+		final List<Comment> comments = getCommentList(compilationUnit);
+		final Comment copyrightComment = comments.get(0);
+		rewriteCompilationUnit(unit, getNewUnitSource(unit, copyrightComment));
 		return change;
 	}
 
 	public boolean hasCopyrightsComment(final CompilationUnit compilationUnit) {
-		@SuppressWarnings("unchecked")
-		final List<Comment> comments = compilationUnit.getCommentList();
+		final List<Comment> comments = getCommentList(compilationUnit);
 		if (comments.isEmpty()) {
 			return false;
 		}
@@ -99,5 +79,37 @@ public class CopyrightManager {
 		final boolean commentBeforePackage = comments.get(0).getStartPosition() < packageNode.getStartPosition();
 		final boolean hasJavaDoc = packageNode.getJavadoc() != null;
 		return commentBeforePackage || hasJavaDoc;
+	}
+
+	private List<Comment> getCommentList(final CompilationUnit compilationUnit) {
+		@SuppressWarnings("unchecked")
+		final List<Comment> comments = compilationUnit.getCommentList();
+		return comments;
+	}
+
+	private String getNewUnitSource(final ICompilationUnit unit, final Comment comment) {
+		try {
+			final String source = unit.getSource();
+			if (comment != null) {
+				final int endOfComment = comment.getLength();
+				return source.replace(source.substring(0, endOfComment + 1), getCopyrightText());
+			}
+			return source;
+		} catch (final JavaModelException e) {
+			ConsoleUtils.printError(e.getMessage());
+		}
+		return null;
+	}
+
+	private void rewriteCompilationUnit(final ICompilationUnit unit, final String source) {
+		try {
+			final TextEdit edits = rewriter.rewriteAST();
+			final Document document = new Document(source);
+			edits.apply(document);
+			unit.getBuffer().setContents(document.get());
+			change.setEdit(edits);
+		} catch (final JavaModelException | MalformedTreeException | BadLocationException e) {
+			ConsoleUtils.printError(e.getMessage());
+		}
 	}
 }

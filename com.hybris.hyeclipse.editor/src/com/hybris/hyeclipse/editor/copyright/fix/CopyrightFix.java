@@ -27,7 +27,6 @@ public class CopyrightFix implements ICleanUpFix {
 		if (!enabled) {
 			return null;
 		}
-
 		if (!copyrightManager.hasCopyrightsComment(compilationUnit)) {
 			return new CopyrightFix(copyrightManager.addCopyrightsHeader(compilationUnit));
 		} else if (override) {
