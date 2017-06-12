@@ -39,10 +39,6 @@ public class CopyrightTabPage implements ICleanUpConfigurationUI {
 	private CleanUpOptions options;
 	private final CopyrightManager copyrightManager = new CopyrightManager();
 
-	public CopyrightTabPage() {
-		super();
-	}
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -62,7 +58,7 @@ public class CopyrightTabPage implements ICleanUpConfigurationUI {
 		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
 		scrollContainer.setLayoutData(gridData);
 
-		GridLayout layout = new GridLayout(2, false);
+		GridLayout layout = new GridLayout(numColumns, false);
 		layout.marginHeight = 0;
 		layout.marginWidth = 0;
 		layout.horizontalSpacing = 0;
@@ -167,13 +163,13 @@ public class CopyrightTabPage implements ICleanUpConfigurationUI {
 	 */
 	@Override
 	public String getPreview() {
-		final StringBuffer buf = new StringBuffer();
+		final StringBuilder builder = new StringBuilder();
 		if (options.isEnabled(CopyrightConstants.CLEANUP_ADD_COPYRIGHTS)) {
-			buf.append(copyrightManager.getCopyrightText());
+			builder.append(copyrightManager.getCopyrightText());
 		} else {
-			buf.append(NO_COPYRIGHTS);
+			builder.append(NO_COPYRIGHTS);
 		}
-		return buf.toString();
+		return builder.toString();
 	}
 
 	/**
@@ -227,8 +223,8 @@ public class CopyrightTabPage implements ICleanUpConfigurationUI {
 			int x = fMinimalWidth;
 			int y = fMinimalHight;
 			final Control[] children = composite.getChildren();
-			for (int i = 0; i < children.length; i++) {
-				final Point size = children[i].computeSize(SWT.DEFAULT, SWT.DEFAULT, force);
+			for (final Control child : children) {
+				final Point size = child.computeSize(SWT.DEFAULT, SWT.DEFAULT, force);
 				x = Math.max(x, size.x);
 				y = Math.max(y, size.y);
 			}

@@ -87,7 +87,10 @@ public class CopyrightManager {
 		change = new CompilationUnitChange(OVERRIDE_COPYRIGHT, unit);
 		rewriter = ASTRewrite.create(compilationUnit.getAST());
 		final List<Comment> comments = getCommentList(compilationUnit);
-		final Comment copyrightComment = comments.get(0);
+		Comment copyrightComment = null;
+		if (!comments.isEmpty()) {
+			copyrightComment = comments.get(0);
+		}
 		rewriteCompilationUnit(unit, getNewUnitSource(unit, copyrightComment));
 		return change;
 	}

@@ -19,9 +19,9 @@ public class CopyrightPreferencePage extends FieldEditorPreferencePage implement
 		static final String COPYRIGHT_FIRST_LINE = "First line: ";
 		static final String COPYRIGHT_LINE_PREFIX = "Line prefix: ";
 		static final String COPYRIGHT_LAST_LINE = "Last line: ";
+		static final String COPYRIGHT_PREFERENCES = "Copyright preferences";
 	}
 
-	private static final String COPYRIGHT_PREFERENCES = "Copyright preferences";
 	private StringFieldEditor copyrightContent;
 	private StringFieldEditor firstLine;
 	private StringFieldEditor linePrefix;
@@ -37,7 +37,7 @@ public class CopyrightPreferencePage extends FieldEditorPreferencePage implement
 	@Override
 	public void init(final IWorkbench arg0) {
 		setPreferenceStore(Activator.getDefault().getPreferenceStore());
-		setDescription(COPYRIGHT_PREFERENCES);
+		setDescription(LABELS.COPYRIGHT_PREFERENCES);
 	}
 
 	/**
@@ -47,8 +47,8 @@ public class CopyrightPreferencePage extends FieldEditorPreferencePage implement
 	protected void createFieldEditors() {
 		copyrightContent = new MultiLineStringFieldEditor(CopyrightPreferenceConstants.COPYRIGHT_CONTENT,
 				LABELS.COPYRIGHT_CONTENTS, getFieldEditorParent());
-		firstLine = new StringFieldEditor(CopyrightPreferenceConstants.COPYRIGHT_FIRST_LINE, LABELS.COPYRIGHT_FIRST_LINE,
-				FIELD_WIDTH, getFieldEditorParent());
+		firstLine = new StringFieldEditor(CopyrightPreferenceConstants.COPYRIGHT_FIRST_LINE,
+				LABELS.COPYRIGHT_FIRST_LINE, FIELD_WIDTH, getFieldEditorParent());
 		linePrefix = new StringFieldEditor(CopyrightPreferenceConstants.COPYRIGHT_LINE_PREFIX,
 				LABELS.COPYRIGHT_LINE_PREFIX, FIELD_WIDTH, getFieldEditorParent());
 		lastLine = new StringFieldEditor(CopyrightPreferenceConstants.COPYRIGHT_LAST_LINE, LABELS.COPYRIGHT_LAST_LINE,

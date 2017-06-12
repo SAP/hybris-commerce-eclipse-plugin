@@ -1,5 +1,8 @@
 package com.hybris.hyeclipse.editor.copyright;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -24,22 +27,13 @@ public class CopyrightUpdaterCleanUp implements ICleanUp {
 	private static final String ADD_COPYRIGHTS_DESCRIPTION = "Add Copyrights";
 	private static final String OVERRIDE_COPYRIGHTS_DESCRIPTION = "Override existing copyrights";
 	private CleanUpOptions options;
-	private RefactoringStatus status;
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public RefactoringStatus checkPostConditions(final IProgressMonitor monitor) throws CoreException {
-		try {
-			if (status == null || status.isOK()) {
-				return new RefactoringStatus();
-			} else {
-				return status;
-			}
-		} finally {
-			status = null;
-		}
+	public RefactoringStatus checkPostConditions(final IProgressMonitor monitor) {
+		return new RefactoringStatus();
 	}
 
 	/**
@@ -48,9 +42,6 @@ public class CopyrightUpdaterCleanUp implements ICleanUp {
 	@Override
 	public RefactoringStatus checkPreConditions(final IJavaProject project, final ICompilationUnit[] compliationUnits,
 			final IProgressMonitor monitor) throws CoreException {
-		if (options.isEnabled(CopyrightConstants.CLEANUP_ADD_COPYRIGHTS)) {
-			status = new RefactoringStatus();
-		}
 		return new RefactoringStatus();
 	}
 
@@ -84,15 +75,14 @@ public class CopyrightUpdaterCleanUp implements ICleanUp {
 	 */
 	@Override
 	public String[] getStepDescriptions() {
-		String[] descriptions = null;
+		final List<String> descriptions = new ArrayList<>();
 		if (options.isEnabled(CopyrightConstants.CLEANUP_ADD_COPYRIGHTS)) {
-			if (options.isEnabled(CopyrightConstants.CLEANUP_OVERRIDE_COPYRIGHTS)) {
-				descriptions = new String[] { ADD_COPYRIGHTS_DESCRIPTION, OVERRIDE_COPYRIGHTS_DESCRIPTION };
-			} else {
-				descriptions = new String[] { ADD_COPYRIGHTS_DESCRIPTION };
-			}
+			descriptions.add(ADD_COPYRIGHTS_DESCRIPTION);
 		}
-		return descriptions;
+		if (options.isEnabled(CopyrightConstants.CLEANUP_OVERRIDE_COPYRIGHTS)) {
+			descriptions.add(OVERRIDE_COPYRIGHTS_DESCRIPTION);
+		}
+		return descriptions.toArray(new String[descriptions.size()]);
 	}
 
 	/**
