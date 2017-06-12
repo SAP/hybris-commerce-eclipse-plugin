@@ -34,7 +34,7 @@ public class CopyrightTabPage implements ICleanUpConfigurationUI {
 	private static final double VERTICAL_SPACING_MULTIPLIER = 1.5;
 	private static final String ADD_COPYRIGHT = "Add Copyrights";
 	private static final String NO_COPYRIGHTS = "";
-	private static final String OVERRIDE_THE_COPYRIGHTS = "Override existing copyrights";
+	private static final String OVERRIDE_THE_COPYRIGHTS = "Override existing Copyrights";
 	private PixelConverter pixelConverter;
 	private CleanUpOptions options;
 	private final CopyrightManager copyrightManager = new CopyrightManager();
