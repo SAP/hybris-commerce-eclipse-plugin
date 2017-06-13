@@ -259,8 +259,8 @@ public class CopyrightTabPage implements ICleanUpConfigurationUI {
 		public void layout(final Composite composite, final boolean force) {
 			final Rectangle rect = composite.getClientArea();
 			final Control[] children = composite.getChildren();
-			for (int i = 0; i < children.length; i++) {
-				children[i].setSize(rect.width, rect.height);
+			for (final Control child : children) {
+				child.setSize(rect.width, rect.height);
 			}
 		}
 
