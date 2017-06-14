@@ -7,7 +7,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 
-import com.hybris.hyeclipse.hac.utils.PreferencesUtils;
+import com.hybris.hyeclipse.utils.PreferencesUtils;
 import com.hybris.hyeclipse.script.executor.Activator;
 
 /**

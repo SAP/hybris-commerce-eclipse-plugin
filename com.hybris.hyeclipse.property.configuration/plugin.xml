@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+	<extension
+         point="org.eclipse.core.expressions.propertyTesters">
+      <propertyTester
+            class="com.hybris.hyeclipse.property.configuration.testers.PropertyFileExtensionTester"
+            id="com.hybris.hyeclipse.property.configuration.PropertyFileExtensionTester"
+            namespace="com.hybris.hyeclipse.property.configuration"
+            properties="isItPropertyFile"
+            type="java.lang.Object">
+      </propertyTester>
+   </extension>
+   
+   
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            commandId="com.hybris.hyeclipse.property.configuration.getProperties"
+            class="com.hybris.hyeclipse.property.configuration.handlers.GetPropertiesHandler">
+      </handler>
+      <handler
+            commandId="com.hybris.hyeclipse.property.configuration.saveProperties"
+            class="com.hybris.hyeclipse.property.configuration.handlers.SavePropertyHandler">
+      </handler>
+      <handler
+            commandId="com.hybris.hyeclipse.property.configuration.removeProperties"
+            class="com.hybris.hyeclipse.property.configuration.handlers.RemovePropertyHandler">
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+         <menu
+               icon="icons/hybris.ico"
+               id="com.hybris.hyeclipse.properties.configuration.menu"
+               label="[y] Properties">
+            <command
+                  commandId="com.hybris.hyeclipse.property.configuration.saveProperties"
+                  label="Upload platform config"
+               		style="push" >
+            </command>
+            <command
+                  commandId="com.hybris.hyeclipse.property.configuration.removeProperties"
+                  label="Remove platform config"
+               		style="push" >
+            </command>
+            <command
+                  commandId="com.hybris.hyeclipse.property.configuration.getProperties"
+                  label="Print platform config to the console"
+               		style="push" >
+            </command>
+            <visibleWhen>
+                  <test forcePluginActivation="true"
+				    	property="com.hybris.hyeclipse.property.configuration.isItPropertyFile">
+             		</test>
+            </visibleWhen>
+         </menu>
+      </menuContribution>
+   </extension>
+      
+</plugin>

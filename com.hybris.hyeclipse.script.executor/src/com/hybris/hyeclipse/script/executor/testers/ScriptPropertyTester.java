@@ -6,10 +6,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.hybris.hyeclipse.hac.testers.AbstractFilePropertyTester;
-import com.hybris.hyeclipse.hac.utils.PreferencesUtils;
+import com.hybris.hyeclipse.utils.PreferencesUtils;
 import com.hybris.hyeclipse.script.executor.Activator;
 import com.hybris.hyeclipse.script.executor.preferences.HACScriptExecutionPreferenceConstants;
+import com.hybris.hyeclipse.testers.AbstractFilePropertyTester;
 
 /**
  * File property tester thats check whether the file extension is registered as
@@ -32,6 +32,7 @@ public class ScriptPropertyTester extends AbstractFilePropertyTester {
 	 * @param receiver
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	protected boolean testFileExtension(final Object receiver) {
 		Optional<Serializable> scriptPreferenceValue = PreferencesUtils.readObjectFromStore(
 				Activator.getDefault().getPreferenceStore(), HACScriptExecutionPreferenceConstants.P_SCRIPT_LANGUAGES);
