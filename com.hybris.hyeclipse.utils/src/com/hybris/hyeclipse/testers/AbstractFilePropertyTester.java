@@ -1,4 +1,4 @@
-package com.hybris.hyeclipse.hac.testers;
+package com.hybris.hyeclipse.testers;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -14,8 +14,6 @@ import org.eclipse.ui.PlatformUI;
 
 /**
  * Abstract property tester class, with method to test the file extension
- * 
- * TOBEIMPLEMENTED: Consider creating new plugin with utility classes. 
  */
 public abstract class AbstractFilePropertyTester extends PropertyTester {
 
@@ -37,6 +35,7 @@ public abstract class AbstractFilePropertyTester extends PropertyTester {
 	 * @param fileExtensions set of extensions to compare
 	 * @return true if selected file matches at least one extensions, false otherwise.
 	 */
+	@SuppressWarnings({"unchecked", "restriction"})
 	protected boolean testSelectedFileByExtensions(final Object receiver, final Set<String> fileExtensions) {
 		if (receiver instanceof Set) {
 			final Set<Object> set = (Set<Object>) receiver;
@@ -48,13 +47,20 @@ public abstract class AbstractFilePropertyTester extends PropertyTester {
 				return fileExtensions.contains(file.getFileExtension());
 			}
 		} else if (receiver instanceof List) {
+			boolean doesExtensionMatch = false;
 			final List<Object> list = (List<Object>) receiver;
-			
-			if (list.size() == 1 && list.get(0) instanceof File) {
-				final File file = (File) list.get(0);
-				
-				return fileExtensions.contains(file.getFileExtension());
+			for( Object directoryContent : list ) {
+				if( directoryContent instanceof File  ) {
+					final File file = (File) directoryContent;
+					doesExtensionMatch = true;
+					
+					if( !fileExtensions.contains(file.getFileExtension()) ) {
+						return false;
+					}
+				}
 			}
+
+			return doesExtensionMatch;
 		}
 		return false;
 	}
