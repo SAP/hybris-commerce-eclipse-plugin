@@ -81,7 +81,7 @@ public class ScriptExecutorManager extends AbstractHACCommunicationManager {
 		parameters.put(ScriptExecution.Parameters.COMMIT_NAME, commit.toString());
 		parameters.put(ScriptExecution.Parameters.CONTENT_NAME, EclipseFileUtils.getContentOfFile(scriptFile));
 
-		final String response = post(ScriptExecution.EXECUTE_URL, parameters);
+		final String response = sendAuthenticatedPostRequest(ScriptExecution.EXECUTE_URL, parameters);
 
 		displayScriptExecutionResult(response);
 		return response;

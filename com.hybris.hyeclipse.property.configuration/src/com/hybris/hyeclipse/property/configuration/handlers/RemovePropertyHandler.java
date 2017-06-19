@@ -1,6 +1,7 @@
 package com.hybris.hyeclipse.property.configuration.handlers;
 
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 
@@ -23,9 +24,9 @@ public class RemovePropertyHandler extends AbstractPropertyHandler {
 			final PropertyManager manager = new PropertyManager();
 
 			if(manager.checkHacHealth()) {
-				properties.entrySet().stream().forEach(
-							property -> manager.removeProperty(property.getKey())
-						);
+				properties.entrySet().stream()
+				.map(Entry::getKey)
+				.forEach(manager::removeProperty);
 			}
 		}
 	}

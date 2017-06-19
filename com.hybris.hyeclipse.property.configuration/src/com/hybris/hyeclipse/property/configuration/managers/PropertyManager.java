@@ -19,7 +19,7 @@ import com.hybris.hyeclipse.hac.manager.AbstractHACCommunicationManager;
 public class PropertyManager extends AbstractHACCommunicationManager {
 
 	/**
-	 * Property API constants 
+	 * Property API constants
 	 */
 	private interface PropertyApi {
 
@@ -41,34 +41,39 @@ public class PropertyManager extends AbstractHACCommunicationManager {
 			static final String PARAMETER_INPUT_CLASS = "configValue";
 		}
 	}
-	
+
 	static final String PROPERTY_NOT_FOUND = "Property not found";
 
 	/**
 	 * Get parameters from HAC and return it as a list.
+	 * 
 	 * @return list of HAC parameters
 	 */
 	public Map<String, String> getProperties() {
-		final String hacParametersPageHTML = get(PropertyApi.Urls.GET);
+		final String hacParametersPageHTML = sendAuthenticatedGetRequest(PropertyApi.Urls.GET);
 		final Document htmlDocument = Jsoup.parse(hacParametersPageHTML);
 		final Elements elements = htmlDocument.getElementsByClass(PropertyApi.HTML.PARAMETER_INPUT_CLASS);
 
-		Map<String, String> hacParameters = elements.stream().collect(Collectors
-				.toMap((Element element) -> element.attr(PropertyApi.HTML.PARAMETER_NAME_ATTR_NAME), (Element element) -> element.attr(		PropertyApi.HTML.PARAMETER_VALUE_ATTR_NAME)));
+		Map<String, String> hacParameters = elements.stream()
+		                .collect(Collectors.toMap(
+		                                (Element element) -> element.attr(PropertyApi.HTML.PARAMETER_NAME_ATTR_NAME),
+		                                (Element element) -> element.attr(PropertyApi.HTML.PARAMETER_VALUE_ATTR_NAME)));
 
 		return hacParameters;
 	}
-	
+
 	/**
 	 * Get parameter value from platform
 	 * 
-	 * @param propertyName name of parameter to get
+	 * @param propertyName
+	 *            name of parameter to get
 	 * @return parameter value if present, {@link #PROPERTY_NOT_FOUND} otherwise
 	 */
 	public String getPropertyValue(final String propertyName) {
-		final Optional<Entry<String, String>> propertyValue = getProperties().entrySet().stream().filter( property -> property.getKey().equals(propertyName) ).findFirst();
-		
-		if( propertyValue.isPresent() ) {
+		final Optional<Entry<String, String>> propertyValue = getProperties().entrySet().stream()
+		                .filter(property -> property.getKey().equals(propertyName)).findFirst();
+
+		if (propertyValue.isPresent()) {
 			return propertyValue.get().getValue();
 		} else {
 			return PROPERTY_NOT_FOUND;
@@ -76,29 +81,33 @@ public class PropertyManager extends AbstractHACCommunicationManager {
 	}
 
 	/**
-	 * Save parameter to the platform 
+	 * Save parameter to the platform
 	 * 
-	 * @param propertyName parameter name to add
-	 * @param propertyValue parameter value to add
+	 * @param propertyName
+	 *            parameter name to add
+	 * @param propertyValue
+	 *            parameter value to add
 	 */
 	public void saveProperty(final String propertyName, final String propertyValue) {
 		final Map<String, String> parameters = new HashMap<>();
-		
+
 		parameters.put(PropertyApi.Parameters.KEY, propertyName);
 		parameters.put(PropertyApi.Parameters.VALUE, propertyValue);
-		
-		post(PropertyApi.Urls.SAVE, parameters);
-		post(PropertyApi.Urls.STORE, parameters);
+
+		sendAuthenticatedPostRequest(PropertyApi.Urls.SAVE, parameters);
+		sendAuthenticatedPostRequest(PropertyApi.Urls.STORE, parameters);
 	}
 
 	/**
 	 * Removes property property from platform via HAC
-	 * @param propertyName property name to remove
+	 * 
+	 * @param propertyName
+	 *            property name to remove
 	 */
 	public void removeProperty(final String propertyName) {
 		final Map<String, String> parameters = new HashMap<>();
-		
+
 		parameters.put(PropertyApi.Parameters.KEY, propertyName);
-		post(PropertyApi.Urls.REMOVE, parameters);
+		sendAuthenticatedPostRequest(PropertyApi.Urls.REMOVE, parameters);
 	}
 }

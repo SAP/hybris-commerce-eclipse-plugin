@@ -8,13 +8,13 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.jsoup.helper.StringUtil;
 import com.hybris.hyeclipse.utils.Constatns;
 import com.hybris.hyeclipse.utils.EclipseFileUtils;
 
@@ -27,7 +27,7 @@ public abstract class AbstractPropertyHandler extends AbstractHandler {
 	 * Active shell
 	 */
 	private Shell activeShell;
-	
+
 	/**
 	 * Pattern to match property string (key=value)
 	 */
@@ -35,7 +35,7 @@ public abstract class AbstractPropertyHandler extends AbstractHandler {
 
 	private static final String ERROR_DIALOG_TITLE = "Invalid property";
 	private static final String INVALID_PROPERTY = "Error ocurred due to following lines: " + Constatns.NEW_LINE;
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -43,20 +43,14 @@ public abstract class AbstractPropertyHandler extends AbstractHandler {
 		final String selectedText = EclipseFileUtils.getSelectedFileText();
 
 		setActiveShell(HandlerUtil.getActiveShell(event));
-		if (StringUtil.isBlank(selectedText)) {
-			execute(extractPropertiesFromString(EclipseFileUtils
-					.getContentOfFiles(
-							EclipseFileUtils.getSelectedFiles(
-									HandlerUtil.getCurrentSelection(event)
-									)
-							)
-					)
-					);
+		if (StringUtils.isBlank(selectedText)) {
+			execute(extractPropertiesFromString(EclipseFileUtils.getContentOfFiles(
+			                EclipseFileUtils.getSelectedFiles(HandlerUtil.getCurrentSelection(event)))));
 		} else {
 			execute(extractPropertiesFromString(selectedText));
 		}
-		
-		return null; 
+
+		return null;
 	}
 
 	/**
@@ -72,29 +66,22 @@ public abstract class AbstractPropertyHandler extends AbstractHandler {
 	 * @return true if all properties are valid, false otherwise
 	 */
 	protected boolean validate(final List<String> properties) {
-		boolean isValid = true;
 		final List<String> invalidProperties = new ArrayList<String>();
 
-		for (final String property : properties) {
-			if (!StringUtil.isBlank(property) && !propertyPattern.matcher(property).find()) {
-				isValid = false;
+		properties.stream().filter(StringUtils::isNotBlank)
+		                .filter(property -> !propertyPattern.matcher(property).find())
+		                .forEach(property -> invalidProperties.add(property));
+		
 
-				invalidProperties.add(property);
-			}
-		}
-
-		if( !isValid ) {
+		if (!invalidProperties.isEmpty()) {
 			final StringBuilder errorMessageBuilder = new StringBuilder(INVALID_PROPERTY);
 			invalidProperties.forEach(
-					invalidProperty -> errorMessageBuilder
-						.append(invalidProperty)
-						.append(Constatns.NEW_LINE)
-						);
-			
+			                invalidProperty -> errorMessageBuilder.append(invalidProperty).append(Constatns.NEW_LINE));
+
 			MessageDialog.openError(getActiveShell(), ERROR_DIALOG_TITLE, errorMessageBuilder.toString());
 		}
 
-		return isValid;
+		return !invalidProperties.isEmpty();
 	}
 
 	/**
@@ -106,14 +93,13 @@ public abstract class AbstractPropertyHandler extends AbstractHandler {
 	 */
 	protected Map<String, String> extractPropertiesFromString(final String propertiesString) {
 		final List<String> propertiesList = Arrays.asList(propertiesString.split(Constatns.NEW_LINE)).stream()
-				.filter(item -> !StringUtil.isBlank(item)).collect(Collectors.toList());
+		                .filter(StringUtils::isNoneBlank).collect(Collectors.toList());
 
 		final Map<String, String> propertiesMap = new HashMap<>();
 		if (validate(propertiesList)) {
-			for( final String property : propertiesList ) {
-				final String[] keyValueArray = property.split(Constatns.EQUALS_CHARCTER);
-				propertiesMap.put(keyValueArray[0], keyValueArray[1]);
-			}
+			propertiesList.stream()
+			.map(property -> property.split(Constatns.EQUALS_CHARCTER))
+			.forEach(keyValueArray -> propertiesMap.put(keyValueArray[0], keyValueArray[1]));
 		}
 
 		return propertiesMap;

@@ -19,9 +19,11 @@ public class GetPropertiesHandler extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		final PropertyManager propertyManager = new PropertyManager();
-		
-		propertyManager.getProperties().entrySet().stream().forEach(property -> ConsoleUtils
-				.printMessage(property.getKey() + Constatns.EQUALS_CHARCTER + property.getValue()));
+
+		propertyManager.getProperties().entrySet().stream()
+		                .map(property -> property.getKey() + Constatns.EQUALS_CHARCTER + property.getValue())
+		                .forEach(ConsoleUtils::printMessage);
+
 		return null;
 	}
 

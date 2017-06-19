@@ -136,7 +136,7 @@ public abstract class AbstractHACCommunicationManager {
 	 * @return true if HAC is online, false otherwise
 	 */
 	public boolean checkHacHealth() {
-		final String response = get(Constatns.EMPTY_STRING);
+		final String response = sendAuthenticatedGetRequest(Constatns.EMPTY_STRING);
 		return !StringUtil.isBlank(response);
 	}
 
@@ -356,7 +356,7 @@ public abstract class AbstractHACCommunicationManager {
 	 *            map of parameters that will be attached to the request
 	 * @return response of the request
 	 */
-	protected String post(final String url, final Map<String, String> parameters) {
+	protected String sendAuthenticatedPostRequest(final String url, final Map<String, String> parameters) {
 		String response = null;
 		updateLoginVariables();
 
@@ -383,7 +383,7 @@ public abstract class AbstractHACCommunicationManager {
 	 *            suffix to the {@link #getEndpointUrl()}
 	 * @return response of the request
 	 */
-	protected String get(final String url) {
+	protected String sendAuthenticatedGetRequest(final String url) {
 		String response = null;
 		updateLoginVariables();
 

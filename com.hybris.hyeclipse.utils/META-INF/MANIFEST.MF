@@ -22,6 +22,20 @@ Export-Package: com.hybris.hyeclipse.testers,
  org.apache.commons.io.input,
  org.apache.commons.io.monitor,
  org.apache.commons.io.output,
- org.apache.commons.io.serialization
+ org.apache.commons.io.serialization,
+ org.apache.commons.lang3,
+ org.apache.commons.lang3.arch,
+ org.apache.commons.lang3.builder,
+ org.apache.commons.lang3.concurrent,
+ org.apache.commons.lang3.event,
+ org.apache.commons.lang3.exception,
+ org.apache.commons.lang3.math,
+ org.apache.commons.lang3.mutable,
+ org.apache.commons.lang3.reflect,
+ org.apache.commons.lang3.text,
+ org.apache.commons.lang3.text.translate,
+ org.apache.commons.lang3.time,
+ org.apache.commons.lang3.tuple
 Bundle-ClassPath: lib/commons-io-2.5.jar,
- .
+ .,
+ lib/commons-lang3-3.6.jar

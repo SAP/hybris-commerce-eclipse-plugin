@@ -26,7 +26,8 @@ public final class EclipseFileUtils {
 	/**
 	 * Private in order to avoid class initialization
 	 */
-	private EclipseFileUtils() {/* Intentionally empty */ }
+	private EclipseFileUtils() {
+		/* Intentionally empty */ }
 
 	/**
 	 * Returns selected file
@@ -44,7 +45,7 @@ public final class EclipseFileUtils {
 		} else if (selection instanceof TextSelection) {
 			final IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 			final IFile file = (IFile) window.getActivePage().getActiveEditor().getEditorInput()
-					.getAdapter(IFile.class);
+			                .getAdapter(IFile.class);
 			return file;
 		}
 		return null;
@@ -53,17 +54,18 @@ public final class EclipseFileUtils {
 	/**
 	 * Return set of selected file(s)
 	 * 
-	 * @param selection current selection
-	 * @return set of selected files 
+	 * @param selection
+	 *            current selection
+	 * @return set of selected files
 	 */
+	@SuppressWarnings("unchecked")
 	public static Set<IFile> getSelectedFiles(final ISelection selection) {
 		final Set<IFile> files = new HashSet<>();
 
 		if (selection instanceof IStructuredSelection) {
 			final IStructuredSelection structuredSelection = (IStructuredSelection) selection;
-			for (Object file : structuredSelection.toList()) {
-				files.add((IFile) Platform.getAdapterManager().getAdapter(file, IFile.class));
-			}
+			structuredSelection.toList().forEach(
+			                file -> files.add((IFile) Platform.getAdapterManager().getAdapter(file, IFile.class)));
 		} else if (selection instanceof TextSelection) {
 			final IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 			files.add((IFile) window.getActivePage().getActiveEditor().getEditorInput().getAdapter(IFile.class));
@@ -80,7 +82,7 @@ public final class EclipseFileUtils {
 	 */
 	public static String getSelectedFileText() {
 		final IEditorPart editorPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-				.getActiveEditor();
+		                .getActiveEditor();
 
 		if (editorPart instanceof ITextEditor) {
 			final ITextEditor editor = (ITextEditor) editorPart;
@@ -97,19 +99,18 @@ public final class EclipseFileUtils {
 	/**
 	 * Return content of multiple files as a String. Adds new line to the end of each file.
 	 * 
-	 * @param Set of files
+	 * @param Set
+	 *            of files
 	 * @return content of multiple files as a String
 	 */
 	public static String getContentOfFiles(final Set<IFile> files) {
 		final StringBuilder filesContent = new StringBuilder();
-		
-		for( IFile file : files ) {
-			filesContent.append(getContentOfFile(file)).append(Constatns.NEW_LINE);
-		}
-		
+
+		files.forEach(file -> filesContent.append(getContentOfFile(file)).append(Constatns.NEW_LINE));
+
 		return filesContent.toString();
 	}
-	
+
 	/**
 	 * Returns the content of file as {@link String}
 	 *

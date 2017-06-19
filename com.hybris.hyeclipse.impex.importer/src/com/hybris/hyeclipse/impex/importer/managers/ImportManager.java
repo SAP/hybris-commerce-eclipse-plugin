@@ -69,7 +69,7 @@ public class ImportManager extends AbstractHACCommunicationManager {
 		parameters.put(ImpexImport.Parameters.MAX_THREADS, ImpexImport.Parameters.MAX_THREADS_VALUE);
 		parameters.put(ImpexImport.Parameters.VALIDATION_ENUM, ImpexImport.Parameters.VALIDATION_ENUM_VALUE);
 		
-		return getImportStatus(post(ImpexImport.IMPEX_IMPORT_PATH, parameters));
+		return getImportStatus(sendAuthenticatedPostRequest(ImpexImport.IMPEX_IMPORT_PATH, parameters));
 	}
 
 	/**
