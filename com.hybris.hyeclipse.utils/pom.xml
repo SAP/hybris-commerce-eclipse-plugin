@@ -13,7 +13,7 @@
 	<artifactId>com.hybris.hyeclipse.utils</artifactId>
 	<packaging>eclipse-plugin</packaging>
 	<name>SAP Hybris Commerce, development tools for Eclipse utility (plugin)</name>
-	<description>HAC communication library</description>
+	<description>Utility classes for hybris plugins</description>
 	<version>1.0.4-SNAPSHOT</version>
 	<organization>
 		<url>https://wiki.hybris.com/display/hyps</url>

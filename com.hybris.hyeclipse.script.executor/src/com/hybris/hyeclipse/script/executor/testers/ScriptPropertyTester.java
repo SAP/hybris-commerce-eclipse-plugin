@@ -43,7 +43,7 @@ public class ScriptPropertyTester extends AbstractFilePropertyTester {
 
 		
 		if( scriptPreferenceValue.isPresent() ) {
-			return testSelectedFileByExtensions(receiver, scriptsExtensions);
+			return testSelectedFilesByExtensions(receiver, scriptsExtensions);
 		}
 		
 		return false;

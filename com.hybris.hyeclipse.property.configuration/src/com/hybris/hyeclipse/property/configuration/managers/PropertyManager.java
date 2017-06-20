@@ -45,28 +45,28 @@ public class PropertyManager extends AbstractHACCommunicationManager {
 	static final String PROPERTY_NOT_FOUND = "Property not found";
 
 	/**
-	 * Get parameters from HAC and return it as a list.
+	 * Get properties from HAC and return it as a list.
 	 * 
-	 * @return list of HAC parameters
+	 * @return list of HAC properties
 	 */
 	public Map<String, String> getProperties() {
 		final String hacParametersPageHTML = sendAuthenticatedGetRequest(PropertyApi.Urls.GET);
 		final Document htmlDocument = Jsoup.parse(hacParametersPageHTML);
 		final Elements elements = htmlDocument.getElementsByClass(PropertyApi.HTML.PARAMETER_INPUT_CLASS);
 
-		Map<String, String> hacParameters = elements.stream()
+		Map<String, String> propertiesMap = elements.stream()
 		                .collect(Collectors.toMap(
 		                                (Element element) -> element.attr(PropertyApi.HTML.PARAMETER_NAME_ATTR_NAME),
 		                                (Element element) -> element.attr(PropertyApi.HTML.PARAMETER_VALUE_ATTR_NAME)));
 
-		return hacParameters;
+		return propertiesMap;
 	}
 
 	/**
-	 * Get parameter value from platform
+	 * Get property value from platform
 	 * 
 	 * @param propertyName
-	 *            name of parameter to get
+	 *            name of property to get
 	 * @return parameter value if present, {@link #PROPERTY_NOT_FOUND} otherwise
 	 */
 	public String getPropertyValue(final String propertyName) {

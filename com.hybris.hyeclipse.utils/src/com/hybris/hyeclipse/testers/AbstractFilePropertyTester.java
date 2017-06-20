@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.eclipse.core.expressions.PropertyTester;
 import org.eclipse.core.internal.resources.File;
@@ -25,18 +26,20 @@ public abstract class AbstractFilePropertyTester extends PropertyTester {
 	 * @return true if selected file matches at extension, false otherwise.
 	 */
 	protected boolean testSelectedFileByExtension(final Object receiver, final String fileExtension) {
-		return testSelectedFileByExtensions(receiver, new HashSet<>( Arrays.asList(fileExtension) ));
+		return testSelectedFilesByExtensions(receiver, new HashSet<>( Arrays.asList(fileExtension) ));
 	}
 	
 	/**
-	 * Check whether selected file matches set of extensions 
+	 * Check whether selected file(s) matches set of extensions 
 	 * 
-	 * @param receiver selected file
+	 * @param receiver selected file(s)
 	 * @param fileExtensions set of extensions to compare
-	 * @return true if selected file matches at least one extensions, false otherwise.
+	 * @return true if selected file(s) matches at least one extensions, false otherwise.
 	 */
 	@SuppressWarnings({"unchecked", "restriction"})
-	protected boolean testSelectedFileByExtensions(final Object receiver, final Set<String> fileExtensions) {
+	protected boolean testSelectedFilesByExtensions(final Object receiver, final Set<String> fileExtensions) {
+		boolean isValid = false;
+		
 		if (receiver instanceof Set) {
 			final Set<Object> set = (Set<Object>) receiver;
 			
@@ -44,24 +47,22 @@ public abstract class AbstractFilePropertyTester extends PropertyTester {
 				final IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 				final IFile file = (IFile) window.getActivePage().getActiveEditor().getEditorInput().getAdapter(IFile.class);
 				
-				return fileExtensions.contains(file.getFileExtension());
+				isValid = fileExtensions.contains(file.getFileExtension());
 			}
 		} else if (receiver instanceof List) {
-			boolean doesExtensionMatch = false;
 			final List<Object> list = (List<Object>) receiver;
 			for( Object directoryContent : list ) {
 				if( directoryContent instanceof File  ) {
 					final File file = (File) directoryContent;
-					doesExtensionMatch = true;
 					
 					if( !fileExtensions.contains(file.getFileExtension()) ) {
-						return false;
+						isValid = false;
+						break;
 					}
 				}
 			}
 
-			return doesExtensionMatch;
 		}
-		return false;
+		return isValid;
 	}
 }
