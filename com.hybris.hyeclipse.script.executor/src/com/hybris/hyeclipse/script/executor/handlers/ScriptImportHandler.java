@@ -6,7 +6,7 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-import com.hybris.hyeclipse.utils.EclipseFileUtils;
+import com.hybris.hyeclipse.commons.utils.EclipseFileUtils;
 import com.hybris.hyeclipse.script.executor.managers.ScriptExecutorManager;
 
 /**

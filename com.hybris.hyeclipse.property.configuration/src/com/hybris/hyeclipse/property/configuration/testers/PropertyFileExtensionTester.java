@@ -1,6 +1,6 @@
 package com.hybris.hyeclipse.property.configuration.testers;
 
-import com.hybris.hyeclipse.testers.AbstractFilePropertyTester;
+import com.hybris.hyeclipse.commons.testers.AbstractFilePropertyTester;
 
 /**
  * Test whether the file has {@link PropertyFileExtensionTester#PROPERTY_FILE_EXTENSION} extension.

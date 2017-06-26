@@ -13,7 +13,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.expressions,
  org.eclipse.ui.console,
  com.hybris.hyeclipse.hac,
- com.hybris.hyeclipse.utils
+ com.hybris.hyeclipse.commons
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .

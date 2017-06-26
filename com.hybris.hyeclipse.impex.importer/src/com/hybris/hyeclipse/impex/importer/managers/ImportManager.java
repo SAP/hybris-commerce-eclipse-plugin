@@ -7,9 +7,9 @@ import org.eclipse.core.resources.IFile;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import com.hybris.hyeclipse.commons.utils.ConsoleUtils;
+import com.hybris.hyeclipse.commons.utils.EclipseFileUtils;
 import com.hybris.hyeclipse.hac.manager.AbstractHACCommunicationManager;
-import com.hybris.hyeclipse.utils.ConsoleUtils;
-import com.hybris.hyeclipse.utils.EclipseFileUtils;
 
 /**
  * Class responsible for handling the connections to the {@link #getEndpointUrl()} and importing impex file. 

@@ -10,10 +10,10 @@
 		<version>1.0.4</version>
 	</parent>
 
-	<artifactId>com.hybris.hyeclipse.utils</artifactId>
+	<artifactId>com.hybris.hyeclipse.commons</artifactId>
 	<packaging>eclipse-plugin</packaging>
-	<name>SAP Hybris Commerce, development tools for Eclipse utility (plugin)</name>
-	<description>Utility classes for hybris plugins</description>
+	<name>SAP Hybris Commerce, common classes for hybris's eclipse plugin</name>
+	<description>Common classes for plugin decelopment</description>
 	<version>1.0.4-SNAPSHOT</version>
 	<organization>
 		<url>https://wiki.hybris.com/display/hyps</url>

@@ -1,9 +1,8 @@
-package com.hybris.hyeclipse.utils;
+package com.hybris.hyeclipse.commons.utils;
 
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
@@ -37,18 +36,18 @@ public final class EclipseFileUtils {
 	 * @return selected {@link IFile}
 	 */
 	public static IFile getSelectedFile(final ISelection selection) {
+		IFile file = null;
+		
 		if (selection instanceof IStructuredSelection) {
 			final IStructuredSelection ssel = (IStructuredSelection) selection;
 			final Object obj = ssel.getFirstElement();
-			final IFile file = (IFile) Platform.getAdapterManager().getAdapter(obj, IFile.class);
-			return file;
+			file = (IFile) Platform.getAdapterManager().getAdapter(obj, IFile.class);
 		} else if (selection instanceof TextSelection) {
 			final IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-			final IFile file = (IFile) window.getActivePage().getActiveEditor().getEditorInput()
+			file = (IFile) window.getActivePage().getActiveEditor().getEditorInput()
 			                .getAdapter(IFile.class);
-			return file;
 		}
-		return null;
+		return file;
 	}
 
 	/**
@@ -76,26 +75,36 @@ public final class EclipseFileUtils {
 	}
 
 	/**
-	 * Returns selected text in file
-	 * 
-	 * @return selected text in file
+	 * Returns optional of current text selection
+	 *  
+	 * @return optional of current text selection
 	 */
-	public static String getSelectedFileText() {
+	public static Optional<TextSelection> getCurrentTextSelection() {
+		Optional<TextSelection> currentTextSelection = Optional.empty();
 		final IEditorPart editorPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
 		                .getActiveEditor();
-
-		if (editorPart instanceof ITextEditor) {
+		
+		if ( editorPart != null && editorPart instanceof ITextEditor) {
 			final ITextEditor editor = (ITextEditor) editorPart;
 			final ISelection selection = editor.getSelectionProvider().getSelection();
 			if (selection instanceof TextSelection) {
-				final TextSelection selectedText = (TextSelection) selection;
-				return selectedText.getText();
+				currentTextSelection = Optional.of((TextSelection) selection);
 			}
 		}
-
-		return Constatns.EMPTY_STRING;
+		
+		return currentTextSelection;
 	}
 
+	/**
+	 * Returns selected text in file
+	 * 
+	 * @return selected text in file, if none is selected empty string will be returned
+	 */
+	public static String getCurrentSelectedText() {
+		final Optional<TextSelection> currentTextSelection = getCurrentTextSelection();
+		return (currentTextSelection.isPresent()) ? currentTextSelection.get().getText() : Constants.EMPTY_STRING;
+	}
+	
 	/**
 	 * Return content of multiple files as a String. Adds new line to the end of each file.
 	 * 
@@ -106,7 +115,7 @@ public final class EclipseFileUtils {
 	public static String getContentOfFiles(final Set<IFile> files) {
 		final StringBuilder filesContent = new StringBuilder();
 
-		files.forEach(file -> filesContent.append(getContentOfFile(file)).append(Constatns.NEW_LINE));
+		files.forEach(file -> filesContent.append(getContentOfFile(file)).append(Constants.NEW_LINE));
 
 		return filesContent.toString();
 	}
@@ -120,10 +129,10 @@ public final class EclipseFileUtils {
 	 */
 	public static String getContentOfFile(final IFile file) {
 		try {
-			return IOUtils.toString(file.getContents(), Constatns.UTF_8_ENCODING);
+			return IOUtils.toString(file.getContents(), Constants.UTF_8_ENCODING);
 		} catch (CoreException | IOException e) {
 			ConsoleUtils.printError(e.getMessage());
 		}
-		return Constatns.EMPTY_STRING;
+		return Constants.EMPTY_STRING;
 	}
 }

@@ -1,9 +1,9 @@
-package com.hybris.hyeclipse.utils;
+package com.hybris.hyeclipse.commons.utils;
 
 /**
- * Useful common constants
+ * Useful common Constants
  */
-public interface Constatns {
+public interface Constants {
 	static final String NEW_LINE = "\n";
 	static final String EMPTY_STRING = "";
 	static final String EQUALS_CHARCTER = "=";

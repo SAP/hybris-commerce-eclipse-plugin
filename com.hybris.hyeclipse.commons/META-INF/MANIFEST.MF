@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Utils
-Bundle-SymbolicName: com.hybris.hyeclipse.utils;singleton:=true
+Bundle-SymbolicName: com.hybris.hyeclipse.commons;singleton:=true
 Bundle-Version: 1.0.4.qualifier
-Bundle-Activator: com.hybris.hyeclipse.Activator
+Bundle-Activator: com.hybris.hyeclipse.commons.Activator
 Bundle-Vendor: HYBRIS
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -14,8 +14,9 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.editors
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
-Export-Package: com.hybris.hyeclipse.testers,
- com.hybris.hyeclipse.utils,
+Export-Package: com.hybris.hyeclipse.commons.handlers,
+ com.hybris.hyeclipse.commons.testers,
+ com.hybris.hyeclipse.commons.utils,
  org.apache.commons.io,
  org.apache.commons.io.comparator,
  org.apache.commons.io.filefilter,

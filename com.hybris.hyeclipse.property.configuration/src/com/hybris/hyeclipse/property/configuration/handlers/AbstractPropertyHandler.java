@@ -1,27 +1,34 @@
 package com.hybris.hyeclipse.property.configuration.handlers;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.core.commands.AbstractHandler;
-import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.jface.text.TextSelection;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.handlers.HandlerUtil;
-import com.hybris.hyeclipse.utils.Constatns;
-import com.hybris.hyeclipse.utils.EclipseFileUtils;
+
+import com.hybris.hyeclipse.commons.handlers.AbstractSelectionHandler;
+import com.hybris.hyeclipse.commons.utils.ConsoleUtils;
+import com.hybris.hyeclipse.commons.utils.Constants;
+import com.hybris.hyeclipse.commons.utils.EclipseFileUtils;
 
 /**
  * Abstract property handler
  */
-public abstract class AbstractPropertyHandler extends AbstractHandler {
+public abstract class AbstractPropertyHandler extends AbstractSelectionHandler {
+
+	private static final String PROCESSING_FILE_MESSAGE_FORMAT = "Processing file: %1$s";
+	private static final String INVALID_PROPERTY_ERROR_MESSAGE_FORMAT = "Invalid property '%1$s' in line %2$d";
+	
+	/**
+	 * Pattern to match property string (key=value)
+	 */
+	protected static Pattern PROPERTY_PATTERN = Pattern.compile("(.*)=(.*)?");
 
 	/**
 	 * Active shell
@@ -29,80 +36,92 @@ public abstract class AbstractPropertyHandler extends AbstractHandler {
 	private Shell activeShell;
 
 	/**
-	 * Pattern to match property string (key=value)
-	 */
-	protected static Pattern propertyPattern = Pattern.compile("(.*)=(.*)?");
-
-	private static final String ERROR_DIALOG_TITLE = "Invalid property";
-	private static final String INVALID_PROPERTY = "Error ocurred due to following lines: " + Constatns.NEW_LINE;
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Object execute(final ExecutionEvent event) throws ExecutionException {
-		final String selectedText = EclipseFileUtils.getSelectedFileText();
-
-		setActiveShell(HandlerUtil.getActiveShell(event));
-		if (StringUtils.isBlank(selectedText)) {
-			execute(extractPropertiesFromString(EclipseFileUtils.getContentOfFiles(
-			                EclipseFileUtils.getSelectedFiles(HandlerUtil.getCurrentSelection(event)))));
-		} else {
-			execute(extractPropertiesFromString(selectedText));
-		}
-
-		return null;
-	}
-
-	/**
 	 * Execute action of a handler.
 	 */
 	protected abstract void execute(final Map<String, String> properties);
 
 	/**
-	 * Validate properties
-	 * 
-	 * @param properties
-	 *            list of properties to validate
-	 * @return true if all properties are valid, false otherwise
+	 * {@inheritDoc}
 	 */
-	protected boolean validate(final List<String> properties) {
-		final List<String> invalidProperties = new ArrayList<String>();
-
-		properties.stream().filter(StringUtils::isNotBlank)
-		                .filter(property -> !propertyPattern.matcher(property).find())
-		                .forEach(property -> invalidProperties.add(property));
-		
-
-		if (!invalidProperties.isEmpty()) {
-			final StringBuilder errorMessageBuilder = new StringBuilder(INVALID_PROPERTY);
-			invalidProperties.forEach(
-			                invalidProperty -> errorMessageBuilder.append(invalidProperty).append(Constatns.NEW_LINE));
-
-			MessageDialog.openError(getActiveShell(), ERROR_DIALOG_TITLE, errorMessageBuilder.toString());
+	protected void handle(final Set<IFile> files) {
+		final Map<String, String> propertiesMap = new HashMap<>();
+		for (IFile file : files) {
+			ConsoleUtils.printMessage(String.format(PROCESSING_FILE_MESSAGE_FORMAT, file.getName()));
+			propertiesMap.putAll(extractProperties(EclipseFileUtils.getContentOfFile(file), 1));
 		}
 
-		return !invalidProperties.isEmpty();
+		execute(propertiesMap);
 	}
 
 	/**
-	 * Extracts properties from String to the Map of strings
-	 * 
-	 * @param propertiesString
-	 *            string of properties
-	 * @return map of properties, with key, value.
+	 * {@inheritDoc}
 	 */
-	protected Map<String, String> extractPropertiesFromString(final String propertiesString) {
-		final List<String> propertiesList = Arrays.asList(propertiesString.split(Constatns.NEW_LINE)).stream()
-		                .filter(StringUtils::isNoneBlank).collect(Collectors.toList());
+	protected void handle(final TextSelection textSelection) {
+		execute(extractProperties(textSelection.getText(), textSelection.getStartLine() + 1));
+	}
 
+	/**
+	 * Extract properties from file
+	 * 
+	 * @param properties
+	 *            content of a file
+	 * @param startLine
+	 *            start line of the properties from file
+	 * 
+	 * @return map of properties and their values
+	 */
+	protected Map<String, String> extractProperties(final String properties, final int startLine) {
 		final Map<String, String> propertiesMap = new HashMap<>();
-		if (validate(propertiesList)) {
-			propertiesList.stream()
-			.map(property -> property.split(Constatns.EQUALS_CHARCTER))
-			.forEach(keyValueArray -> propertiesMap.put(keyValueArray[0], keyValueArray[1]));
+		final List<String> propertyList = Arrays.asList(properties.split(Constants.NEW_LINE));
+
+		int line = startLine;
+		for (String property : propertyList) {
+			propertiesMap.putAll(extractPropertiesFromString(property, line++));
 		}
 
 		return propertiesMap;
+	}
+
+	/**
+	 * Extract property key and value from string
+	 * 
+	 * @param property
+	 *            property string to extract
+	 * @param line
+	 *            line of property string in file
+	 * 
+	 * @return extracted property if present.
+	 */
+	protected Map<String, String> extractPropertiesFromString(final String property, final int line) {
+		final Map<String, String> propertyMap = new HashMap<>();
+
+		if (StringUtils.isNotBlank(property) && validate(property, line)) {
+			final String[] propertyKeyValue = property.split(Constants.EQUALS_CHARCTER);
+
+			propertyMap.put(propertyKeyValue[0],
+			                (propertyKeyValue.length > 1) ? propertyKeyValue[1] : Constants.EMPTY_STRING);
+		}
+
+		return propertyMap;
+	}
+
+	/**
+	 * Validate particular property
+	 * 
+	 * @param property
+	 *            property to validate
+	 * @param line
+	 *            property line in the file
+	 * 
+	 * @return true if property is valid, false otherwise
+	 */
+	protected boolean validate(final String property, final int line) {
+		if (!PROPERTY_PATTERN.matcher(property).find()) {
+			ConsoleUtils.printError(String.format(INVALID_PROPERTY_ERROR_MESSAGE_FORMAT, property, line));
+			return false;
+		}
+
+		return true;
 	}
 
 	protected Shell getActiveShell() {

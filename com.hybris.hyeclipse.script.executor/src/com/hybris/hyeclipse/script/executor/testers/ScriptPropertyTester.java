@@ -6,10 +6,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.hybris.hyeclipse.utils.PreferencesUtils;
+import com.hybris.hyeclipse.commons.testers.AbstractFilePropertyTester;
+import com.hybris.hyeclipse.commons.utils.PreferencesUtils;
 import com.hybris.hyeclipse.script.executor.Activator;
 import com.hybris.hyeclipse.script.executor.preferences.HACScriptExecutionPreferenceConstants;
-import com.hybris.hyeclipse.testers.AbstractFilePropertyTester;
 
 /**
  * File property tester thats check whether the file extension is registered as

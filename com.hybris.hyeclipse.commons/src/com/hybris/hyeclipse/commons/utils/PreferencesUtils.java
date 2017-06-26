@@ -1,4 +1,4 @@
-package com.hybris.hyeclipse.utils;
+package com.hybris.hyeclipse.commons.utils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -83,6 +83,6 @@ public final class PreferencesUtils {
 			ConsoleUtils.printError(exception.getMessage());
 		} 
 		
-		return Constatns.EMPTY_STRING;
+		return Constants.EMPTY_STRING;
 	}
 }

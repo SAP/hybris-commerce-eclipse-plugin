@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.List;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-import com.hybris.hyeclipse.utils.PreferencesUtils;
+import com.hybris.hyeclipse.commons.utils.PreferencesUtils;
 import com.hybris.hyeclipse.script.executor.Activator;
 import com.hybris.hyeclipse.script.executor.dialog.ScriptLanguageDialog;
 

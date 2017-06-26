@@ -1,4 +1,4 @@
-package com.hybris.hyeclipse.utils;
+package com.hybris.hyeclipse.commons.utils;
 
 import java.util.Arrays;
 import java.util.Optional;

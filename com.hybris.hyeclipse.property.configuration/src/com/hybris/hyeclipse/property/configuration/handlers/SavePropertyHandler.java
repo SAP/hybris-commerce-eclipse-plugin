@@ -23,7 +23,7 @@ public class SavePropertyHandler extends AbstractPropertyHandler {
 			final PropertyManager manager = new PropertyManager();
 			
 			if(manager.checkHacHealth()) {
-				properties.forEach((key,value) -> manager.saveProperty(key, value)); 
+				properties.forEach(manager::saveProperty); 
 			}
 		}
 	} 

@@ -1,4 +1,4 @@
-package com.hybris.hyeclipse.testers;
+package com.hybris.hyeclipse.commons.testers;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -58,6 +58,8 @@ public abstract class AbstractFilePropertyTester extends PropertyTester {
 					if( !fileExtensions.contains(file.getFileExtension()) ) {
 						isValid = false;
 						break;
+					} else {
+						isValid = true;
 					}
 				}
 			}

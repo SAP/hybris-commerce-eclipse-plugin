@@ -1,4 +1,4 @@
-package com.hybris.hyeclipse;
+package com.hybris.hyeclipse.commons;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;

@@ -99,7 +99,7 @@ All rights reserved.
    </license>
 
    <plugin
-         id="com.hybris.hyeclipse.utils"
+         id="com.hybris.hyeclipse.commons"
          download-size="0"
          install-size="0"
          version="0.0.0"
