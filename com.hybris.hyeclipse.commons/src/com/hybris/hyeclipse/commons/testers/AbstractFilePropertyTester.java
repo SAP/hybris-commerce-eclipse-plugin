@@ -41,29 +41,22 @@ public abstract class AbstractFilePropertyTester extends PropertyTester {
 		boolean isValid = false;
 		
 		if (receiver instanceof Set) {
-			final Set<Object> set = (Set<Object>) receiver;
-			
-			if (set.size() == 1 && set.iterator().next() instanceof TextSelection) {
-				final IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-				final IFile file = (IFile) window.getActivePage().getActiveEditor().getEditorInput().getAdapter(IFile.class);
+			final Set<Object> activeEditorSet = (Set<Object>) receiver;
+
+			if (activeEditorSet.size() == 1 && activeEditorSet.iterator().next() instanceof TextSelection) {
+				final IWorkbenchWindow activeWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+				final IFile activeFile = (IFile) activeWindow.getActivePage().getActiveEditor().getEditorInput().getAdapter(IFile.class);
 				
-				isValid = fileExtensions.contains(file.getFileExtension());
+				isValid = fileExtensions.contains(activeFile.getFileExtension());
 			}
 		} else if (receiver instanceof List) {
-			final List<Object> list = (List<Object>) receiver;
-			for( Object directoryContent : list ) {
-				if( directoryContent instanceof File  ) {
-					final File file = (File) directoryContent;
-					
-					if( !fileExtensions.contains(file.getFileExtension()) ) {
-						isValid = false;
-						break;
-					} else {
-						isValid = true;
-					}
-				}
-			}
-
+			final List<Object> fileList = (List<Object>) receiver;
+			isValid = fileList.stream()
+							.filter(file -> file instanceof File)
+							.map(File.class::cast)
+							.map(File::getFileExtension)
+							.allMatch(fileExtensions::contains);
+			
 		}
 		return isValid;
 	}
