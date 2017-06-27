@@ -51,7 +51,7 @@ public class CopyrightManager {
 		for (final String line : contents) {
 			copyrightBuilder.append(prefix).append(line).append(NEW_LINE_SEPARATOR);
 		}
-		copyrightBuilder.append(lastLine).append(NEW_LINE_SEPARATOR);
+		copyrightBuilder.append(lastLine);
 		return copyrightBuilder.toString();
 	}
 
@@ -68,7 +68,7 @@ public class CopyrightManager {
 		rewriter = ASTRewrite.create(compilationUnit.getAST());
 		final ListRewrite listRewrite = rewriter.getListRewrite(compilationUnit.getPackage(),
 				PackageDeclaration.ANNOTATIONS_PROPERTY);
-		final Comment placeHolder = (Comment) rewriter.createStringPlaceholder(getCopyrightText(),
+		final Comment placeHolder = (Comment) rewriter.createStringPlaceholder(getCopyrightText() + NEW_LINE_SEPARATOR,
 				ASTNode.BLOCK_COMMENT);
 		listRewrite.insertFirst(placeHolder, null);
 		rewriteCompilationUnit(unit, getNewUnitSource(unit, null));
@@ -107,7 +107,7 @@ public class CopyrightManager {
 		boolean hasCopyrights = false;
 		if (!comments.isEmpty()) {
 			final PackageDeclaration packageNode = compilationUnit.getPackage();
-			final boolean commentBeforePackage = comments.get(0).getStartPosition() < packageNode.getStartPosition();
+			final boolean commentBeforePackage = comments.get(0).getStartPosition() <= packageNode.getStartPosition();
 			final boolean hasJavaDoc = packageNode.getJavadoc() != null;
 			hasCopyrights = commentBeforePackage || hasJavaDoc;
 		}
@@ -140,8 +140,8 @@ public class CopyrightManager {
 		try {
 			source = unit.getSource();
 			if (comment != null) {
-				final int endOfComment = comment.getLength();
-				source = source.replace(source.substring(0, endOfComment + 1), getCopyrightText());
+				final int endOfComment = comment.getLength() + comment.getStartPosition();
+				source = source.replace(source.substring(0, endOfComment), getCopyrightText());
 			}
 		} catch (final JavaModelException e) {
 			ConsoleUtils.printError(e.getMessage());
