@@ -29,6 +29,20 @@ public final class EclipseFileUtils {
 		/* Intentionally empty */ }
 
 	/**
+	 * @return workbench active window
+	 */
+	public static IWorkbenchWindow getActiveWorkbenchWindow() {
+		return PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+	}
+	
+	/**
+	 * @return active editor file
+	 */
+	public static IFile getActiveEditorFile() {
+		return (IFile) getActiveWorkbenchWindow().getActivePage().getActiveEditor().getEditorInput().getAdapter(IFile.class);
+	}
+	
+	/**
 	 * Returns selected file
 	 * 
 	 * @param selection
@@ -43,9 +57,7 @@ public final class EclipseFileUtils {
 			final Object obj = ssel.getFirstElement();
 			file = (IFile) Platform.getAdapterManager().getAdapter(obj, IFile.class);
 		} else if (selection instanceof TextSelection) {
-			final IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-			file = (IFile) window.getActivePage().getActiveEditor().getEditorInput()
-			                .getAdapter(IFile.class);
+			file = getActiveEditorFile();
 		}
 		return file;
 	}
@@ -66,8 +78,7 @@ public final class EclipseFileUtils {
 			structuredSelection.toList().forEach(
 			                file -> files.add((IFile) Platform.getAdapterManager().getAdapter(file, IFile.class)));
 		} else if (selection instanceof TextSelection) {
-			final IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-			files.add((IFile) window.getActivePage().getActiveEditor().getEditorInput().getAdapter(IFile.class));
+			files.add(getActiveEditorFile());
 
 		}
 
@@ -101,8 +112,7 @@ public final class EclipseFileUtils {
 	 * @return selected text in file, if none is selected empty string will be returned
 	 */
 	public static String getCurrentSelectedText() {
-		final Optional<TextSelection> currentTextSelection = getCurrentTextSelection();
-		return (currentTextSelection.isPresent()) ? currentTextSelection.get().getText() : Constants.EMPTY_STRING;
+		return getCurrentTextSelection().map(TextSelection::getText).orElse(CharactersConstants.EMPTY_STRING);
 	}
 	
 	/**
@@ -115,7 +125,7 @@ public final class EclipseFileUtils {
 	public static String getContentOfFiles(final Set<IFile> files) {
 		final StringBuilder filesContent = new StringBuilder();
 
-		files.forEach(file -> filesContent.append(getContentOfFile(file)).append(Constants.NEW_LINE));
+		files.forEach(file -> filesContent.append(getContentOfFile(file)).append(CharactersConstants.NEW_LINE));
 
 		return filesContent.toString();
 	}
@@ -129,10 +139,10 @@ public final class EclipseFileUtils {
 	 */
 	public static String getContentOfFile(final IFile file) {
 		try {
-			return IOUtils.toString(file.getContents(), Constants.UTF_8_ENCODING);
+			return IOUtils.toString(file.getContents(), CharactersConstants.UTF_8_ENCODING);
 		} catch (CoreException | IOException e) {
 			ConsoleUtils.printError(e.getMessage());
 		}
-		return Constants.EMPTY_STRING;
+		return CharactersConstants.EMPTY_STRING;
 	}
 }

@@ -13,6 +13,8 @@ import org.eclipse.jface.text.TextSelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
+import com.hybris.hyeclipse.commons.utils.EclipseFileUtils;
+
 /**
  * Abstract property tester class, with method to test the file extension
  */
@@ -44,10 +46,7 @@ public abstract class AbstractFilePropertyTester extends PropertyTester {
 			final Set<Object> activeEditorSet = (Set<Object>) receiver;
 
 			if (activeEditorSet.size() == 1 && activeEditorSet.iterator().next() instanceof TextSelection) {
-				final IWorkbenchWindow activeWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-				final IFile activeFile = (IFile) activeWindow.getActivePage().getActiveEditor().getEditorInput().getAdapter(IFile.class);
-				
-				isValid = fileExtensions.contains(activeFile.getFileExtension());
+				isValid = fileExtensions.contains(EclipseFileUtils.getActiveEditorFile().getFileExtension());
 			}
 		} else if (receiver instanceof List) {
 			final List<Object> fileList = (List<Object>) receiver;

@@ -44,7 +44,7 @@ import org.jsoup.helper.StringUtil;
 import org.jsoup.nodes.Document;
 
 import com.hybris.hyeclipse.commons.utils.ConsoleUtils;
-import com.hybris.hyeclipse.commons.utils.Constants;
+import com.hybris.hyeclipse.commons.utils.CharactersConstants;
 import com.hybris.hyeclipse.hac.Activator;
 import com.hybris.hyeclipse.hac.preferences.HACPreferenceConstants;
 
@@ -136,7 +136,7 @@ public abstract class AbstractHACCommunicationManager {
 	 * @return true if HAC is online, false otherwise
 	 */
 	public boolean checkHacHealth() {
-		final String response = sendAuthenticatedGetRequest(Constants.EMPTY_STRING);
+		final String response = sendAuthenticatedGetRequest(CharactersConstants.EMPTY_STRING);
 		return !StringUtil.isBlank(response);
 	}
 
@@ -435,6 +435,6 @@ public abstract class AbstractHACCommunicationManager {
 	}
 
 	protected String getEncoding() {
-		return Constants.UTF_8_ENCODING;
+		return CharactersConstants.UTF_8_ENCODING;
 	}
 }

@@ -11,7 +11,7 @@ import org.json.JSONObject;
 import org.jsoup.helper.StringUtil;
 
 import com.hybris.hyeclipse.commons.utils.ConsoleUtils;
-import com.hybris.hyeclipse.commons.utils.Constants;
+import com.hybris.hyeclipse.commons.utils.CharactersConstants;
 import com.hybris.hyeclipse.commons.utils.EclipseFileUtils;
 import com.hybris.hyeclipse.commons.utils.PreferencesUtils;
 import com.hybris.hyeclipse.hac.manager.AbstractHACCommunicationManager;
@@ -41,8 +41,8 @@ public class ScriptExecutorManager extends AbstractHACCommunicationManager {
 	}
 	
 	/* Console strings */
-	private final String RESULT_LABEL = "Result: " + Constants.NEW_LINE;
-	private final String OUTPUT_LABEL = "Output: " + Constants.NEW_LINE;
+	private final String RESULT_LABEL = "Result: " + CharactersConstants.NEW_LINE;
+	private final String OUTPUT_LABEL = "Output: " + CharactersConstants.NEW_LINE;
 
 	/**
 	 * Imports script to the hAC with rollback mode.

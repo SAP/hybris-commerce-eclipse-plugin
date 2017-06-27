@@ -14,7 +14,7 @@ import org.eclipse.swt.widgets.Shell;
 
 import com.hybris.hyeclipse.commons.handlers.AbstractSelectionHandler;
 import com.hybris.hyeclipse.commons.utils.ConsoleUtils;
-import com.hybris.hyeclipse.commons.utils.Constants;
+import com.hybris.hyeclipse.commons.utils.CharactersConstants;
 import com.hybris.hyeclipse.commons.utils.EclipseFileUtils;
 
 /**
@@ -72,7 +72,7 @@ public abstract class AbstractPropertyHandler extends AbstractSelectionHandler {
 	 */
 	protected Map<String, String> extractProperties(final String properties, final int startLine) {
 		final Map<String, String> propertiesMap = new HashMap<>();
-		final List<String> propertyList = Arrays.asList(properties.split(Constants.NEW_LINE));
+		final List<String> propertyList = Arrays.asList(properties.split(CharactersConstants.NEW_LINE));
 
 		int line = startLine;
 		for (String property : propertyList) {
@@ -96,10 +96,10 @@ public abstract class AbstractPropertyHandler extends AbstractSelectionHandler {
 		final Map<String, String> propertyMap = new HashMap<>();
 
 		if (StringUtils.isNotBlank(property) && validate(property, line)) {
-			final String[] propertyKeyValue = property.split(Constants.EQUALS_CHARCTER);
+			final String[] propertyKeyValue = property.split(CharactersConstants.EQUALS_CHARCTER);
 
 			propertyMap.put(propertyKeyValue[0],
-			                (propertyKeyValue.length > 1) ? propertyKeyValue[1] : Constants.EMPTY_STRING);
+			                (propertyKeyValue.length > 1) ? propertyKeyValue[1] : CharactersConstants.EMPTY_STRING);
 		}
 
 		return propertyMap;

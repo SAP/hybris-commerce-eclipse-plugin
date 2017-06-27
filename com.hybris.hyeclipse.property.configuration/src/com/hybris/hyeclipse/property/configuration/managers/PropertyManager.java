@@ -70,8 +70,11 @@ public class PropertyManager extends AbstractHACCommunicationManager {
 	 * @return parameter value if present, {@link #PROPERTY_NOT_FOUND} otherwise
 	 */
 	public String getPropertyValue(final String propertyName) {
-		final Optional<Entry<String, String>> propertyValue = getProperties().entrySet().stream()
-		                .filter(property -> property.getKey().equals(propertyName)).findFirst();
+		final Optional<Entry<String, String>> propertyValue = getProperties()
+									.entrySet()
+									.stream()
+					                .filter(property -> property.getKey().equals(propertyName))
+					                .findFirst();
 
 		if (propertyValue.isPresent()) {
 			return propertyValue.get().getValue();

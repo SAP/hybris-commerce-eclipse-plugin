@@ -83,6 +83,6 @@ public final class PreferencesUtils {
 			ConsoleUtils.printError(exception.getMessage());
 		} 
 		
-		return Constants.EMPTY_STRING;
+		return CharactersConstants.EMPTY_STRING;
 	}
 }

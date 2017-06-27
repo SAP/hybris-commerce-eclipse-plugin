@@ -5,7 +5,7 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 
 import com.hybris.hyeclipse.commons.utils.ConsoleUtils;
-import com.hybris.hyeclipse.commons.utils.Constants;
+import com.hybris.hyeclipse.commons.utils.CharactersConstants;
 import com.hybris.hyeclipse.property.configuration.managers.PropertyManager;
 
 /**
@@ -21,7 +21,7 @@ public class GetPropertiesHandler extends AbstractHandler {
 		final PropertyManager propertyManager = new PropertyManager();
 
 		propertyManager.getProperties().entrySet().stream()
-		                .map(property -> property.getKey() + Constants.EQUALS_CHARCTER + property.getValue())
+		                .map(property -> property.getKey() + CharactersConstants.EQUALS_CHARCTER + property.getValue())
 		                .forEach(ConsoleUtils::printMessage);
 
 		return null;
