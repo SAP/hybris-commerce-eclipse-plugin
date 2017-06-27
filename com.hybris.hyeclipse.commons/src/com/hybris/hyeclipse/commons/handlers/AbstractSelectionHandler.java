@@ -1,12 +1,12 @@
 package com.hybris.hyeclipse.commons.handlers;
 
-import java.util.Optional;
 import java.util.Set;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.e4.core.commands.ExpressionContext;
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 
@@ -18,16 +18,26 @@ import com.hybris.hyeclipse.commons.utils.EclipseFileUtils;
 public abstract class AbstractSelectionHandler extends AbstractHandler {
 	
 	/**
+	 * Eclipse context debug value. 
+	 * 
+	 * I've not found better way to find out which menu has been clicked. 
+	 */
+	private static final String ECLIPSE_MENU_CONTEXT_KEY = "debugString";
+	private static final String TEXT_EDITOR_MENU_VALUE = "popup:#TextEditorContext";
+	private static final String PROJECT_EXPLORER_MENU_VALUE = "popup:org.eclipse.ui.navigator.ProjectExplorer#PopupMenu";
+	
+	/**
 	 * {@inheritDoc} 
 	 */
+	@SuppressWarnings("restriction")
 	public Object execute(final ExecutionEvent event) throws ExecutionException {
-		final Set<IFile> files = EclipseFileUtils.getSelectedFiles(HandlerUtil.getCurrentSelection(event));
-		final Optional<TextSelection> textSelection = EclipseFileUtils.getCurrentTextSelection();
+		final ExpressionContext context = (ExpressionContext) event.getApplicationContext();
+		final String clickedMenuKey = context.getVariable(ECLIPSE_MENU_CONTEXT_KEY).toString();
 		
-		if( files.size() == 1 && textSelection.isPresent() && textSelection.get().getStartLine() > 0 ) {
-			handle(textSelection.get());
-		} else {
-			handle(files);
+		if( PROJECT_EXPLORER_MENU_VALUE.equals(clickedMenuKey) ) {
+			handle(EclipseFileUtils.getSelectedFiles(HandlerUtil.getCurrentSelection(event)));
+		} else if( TEXT_EDITOR_MENU_VALUE.equals(clickedMenuKey) ) {
+			handle(EclipseFileUtils.getCurrentTextSelection().get());
 		}
 								
 		return null; // intended.

@@ -50,11 +50,14 @@ public abstract class AbstractFilePropertyTester extends PropertyTester {
 			}
 		} else if (receiver instanceof List) {
 			final List<Object> fileList = (List<Object>) receiver;
-			isValid = fileList.stream()
-							.filter(file -> file instanceof File)
-							.map(File.class::cast)
-							.map(File::getFileExtension)
-							.allMatch(fileExtensions::contains);
+			
+			if( !fileList.isEmpty() ) {
+				isValid = fileList.stream()
+								.filter(file -> file instanceof File)
+								.map(File.class::cast)
+								.map(File::getFileExtension)
+								.allMatch(fileExtensions::contains);
+			}
 			
 		}
 		return isValid;
