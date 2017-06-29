@@ -279,8 +279,10 @@ public abstract class AbstractHACCommunicationManager {
 	 * @return List of parameters
 	 */
 	protected List<NameValuePair> createParametersList(final Map<String, String> parametersMap) {
-		return parametersMap.entrySet().stream().map(entry -> new BasicNameValuePair(entry.getKey(), entry.getValue()))
-				.collect(Collectors.toList());
+		return parametersMap.entrySet()
+						.stream()
+						.map(entry -> new BasicNameValuePair(entry.getKey(), entry.getValue()))
+						.collect(Collectors.toList());
 	}
 
 	/**

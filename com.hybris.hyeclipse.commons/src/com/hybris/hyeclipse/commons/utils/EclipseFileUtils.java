@@ -3,7 +3,7 @@ package com.hybris.hyeclipse.commons.utils;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
+import java.util.Set;import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
 import org.eclipse.core.resources.IFile;
@@ -75,8 +75,10 @@ public final class EclipseFileUtils {
 
 		if (selection instanceof IStructuredSelection) {
 			final IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+			
 			structuredSelection.toList().forEach(
-			                file -> files.add((IFile) Platform.getAdapterManager().getAdapter(file, IFile.class)));
+			                file -> files.add(Platform.getAdapterManager().getAdapter(file, IFile.class)));
+			
 		} else if (selection instanceof TextSelection) {
 			files.add(getActiveEditorFile());
 
