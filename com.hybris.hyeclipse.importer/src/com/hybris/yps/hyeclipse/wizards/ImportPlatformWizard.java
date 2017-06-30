@@ -157,7 +157,9 @@ public class ImportPlatformWizard extends Wizard implements IImportWizard
 		final boolean fixClasspath = page1.isFixClasspath();
 		final boolean removeHybrisBuilder = page1.isRemoveHybrisGenerator();
 		final boolean createWorkingSet = page1.isCreateWorkingSets();
-		
+		final boolean useMultiThread = page1.isUseMultiThread();
+		final boolean skipJarScanning = page1.isSkipJarScanning();
+
 		final File platformDir = page1.getPlatformDirectory();
 		
 		//Set platform home as workspace preference
@@ -201,7 +203,7 @@ public class ImportPlatformWizard extends Wizard implements IImportWizard
 						monitor.worked( progress );
 					}
 				}
-				importPlatform( monitor, projects, platformDir, fixClasspath, removeHybrisBuilder, createWorkingSet);
+				importPlatform( monitor, projects, platformDir, fixClasspath, removeHybrisBuilder, createWorkingSet, useMultiThread, skipJarScanning);
 				// fix JRE settings to make it easier to run tests
 				fixRuntimeEnvironment( platformDir.getAbsolutePath() );
 				
@@ -252,11 +254,11 @@ public class ImportPlatformWizard extends Wizard implements IImportWizard
 		}
 	}
 
-	protected void importPlatform( IProgressMonitor monitor, List<IProject> projects, File platformDir , boolean fixClasspath, boolean removeHybrisGenerator, boolean createWorkingSets) throws InvocationTargetException
+	protected void importPlatform( IProgressMonitor monitor, List<IProject> projects, File platformDir , boolean fixClasspath, boolean removeHybrisGenerator, boolean createWorkingSets, boolean useMultiThread, boolean skipJarScanning) throws InvocationTargetException
 	{
 		try
 		{
-			new Importer().resetProjectsFromLocalExtensions( platformDir, monitor, fixClasspath, removeHybrisGenerator, createWorkingSets);
+			new Importer().resetProjectsFromLocalExtensions( platformDir, monitor, fixClasspath, removeHybrisGenerator, createWorkingSets, useMultiThread, skipJarScanning);
 		}
 		catch( CoreException e )
 		{

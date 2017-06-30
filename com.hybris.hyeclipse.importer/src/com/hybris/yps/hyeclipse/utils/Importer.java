@@ -48,7 +48,7 @@ public class Importer {
 	
 	private static final double JVM8_VERSION = 5.6d;
 	
-	public void resetProjectsFromLocalExtensions(File platformHome, IProgressMonitor monitor,  boolean fixClasspath, boolean removeHybrisGenerator, boolean createWorkingSets) throws CoreException {
+	public void resetProjectsFromLocalExtensions(File platformHome, IProgressMonitor monitor,  boolean fixClasspath, boolean removeHybrisGenerator, boolean createWorkingSets, boolean useMultiThread, boolean skipJarScanning) throws CoreException {
 		plugin.resetPlatform(platformHome.getAbsolutePath());
 		
 		importExtensionsNotInWorkspace(monitor, platformHome);
@@ -56,20 +56,31 @@ public class Importer {
 	
 		if (fixClasspath)
 		{
-		fixMissingProjectDependencies(monitor, platformHome);
-		fixMissingProjectResources(monitor, platformHome);
-		fixProjectClasspaths(monitor, platformHome);
+			fixMissingProjectDependencies(monitor, platformHome);
+			fixMissingProjectResources(monitor, platformHome);
+			fixProjectClasspaths(monitor, platformHome);
 		}
 		
 		if (removeHybrisGenerator)
 		{
-		fixBuilders(monitor);
-	}
+			fixBuilders(monitor);
+		}
 		
 		if (createWorkingSets)
 		{
 			WorkingSetsUtils.organizeWorkingSetsFromExtensionDirectories(monitor);
-		}	
+		}
+
+		if (useMultiThread)
+		{
+			UseMultiThreadUtils.useMultiThread(platformHome);
+		}
+
+		if (skipJarScanning)
+		{
+			SkipJarScanningUtils.skipJarScanning(platformHome);
+		}
+
 		fixSpringBeans(monitor, platformHome);
 	}
 
@@ -263,7 +274,6 @@ public class Importer {
 	/**
 	 * We remove any libraries from the Project that don't exist and automatically add any libraries from the lib directory of the extension
 	 * @param monitor
-	 * @param extensionHolders
 	 */
 	private void fixProjectClasspaths(IProgressMonitor monitor, File platformHome)
 	{
