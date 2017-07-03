@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Editor
+Bundle-SymbolicName: com.hybris.hyeclipse.editor;singleton:=true
+Bundle-Version: 1.0.4.qualifier
+Bundle-Activator: com.hybris.hyeclipse.editor.Activator
+Bundle-Vendor: HYBRIS
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.jdt.ui,
+ org.eclipse.jdt.core,
+ org.eclipse.ltk.core.refactoring,
+ org.eclipse.jdt.core.manipulation,
+ org.eclipse.text,
+ com.hybris.hyeclipse.hac;bundle-version="1.0.4"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
