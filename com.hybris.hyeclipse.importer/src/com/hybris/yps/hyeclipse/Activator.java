@@ -110,7 +110,7 @@ public class Activator extends AbstractUIPlugin {
 		
 		return getTypeSystemExporter().getConfigDirectory();
 	}
-	
+
 	public static void log(String msg) {
 		getDefault().log(msg, null);
 	}

@@ -26,12 +26,16 @@ public class ImportPlatformPage extends WizardPage
 	public static final String REMOVE_HYBRIS_BUILDER_PREFERENCE = "removeHybrisBuilderPreference";
 	public static final String FIX_CLASS_PATH_ISSUES_PREFERENCE = "fixClassPathIssuesPreference";
 	public static final String CREATE_WORKING_SETS_PREFERENCE = "createWorkingSetsPreference";
-	
+	public static final String USE_MULTI_THREAD_PREFERENCE = "useMultiThreadPreference";
+	public static final String SKIP_JAR_SCANNING_PREFERENCE = "skipJarScanningPreference";
+
 	private DirectoryFieldEditor	platformDirectoryField;
 	private Button						removeExistingProjects;
 	private Button fixClasspathIssuesButton;
 	private Button removeHybrisItemsXmlGeneratorButton;
 	private Button createWorkingSetsButton;
+	private Button useMultiThreadButton;
+	private Button skipJarScanningButton;
 
 	public ImportPlatformPage()
 	{
@@ -87,7 +91,9 @@ public class ImportPlatformPage extends WizardPage
 		boolean fixClasspathIssuesPref = preferences.getBoolean(FIX_CLASS_PATH_ISSUES_PREFERENCE, true);
 		boolean removeHybrisBuilderPref = preferences.getBoolean(REMOVE_HYBRIS_BUILDER_PREFERENCE, true);
 		boolean createWorkingSetsPref = preferences.getBoolean(CREATE_WORKING_SETS_PREFERENCE, true);
-		
+		boolean useMultiThreadPref = preferences.getBoolean(USE_MULTI_THREAD_PREFERENCE, true);
+		boolean skipJarScanningPref = preferences.getBoolean(SKIP_JAR_SCANNING_PREFERENCE, true);
+
 		GridData gdFillHorizontal = new GridData(GridData.FILL_HORIZONTAL);
 		gdFillHorizontal.horizontalSpan=2;
 		
@@ -122,6 +128,21 @@ public class ImportPlatformPage extends WizardPage
 		createWorkingSetsButton = new Button( container, 32 );
 		createWorkingSetsButton.setSelection( createWorkingSetsPref );
 		createWorkingSetsButton.setLayoutData(gdFillHorizontal);
+
+		Label useMultiThreadLabel = new Label( container, 0 );
+		useMultiThreadLabel.setText( "Tomcat Start/Stop with multi-thread" );
+		useMultiThreadLabel.setToolTipText("Configure the Tomcat server.xml to set startStopThreads=0");
+		useMultiThreadButton = new Button( container, 32 );
+		useMultiThreadButton.setSelection( useMultiThreadPref );
+		useMultiThreadButton.setLayoutData(gdFillHorizontal);
+
+		Label skipJarScanningLabel = new Label( container, 0 );
+		skipJarScanningLabel.setText( "Tomcat Start with skipping TLD Jar scanning" );
+		skipJarScanningLabel.setToolTipText("Configure the Tomcat catalina.properties to set the value of org.apache.catalina.startup.ContextConfig.jarsToSkip");
+		skipJarScanningButton = new Button( container, 32 );
+		skipJarScanningButton.setSelection( skipJarScanningPref );
+		skipJarScanningButton.setLayoutData(gdFillHorizontal);
+
 		
 		setControl( container );
 		setPageComplete( false );
@@ -145,6 +166,16 @@ public class ImportPlatformPage extends WizardPage
 	public boolean isCreateWorkingSets()
 	{
 		return createWorkingSetsButton.getSelection();
+	}
+	
+	public boolean isUseMultiThread()
+	{
+		return useMultiThreadButton.getSelection();
+	}
+
+	public boolean isSkipJarScanning()
+	{
+		return skipJarScanningButton.getSelection();
 	}
 
 	public File getPlatformDirectory()
@@ -204,7 +235,9 @@ public class ImportPlatformPage extends WizardPage
 		preferences.putBoolean(FIX_CLASS_PATH_ISSUES_PREFERENCE, fixClasspathIssuesButton.getSelection());
 		preferences.putBoolean(REMOVE_HYBRIS_BUILDER_PREFERENCE, removeHybrisItemsXmlGeneratorButton.getSelection());
 		preferences.putBoolean(REMOVE_EXISTING_PROJECTS_PREFERENCE, removeExistingProjects.getSelection());
-		preferences.putBoolean(ImportPlatformPage.CREATE_WORKING_SETS_PREFERENCE, createWorkingSetsButton.getSelection());
+		preferences.putBoolean(CREATE_WORKING_SETS_PREFERENCE, createWorkingSetsButton.getSelection());
+		preferences.putBoolean(USE_MULTI_THREAD_PREFERENCE, useMultiThreadButton.getSelection());
+		preferences.putBoolean(SKIP_JAR_SCANNING_PREFERENCE, skipJarScanningButton.getSelection());
 		try {
 			preferences.flush();
 		} catch (BackingStoreException e) {

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+    <extension point="org.eclipse.jdt.junit.internal_testKinds">
+        <kind
+                id="com.hybris.junit.kind"
+                displayName="Hybris JUnit 4"
+                finderClass="org.eclipse.jdt.internal.junit.launcher.JUnit4TestFinder"
+                loaderPluginId="HybrisJUnit4Runner"
+                loaderClass="com.hybris.hyeclipse.junit.HybrisJUnitIntegrationTestLoader">
+            <runtimeClasspathEntry pluginId="org.eclipse.jdt.junit4.runtime" />
+            <runtimeClasspathEntry pluginId="org.eclipse.jdt.junit.core" />
+            <runtimeClasspathEntry pluginId="org.eclipse.jdt.junit.runtime"/>
+            <runtimeClasspathEntry pluginId="com.hybris.hyeclipse.junit"/>
+        </kind>
+    </extension>
+
+</plugin>

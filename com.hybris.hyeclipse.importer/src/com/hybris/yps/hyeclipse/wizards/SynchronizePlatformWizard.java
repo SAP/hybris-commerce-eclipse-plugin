@@ -82,6 +82,8 @@ public class SynchronizePlatformWizard extends Wizard implements IImportWizard {
 		final boolean fixClasspath = page1.isFixClasspath();
 		final boolean removeHybrisBuilder = page1.isRemoveHybrisGenerator();
 		final boolean createWorkingSets = page1.isCreateWorkingSets();
+		final boolean useMultiThread = page1.isUseMultiThread();
+		final boolean skipJarScanning = page1.isSkipJarScanning();
 			
 		Preferences preferences = InstanceScope.INSTANCE.getNode("com.hybris.hyeclipse.preferences");
 		final String platformDir = preferences.get("platform_home", null);
@@ -96,7 +98,7 @@ public class SynchronizePlatformWizard extends Wizard implements IImportWizard {
 			public void run( IProgressMonitor monitor ) throws InvocationTargetException
 			{
 				List<IProject> projects = Arrays.asList( ResourcesPlugin.getWorkspace().getRoot().getProjects() );
-				synchronizePlatform( monitor, projects, new File(platformDir), fixClasspath, removeHybrisBuilder, createWorkingSets);
+				synchronizePlatform( monitor, projects, new File(platformDir), fixClasspath, removeHybrisBuilder, createWorkingSets, useMultiThread, skipJarScanning);
 			}
 		};
 		try
@@ -137,12 +139,12 @@ public class SynchronizePlatformWizard extends Wizard implements IImportWizard {
 		}
 	}
 
-	protected void synchronizePlatform( IProgressMonitor monitor, List<IProject> projects, File platformDir , boolean fixClasspath, boolean removeHybrisGenerator, boolean createWorkingSets) throws InvocationTargetException
+	protected void synchronizePlatform( IProgressMonitor monitor, List<IProject> projects, File platformDir , boolean fixClasspath, boolean removeHybrisGenerator, boolean createWorkingSets, boolean useMultiThread, boolean skipJarScanning) throws InvocationTargetException
 	{
 		try 
 		{
 			new Importer().resetProjectsFromLocalExtensions(platformDir, monitor, fixClasspath,
-						removeHybrisGenerator, createWorkingSets);
+						removeHybrisGenerator, createWorkingSets, useMultiThread, skipJarScanning);
 		} 
 		catch (CoreException e) 
 		{

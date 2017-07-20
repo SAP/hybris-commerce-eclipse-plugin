@@ -17,6 +17,8 @@ public class SynchronizePlatformPage extends WizardPage
 	private Button fixClasspathIssuesButton;
 	private Button removeHybrisItemsXmlGeneratorButton;
 	private Button createWorkingSetsButton;
+	private Button useMultiThreadButton;
+	private Button skipJarScanningButton;
 
 	public SynchronizePlatformPage()
 	{
@@ -45,7 +47,10 @@ public class SynchronizePlatformPage extends WizardPage
 		boolean fixClasspathIssuesPref = preferences.getBoolean(ImportPlatformPage.FIX_CLASS_PATH_ISSUES_PREFERENCE, true);
 		boolean removeHybrisBuilderPref = preferences.getBoolean(ImportPlatformPage.REMOVE_HYBRIS_BUILDER_PREFERENCE, true);
 		boolean createWorkingSetsPref = preferences.getBoolean(ImportPlatformPage.CREATE_WORKING_SETS_PREFERENCE, true);
-		
+		boolean useMultiThreadPref = preferences.getBoolean(ImportPlatformPage.USE_MULTI_THREAD_PREFERENCE, true);
+		boolean skipJarScanningPref = preferences.getBoolean(ImportPlatformPage.SKIP_JAR_SCANNING_PREFERENCE, true);
+
+
 		GridData gdFillHorizontal = new GridData(GridData.FILL_HORIZONTAL);
 		
 		Label fixClasspathIssuesLabel = new Label( container, 0 );
@@ -71,7 +76,21 @@ public class SynchronizePlatformPage extends WizardPage
 		createWorkingSetsButton = new Button( container, 32 );
 		createWorkingSetsButton.setSelection( createWorkingSetsPref );
 		createWorkingSetsButton.setLayoutData(gdFillHorizontal);
-		
+
+		Label useMultiThreadLabel = new Label( container, 0 );
+		useMultiThreadLabel.setText( "Tomcat Start/Stop with multi-thread" );
+		useMultiThreadLabel.setToolTipText("Configure the Tomcat server.xml to set startStopThreads=0");
+		useMultiThreadButton = new Button( container, 32 );
+		useMultiThreadButton.setSelection( useMultiThreadPref );
+		useMultiThreadButton.setLayoutData(gdFillHorizontal);
+
+		Label skipJarScanningLabel = new Label( container, 0 );
+		skipJarScanningLabel.setText( "Tomcat Start with skipping TLD Jar scanning" );
+		skipJarScanningLabel.setToolTipText("Configure the Tomcat catalina.properties to set the value of org.apache.catalina.startup.ContextConfig.jarsToSkip");
+		skipJarScanningButton = new Button( container, 32 );
+		skipJarScanningButton.setSelection( skipJarScanningPref );
+		skipJarScanningButton.setLayoutData(gdFillHorizontal);
+
 		setControl( container );
 		setPageComplete( true );
 	}
@@ -92,6 +111,16 @@ public class SynchronizePlatformPage extends WizardPage
 		return createWorkingSetsButton.getSelection();
 	}
 
+	public boolean isUseMultiThread()
+	{
+		return useMultiThreadButton.getSelection();
+	}
+
+	public boolean isSkipJarScanning()
+	{
+		return skipJarScanningButton.getSelection();
+	}
+
 	/**
 	 * Validation method of this page.
 	 * 
@@ -109,6 +138,9 @@ public class SynchronizePlatformPage extends WizardPage
 		preferences.putBoolean(ImportPlatformPage.FIX_CLASS_PATH_ISSUES_PREFERENCE, fixClasspathIssuesButton.getSelection());
 		preferences.putBoolean(ImportPlatformPage.REMOVE_HYBRIS_BUILDER_PREFERENCE, removeHybrisItemsXmlGeneratorButton.getSelection());
 		preferences.putBoolean(ImportPlatformPage.CREATE_WORKING_SETS_PREFERENCE, createWorkingSetsButton.getSelection());
+		preferences.putBoolean(ImportPlatformPage.USE_MULTI_THREAD_PREFERENCE, useMultiThreadButton.getSelection());
+		preferences.putBoolean(ImportPlatformPage.SKIP_JAR_SCANNING_PREFERENCE, skipJarScanningButton.getSelection());
+
 		try {
 			preferences.flush();
 		} catch (BackingStoreException e) {
