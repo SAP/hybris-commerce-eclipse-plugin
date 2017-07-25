@@ -52,7 +52,7 @@ public class DynamicClasspathHybrisJUnit4ClassRunner extends HybrisJUnit4ClassRu
 	public void run(final RunNotifier notifier)
 	{
 		System.out.println("Start running...");
-		if (isEclipseExecution() || isIntelliJExecution())
+		if (isEclipseExecution())
 		{
 			final List<ExtensionInfo> extensions = platformConfig.getExtensionInfosInBuildOrder();
 			for (final ExtensionInfo ext : extensions)
@@ -252,9 +252,5 @@ public class DynamicClasspathHybrisJUnit4ClassRunner extends HybrisJUnit4ClassRu
 	protected boolean isEclipseExecution()
 	{
 		return System.getProperty("sun.java.command").contains("org.eclipse.jdt");
-	}
-	protected boolean isIntelliJExecution()
-	{
-		return System.getProperty("sun.java.command").contains("com.intellij.rt.execution.junit.JUnitStarter");
 	}
 }
