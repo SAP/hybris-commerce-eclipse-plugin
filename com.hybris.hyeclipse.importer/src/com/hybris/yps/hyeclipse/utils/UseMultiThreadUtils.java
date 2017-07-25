@@ -17,7 +17,7 @@ public class UseMultiThreadUtils
 
 	public static void useMultiThread(File platformHome)
 	{
-		String fileFullPath = platformHome.getAbsolutePath() + "/" + TOMCAT_SERVER_XML_FILE;
+		String fileFullPath = platformHome.getAbsolutePath() + "/../../config/" + TOMCAT_SERVER_XML_FILE;
 		File serverXmlFile = new File(fileFullPath);
 		if (serverXmlFile.exists())
 		{
@@ -46,12 +46,5 @@ public class UseMultiThreadUtils
 		{
 			throw new IllegalStateException(fileFullPath + " doesn't exist.");
 		}
-	}
-
-	public static void main(String[] args)
-	{
-		File platformHome = new File("/SAPDevelop/prj/y63/hybris/bin/platform");
-		useMultiThread(platformHome);
-		System.out.println("Done");
 	}
 }

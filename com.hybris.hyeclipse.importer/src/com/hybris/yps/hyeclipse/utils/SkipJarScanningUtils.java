@@ -50,27 +50,18 @@ public class SkipJarScanningUtils
 
 	private static Activator plugin = Activator.getDefault();
 	private static final boolean debug = plugin.isDebugging();
-	private static boolean isTestMode = false;
 
 	public static Set<ExtensionHolder> getAllExtensionsForPlatform(String platformHome)
 	{
 
-		Set<ExtensionHolder> allExtensions = null;
-		if (isTestMode)
-		{
-			allExtensions = createTestData();
-		}
-		else
-		{
-			allExtensions = plugin.getAllExtensionsForPlatform(platformHome);
-		}
+		Set<ExtensionHolder> allExtensions = plugin.getAllExtensionsForPlatform(platformHome);
 		return allExtensions;
 	}
 
 
 	public static void skipJarScanning(File platformHome)
 	{
-		String fileFullPath = platformHome.getAbsolutePath() + "/" + TOMCAT_CATALINA_PROPERTIES_FILE;
+		String fileFullPath = platformHome.getAbsolutePath() + "/../../config/" + TOMCAT_CATALINA_PROPERTIES_FILE;
 		File catalinaFile = new File(fileFullPath);
 		List<String> jarNameList = new ArrayList<>();
 		if (catalinaFile.exists())
@@ -114,7 +105,6 @@ public class SkipJarScanningUtils
 			}
 			catch (Exception e)
 			{
-				e.printStackTrace();
 				throw new IllegalStateException("Failed to access the server.xml file at: " + fileFullPath);
 			}
 		}
@@ -148,7 +138,7 @@ public class SkipJarScanningUtils
 			if (dir.getAbsolutePath().endsWith(excludedPath))
 			{
 				if (debug)
-					Activator.log(">>>>> Not tot skip:  " + dir.getAbsolutePath());
+					Activator.log(">>>>> Not to skip:  " + dir.getAbsolutePath());
 				return;
 			}
 		}
@@ -177,20 +167,5 @@ public class SkipJarScanningUtils
 				}
 			}
 		}
-	}
-
-	private static Set<ExtensionHolder> createTestData()
-	{
-		Set<ExtensionHolder> exts = new HashSet<>();
-		exts.add(new ExtensionHolder("/SAPDevelop/prj/y63/hybris/bin/platform/ext/core", "core"));
-		exts.add(new ExtensionHolder("/SAPDevelop/prj/y63/hybris/bin/platform/ext/hac", "hac"));
-		return exts;
-	}
-
-	public static void main(String[] args)
-	{
-		isTestMode = true;
-		File platformHome = new File("/SAPDevelop/prj/y63/hybris/bin/platform");
-		skipJarScanning(platformHome);
 	}
 }
