@@ -4,6 +4,7 @@ What is it?
 -----------
 This Eclipse plugin makes developers more efficient by taking care of some of the common issues of developing with the SAP Hybris Commerce Suite. For example, with this plugin it's possible to have a new project workspace quickly configured with all project extensions compiling in minutes rather than hours.
 
+
 Features
 -----------
 * Import platform into workspace
@@ -20,7 +21,9 @@ Features
 
 User Guide
 ----------
-This GitHub repository is for managing the source code of the plugin. To get the access installation binaries and user guide goto the relevant page on the Application Lifecycle Framework for Commerce: [SAP Hybris Commerce development tools for Eclipse](https://wiki.hybris.com/display/hybrisALF/SAP+Hybris+Commerce+development+tools+for+Eclipse).
+This GitHub repository is for managing the source code of the plugin.
+
+To install the plugin visit the [Eclipse Marketplace](https://marketplace.eclipse.org/content/sap-hybris-commerce-development-tools-eclipse)and for up to date documentation, the Application Lifecycle Framework for Commerce: [SAP Hybris Commerce development tools for Eclipse](https://wiki.hybris.com/display/hybrisALF/SAP+Hybris+Commerce+development+tools+for+Eclipse).
 
 Compile and Install From Source
 -------------------------------
