@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
  */
 public class SkipJarScanningUtils
 {
-	public static final String TOMCAT_CATALINA_PROPERTIES_FILE = "tomcat/conf/catalina.properties";
+	public static final String TOMCAT_CATALINA_PROPERTIES_FILE = "tomcat" + File.separator + "conf" + File.separator + "catalina.properties";
 	public static final String REGEX_TO_REPLACE = "org.apache.catalina.startup.TldConfig.jarsToSkip=[^\\#]*";
 	public static final String REPLACEMENT_PREFIX = "org.apache.catalina.startup.TldConfig.jarsToSkip=tomcat7-websocket.jar";
 
@@ -61,7 +61,7 @@ public class SkipJarScanningUtils
 
 	public static void skipJarScanning(File platformHome)
 	{
-		String fileFullPath = platformHome.getAbsolutePath() + "/../../config/" + TOMCAT_CATALINA_PROPERTIES_FILE;
+		String fileFullPath = platformHome.getAbsolutePath() + File.separator + ".." + File.separator + ".." + File.separator + "config" + File.separator + TOMCAT_CATALINA_PROPERTIES_FILE;
 		File catalinaFile = new File(fileFullPath);
 		List<String> jarNameList = new ArrayList<>();
 		if (catalinaFile.exists())
