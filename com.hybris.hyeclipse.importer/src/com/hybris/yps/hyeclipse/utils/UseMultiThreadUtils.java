@@ -12,12 +12,11 @@ import java.nio.file.Paths;
  */
 public class UseMultiThreadUtils
 {
-	public static final String TOMCAT_SERVER_XML_FILE = "tomcat/conf/server.xml";
-
+	public static final String TOMCAT_SERVER_XML_FILE = "tomcat" + File.separator + "conf" + File.separator + "server.xml";
 
 	public static void useMultiThread(File platformHome)
 	{
-		String fileFullPath = platformHome.getAbsolutePath() + "/../../config/" + TOMCAT_SERVER_XML_FILE;
+		String fileFullPath = platformHome.getAbsolutePath() + File.separator + ".." + File.separator + ".." + File.separator + "config" + File.separator + TOMCAT_SERVER_XML_FILE;
 		File serverXmlFile = new File(fileFullPath);
 		if (serverXmlFile.exists())
 		{
