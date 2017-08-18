@@ -168,7 +168,7 @@ public class ImportPlatformPage extends WizardPage
 		skipJarScanningLabel.setToolTipText("Configure the Tomcat catalina.properties to set the value of org.apache.catalina.startup.ContextConfig.jarsToSkip");
 		skipJarScanningLabel.setLayoutData(gdFillHorizontal);
 		
-		setControl( parent );
+		setControl( container );
 		setPageComplete( false );
 	}
 
