@@ -40,7 +40,7 @@ public class AttachSourcesPage extends WizardPage
 		container.setLayout(new GridLayout(2, false));
 
 		this.sourceFileField = new FileFieldEditor("fileSelect", "[y] Source Archive:", container);
-		sourceFileField.setFileExtensions( new String[]{"zip"} );
+		sourceFileField.setFileExtensions( new String[]{"*.zip"} );
 		// Set the starting path to the downloads folder or home dir of the current user.
 		sourceFileField.setFilterPath( new File(System.getProperty("user.home")) );
 
