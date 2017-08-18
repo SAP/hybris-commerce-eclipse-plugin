@@ -44,7 +44,8 @@ public class SkipJarScanningUtils
 		excludedJarNamePrefixes.add("webFragmentCore");
 		excludedJarNamePrefixes.add("spring-security-taglibs-");
 		excludedJarNamePrefixes.add("spring-security-web-");
-
+		excludedJarNamePrefixes.add("displaytag");
+		
 		excludedJarPaths.add("cockpit/lib");
 	}
 
