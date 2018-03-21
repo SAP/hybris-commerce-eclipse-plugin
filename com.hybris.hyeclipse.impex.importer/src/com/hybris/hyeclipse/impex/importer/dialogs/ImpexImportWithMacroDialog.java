@@ -6,6 +6,8 @@ package com.hybris.hyeclipse.impex.importer.dialogs;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -80,7 +82,15 @@ public class ImpexImportWithMacroDialog extends TitleAreaDialog {
 		setImpexFileNameText(new Text(container, SWT.BORDER));
 		getImpexFileNameText().setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		getImpexFileNameText().setText(getImpexFileName());
-		// TODO: addModifyListener()
+		
+		getImpexFileNameText().addModifyListener(new ModifyListener() {
+			@Override
+			public void modifyText(final ModifyEvent modifyEvent) {
+				final Text text = (Text) modifyEvent.getSource();
+				setImpexFileName(text.getText());
+			}
+		});
+		
 		// TODO: Broswe button
 	}
 	
@@ -95,7 +105,15 @@ public class ImpexImportWithMacroDialog extends TitleAreaDialog {
 		setMacroFileNameText(new Text(container, SWT.BORDER));
 		getMacroFileNameText().setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		getMacroFileNameText().setText(getMacroFileName());		
-		// TODO: addModifyListener() 
+		
+		getMacroFileNameText().addModifyListener(new ModifyListener() {
+			@Override
+			public void modifyText(final ModifyEvent modifyEvent) {
+				final Text text = (Text) modifyEvent.getSource();
+				setMacroFileName(text.getText());
+			}
+		});
+
 		// TODO: Browse button
 	}
 	

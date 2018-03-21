@@ -49,9 +49,7 @@ public class ImpexImportWithMacroHandler extends AbstractHandler {
 		
 		
 		return null;
-		
-		// 
-		
+				
 		
 		/* from ImpexImportHandler
 		final IFile impexFile = getSelectedFile(HandlerUtil.getCurrentSelection(event));
