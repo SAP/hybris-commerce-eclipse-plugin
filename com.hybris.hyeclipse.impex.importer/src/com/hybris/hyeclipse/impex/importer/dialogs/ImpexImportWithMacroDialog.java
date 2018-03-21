@@ -17,18 +17,24 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import org.eclipse.jface.preference.FileFieldEditor;
 /**
  * 
  */
 public class ImpexImportWithMacroDialog extends TitleAreaDialog {	
-	private static final String IMPEX_FILE_NAME = "Impex file name:";
-	private static final String MACRO_FILE_NAME = "Macro file name:";
+	private static final String IMPEX_FILE_NAME = "Impex file name: ";
+	private static final String MACRO_FILE_NAME = "Macro file name: ";
+	private static final String BROWSE = "Browse...";
+	private static final String DIALOG_MESSAGE = "Select a macro file and an impex file name.";
+	
+	private static final String[] IMPEX_FILE_EXTENSIONS = new String[] { "*.impex" };
+	private static final String[] MACRO_FILE_EXTENSIONS = new String[] { "*.impex" };
 	
 	private String impexFileName = "";
-	private Text impexFileNameText;
+	private FileFieldEditor impexFileFieldEditor;
 
 	private String macroFileName = "";
-	private Text macroFileNameText;
+	private FileFieldEditor macroFileFieldEditor;
 	
 	
 	/**
@@ -51,14 +57,16 @@ public class ImpexImportWithMacroDialog extends TitleAreaDialog {
 		final Composite container = new Composite(area, SWT.NONE);
 		container.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		final GridLayout gridLayout = new GridLayout(2, false);
+		final GridLayout gridLayout = new GridLayout(1, false);
 		gridLayout.marginLeft = 10;
 		gridLayout.marginRight = 5;
 		container.setLayout(gridLayout);
 		
+		setMessage(DIALOG_MESSAGE);
+		
 		createMacroFileNameControls(container);
 		createImpexFileNameControls(container);
-
+		
 		return container;
 	}
 
@@ -76,22 +84,12 @@ public class ImpexImportWithMacroDialog extends TitleAreaDialog {
 	 * Create impexFileName controls: Label, Text & Browse button.
 	 */
 	protected void createImpexFileNameControls(Composite container) {
-		final Label impexFileNameLabel = new Label(container, SWT.NONE);
-		impexFileNameLabel.setText(IMPEX_FILE_NAME);
+		setImpexFileFieldEditor(new FileFieldEditor("notUsed", IMPEX_FILE_NAME, true, container));
 		
-		setImpexFileNameText(new Text(container, SWT.BORDER));
-		getImpexFileNameText().setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		getImpexFileNameText().setText(getImpexFileName());
-		
-		getImpexFileNameText().addModifyListener(new ModifyListener() {
-			@Override
-			public void modifyText(final ModifyEvent modifyEvent) {
-				final Text text = (Text) modifyEvent.getSource();
-				setImpexFileName(text.getText());
-			}
-		});
-		
-		// TODO: Broswe button
+		getImpexFileFieldEditor().setChangeButtonText(BROWSE);
+		getImpexFileFieldEditor().setEmptyStringAllowed(false);
+		getImpexFileFieldEditor().setFileExtensions(IMPEX_FILE_EXTENSIONS);
+		getImpexFileFieldEditor().getTextControl(container).setEditable(false);
 	}
 	
 	
@@ -99,22 +97,12 @@ public class ImpexImportWithMacroDialog extends TitleAreaDialog {
 	 * Create macroFileName controls: Label, Text & Browse button.
 	 */
 	protected void createMacroFileNameControls(Composite container) {
-		final Label macroFileNameLabel = new Label(container, SWT.NONE);
-		macroFileNameLabel.setText(MACRO_FILE_NAME);
+		setMacroFileFieldEditor(new FileFieldEditor("notUsed", MACRO_FILE_NAME, true, container));
 		
-		setMacroFileNameText(new Text(container, SWT.BORDER));
-		getMacroFileNameText().setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		getMacroFileNameText().setText(getMacroFileName());		
-		
-		getMacroFileNameText().addModifyListener(new ModifyListener() {
-			@Override
-			public void modifyText(final ModifyEvent modifyEvent) {
-				final Text text = (Text) modifyEvent.getSource();
-				setMacroFileName(text.getText());
-			}
-		});
-
-		// TODO: Browse button
+		getMacroFileFieldEditor().setChangeButtonText(BROWSE);
+		getMacroFileFieldEditor().setEmptyStringAllowed(false);
+		getMacroFileFieldEditor().setFileExtensions(MACRO_FILE_EXTENSIONS);
+		getMacroFileFieldEditor().getTextControl(container).setEditable(false);
 	}
 	
 	
@@ -140,32 +128,45 @@ public class ImpexImportWithMacroDialog extends TitleAreaDialog {
 	
 	@Override
 	protected void okPressed() {
-		setImpexFileName(impexFileName);
-		setMacroFileName(macroFileName);
+		setErrorMessage("");
+		
+		if (!getImpexFileFieldEditor().isValid()) {
+			setErrorMessage(IMPEX_FILE_NAME + getImpexFileFieldEditor().getErrorMessage());
+			return;
+		}
+		
+		if (!getMacroFileFieldEditor().isValid()) {
+			setErrorMessage(MACRO_FILE_NAME + getMacroFileFieldEditor().getErrorMessage());
+			return;
+		}
+
+		// Valid
+		setImpexFileName(getImpexFileFieldEditor().getStringValue());
+		setMacroFileName(getMacroFileFieldEditor().getStringValue());
 		
 		super.okPressed();
 	}
 	
 	
-	protected Text getImpexFileNameText() {
-		return impexFileNameText;
+	protected FileFieldEditor getImpexFileFieldEditor() {
+		return impexFileFieldEditor;
 	}
 	
 	
-	protected void setImpexFileNameText(final Text impexFileNameText) {
-		this.impexFileNameText = impexFileNameText;
+	protected void setImpexFileFieldEditor(final FileFieldEditor impexFileFieldEditor) {
+		this.impexFileFieldEditor = impexFileFieldEditor;
 	}
 	
 	
-	protected Text getMacroFileNameText() {
-		return macroFileNameText;
+	protected FileFieldEditor getMacroFileFieldEditor() {
+		return macroFileFieldEditor;
 	}
 	
 	
-	protected void setMacroFileNameText(final Text macroFileNameText) {
-		this.macroFileNameText = macroFileNameText;
+	protected void setMacroFileFieldEditor(final FileFieldEditor macroFileFieldEditor) {
+		this.macroFileFieldEditor = macroFileFieldEditor;
 	}
-	
+	 
 	
 	public String getImpexFileName() {
 		return impexFileName;
