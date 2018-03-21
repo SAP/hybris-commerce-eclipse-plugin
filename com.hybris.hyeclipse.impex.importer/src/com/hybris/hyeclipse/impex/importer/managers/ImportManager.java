@@ -61,6 +61,7 @@ public class ImportManager extends AbstractHACCommunicationManager {
 		super();
 	}
 
+	
 	/**
 	 * Performs an import of the impex file
 	 *
@@ -68,7 +69,7 @@ public class ImportManager extends AbstractHACCommunicationManager {
 	 *            file to be imported
 	 * @return message with import result
 	 */
-	public String performImport(final IFile impexFile) {
+	public String performImport(final String impexContent) {
 		updateLoginVariables();
 		String resultMessage;
 		try {
@@ -77,7 +78,7 @@ public class ImportManager extends AbstractHACCommunicationManager {
 			// continues only if logged in successfully
 			try {
 				fetchCsrfTokenFromHac();
-				resultMessage = postImpex(impexFile);
+				resultMessage = postImpex(impexContent);
 			} finally {
 				logoutFromHac();
 			}
@@ -87,6 +88,7 @@ public class ImportManager extends AbstractHACCommunicationManager {
 		return resultMessage;
 	}
 
+	
 	/**
 	 * Send HTTP POST request to {@link #getEndpointUrl(), imports impex
 	 *
@@ -96,13 +98,13 @@ public class ImportManager extends AbstractHACCommunicationManager {
 	 * @throws IOException
 	 * @throws HttpResponseException
 	 */
-	private String postImpex(final IFile file) throws HttpResponseException, IOException {
+	private String postImpex(final String impexContent) throws HttpResponseException, IOException {
 		final Map<String, String> parameters = new HashMap<>();
 		final HttpPost postRequest = new HttpPost(getEndpointUrl() + ImpexImport.IMPEX_IMPORT_PATH);
 		final RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(getTimeout()).build();
 		
 		parameters.put(ImpexImport.Parameters.ENCODING, getEncoding());
-		parameters.put(ImpexImport.Parameters.SCRIPT_CONTENT, getContentOfFile(file));
+		parameters.put(ImpexImport.Parameters.SCRIPT_CONTENT, impexContent);
 		parameters.put(ImpexImport.Parameters.MAX_THREADS, ImpexImport.Parameters.MAX_THREADS_VALUE);
 		parameters.put(ImpexImport.Parameters.VALIDATION_ENUM, ImpexImport.Parameters.VALIDATION_ENUM_VALUE);
 		
@@ -116,6 +118,7 @@ public class ImportManager extends AbstractHACCommunicationManager {
 		return getImportStatus(responseBody);
 	}
 
+	
 	/**
 	 * Extract impex import response from the parameter
 	 * 

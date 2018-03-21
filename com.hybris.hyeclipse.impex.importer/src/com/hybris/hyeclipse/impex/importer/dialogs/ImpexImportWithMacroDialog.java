@@ -129,14 +129,14 @@ public class ImpexImportWithMacroDialog extends TitleAreaDialog {
 	@Override
 	protected void okPressed() {
 		setErrorMessage("");
-		
-		if (!getImpexFileFieldEditor().isValid()) {
-			setErrorMessage(IMPEX_FILE_NAME + getImpexFileFieldEditor().getErrorMessage());
-			return;
-		}
-		
+
 		if (!getMacroFileFieldEditor().isValid()) {
 			setErrorMessage(MACRO_FILE_NAME + getMacroFileFieldEditor().getErrorMessage());
+			return;
+		}
+
+		if (!getImpexFileFieldEditor().isValid()) {
+			setErrorMessage(IMPEX_FILE_NAME + getImpexFileFieldEditor().getErrorMessage());
 			return;
 		}
 
