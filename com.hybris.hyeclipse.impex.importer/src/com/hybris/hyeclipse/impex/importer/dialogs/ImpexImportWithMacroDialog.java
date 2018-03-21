@@ -51,7 +51,7 @@ public class ImpexImportWithMacroDialog extends TitleAreaDialog {
 		final Composite container = new Composite(area, SWT.NONE);
 		container.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		final GridLayout gridLayout = new GridLayout(3, false);
+		final GridLayout gridLayout = new GridLayout(2, false);
 		gridLayout.marginLeft = 10;
 		gridLayout.marginRight = 5;
 		container.setLayout(gridLayout);
