@@ -22,6 +22,8 @@ public class ImportExtensionPage extends WizardPage
 	public static final String REMOVE_HYBRIS_BUILDER_PREFERENCE = "removeHybrisBuilderPreference";
 	public static final String FIX_CLASS_PATH_ISSUES_PREFERENCE = "fixClassPathIssuesPreference";
 
+	private static final String BROWSE = "Browse...";
+
 	private DirectoryFieldEditor	extensionDirectoryFieldEditor;
 	private Button fixClasspathIssuesButton;
 	private Button removeHybrisItemsXmlGeneratorButton;
@@ -51,27 +53,28 @@ public class ImportExtensionPage extends WizardPage
 			container.setLayoutData(gridData);
 		}
 		
-		this.extensionDirectoryFieldEditor = new DirectoryFieldEditor( "notUsed", "[y] Extension folder: ", container );
+		extensionDirectoryFieldEditor = new DirectoryFieldEditor( "notUsed", "[y] Extension folder: ", container );
+		extensionDirectoryFieldEditor.setChangeButtonText(BROWSE);
+		extensionDirectoryFieldEditor.setEmptyStringAllowed(false);
+		extensionDirectoryFieldEditor.getTextControl(container).setEditable(false);
+		
 		GridData span2 = new GridData();
 		span2.horizontalSpan = 2;
 		
-		extensionDirectoryFieldEditor.getTextControl( container ).addModifyListener( new ModifyListener() 
+		extensionDirectoryFieldEditor.getTextControl(container).addModifyListener( new ModifyListener() 
 		{
 			@Override
-			public void modifyText(ModifyEvent e)
+			public void modifyText(ModifyEvent modifyEvent)
 			{
-				// no validation just yet, as this even gets triggered:
-				// (1) copy and paste: once
-				// (2) manual typing: once per character entered
-				// (3) per change button - selection: once
-				// so because of #2: need to do validation when submitting the wizard (in it's performFinish())
-				
+				// The field is not editable, the only way is for them to select a directory
+				// with the Browse.. button. Therefore it should be valid. This just triggers
+				// that the data has been entered so that we can complete the page.
 				setPageComplete(true);
 				
-				// let the wizard update it's buttons
+				// Update the wizard buttons.
 				getWizard().getContainer().updateButtons();
 				
-				// erase any previous error messages and wait until the performFinish validation happens
+				// Erase any previous error messages and wait until the performFinish validation happens.
 				setErrorMessage(null);
 			}
 		} );
@@ -112,8 +115,8 @@ public class ImportExtensionPage extends WizardPage
 		removeHybrisItemsXmlGeneratorLabel.setToolTipText("The Hybris Builder will run a build to generate classes on every items.xml save. This generally slows down development and it's usually better to generate the classes by running a build manually");
 		removeHybrisItemsXmlGeneratorLabel.setLayoutData(gridDataFillHorizontal);
 		
-		setControl( container );
-		setPageComplete( false );
+		setControl(container);
+		setPageComplete(false);
 	}
 
 	
