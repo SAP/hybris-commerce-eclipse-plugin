@@ -156,8 +156,7 @@
 
    <!-- croy :: start -->
 
-   <!-- Import Extension: As a new wizard -->
-   <!--
+   <!-- Import Extension: By extending Eclipse ExternalProjectImportWizard -->
    <extension point="org.eclipse.ui.importWizards">
       <category name="SAP Hybris [y]"
             id="com.hybris.yps.hyeclipse.wizards">
@@ -168,24 +167,7 @@
             class="com.hybris.yps.hyeclipse.wizards.ImportExtensionWizard"
             id="com.hybris.yps.hyeclipse.wizards.importextension">
          <description>
-            Import the SAP Hybris extenion.
-         </description>
-      </wizard>
-   </extension>
-   -->
-
-   <!-- Import Extension: By extending Eclipse ExternalProjectImportWizard -->
-   <extension point="org.eclipse.ui.importWizards">
-      <category name="SAP Hybris [y]"
-            id="com.hybris.yps.hyeclipse.wizards">
-      </category>
-      <wizard name="Import SAP Hybris Extension"
-      		icon="icon/hybris.ico"
-            category="com.hybris.yps.hyeclipse.wizards"
-            class="com.hybris.yps.hyeclipse.wizards.ImportExtensionWizard2"
-            id="com.hybris.yps.hyeclipse.wizards.importextension">
-         <description>
-            Import the SAP Hybris extenion.
+            Import SAP Hybris extenion.
          </description>
       </wizard>
    </extension>
