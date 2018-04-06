@@ -1,6 +1,17 @@
 package com.hybris.yps.hyeclipse.wizards;
 
 import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
+import org.xml.sax.SAXException;
+
+import com.hybris.yps.hyeclipse.utils.FixProjectsUtils;
+
+import java.io.IOException;
+import org.eclipse.core.runtime.IPath;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.xpath.XPathExpressionException;
+
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -58,10 +69,41 @@ public class ImportExtensionWizard extends Wizard implements IImportWizard {
 	}
 
 	
-	@SuppressWarnings("restriction")
 	@Override
 	public boolean performFinish() {
-		return getMainPage().createProjects();
+		try {
+			// platformPath
+			IPath platformPath = FixProjectsUtils.getPlatformPath();
+			if (platformPath == null) {
+				System.out.println("ERROR: platformPath not found!");
+			} else {
+				System.out.println("platformPath=[" + platformPath + "]");
+			}
+			
+
+			// TODO Handle Checkbox Update Classpath
+			
+			
+			// Handle Checkbox Update localExtensions.xml
+			ImportExtensionPage importExtensionPage = getMainPage();
+			boolean result = importExtensionPage.createProjects();
+			if (result) {
+				FixProjectsUtils.updateLocalExtensions(importExtensionPage.getCreatedProjects());
+			}
+			
+		} catch (XPathExpressionException exception) {
+			exception.printStackTrace();
+		} catch (ParserConfigurationException exception) {
+			exception.printStackTrace();
+		} catch (SAXException exception) {
+			exception.printStackTrace();
+		} catch (IOException exception) {
+			exception.printStackTrace();
+		} catch (TransformerException exception) {
+			exception.printStackTrace();
+		}
+		
+		return true;
 	}
 	
 	

@@ -323,6 +323,7 @@ public class ImportExtensionPage extends WizardDataTransferPage {
 	private ConflictingProjectFilter conflictingProjectsFilter = new ConflictingProjectFilter();
 	private Button copyCheckbox;
 	private boolean copyFiles = false;
+	private List<IProject> createdProjects;
 	private IStructuredSelection currentSelection;
 
 	private Combo directoryPathField;
@@ -1199,7 +1200,8 @@ public class ImportExtensionPage extends WizardDataTransferPage {
 		saveWidgetValues();
 
 		final Object[] selected = projectsList.getCheckedElements();
-		createdProjects = new ArrayList<>();
+		setCreatedProjects(new ArrayList<IProject>());
+		
 		WorkspaceModifyOperation op = new WorkspaceModifyOperation() {
 			@Override
 			protected void execute(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
@@ -1242,14 +1244,10 @@ public class ImportExtensionPage extends WizardDataTransferPage {
 
 			// Ensure the projects to the working sets
 			addToWorkingSets();
-			
-			// TODO: fix classpath
-			// TODO: update local extensions
 		}
 		return true;
 	}
 
-	List<IProject> createdProjects;
 
 	private void addToWorkingSets() {
 
@@ -1259,7 +1257,7 @@ public class ImportExtensionPage extends WizardDataTransferPage {
 			return; // no Working set is selected
 		}
 		IWorkingSetManager workingSetManager = PlatformUI.getWorkbench().getWorkingSetManager();
-		for (IProject element : createdProjects) {
+		for (IProject element : getCreatedProjects()) {
 			workingSetManager.addToWorkingSets(element, selectedWorkingSets);
 		}
 	}
@@ -1285,7 +1283,7 @@ public class ImportExtensionPage extends WizardDataTransferPage {
 		String projectName = record.getProjectName();
 		final IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		final IProject project = workspace.getRoot().getProject(projectName);
-		createdProjects.add(project);
+		getCreatedProjects().add(project);
 		if (record.description == null) {
 			// error case
 			record.description = workspace.newProjectDescription(projectName);
@@ -1609,7 +1607,17 @@ public class ImportExtensionPage extends WizardDataTransferPage {
 	protected boolean allowNewContainerName() {
 		return true;
 	}
+	
+	
+	protected List<IProject> getCreatedProjects() {
+		return createdProjects;
+	}
 
+	
+	protected void setCreatedProjects(final List<IProject> createdProjects) {
+		this.createdProjects = createdProjects; 
+	}
+	
 	
 	protected Boolean getFixClasspath() {
 		return fixClasspath;

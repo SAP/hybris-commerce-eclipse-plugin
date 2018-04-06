@@ -1,7 +1,10 @@
 package com.hybris.yps.hyeclipse.utils;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -20,17 +23,25 @@ import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPathFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -42,8 +53,10 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -55,6 +68,11 @@ public class FixProjectsUtils {
 	
 	private static Activator plugin = Activator.getDefault();
 	private static final boolean debug = plugin.isDebugging();
+
+	private static final String CONFIG = "config";
+	private static final String PLATFORM = "platform";
+	private static final String LOCAL_EXTENSIONS = "localextensions.xml";
+	
 	
 	public static Set<ExtensionHolder> getAllExtensionsForPlatform(String platformHome) {
 		Set<ExtensionHolder> allExtensions  = plugin.getAllExtensionsForPlatform(platformHome);
@@ -571,4 +589,123 @@ public class FixProjectsUtils {
 			Activator.logError("Could not set output directory", e);
 		}
 	}
+	
+	
+	public static void updateLocalExtensions(List<IProject> createdProjects) throws XPathExpressionException, ParserConfigurationException, SAXException, IOException, TransformerException {
+		// Get configPath = workspace/hybris-commerce/hybris/config 
+		IPath configPath = getConfigPath();
+		if (configPath == null) {
+			return;
+		}
+		
+		String localExtensionsPath = configPath.toString() + "/" + LOCAL_EXTENSIONS;
+		FileInputStream localExtensionsFileInputStream = new FileInputStream(localExtensionsPath);
+		
+		// DocumentBuilderFactory & DocumentBuilder
+		DocumentBuilderFactory documentBuilderFactory = newDocumentBuilderFactory();
+		DocumentBuilder documentBuilder = newDocumentBuilder(documentBuilderFactory);
+		
+		// Xml Document
+		Document xmlDocument = documentBuilder.parse(localExtensionsFileInputStream);
+		localExtensionsFileInputStream.close();
+		
+		// XPath: Find the extensions node.
+		XPath xPath = XPathFactory.newInstance().newXPath();
+		String extensionsExpression = "/hybrisconfig/extensions[last()]";
+		Node extensionsNode = (Node) xPath.evaluate(extensionsExpression, xmlDocument, XPathConstants.NODE);
+		
+		// Insert extension element(s).
+		for(IProject project : createdProjects) {
+			Element extensionElement = xmlDocument.createElement("extension");
+			extensionElement.setAttribute("name", project.getName());
+			extensionsNode.appendChild(extensionElement);
+		}
+		
+		writeLocalExtensions(xmlDocument, localExtensionsPath);
+	}
+	
+	
+	public static DocumentBuilderFactory newDocumentBuilderFactory() throws ParserConfigurationException { 
+		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+		documentBuilderFactory.setValidating(true);
+		documentBuilderFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+		documentBuilderFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+		
+		return documentBuilderFactory;
+	}
+	
+	
+	public static DocumentBuilder newDocumentBuilder(final DocumentBuilderFactory documentBuilderFactory) throws ParserConfigurationException {
+		DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+		
+		documentBuilder.setErrorHandler(new ErrorHandler() {
+			@Override
+		    public void fatalError(SAXParseException exception) throws SAXException {
+				// Do nothing.
+			}
+	
+		    @Override
+		    public void error(SAXParseException exception) throws SAXException {
+		    		// Do nothing.
+		    }
+	
+		    @Override
+		    public void warning(SAXParseException exception) throws SAXException {
+		    		// Do nothing.
+		    }
+		    
+		});
+		
+		return documentBuilder;
+	}
+
+
+	/**
+	 * Write localextensions.xml out to disk.
+	 * Note: The formatting sort of works, the new entries for <extension/> are indented
+	 * but the overall indenting of the file is not consistent.  
+	 */
+	public static void writeLocalExtensions(Document xmlDocument, String localExtensionsPath) throws TransformerException {
+		DOMSource domSource = new DOMSource(xmlDocument);
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		Transformer transformer = transformerFactory.newTransformer();
+		transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+		transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+		transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+		StreamResult streamResult = new StreamResult(new File(localExtensionsPath));
+        transformer.transform(domSource, streamResult);
+	}
+
+	
+	/**
+	 * Get the full path of a project in the workspace.
+	 */
+	public static IPath getProjectPath(final String projectName) {
+		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+		IProject project = workspaceRoot.getProject(projectName);
+
+		if (project.exists()) {
+			return project.getLocation();
+		}
+		
+		return null;
+	}
+	
+	
+	/**
+	 * Get the full path of the platform folder.
+	 */
+	public static IPath getPlatformPath() {
+		return getProjectPath(PLATFORM);
+	}
+
+	
+	/**
+	 * Get the full path of the config folder.  
+	 */
+	public static IPath getConfigPath() {
+		return getProjectPath(CONFIG);
+	}
+
 }
