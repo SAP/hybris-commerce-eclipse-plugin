@@ -7,14 +7,14 @@
 	<parent>
 		<groupId>com.hybris.hyeclipse</groupId>
 		<artifactId>com.hybris.hyeclipse.parent</artifactId>
-		<version>1.0.4</version>
+		<version>1.0.5</version>
 	</parent>
 	
 	<artifactId>com.hybris.hyeclipse.importer</artifactId>
 	<packaging>eclipse-plugin</packaging>
 	<name>SAP Hybris Commerce, development tools for Eclipse importer (plugin)</name>
 	<description>Project Importer</description>
-	<version>1.0.4-SNAPSHOT</version>
+	<version>1.0.5-SNAPSHOT</version>
 	<url>https://wiki.hybris.com/display/hyps/SAP+Hybris+Commerce+development+tools+for+Eclipse</url>
 	<organization>
 		<name>SAP Hybris Expert Services</name>

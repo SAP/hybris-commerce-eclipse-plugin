@@ -7,14 +7,14 @@
 	<parent>
 		<groupId>com.hybris.hyeclipse</groupId>
 		<artifactId>com.hybris.hyeclipse.parent</artifactId>
-		<version>1.0.4</version>
+		<version>1.0.5</version>
 	</parent>
 	
 	<artifactId>com.hybris.hyeclipse.editor</artifactId>
 	<packaging>eclipse-plugin</packaging>
 	<name>SAP Hybris Commerce, development tools for Eclipse Java editor</name>
 	<description>Copyrights Save Action</description>
-	<version>1.0.4-SNAPSHOT</version>
+	<version>1.0.5-SNAPSHOT</version>
 	<organization>
 		<url>https://wiki.hybris.com/display/hyps</url>
 		<name>SAP Hybris Expert Services</name>

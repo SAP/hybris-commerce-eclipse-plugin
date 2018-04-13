@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: junit
 Bundle-SymbolicName: com.hybris.hyeclipse.junit;singleton:=true
-Bundle-Version: 1.0.4.qualifier
+Bundle-Version: 1.0.5.qualifier
 Bundle-Activator: com.hybris.hyeclipse.junit.Activator
 Bundle-Vendor: HYBRIS
 Require-Bundle: org.eclipse.ui,

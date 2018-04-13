@@ -2,7 +2,7 @@
 <feature
       id="com.hybris.hyeclipse.feature"
       label="SAP Hybris Commerce, development tools for Eclipse"
-      version="1.0.4.qualifier"
+      version="1.0.5.qualifier"
       provider-name="SAP Hybris Expert Services">
 
    <description url="https://wiki.hybris.com/display/hyps/SAP+Hybris+Commerce+development+tools+for+Eclipse">
@@ -173,7 +173,7 @@ All rights reserved.
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="com.hybris.hyeclipse.script.executor"
          download-size="0"
@@ -188,12 +188,12 @@ All rights reserved.
          version="0.0.0"
          unpack="false"/>
 
-    <plugin
-            id="com.hybris.hyeclipse.junit"
-            download-size="0"
-            install-size="0"
-            version="0.0.0"
-            unpack="false"/>
+   <plugin
+         id="com.hybris.hyeclipse.junit"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
    <plugin
          id="com.hybris.hyeclipse.editor"
