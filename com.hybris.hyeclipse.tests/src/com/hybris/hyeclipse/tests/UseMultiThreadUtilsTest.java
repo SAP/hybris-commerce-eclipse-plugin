@@ -1,7 +1,5 @@
 package com.hybris.hyeclipse.tests;
 
-import static org.junit.Assert.fail;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,6 +16,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.hybris.yps.hyeclipse.utils.UseMultiThreadUtils;
@@ -56,6 +57,18 @@ public class UseMultiThreadUtilsTest {
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder db = dbFactory.newDocumentBuilder();
 		Document doc = db.parse(serverxml.toFile());
+		
+		NodeList nodes = doc.getElementsByTagName(UseMultiThreadUtils.FIND_TAG_NODE);
+		for (int i = 0; i < nodes.getLength(); i++) {
+			Node n = nodes.item(i);
+			NamedNodeMap attrs = n.getAttributes();
+			Node ss = attrs.getNamedItem(UseMultiThreadUtils.SS_ATTRIBUTE);
+			if (ss != null) {
+				Assert.assertEquals("value in XML should have value '0'", UseMultiThreadUtils.SS_RESET_VALUE, ss.getTextContent());
+			}
+		}
+		
+		
 	}
 	
 	@After
