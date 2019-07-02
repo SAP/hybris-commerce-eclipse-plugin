@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Tests
+Bundle-SymbolicName: com.hybris.hyeclipse.tests
+Bundle-Version: 1.0.4.qualifier
+Bundle-Vendor: HYBRIS
+Fragment-Host: com.hybris.hyeclipse.importer;bundle-version="1.0.4"
+Automatic-Module-Name: com.hybris.hyeclipse.tests
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.junit
