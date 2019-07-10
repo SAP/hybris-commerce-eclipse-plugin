@@ -24,16 +24,19 @@
 		<!-- PROJECT SETTINGS -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<sonar.host.url>http://localhost:9000</sonar.host.url>
+		<sonar.login>eda79532c62e9bdee9a12296c789d1e712d9bcce</sonar.login>
 	</properties>
 
 
 	<modules>
+		<module>com.hybris.hyeclipse.commons</module>
 		<module>com.hybris.hyeclipse.hac</module>
 		<module>com.hybris.hyeclipse.script.executor</module>
 		<module>com.hybris.hyeclipse.impexed</module>
 		<module>com.hybris.hyeclipse.impex.importer</module>
 		<module>com.hybris.hyeclipse.importer</module>
-		<module>com.hybris.hyeclipse.product</module>
+		<!-- <module>com.hybris.hyeclipse.product</module> -->
 		<module>com.hybris.hyeclipse.site</module>
 		<module>com.hybris.hyeclipse.feature</module>
 		<module>com.hybris.hyeclipse.ytypesystem</module>
@@ -52,14 +55,23 @@
 
 	<repositories>
 		<repository>
-			<id>neon</id>
+			<id>oxygen</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/releases/neon</url>
+			<url>http://download.eclipse.org/releases/oxygen</url>
 		</repository>
 		 
 	</repositories>
 
 	<build>
+	    <pluginManagement>
+	        <plugins>
+	            <plugin>
+	                <groupId>org.sonarsource.scanner.maven</groupId>
+	                <artifactId>sonar-maven-plugin</artifactId>
+	                <version>3.4.0.905</version>
+	            </plugin>
+	        </plugins>
+	    </pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
