@@ -1,10 +1,13 @@
 package com.hybris.hyeclipse.script.executor.preferences;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.window.Window;
@@ -119,7 +122,7 @@ public class HACScriptExecutionPreferencePage extends PreferencePage implements 
 			}
 		});
 
-		getScriptLanguagesForStore();
+		fetchScriptLanguagesForStore();
 		updateScriptList();
 
 		return entryTable;
@@ -184,7 +187,6 @@ public class HACScriptExecutionPreferencePage extends PreferencePage implements 
 	/**
 	 * Updates script list
 	 */
-	@SuppressWarnings("unchecked")
 	protected void updateScriptList() {
 		if (scriptLanguagesExtensionsMap == null) {
 			scriptLanguagesExtensionsMap = Collections.emptyMap();
@@ -195,12 +197,19 @@ public class HACScriptExecutionPreferencePage extends PreferencePage implements 
 
 	/**
 	 * Gets script languages from store
+	 * @throws IOException 
+	 * @throws ClassNotFoundException 
 	 */
 	@SuppressWarnings("unchecked")
-	protected void getScriptLanguagesForStore() {
-		PreferencesUtils
-				.readObjectFromStore(getPreferenceStore(), HACScriptExecutionPreferenceConstants.P_SCRIPT_LANGUAGES)
-				.ifPresent(map -> scriptLanguagesExtensionsMap = (Map<String, String>) map);
+	protected void fetchScriptLanguagesForStore() {
+		Object result;
+			result = PreferencesUtils
+			.readObjectFromStore(getPreferenceStore(), HACScriptExecutionPreferenceConstants.P_SCRIPT_LANGUAGES).orElse(null);
+		if (result instanceof Map) {
+			this.scriptLanguagesExtensionsMap = (Map<String, String>) result;
+		} else {
+			this.scriptLanguagesExtensionsMap = Collections.emptyMap();
+		}
 	}
 
 	/**

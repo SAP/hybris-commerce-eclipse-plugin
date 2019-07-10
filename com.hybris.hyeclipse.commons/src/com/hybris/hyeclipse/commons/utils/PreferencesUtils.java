@@ -7,9 +7,16 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Base64;
+import java.util.Map;
 import java.util.Optional;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.preference.IPreferenceStore;
+
+import com.hybris.hyeclipse.commons.Activator;
+
 
 /**
  * Utility class to work with eclipse preferences mechanism. 
@@ -49,8 +56,9 @@ public final class PreferencesUtils {
 	 * @param store store from which preference value will be read.
 	 * @param preferenceKey key by which preference will be obtained.
 	 * @return optional value of searched preference.
+	 * @throws Exception 
 	 */
-	@SuppressWarnings({ "unchecked", "finally" })
+	@SuppressWarnings("unchecked")
 	public static <T extends Serializable> Optional<T> readObjectFromStore(final IPreferenceStore store, final String preferenceKey) {
 		Optional<T> result = Optional.empty();
 		final String storedPreference = store.getString(preferenceKey);
@@ -58,14 +66,14 @@ public final class PreferencesUtils {
 		
 		try( final ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(bytes)) ) {
 			result = Optional.of( (T) objectInputStream.readObject());
+			return result;
 		} catch (ClassNotFoundException | IOException exception) {
 			ConsoleUtils.printError(exception.getMessage());
-		} finally {
-			
-			return result;
-		}
+			Activator.getDefault().getLog().log(new Status(IStatus.WARNING, Activator.PLUGIN_ID, "could not load preferences", exception));
+			return Optional.empty();
+		}		
 	}
-	
+		
 	/**
 	 * Serialize object to string
 	 * 

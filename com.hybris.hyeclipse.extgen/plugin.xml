@@ -35,16 +35,15 @@
    <extension
 		point="org.eclipse.ui.newWizards">
 		<category
-        icon="icon/hybris.ico"
         id="sapHybris"
         name="SAP Hybris [y]">
 		</category>
 		<wizard
-			name="New Extension"
-            icon="icon/hybris.ico"
-            category="sapHybris"
-            class="com.hybris.hyeclipse.extgen.wizards.NewExtensionWizard"
-            id="com.hybris.hyeclipse.extgen.wizards.NewExtensionWizard">
+        category="sapHybris"
+        class="com.hybris.hyeclipse.extgen.wizards.NewExtensionWizard"
+        descriptionImage="icon/hybris.ico"
+        id="com.hybris.hyeclipse.extgen.wizards.NewExtensionWizard"
+        name="New Extension">
 		</wizard>
 	</extension>
 </plugin>

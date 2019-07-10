@@ -1,5 +1,6 @@
 package com.hybris.hyeclipse.script.executor.managers;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -7,6 +8,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.json.JSONObject;
 import org.jsoup.helper.StringUtil;
 
@@ -28,18 +31,20 @@ public class ScriptExecutorManager extends AbstractHACCommunicationManager {
 	 */
 	private interface ScriptExecution {
 		final String EXECUTE_URL = "/console/scripting/execute";
+
 		interface Parameters {
 			final String COMMIT_NAME = "commit";
 			final String CONTENT_NAME = "script";
 			final String TYPE_NAME = "scriptType";
 		}
+
 		interface Response {
 			final String OUPUT_KEY = "outputText";
 			final String RESULT_KEY = "executionResult";
 			final String STACK_TRACE_KEY = "stacktraceText";
 		}
 	}
-	
+
 	/* Console strings */
 	private final String RESULT_LABEL = "Result: " + CharactersConstants.NEW_LINE;
 	private final String OUTPUT_LABEL = "Output: " + CharactersConstants.NEW_LINE;
@@ -47,8 +52,7 @@ public class ScriptExecutorManager extends AbstractHACCommunicationManager {
 	/**
 	 * Imports script to the hAC with rollback mode.
 	 * 
-	 * @param scriptFile
-	 *            script file to import
+	 * @param scriptFile script file to import
 	 */
 	public void importScript(final IFile scriptFile) {
 		postScriptExecution(scriptFile, false);
@@ -57,8 +61,7 @@ public class ScriptExecutorManager extends AbstractHACCommunicationManager {
 	/**
 	 * Imports and commit script to the hAC.
 	 * 
-	 * @param scriptFile
-	 *            script file to import
+	 * @param scriptFile script file to import
 	 */
 	public void commitScript(final IFile scriptFile) {
 		postScriptExecution(scriptFile, true);
@@ -67,10 +70,8 @@ public class ScriptExecutorManager extends AbstractHACCommunicationManager {
 	/**
 	 * Send post request to hAC in order to execute script
 	 * 
-	 * @param scriptFile
-	 *            File containing script to execute
-	 * @param commit
-	 *            indicate whether script will be committed.
+	 * @param scriptFile File containing script to execute
+	 * @param commit     indicate whether script will be committed.
 	 * @return request response
 	 */
 	protected String postScriptExecution(final IFile scriptFile, final Boolean commit) {
@@ -90,8 +91,7 @@ public class ScriptExecutorManager extends AbstractHACCommunicationManager {
 	/**
 	 * Prints script execution result to the console
 	 * 
-	 * @param jsonResult
-	 *            result of script import in JSON format.
+	 * @param jsonResult result of script import in JSON format.
 	 */
 	protected void displayScriptExecutionResult(final String jsonResult) {
 		final JSONObject result = new JSONObject(jsonResult);
@@ -114,25 +114,22 @@ public class ScriptExecutorManager extends AbstractHACCommunicationManager {
 	/**
 	 * Returns script language name by it's file extension
 	 * 
-	 * @param fileExtension
-	 *            script language file extension
+	 * @param fileExtension script language file extension
 	 * @return script language name by it's file extension
 	 */
 	@SuppressWarnings("unchecked")
 	protected String getScriptByExtension(final String fileExtension) {
-		final Optional<Serializable> preferenceObject = PreferencesUtils.readObjectFromStore(
-				Activator.getDefault().getPreferenceStore(), HACScriptExecutionPreferenceConstants.P_SCRIPT_LANGUAGES);
+		Optional<Serializable> preferenceObject;
+		Optional<String> scriptLanguage = Optional.empty();
+			preferenceObject = PreferencesUtils.readObjectFromStore(Activator.getDefault().getPreferenceStore(),
+					HACScriptExecutionPreferenceConstants.P_SCRIPT_LANGUAGES);
+			if (preferenceObject.isPresent()) {
+				final Map<String, String> scriptLnaguages = (Map<String, String>) preferenceObject.get();
 
-		if (preferenceObject.isPresent()) {
-			final Map<String, String> scriptLnaguages = (Map<String, String>) preferenceObject.get();
-
-			final Optional<String> scriptLanguage = scriptLnaguages.entrySet().stream()
-					.filter(entry -> Objects.equals(entry.getValue(), fileExtension)).map(Map.Entry::getKey)
-					.findFirst();
-
-			return scriptLanguage.orElse(null);
-		}
-
-		return null;
+				scriptLanguage = scriptLnaguages.entrySet().stream()
+						.filter(entry -> Objects.equals(entry.getValue(), fileExtension)).map(Map.Entry::getKey)
+						.findFirst();
+			}
+		return scriptLanguage.orElse(null);
 	}
 }

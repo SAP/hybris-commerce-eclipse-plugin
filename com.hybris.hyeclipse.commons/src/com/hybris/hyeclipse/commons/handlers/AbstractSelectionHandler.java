@@ -37,7 +37,7 @@ public abstract class AbstractSelectionHandler extends AbstractHandler {
 		if( PROJECT_EXPLORER_MENU_VALUE.equals(clickedMenuKey) ) {
 			handle(EclipseFileUtils.getSelectedFiles(HandlerUtil.getCurrentSelection(event)));
 		} else if( TEXT_EDITOR_MENU_VALUE.equals(clickedMenuKey) ) {
-			handle(EclipseFileUtils.getCurrentTextSelection().get());
+			handle(EclipseFileUtils.getCurrentTextSelection().orElseThrow(() -> new ExecutionException("missing text selection")));
 		}
 								
 		return null; // intended.
