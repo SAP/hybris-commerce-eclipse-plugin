@@ -6,8 +6,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.hybris.hyeclipse.hac.testers.AbstractFilePropertyTester;
-import com.hybris.hyeclipse.hac.utils.PreferencesUtils;
+import com.hybris.hyeclipse.commons.testers.AbstractFilePropertyTester;
+import com.hybris.hyeclipse.commons.utils.PreferencesUtils;
 import com.hybris.hyeclipse.script.executor.Activator;
 import com.hybris.hyeclipse.script.executor.preferences.HACScriptExecutionPreferenceConstants;
 
@@ -32,6 +32,7 @@ public class ScriptPropertyTester extends AbstractFilePropertyTester {
 	 * @param receiver
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	protected boolean testFileExtension(final Object receiver) {
 		Optional<Serializable> scriptPreferenceValue = PreferencesUtils.readObjectFromStore(
 				Activator.getDefault().getPreferenceStore(), HACScriptExecutionPreferenceConstants.P_SCRIPT_LANGUAGES);
@@ -42,7 +43,7 @@ public class ScriptPropertyTester extends AbstractFilePropertyTester {
 
 		
 		if( scriptPreferenceValue.isPresent() ) {
-			return testSelectedFileByExtensions(receiver, scriptsExtensions);
+			return testSelectedFilesByExtensions(receiver, scriptsExtensions);
 		}
 		
 		return false;

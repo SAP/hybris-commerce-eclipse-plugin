@@ -1,21 +1,20 @@
 package com.hybris.hyeclipse.script.executor.managers;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.apache.http.auth.AuthenticationException;
-import org.apache.http.client.HttpResponseException;
 import org.eclipse.core.resources.IFile;
 import org.json.JSONObject;
 import org.jsoup.helper.StringUtil;
 
+import com.hybris.hyeclipse.commons.utils.ConsoleUtils;
+import com.hybris.hyeclipse.commons.utils.CharactersConstants;
+import com.hybris.hyeclipse.commons.utils.EclipseFileUtils;
+import com.hybris.hyeclipse.commons.utils.PreferencesUtils;
 import com.hybris.hyeclipse.hac.manager.AbstractHACCommunicationManager;
-import com.hybris.hyeclipse.hac.utils.ConsoleUtils;
-import com.hybris.hyeclipse.hac.utils.PreferencesUtils;
 import com.hybris.hyeclipse.script.executor.Activator;
 import com.hybris.hyeclipse.script.executor.preferences.HACScriptExecutionPreferenceConstants;
 
@@ -42,8 +41,8 @@ public class ScriptExecutorManager extends AbstractHACCommunicationManager {
 	}
 	
 	/* Console strings */
-	private final String RESULT_LABEL = "Result: " + ConsoleUtils.NEW_LINE;
-	private final String OUTPUT_LABEL = "Output: " + ConsoleUtils.NEW_LINE;
+	private final String RESULT_LABEL = "Result: " + CharactersConstants.NEW_LINE;
+	private final String OUTPUT_LABEL = "Output: " + CharactersConstants.NEW_LINE;
 
 	/**
 	 * Imports script to the hAC with rollback mode.
@@ -52,7 +51,7 @@ public class ScriptExecutorManager extends AbstractHACCommunicationManager {
 	 *            script file to import
 	 */
 	public void importScript(final IFile scriptFile) {
-		performScriptImport(scriptFile, false);
+		postScriptExecution(scriptFile, false);
 	}
 
 	/**
@@ -62,33 +61,7 @@ public class ScriptExecutorManager extends AbstractHACCommunicationManager {
 	 *            script file to import
 	 */
 	public void commitScript(final IFile scriptFile) {
-		performScriptImport(scriptFile, true);
-	}
-
-	/**
-	 * Performs script import.
-	 * 
-	 * @param scriptFile
-	 *            script file to import
-	 * @param commit
-	 *            flat to determinate whether script will be committed or not.
-	 */
-	protected void performScriptImport(final IFile scriptFile, final Boolean commit) {
-		updateLoginVariables();
-
-		try {
-			fetchCsrfTokenFromHac();
-			loginToHac();
-			try {
-				fetchCsrfTokenFromHac();
-				postScriptExecution(scriptFile, commit);
-			} finally {
-				logoutFromHac();
-			}
-
-		} catch (final IOException | AuthenticationException e) {
-			ConsoleUtils.printError(e.getMessage());
-		}
+		postScriptExecution(scriptFile, true);
 	}
 
 	/**
@@ -98,20 +71,17 @@ public class ScriptExecutorManager extends AbstractHACCommunicationManager {
 	 *            File containing script to execute
 	 * @param commit
 	 *            indicate whether script will be committed.
-	 * @return
-	 * @throws HttpResponseException
-	 * @throws IOException
+	 * @return request response
 	 */
-	protected String postScriptExecution(final IFile scriptFile, final Boolean commit)
-			throws HttpResponseException, IOException {
+	protected String postScriptExecution(final IFile scriptFile, final Boolean commit) {
 		final Map<String, String> parameters = new HashMap<>();
 		final String scriptLanguage = getScriptByExtension(scriptFile.getFileExtension());
 
 		parameters.put(ScriptExecution.Parameters.TYPE_NAME, scriptLanguage);
 		parameters.put(ScriptExecution.Parameters.COMMIT_NAME, commit.toString());
-		parameters.put(ScriptExecution.Parameters.CONTENT_NAME, getContentOfFile(scriptFile));
+		parameters.put(ScriptExecution.Parameters.CONTENT_NAME, EclipseFileUtils.getContentOfFile(scriptFile));
 
-		final String response = sendPostRequest(ScriptExecution.EXECUTE_URL, parameters);
+		final String response = sendAuthenticatedPostRequest(ScriptExecution.EXECUTE_URL, parameters);
 
 		displayScriptExecutionResult(response);
 		return response;

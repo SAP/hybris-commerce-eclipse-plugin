@@ -99,6 +99,20 @@ All rights reserved.
    </license>
 
    <plugin
+         id="com.hybris.hyeclipse.commons"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.hybris.hyeclipse.property.configuration"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>      
+
+   <plugin
          id="com.hybris.hyeclipse.impexed"
          download-size="0"
          install-size="0"

@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.jsoup.helper.StringUtil;
 
-import com.hybris.hyeclipse.hac.utils.ConsoleUtils;
+import com.hybris.hyeclipse.commons.utils.CharactersConstants;
 
 /**
  * Class responsible for logic of add and modification of a script language.
@@ -115,7 +115,7 @@ public class ScriptLanguageDialog extends TitleAreaDialog {
 	public void create() {
 		super.create();
 		setTitle(title);
-		setMessage(ConsoleUtils.EMPTY_STRING);
+		setMessage(CharactersConstants.EMPTY_STRING);
 	}
 
 	/**
@@ -228,15 +228,15 @@ public class ScriptLanguageDialog extends TitleAreaDialog {
 		final StringBuilder errorMessage = new StringBuilder();
 
 		if (StringUtil.isBlank(name)) {
-			errorMessage.append(Validation.SCRIPT_NAME_BLANK_ERROR + ConsoleUtils.NEW_LINE);
+			errorMessage.append(Validation.SCRIPT_NAME_BLANK_ERROR + CharactersConstants.NEW_LINE);
 		}
 
 		if (StringUtil.isBlank(fileExtension)) {
-			errorMessage.append(Validation.SCRIPT_FILE_EXTENSION_BLANK_ERROR + ConsoleUtils.NEW_LINE);
+			errorMessage.append(Validation.SCRIPT_FILE_EXTENSION_BLANK_ERROR + CharactersConstants.NEW_LINE);
 		}
 
 		if (scriptLanguages.containsKey(name) && !isModification) {
-			errorMessage.append(Validation.SCRIPT_LANGUAGE_DUPLICATION_ERROR_MESSAGE + ConsoleUtils.NEW_LINE);
+			errorMessage.append(Validation.SCRIPT_LANGUAGE_DUPLICATION_ERROR_MESSAGE + CharactersConstants.NEW_LINE);
 		}
 
 		final Set<String> scriptLanguagesNames = scriptLanguages.entrySet().stream()
@@ -260,7 +260,7 @@ public class ScriptLanguageDialog extends TitleAreaDialog {
 	 * clear message.
 	 */
 	protected void clearMessage() {
-		setMessage(ConsoleUtils.EMPTY_STRING);
+		setMessage(CharactersConstants.EMPTY_STRING);
 	}
 	
 	public String getScriptLanguageName() {

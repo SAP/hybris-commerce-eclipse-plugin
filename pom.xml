@@ -46,7 +46,7 @@
 		<module>com.hybris.hyeclipse.extgen</module>
 		<module>com.hybris.hyeclipse.junit</module>
 		<module>com.hybris.hyeclipse.editor</module>
-		
+		<module>com.hybris.hyeclipse.property.configuration</module>
 		<module>com.hybris.hyeclipse.tests</module>
 	</modules>
 
