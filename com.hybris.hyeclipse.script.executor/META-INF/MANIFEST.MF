@@ -14,3 +14,10 @@ Require-Bundle: org.eclipse.ui,
  com.hybris.hyeclipse.commons
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
+Automatic-Module-Name: com.hybris.hyeclipse.script.executor
+Export-Package: com.hybris.hyeclipse.script.executor,
+ com.hybris.hyeclipse.script.executor.dialog,
+ com.hybris.hyeclipse.script.executor.handlers,
+ com.hybris.hyeclipse.script.executor.managers,
+ com.hybris.hyeclipse.script.executor.preferences,
+ com.hybris.hyeclipse.script.executor.testers

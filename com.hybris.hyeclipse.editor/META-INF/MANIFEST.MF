@@ -15,3 +15,13 @@ Require-Bundle: org.eclipse.ui,
  com.hybris.hyeclipse.hac;bundle-version="1.0.4"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
+Import-Package: com.hybris.hyeclipse.commons.utils
+Automatic-Module-Name: com.hybris.hyeclipse.editor
+Export-Package: com.hybris.hyeclipse.editor,
+ com.hybris.hyeclipse.editor.copyright,
+ com.hybris.hyeclipse.editor.copyright.constant,
+ com.hybris.hyeclipse.editor.copyright.fix,
+ com.hybris.hyeclipse.editor.copyright.manager,
+ com.hybris.hyeclipse.editor.copyright.page,
+ com.hybris.hyeclipse.editor.preferences,
+ com.hybris.hyeclipse.editor.ui

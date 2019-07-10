@@ -24,4 +24,9 @@ Bundle-ClassPath: .
 Bundle-Vendor: SAP Hybris Expert Services
 Export-Package: com.hybris.yps.hyeclipse,
  com.hybris.yps.hyeclipse.extensionmods,
- com.hybris.yps.hyeclipse.utils
+ com.hybris.yps.hyeclipse.handlers,
+ com.hybris.yps.hyeclipse.handlers.help,
+ com.hybris.yps.hyeclipse.preferences,
+ com.hybris.yps.hyeclipse.utils,
+ com.hybris.yps.hyeclipse.wizards
+Automatic-Module-Name: com.hybris.hyeclipse.importer

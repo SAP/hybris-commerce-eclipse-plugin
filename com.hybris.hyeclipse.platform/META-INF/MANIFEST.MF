@@ -12,4 +12,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui.workbench
 Bundle-ClassPath: .
 Bundle-Activator: com.hybris.hyeclipse.platform.internal.Plugin
-Export-Package: com.hybris.hyeclipse.platform;version="1.0.3"
+Export-Package: com.hybris.hyeclipse.platform;version="1.0.3",
+ com.hybris.hyeclipse.platform.internal;x-internal:=true
+Automatic-Module-Name: com.hybris.hyeclipse.platform

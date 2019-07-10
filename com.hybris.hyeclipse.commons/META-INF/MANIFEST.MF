@@ -42,3 +42,4 @@ Export-Package: com.hybris.hyeclipse.commons.handlers,
 Bundle-ClassPath: lib/commons-io-2.5.jar,
  .,
  lib/commons-lang3-3.6.jar
+Automatic-Module-Name: com.hybris.hyeclipse.commons
