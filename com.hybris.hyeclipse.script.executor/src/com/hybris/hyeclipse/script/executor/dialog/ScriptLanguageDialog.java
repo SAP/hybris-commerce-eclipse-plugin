@@ -20,31 +20,12 @@ import org.eclipse.swt.widgets.Text;
 import org.jsoup.helper.StringUtil;
 
 import com.hybris.hyeclipse.commons.utils.CharactersConstants;
+import com.hybris.hyeclipse.script.executor.preferences.Messages;
 
 /**
  * Class responsible for logic of add and modification of a script language.
  */
 public class ScriptLanguageDialog extends TitleAreaDialog {
-
-	/**
-	 * Dialog strings properties
-	 */
-	private interface Dialog {
-		final String MODIFY_SCRIPT_LANGUAGE_DIALOG_TITLE = "Modifiy script language";
-		final String ADD_NEW_SCRIPT_LANGUAGE_DIALOG_TITLE = "Add new script language";
-		final String SCRIPT_LANGUAGE_NAME_LABEL_TEXT = "Script language";
-		final String SCRIPT_LANGUAGE_FILE_EXTENSION_LABEL_TEXT = "File extension";
-	}
-	
-	/**
-	 * Validation messages
-	 */
-	private interface Validation {
-		final String SCRIPT_NAME_BLANK_ERROR = "Script name cannot be blank";
-		final String SCRIPT_FILE_EXTENSION_BLANK_ERROR = "Script language file extension cannot be blank";
-		final String SCRIPT_FILE_EXTENSION_DUPLICATION = "Script with such file extension already exist.";
-		final String SCRIPT_LANGUAGE_DUPLICATION_ERROR_MESSAGE = "Script language with tihs name alredy exsits.";
-	}
 
 	/**
 	 * Determinate whether dialog is open in modification or creation mode.
@@ -83,7 +64,7 @@ public class ScriptLanguageDialog extends TitleAreaDialog {
 
 		this.isModification = false;
 		this.scriptLanguages = scriptLanguages;
-		this.title = Dialog.ADD_NEW_SCRIPT_LANGUAGE_DIALOG_TITLE;
+		this.title = Messages.ScriptLanguageDialog_Add_Lang;
 	}
 
 	/**
@@ -104,7 +85,7 @@ public class ScriptLanguageDialog extends TitleAreaDialog {
 		this.scriptLanguages = scriptLanguages;
 		this.scriptLanguageName = scriptLanguageName;
 		this.oldScriptLanguageName = scriptLanguageName;
-		this.title = Dialog.MODIFY_SCRIPT_LANGUAGE_DIALOG_TITLE;
+		this.title = Messages.ScriptLanguageDialog_Modify_Script_Lang;
 		this.scriptLanguageFileExtension = scriptLanguages.get(scriptLanguageName);
 	}
 
@@ -129,8 +110,8 @@ public class ScriptLanguageDialog extends TitleAreaDialog {
 		final GridLayout layout = new GridLayout(2, false);
 		container.setLayout(layout);
 
-		scriptLanguageText = createText(container, Dialog.SCRIPT_LANGUAGE_NAME_LABEL_TEXT);
-		scriptLanguageFileExtensionText = createText(container, Dialog.SCRIPT_LANGUAGE_FILE_EXTENSION_LABEL_TEXT);
+		scriptLanguageText = createText(container, Messages.ScriptLanguageDialog_Script_Lang);
+		scriptLanguageFileExtensionText = createText(container, Messages.ScriptLanguageDialog_File_Extension);
 
 		if (!StringUtil.isBlank(scriptLanguageName)) {
 			scriptLanguageText.setText(scriptLanguageName);
@@ -228,15 +209,15 @@ public class ScriptLanguageDialog extends TitleAreaDialog {
 		final StringBuilder errorMessage = new StringBuilder();
 
 		if (StringUtil.isBlank(name)) {
-			errorMessage.append(Validation.SCRIPT_NAME_BLANK_ERROR + CharactersConstants.NEW_LINE);
+			errorMessage.append(Messages.ScriptLanguageDialog_Cannot_Blank + CharactersConstants.NEW_LINE);
 		}
 
 		if (StringUtil.isBlank(fileExtension)) {
-			errorMessage.append(Validation.SCRIPT_FILE_EXTENSION_BLANK_ERROR + CharactersConstants.NEW_LINE);
+			errorMessage.append(Messages.ScriptLanguageDialog_Lang_Cannot_Blank + CharactersConstants.NEW_LINE);
 		}
 
 		if (scriptLanguages.containsKey(name) && !isModification) {
-			errorMessage.append(Validation.SCRIPT_LANGUAGE_DUPLICATION_ERROR_MESSAGE + CharactersConstants.NEW_LINE);
+			errorMessage.append(Messages.ScriptLanguageDialog_Duplicated_Lang + CharactersConstants.NEW_LINE);
 		}
 
 		final Set<String> scriptLanguagesNames = scriptLanguages.entrySet().stream()
@@ -245,7 +226,7 @@ public class ScriptLanguageDialog extends TitleAreaDialog {
 
 		if (scriptLanguagesNames.size() > 0
 				&& (!scriptLanguagesNames.contains(name) && !scriptLanguagesNames.contains(oldScriptLanguageName))) {
-			errorMessage.append(Validation.SCRIPT_FILE_EXTENSION_DUPLICATION);
+			errorMessage.append(Messages.ScriptLanguageDialog_Duplicated_File_Ext);
 		}
 
 		setMessage(errorMessage.toString());

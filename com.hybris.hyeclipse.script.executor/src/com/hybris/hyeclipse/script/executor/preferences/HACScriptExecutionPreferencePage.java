@@ -6,8 +6,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.window.Window;
@@ -33,14 +31,6 @@ import com.hybris.hyeclipse.script.executor.dialog.ScriptLanguageDialog;
  */
 public class HACScriptExecutionPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
-	/**
-	 * HAC script execution preference page buttons text
-	 */
-	private interface Buttons {
-		final String ADD_TEXT = "Add new script language";
-		final String MODIFY_EXISTING_SCRIPT_TEXT = "Modify";
-		final String REMOVE_EXISTING_SCRIPT_TEXT = "Remove";
-	}
 	
 	private List scriptLanguagesList;
 	private Map<String, String> scriptLanguagesExtensionsMap;
@@ -82,13 +72,13 @@ public class HACScriptExecutionPreferencePage extends PreferencePage implements 
 		buttonComposite.setLayout(buttonsLayout);
 
 		final Button addButton = new Button(buttonComposite, SWT.PUSH | SWT.CENTER);
-		addButton.setText(Buttons.ADD_TEXT);
+		addButton.setText(Messages.HACScriptExecutionPreferencePage_Buttons_Add);
 
 		final Button modifyButton = new Button(buttonComposite, SWT.PUSH | SWT.CENTER);
-		modifyButton.setText(Buttons.MODIFY_EXISTING_SCRIPT_TEXT);
+		modifyButton.setText(Messages.HACScriptExecutionPreferencePage_Buttons_Modify);
 
 		final Button removeButton = new Button(buttonComposite, SWT.PUSH | SWT.CENTER);
-		removeButton.setText(Buttons.REMOVE_EXISTING_SCRIPT_TEXT);
+		removeButton.setText(Messages.HACScriptExecutionPreferencePage_Buttons_Remove);
 
 		/* buttons logic */
 		addButton.addSelectionListener(new SelectionAdapter() {
