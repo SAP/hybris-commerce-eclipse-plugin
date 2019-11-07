@@ -21,3 +21,11 @@ Require-Bundle: org.eclipse.ui,
  com.hybris.hyeclipse.platform;bundle-version="[1.0.0,2.0.0]"
 Bundle-ClassPath: .,
  lib/tsv-2.1.0-jar-with-dependencies.jar
+Export-Package: com.hybris.hyeclipse.tsv,
+ com.hybris.hyeclipse.tsv.editors,
+ com.hybris.hyeclipse.tsv.handlers,
+ com.hybris.hyeclipse.tsv.model,
+ com.hybris.hyeclipse.tsv.preferences,
+ com.hybris.hyeclipse.tsv.wizards,
+ com.hybris.hyeclipse.tsvextended.handlers
+Automatic-Module-Name: com.hybris.hyeclipse.tsv.extended

@@ -12,7 +12,13 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jface.text,
  org.eclipse.core.expressions,
  org.eclipse.ui.console,
- com.hybris.hyeclipse.hac
+ com.hybris.hyeclipse.hac,
+ com.hybris.hyeclipse.commons
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
+Automatic-Module-Name: com.hybris.hyeclipse.impex.importer
+Export-Package: com.hybris.hyeclipse.impex.importer,
+ com.hybris.hyeclipse.impex.importer.handlers,
+ com.hybris.hyeclipse.impex.importer.managers,
+ com.hybris.hyeclipse.impex.importer.testers

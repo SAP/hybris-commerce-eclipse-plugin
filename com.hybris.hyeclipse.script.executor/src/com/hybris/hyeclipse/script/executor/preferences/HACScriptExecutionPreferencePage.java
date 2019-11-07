@@ -1,5 +1,6 @@
 package com.hybris.hyeclipse.script.executor.preferences;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
@@ -21,7 +22,7 @@ import org.eclipse.swt.widgets.List;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-import com.hybris.hyeclipse.hac.utils.PreferencesUtils;
+import com.hybris.hyeclipse.commons.utils.PreferencesUtils;
 import com.hybris.hyeclipse.script.executor.Activator;
 import com.hybris.hyeclipse.script.executor.dialog.ScriptLanguageDialog;
 
@@ -30,14 +31,6 @@ import com.hybris.hyeclipse.script.executor.dialog.ScriptLanguageDialog;
  */
 public class HACScriptExecutionPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
-	/**
-	 * HAC script execution preference page buttons text
-	 */
-	private interface Buttons {
-		final String ADD_TEXT = "Add new script language";
-		final String MODIFY_EXISTING_SCRIPT_TEXT = "Modify";
-		final String REMOVE_EXISTING_SCRIPT_TEXT = "Remove";
-	}
 	
 	private List scriptLanguagesList;
 	private Map<String, String> scriptLanguagesExtensionsMap;
@@ -79,13 +72,13 @@ public class HACScriptExecutionPreferencePage extends PreferencePage implements 
 		buttonComposite.setLayout(buttonsLayout);
 
 		final Button addButton = new Button(buttonComposite, SWT.PUSH | SWT.CENTER);
-		addButton.setText(Buttons.ADD_TEXT);
+		addButton.setText(Messages.HACScriptExecutionPreferencePage_Buttons_Add);
 
 		final Button modifyButton = new Button(buttonComposite, SWT.PUSH | SWT.CENTER);
-		modifyButton.setText(Buttons.MODIFY_EXISTING_SCRIPT_TEXT);
+		modifyButton.setText(Messages.HACScriptExecutionPreferencePage_Buttons_Modify);
 
 		final Button removeButton = new Button(buttonComposite, SWT.PUSH | SWT.CENTER);
-		removeButton.setText(Buttons.REMOVE_EXISTING_SCRIPT_TEXT);
+		removeButton.setText(Messages.HACScriptExecutionPreferencePage_Buttons_Remove);
 
 		/* buttons logic */
 		addButton.addSelectionListener(new SelectionAdapter() {
@@ -119,7 +112,7 @@ public class HACScriptExecutionPreferencePage extends PreferencePage implements 
 			}
 		});
 
-		getScriptLanguagesForStore();
+		fetchScriptLanguagesForStore();
 		updateScriptList();
 
 		return entryTable;
@@ -184,7 +177,6 @@ public class HACScriptExecutionPreferencePage extends PreferencePage implements 
 	/**
 	 * Updates script list
 	 */
-	@SuppressWarnings("unchecked")
 	protected void updateScriptList() {
 		if (scriptLanguagesExtensionsMap == null) {
 			scriptLanguagesExtensionsMap = Collections.emptyMap();
@@ -195,12 +187,19 @@ public class HACScriptExecutionPreferencePage extends PreferencePage implements 
 
 	/**
 	 * Gets script languages from store
+	 * @throws IOException 
+	 * @throws ClassNotFoundException 
 	 */
 	@SuppressWarnings("unchecked")
-	protected void getScriptLanguagesForStore() {
-		PreferencesUtils
-				.readObjectFromStore(getPreferenceStore(), HACScriptExecutionPreferenceConstants.P_SCRIPT_LANGUAGES)
-				.ifPresent(map -> scriptLanguagesExtensionsMap = (Map<String, String>) map);
+	protected void fetchScriptLanguagesForStore() {
+		Object result;
+			result = PreferencesUtils
+			.readObjectFromStore(getPreferenceStore(), HACScriptExecutionPreferenceConstants.P_SCRIPT_LANGUAGES).orElse(null);
+		if (result instanceof Map) {
+			this.scriptLanguagesExtensionsMap = (Map<String, String>) result;
+		} else {
+			this.scriptLanguagesExtensionsMap = Collections.emptyMap();
+		}
 	}
 
 	/**

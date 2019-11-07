@@ -15,10 +15,9 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
-
+import com.hybris.hyeclipse.commons.utils.ConsoleUtils;
 import com.hybris.hyeclipse.editor.Activator;
 import com.hybris.hyeclipse.editor.preferences.CopyrightPreferenceConstants;
-import com.hybris.hyeclipse.hac.utils.ConsoleUtils;
 
 /**
  * Class handling Copyright operations

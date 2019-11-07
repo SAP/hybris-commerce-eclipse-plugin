@@ -13,5 +13,7 @@ Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
 DynamicImport-Package: *
 Export-Package: com.hybris.hyeclipse.ytypesystem,
+ com.hybris.hyeclipse.ytypesystem.handlers,
  com.hybris.yps.hyeclipse
 Bundle-Vendor: SAP Hybris Expert Services
+Automatic-Module-Name: com.hybris.hyeclipse.ytypesystem

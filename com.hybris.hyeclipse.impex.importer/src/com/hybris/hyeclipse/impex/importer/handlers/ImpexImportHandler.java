@@ -14,6 +14,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 
+import com.hybris.hyeclipse.commons.utils.EclipseFileUtils;
 import com.hybris.hyeclipse.impex.importer.managers.ImportManager;
 
 /**
@@ -49,7 +50,7 @@ public class ImpexImportHandler extends AbstractHandler {
 		} else if (selection instanceof TextSelection) {
 			final IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 			final IFile file = (IFile) window.getActivePage().getActiveEditor().getEditorInput().getAdapter(IFile.class);
-			return file;
+			return EclipseFileUtils.getActiveEditorFile();
 		}
 		return null;
 	}
