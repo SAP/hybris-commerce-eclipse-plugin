@@ -1,9 +1,11 @@
-# Continuous Integration 
+#  Documentation
+
+## Continuous Integration
 
 folder contains docker configuration for sonarqube installation.
 To execute sonar check it is required to run docker installation first
 
-> docker-compose -d
+> docker-compose
 
  or by running shell script in this directory
 
@@ -18,3 +20,7 @@ To check plugin by sonar, run maven task:
 > mvn clean verify sonar:sonar
 
 Results will be available on your local website
+
+## Feature List
+
+* [Commerce Bean & Enums Generation Wizard](beangen/beangen.md)
