@@ -30,7 +30,7 @@
 
 
 	<modules>
-		<module>com.hybris.hyeclipse.commons</module>
+		<!-- module>com.hybris.hyeclipse.commons</module -->
 		<module>com.hybris.hyeclipse.hac</module>
 		<module>com.hybris.hyeclipse.script.executor</module>
 		<module>com.hybris.hyeclipse.impexed</module>
