@@ -1,11 +1,11 @@
-#  Documentation 
+#  Documentation
 
-## Continuous Integration 
+## Continuous Integration
 
 folder contains docker configuration for sonarqube installation.
 To execute sonar check it is required to run docker installation first
 
-> docker-compose -d
+> docker-compose
 
  or by running shell script in this directory
 

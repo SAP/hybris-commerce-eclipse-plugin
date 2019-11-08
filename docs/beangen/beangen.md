@@ -6,10 +6,22 @@ Definitions of these Java Beans or Enums are merged across extensions. For examp
 
 ![Bean Generation Wizard](Beans-Generation.gif)
 
+## Feature architecture
+
+Feature consists of 3 separate plugins, which mainly are caused by EMF generated structure:
+
+* com.hybris.hyeclipse.emf.beans.editor
+* com.hybris.hyeclipse.emf.beans.edit
+* com.hybris.hyeclipse.emf.beans
+
+Dependency between them presents image below
+
+![plugin dependency tree](beans-generation-dependency.png)
+
 
 ## References
 
-[Generating Beans and Enums](https://help.sap.com/viewer/d0224eca81e249cb821f2cdf45a82ace/1905/en-US/8bc53579866910149472ccbef0222ec5.html)
+[SAP Help | Generating Beans and Enums](https://help.sap.com/viewer/d0224eca81e249cb821f2cdf45a82ace/1905/en-US/8bc53579866910149472ccbef0222ec5.html)
 
 
 ## Changelog
