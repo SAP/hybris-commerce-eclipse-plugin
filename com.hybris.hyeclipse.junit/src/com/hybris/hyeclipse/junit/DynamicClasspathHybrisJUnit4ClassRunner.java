@@ -1,29 +1,32 @@
 package com.hybris.hyeclipse.junit;
 
 
-import de.hybris.bootstrap.config.BootstrapConfigException;
-import de.hybris.bootstrap.config.ExtensionInfo;
-import de.hybris.bootstrap.config.PlatformConfig;
-import de.hybris.bootstrap.config.SystemConfig;
-import de.hybris.platform.testframework.HybrisJUnit4ClassRunner;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
-import org.junit.runner.notification.RunNotifier;
-import org.junit.runners.model.InitializationError;
-
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLDecoder;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
+
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
+import org.junit.runner.notification.RunNotifier;
+import org.junit.runners.model.InitializationError;
+
+import de.hybris.bootstrap.config.BootstrapConfigException;
+import de.hybris.bootstrap.config.ExtensionInfo;
+import de.hybris.bootstrap.config.PlatformConfig;
+import de.hybris.bootstrap.config.SystemConfig;
+import de.hybris.platform.testframework.HybrisJUnit4ClassRunner;
 
 
 public class DynamicClasspathHybrisJUnit4ClassRunner extends HybrisJUnit4ClassRunner
@@ -40,7 +43,9 @@ public class DynamicClasspathHybrisJUnit4ClassRunner extends HybrisJUnit4ClassRu
 		super(clazz);
 		System.out.println("Initializing extensions");
 		platformHome = getPlatformHome(this.getClass());
-		systemConfig = SystemConfig.getInstanceByProps(loadProperties(platformHome));
+		Map<String, String> props = loadProperties(platformHome);
+		Hashtable<String, String> hm = new Hashtable<>(props);
+		systemConfig = SystemConfig.getInstanceByProps(hm);
 		platformConfig = PlatformConfig.getInstance(systemConfig);
 	}
 	/*
@@ -146,7 +151,7 @@ public class DynamicClasspathHybrisJUnit4ClassRunner extends HybrisJUnit4ClassRu
 		}
 	}
 
-	protected File getPlatformHome(final Class clazz)
+	protected File getPlatformHome(final Class<? extends DynamicClasspathHybrisJUnit4ClassRunner> clazz)
 	{
 		try
 		{
@@ -168,7 +173,7 @@ public class DynamicClasspathHybrisJUnit4ClassRunner extends HybrisJUnit4ClassRu
 		}
 	}
 
-	protected static Hashtable<String, String> loadProperties(final File platformHome)
+	protected static Map<String, String> loadProperties(final File platformHome)
 	{
 		File file = new File(platformHome, "active-role-env.properties");
 		if (!file.exists())
@@ -180,36 +185,21 @@ public class DynamicClasspathHybrisJUnit4ClassRunner extends HybrisJUnit4ClassRu
 						+ "/active-role-env.properties, ensure you have built the platform before continuing");
 			}
 		}
-		final Hashtable<String, String> props = new Hashtable<String, String>();
+		final Map<String, String> props = new HashMap<>();
 		props.put("platformhome", platformHome.getAbsolutePath());
 		final Properties properties = new Properties();
-		InputStream in = null;
-		try
+		try (InputStream in = new FileInputStream(file.getAbsolutePath()))
 		{
-			in = new FileInputStream(file.getAbsolutePath());
+			
 			properties.load(in);
-			in.close();
 		}
 		catch (final Exception e)
 		{
 			throw new IllegalArgumentException("Failed to load the properties for this platform", e);
 		}
-		finally
-		{
-			try
-			{
-				if (in != null)
-				{
-					in.close();
-				}
-			}
-			catch (final IOException ie)
-			{
-				throw new IllegalArgumentException("Failed to close input stream after loading the properties for this platform", ie);
-			}
-		}
-		for (final java.util.Map.Entry prop : properties.entrySet())
-		{
+
+		for (Iterator<Entry<Object, Object>> iterator = properties.entrySet().iterator(); iterator.hasNext();) {
+			final Entry<Object, Object> prop = iterator.next();
 			final String a = prop.getKey().toString();
 			final String b = prop.getValue().toString();
 			final String c = platformHome.getAbsolutePath();

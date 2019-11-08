@@ -1,4 +1,4 @@
-package com.hybris.hyeclipse.hac.utils;
+package com.hybris.hyeclipse.commons.utils;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -17,16 +17,6 @@ import org.eclipse.ui.console.MessageConsoleStream;
  * Utility class for plugin console handling.
  */
 public final class ConsoleUtils {
-	
-	/**
-	 * Empty string
-	 */
-	public static final String EMPTY_STRING = "";
-	
-	/**
-	 * New line string
-	 */
-	public static final String  NEW_LINE = "\n";
 	
 	/**
 	 * Plugin console name

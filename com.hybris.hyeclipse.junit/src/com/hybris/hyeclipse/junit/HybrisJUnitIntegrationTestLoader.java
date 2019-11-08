@@ -67,7 +67,6 @@ public class HybrisJUnitIntegrationTestLoader implements ITestLoader {
 		Request request= sortByFailures(Request.classWithoutSuiteMethod(clazz).filterWith(filter), failureNames);
 		Runner runner= request.getRunner();
 		Description description= getRootDescription(runner, matcher);
-		//I324747: modified to Hybris implementation
 		return new HybrisJUnitTestReference(runner, description);
 	}
 
@@ -75,7 +74,6 @@ public class HybrisJUnitIntegrationTestLoader implements ITestLoader {
 		Request request= sortByFailures(Request.aClass(clazz), failureNames);
 		Runner runner= request.getRunner();
 		Description description= runner.getDescription();
-		//I324747: modified to Hybris implementation
 		return new HybrisJUnitTestReference(runner, description);
 	}
 
@@ -102,5 +100,10 @@ public class HybrisJUnitIntegrationTestLoader implements ITestLoader {
 		} catch (NoSuchMethodException e) {
 		}
 		return false;
+	}
+
+	@Override
+	public ITestReference[] loadTests(Class[] testClasses, String testName, String[] failureNames, String[] packages, String[][] includeExcludeTags, String uniqueId, RemoteTestRunner listener) {
+		return loadTests(testClasses, testName, failureNames, listener);
 	}
 }

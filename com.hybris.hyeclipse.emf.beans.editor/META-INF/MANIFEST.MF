@@ -8,7 +8,9 @@ Bundle-Activator: com.hybris.hyeclipse.emf.beans.presentation.internal.BeansEdit
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Export-Package: com.hybris.hyeclipse.emf.beans.presentation
+Export-Package: com.hybris.hyeclipse.emf.beans.presentation,
+ com.hybris.hyeclipse.emf.beans.presentation.internal;x-internal:=true,
+ com.hybris.hyeclipse.emf.beans.presentation.platformdependent
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources;visibility:=reexport,
  com.hybris.hyeclipse.emf.beans.edit;visibility:=reexport,
@@ -18,3 +20,4 @@ Require-Bundle: org.eclipse.core.runtime,
  com.hybris.hyeclipse.ytypesystem;bundle-version="[1.0.0,2.0.0]"
 Bundle-ActivationPolicy: lazy
 DynamicImport-Package: de.hybris.bootstrap.typesystem, de.hybris.bootstrap.config
+Automatic-Module-Name: com.hybris.hyeclipse.emf.beans.editor

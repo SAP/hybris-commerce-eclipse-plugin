@@ -1,6 +1,6 @@
 package com.hybris.hyeclipse.impex.importer.testers;
 
-import com.hybris.hyeclipse.hac.testers.AbstractFilePropertyTester;
+import com.hybris.hyeclipse.commons.testers.AbstractFilePropertyTester;
 
 /**
  * Property tester checking whether the file is impex.

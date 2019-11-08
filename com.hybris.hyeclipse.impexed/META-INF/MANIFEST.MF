@@ -20,3 +20,15 @@ Bundle-Activator: com.hybris.impexformatter.Activator
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
 Bundle-Vendor: SAP Hybris Expert Services
+Automatic-Module-Name: com.hybris.hyeclipse.impexed
+Export-Package: com.hybris.impexformatter,
+ com.hybris.impexformatter.actions,
+ com.hybris.impexformatter.assistprocessors,
+ com.hybris.impexformatter.editors,
+ com.hybris.impexformatter.handlers,
+ com.hybris.impexformatter.hyperlink,
+ com.hybris.impexformatter.preferences,
+ com.hybris.impexformatter.rules,
+ com.hybris.impexformatter.scanners,
+ com.hybris.impexformatter.utils,
+ com.hybris.impexformatter.wizards

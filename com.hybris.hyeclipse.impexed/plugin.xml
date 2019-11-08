@@ -18,7 +18,6 @@
 	<extension
 		point="org.eclipse.ui.newWizards">
 		<category
-        icon="icon/hybris.ico"
         id="sapHybris"
         name="SAP Hybris [y]">
 		</category>

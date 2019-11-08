@@ -13,10 +13,15 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.ui.statushandlers.StatusManager;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -190,8 +195,9 @@ public class Activator extends AbstractUIPlugin {
 	public SystemConfig getSystemConfig() {
 		if (systemConfig == null) {
 			
-			Hashtable<String, String> props = loadProperties(getPlatformHome());
+			Hashtable<String, String> props = null;
 			try {
+					props = loadProperties(getPlatformHome());
 				Field singletonField = SystemConfig.class.getDeclaredField("singleton");
 				singletonField.setAccessible(true);
 				singletonField.set(this, null);
@@ -199,14 +205,13 @@ public class Activator extends AbstractUIPlugin {
 				instanceField.setAccessible(true);
 				instanceField.set(this, null);
 			}
-			catch (NoSuchFieldException | SecurityException e) {
-				logError("NoSuchFieldException | SecurityException", e);
-			}
-			catch (IllegalArgumentException e) {
-				logError("IllegalArgumentException", e);
-			}
-			catch (IllegalAccessException e) {
-				logError("IllegalAccessException", e);
+			catch (NoSuchFieldException | SecurityException | IOException | IllegalArgumentException | IllegalAccessException e) {
+				logError("(NoSuchField|IO|Security|IllegalArgument|IllegalAccess)Exception", e);
+			} catch (java.lang.UnsupportedClassVersionError err) {
+				final Status status = new Status (IStatus.ERROR, Activator.PLUGIN_ID, "Incompatible JVM for IDE and SAP Commerce version", err );
+	            StatusManager.getManager().handle(status);
+	            
+	            printError("Incompatible JVM for IDE and SAP Commerce version", "eclipse IDE has to run on java version equal or greater than supported by SAP Commerce. More information how to change VM for IDE is available here: https://wiki.eclipse.org/Eclipse.ini", status );
 			}
 			
 			systemConfig = SystemConfig.getInstanceByProps(props);
@@ -214,6 +219,14 @@ public class Activator extends AbstractUIPlugin {
 		return systemConfig;
 	}
 	
+	private void printError(String title, String description, Status status) {
+		PlatformUI.getWorkbench().getDisplay().syncExec(() -> {
+
+				Shell parent = PlatformUI.getWorkbench().getDisplay().getActiveShell();  //get shell.
+				ErrorDialog.openError(parent, title, description, status);
+			});
+	}
+
 	public void nullifySystemConfig() {
 		systemConfig = null;
 	}
@@ -377,7 +390,7 @@ public class Activator extends AbstractUIPlugin {
 		return extHolder;
 	}
 	
-	private static Hashtable<String, String> loadProperties(File platformHome) {
+	private static Hashtable<String, String> loadProperties(File platformHome) throws FileNotFoundException, IOException {
 		
 		File file = new File(platformHome, "active-role-env.properties");
 		if ( !file.exists() ) {
@@ -390,29 +403,8 @@ public class Activator extends AbstractUIPlugin {
 		Hashtable<String, String> props = new Hashtable<String, String>();
 		props.put("platformhome", platformHome.getAbsolutePath());
 		Properties properties = new Properties();
-		InputStream in = null;
-		try {
-			in = new FileInputStream(file.getAbsolutePath());
+		try (InputStream in = new FileInputStream(file.getAbsolutePath())) {
 			properties.load(in);
-			if (in != null) {
-				in.close();
-			}
-		}
-		catch (FileNotFoundException fnfe) {
-			throw new IllegalArgumentException("Failed to load the properties for this platform", fnfe);
-		}
-		catch (IOException ie) {
-			throw new IllegalArgumentException("Failed to load the properties for this platform", ie);
-		}
-		finally
-		{
-			try {
-				if (in != null) {
-					in.close();
-				}
-			} catch (IOException ie) {
-				throw new IllegalArgumentException("Failed to close input stream after loading the properties for this platform", ie);
-			}
 		}
 		
 		for (Entry<?, ?> prop : properties.entrySet()) {

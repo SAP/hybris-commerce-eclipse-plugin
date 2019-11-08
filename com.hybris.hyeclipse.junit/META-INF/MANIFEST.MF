@@ -23,3 +23,6 @@ Require-Bundle: org.eclipse.ui,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,lib/ybootstrap.jar,lib/coreserver.jar,lib/commons-lang-2.6.jar
+Automatic-Module-Name: com.hybris.hyeclipse.junit
+Export-Package: com.hybris.hyeclipse.junit, 
+ test.resources

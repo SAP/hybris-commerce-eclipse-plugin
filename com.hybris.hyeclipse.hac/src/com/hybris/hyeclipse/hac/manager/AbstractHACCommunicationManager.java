@@ -1,6 +1,7 @@
 package com.hybris.hyeclipse.hac.manager;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.UnknownHostException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
@@ -11,14 +12,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -39,16 +38,15 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.ssl.SSLContexts;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.jsoup.Jsoup;
 import org.jsoup.helper.StringUtil;
 import org.jsoup.nodes.Document;
 
+import com.hybris.hyeclipse.commons.utils.ConsoleUtils;
+import com.hybris.hyeclipse.commons.utils.CharactersConstants;
 import com.hybris.hyeclipse.hac.Activator;
 import com.hybris.hyeclipse.hac.preferences.HACPreferenceConstants;
-import com.hybris.hyeclipse.hac.utils.ConsoleUtils;
 
 /**
  * Abstract class to communicate with hAC web page.
@@ -77,7 +75,6 @@ public abstract class AbstractHACCommunicationManager {
 	 * HAC communication meta data properties
 	 */
 	protected interface Meta {
-		static final String ENCODING = "UTF-8";
 		static final String X_CSRF_TOKEN = "X-CSRF-Token";
 		static final String CSRF_META_TAG_CONTENT = "content";
 		static final String CSRF_META_TAG = "meta[name='_csrf']";
@@ -89,6 +86,7 @@ public abstract class AbstractHACCommunicationManager {
 	 * Error messages for communication with HAC
 	 */
 	protected interface ErrorMessage {
+		static final String SERVER_RESPONSE = "Server response: ";
 		static final String INVALID_HAC_URL = "HAC URL is invalid";
 		static final String WRONG_CREDENTIALS = " Wrong login credentials.";
 		static final String CANNOT_CREATE_SSL_SOCKET = "Cannot create SSL socket";
@@ -96,7 +94,6 @@ public abstract class AbstractHACCommunicationManager {
 		static final String CSRF_RESPONSE_CANNOT_BE_BLANK = "HAC authentication response cannot be empty.";
 		static final String CSRF_TOKEN_CANNOT_BE_OBTAINED = "Cannot obtain CSRF authentication token from HAC.";
 	}
-
 
 	/**
 	 * Maximum time in seconds to wait for response
@@ -131,6 +128,16 @@ public abstract class AbstractHACCommunicationManager {
 		httpClient = getSSLAcceptingClient();
 		context = HttpClientContext.create();
 		context.setCookieStore(new BasicCookieStore());
+	}
+	
+	/**
+	 * Check whether HAC is up
+	 * 
+	 * @return true if HAC is online, false otherwise
+	 */
+	public boolean checkHacHealth() {
+		final String response = sendAuthenticatedGetRequest(CharactersConstants.EMPTY_STRING);
+		return !StringUtil.isBlank(response);
 	}
 
 	/**
@@ -184,7 +191,7 @@ public abstract class AbstractHACCommunicationManager {
 	 * @return true if {@link #endpointUrl} is accessible
 	 * @throws IOException
 	 * @throws ClientProtocolException
-	 * @throws AuthenticationException 
+	 * @throws AuthenticationException
 	 */
 	protected void fetchCsrfTokenFromHac() throws ClientProtocolException, IOException, AuthenticationException {
 		final HttpGet getRequest = new HttpGet(getEndpointUrl());
@@ -193,8 +200,8 @@ public abstract class AbstractHACCommunicationManager {
 			final HttpResponse response = httpClient.execute(getRequest, getContext());
 			final String responseString = new BasicResponseHandler().handleResponse(response);
 			csrfToken = getCsrfToken(responseString);
-			
-			if( StringUtil.isBlank(csrfToken) ) {
+
+			if (StringUtil.isBlank(csrfToken)) {
 				throw new AuthenticationException(ErrorMessage.CSRF_TOKEN_CANNOT_BE_OBTAINED);
 			}
 		} catch (UnknownHostException error) {
@@ -215,13 +222,13 @@ public abstract class AbstractHACCommunicationManager {
 	 * @param responseBody
 	 *            response body of GET method
 	 * @return csrf token
-	 * @throws AuthenticationException 
+	 * @throws AuthenticationException
 	 */
 	protected String getCsrfToken(String responseBody) throws AuthenticationException {
-		if( StringUtil.isBlank(responseBody) ) {
+		if (StringUtil.isBlank(responseBody)) {
 			throw new AuthenticationException(ErrorMessage.CSRF_RESPONSE_CANNOT_BE_BLANK);
 		}
-		
+
 		final Document document = Jsoup.parse(responseBody);
 		return document.select(Meta.CSRF_META_TAG).attr(Meta.CSRF_META_TAG_CONTENT);
 	}
@@ -243,11 +250,11 @@ public abstract class AbstractHACCommunicationManager {
 
 		final HttpResponse response = httpClient.execute(postRequest, context);
 		final Header[] locationHeaders = response.getHeaders(Authentication.LOCATION_HEADER);
-		
+
 		if (Meta.NOT_FOUND_STATUS_CODE == response.getStatusLine().getStatusCode()) {
 			throw new IOException(ErrorMessage.INVALID_HAC_URL);
-		} else if (locationHeaders.length > 0 && locationHeaders[0].getValue()
-				.contains(Authentication.LOCATION_ERROR)) {
+		} else if (locationHeaders.length > 0
+				&& locationHeaders[0].getValue().contains(Authentication.LOCATION_ERROR)) {
 			throw new IOException(ErrorMessage.WRONG_CREDENTIALS);
 		}
 	}
@@ -272,24 +279,10 @@ public abstract class AbstractHACCommunicationManager {
 	 * @return List of parameters
 	 */
 	protected List<NameValuePair> createParametersList(final Map<String, String> parametersMap) {
-		return parametersMap.entrySet().stream().map(entry -> new BasicNameValuePair(entry.getKey(), entry.getValue()))
-				.collect(Collectors.toList());
-	}
-
-	/**
-	 * Returns the content of file as {@link String}
-	 *
-	 * @param file
-	 *            file from which content is retrieved
-	 * @return content of a file
-	 */
-	protected String getContentOfFile(final IFile file) {
-		try {
-			return IOUtils.toString(file.getContents(), Meta.ENCODING);
-		} catch (CoreException | IOException e) {
-			ConsoleUtils.printError(e.getMessage());
-		}
-		return null;
+		return parametersMap.entrySet()
+						.stream()
+						.map(entry -> new BasicNameValuePair(entry.getKey(), entry.getValue()))
+						.collect(Collectors.toList());
 	}
 
 	/**
@@ -332,6 +325,85 @@ public abstract class AbstractHACCommunicationManager {
 		return responseBody;
 	}
 
+	/**
+	 * Send get request to the {@link #getEndpointUrl()} with suffx as a URL
+	 * parameter.
+	 * 
+	 * @param url
+	 *            suffix to the {@link #getEndpointUrl()}
+	 * @return response of the request
+	 * @throws HttpResponseException
+	 * @throws IOException
+	 */
+	protected String sendGetRequest(final String url) throws HttpResponseException, IOException {
+		final HttpGet getRequest = new HttpGet(getEndpointUrl() + url);
+		final RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(getTimeout()).build();
+
+		getRequest.setConfig(requestConfig);
+		getRequest.addHeader(getxCsrfToken(), getCsrfToken());
+
+		final HttpResponse response = getHttpClient().execute(getRequest, getContext());
+		final String responseBody = new BasicResponseHandler().handleResponse(response);
+
+		return responseBody;
+	}
+
+	/**
+	 * Send post request to the {@link #getEndpointUrl()} with suffix as a url
+	 * parameter.
+	 * 
+	 * @param url
+	 *            suffix to the {@link #getEndpointUrl()}.
+	 * @param parameters
+	 *            map of parameters that will be attached to the request
+	 * @return response of the request
+	 */
+	protected String sendAuthenticatedPostRequest(final String url, final Map<String, String> parameters) {
+		String response = null;
+		updateLoginVariables();
+
+		try {
+			fetchCsrfTokenFromHac();
+			loginToHac();
+			fetchCsrfTokenFromHac();
+			response = sendPostRequest(url, parameters);
+			logoutFromHac();
+		} catch (ConnectException | IllegalArgumentException error) {
+			ConsoleUtils.printError(error.getMessage());
+		} catch (final IOException | AuthenticationException error) {
+			ConsoleUtils.printError(ErrorMessage.SERVER_RESPONSE + error.getMessage());
+		}
+
+		return response;
+	}
+
+	/**
+	 * Send get request to the {@link #getEndpointUrl()} with suffx as a URL
+	 * parameter.
+	 * 
+	 * @param url
+	 *            suffix to the {@link #getEndpointUrl()}
+	 * @return response of the request
+	 */
+	protected String sendAuthenticatedGetRequest(final String url) {
+		String response = null;
+		updateLoginVariables();
+
+		try {
+			fetchCsrfTokenFromHac();
+			loginToHac();
+			fetchCsrfTokenFromHac();
+			response = sendGetRequest(url);
+			logoutFromHac();
+		} catch (ConnectException | IllegalArgumentException error) {
+			ConsoleUtils.printError(error.getMessage());
+		} catch (final IOException | AuthenticationException error) {
+			ConsoleUtils.printError(ErrorMessage.SERVER_RESPONSE + error.getMessage());
+		}
+
+		return response;
+	}
+
 	protected static String getxCsrfToken() {
 		return Meta.X_CSRF_TOKEN;
 	}
@@ -365,6 +437,6 @@ public abstract class AbstractHACCommunicationManager {
 	}
 
 	protected String getEncoding() {
-		return Meta.ENCODING;
+		return CharactersConstants.UTF_8_ENCODING;
 	}
 }
