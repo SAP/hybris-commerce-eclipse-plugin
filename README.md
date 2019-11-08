@@ -5,7 +5,8 @@ What is it?
 This Eclipse plugin makes developers more efficient by taking care of some of the common issues of developing with the SAP Hybris Commerce Suite. For example, with this plugin it's possible to have a new project workspace quickly configured with all project extensions compiling in minutes rather than hours.
 
 
-[![Build Status](https://travis-ci.com/mikolayek/hybris-commerce-eclipse-plugin.svg?branch=master)](https://travis-ci.com/mikolayek/hybris-commerce-eclipse-plugin)
+[![Build Status - Develop](https://travis-ci.com/mikolayek/hybris-commerce-eclipse-plugin.svg?branch=develop)](https://travis-ci.com/mikolayek/hybris-commerce-eclipse-plugin)
+[![Build Status - Master](https://travis-ci.com/mikolayek/hybris-commerce-eclipse-plugin.svg?branch=master)](https://travis-ci.com/mikolayek/hybris-commerce-eclipse-plugin)
 
 
 Features

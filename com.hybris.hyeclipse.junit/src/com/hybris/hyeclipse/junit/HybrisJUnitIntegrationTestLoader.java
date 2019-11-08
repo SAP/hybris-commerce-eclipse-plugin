@@ -20,12 +20,14 @@ import junit.framework.Test;
 
 @SuppressWarnings("restriction")
 public class HybrisJUnitIntegrationTestLoader implements ITestLoader {
-	
-	@SuppressWarnings("rawtypes")
-	@Override
-	public ITestReference[] loadTests(Class[] testClasses, String testName, String[] failureNames, String[] packages,
-			String[][] includeExcludeTags, String uniqueId, RemoteTestRunner listener) {
-		
+
+	public ITestReference[] loadTests(
+			@SuppressWarnings("rawtypes") 
+			Class[] testClasses,
+			String testName,
+			String[] failureNames,
+			RemoteTestRunner listener) {
+
 		ITestReference[] refs= new ITestReference[testClasses.length];
 		for (int i= 0; i < testClasses.length; i++) {
 			Class<?> clazz= testClasses[i];
@@ -102,4 +104,8 @@ public class HybrisJUnitIntegrationTestLoader implements ITestLoader {
 		return false;
 	}
 
+	@Override
+	public ITestReference[] loadTests(Class[] testClasses, String testName, String[] failureNames, String[] packages, String[][] includeExcludeTags, String uniqueId, RemoteTestRunner listener) {
+		return loadTests(testClasses, testName, failureNames, listener);
+	}
 }
