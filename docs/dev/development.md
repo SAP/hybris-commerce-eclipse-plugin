@@ -1,4 +1,4 @@
-#  Documentation
+#  Development
 
 ## Continuous Integration
 
@@ -20,7 +20,3 @@ To check plugin by sonar, run maven task:
 > mvn clean verify sonar:sonar
 
 Results will be available on your local website
-
-## Feature List
-
-* [Commerce Bean & Enums Generation Wizard](beangen/beangen.md)

@@ -18,7 +18,7 @@ Features
 * Create working sets from localextensions.xml
 * Disable unnecessary extension modules
 * Build individual extensions
-* Beans XML creation wizard
+* [Commerce Bean & Enums Generation Wizard](docs/beangen/beangen.md)
 * Type System Validation
 
 User Guide
@@ -26,6 +26,12 @@ User Guide
 This GitHub repository is for managing the source code of the plugin.
 
 To install the plugin visit the [Eclipse Marketplace](https://marketplace.eclipse.org/content/sap-hybris-commerce-development-tools-eclipse) and for up to date documentation, the Application Lifecycle Framework for Commerce: [SAP Hybris Commerce development tools for Eclipse](https://wiki.hybris.com/display/hybrisALF/SAP+Hybris+Commerce+development+tools+for+Eclipse).
+
+Development
+--------------
+
+Plugin is released as a open-source project. If you want to contribute to it, can find more information about setup in [Development](docs/dev/development.md) section.
+
 
 Compile and Install From Source
 -------------------------------
