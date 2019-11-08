@@ -103,4 +103,9 @@ public class HybrisJUnitIntegrationTestLoader implements ITestLoader {
 		}
 		return false;
 	}
+
+	@Override
+	public ITestReference[] loadTests(Class[] testClasses, String testName, String[] failureNames, String[] packages, String[][] includeExcludeTags, String uniqueId, RemoteTestRunner listener) {
+		return loadTests(testClasses, testName, failureNames, listener);
+	}
 }
