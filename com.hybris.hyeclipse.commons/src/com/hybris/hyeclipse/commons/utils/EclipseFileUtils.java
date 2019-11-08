@@ -3,7 +3,7 @@ package com.hybris.hyeclipse.commons.utils;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;import java.util.stream.Collectors;
+import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.eclipse.core.resources.IFile;
