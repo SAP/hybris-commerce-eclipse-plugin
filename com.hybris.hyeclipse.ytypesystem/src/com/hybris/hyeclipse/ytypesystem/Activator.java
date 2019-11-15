@@ -183,8 +183,8 @@ public class Activator extends AbstractUIPlugin {
 					MessageFormat.format("could not find ybootstrap in platform folder {0}",
 							getPlatformHome().getAbsolutePath()),
 					new URISyntaxException(p.toString(), "could not resolve path"));
-			sources.add(p.toFile());
 		}
+		sources.add(p.toFile());
 		
 		try {
 			for (String item : items) {
