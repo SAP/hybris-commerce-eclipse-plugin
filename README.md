@@ -9,7 +9,7 @@ This Eclipse plugin makes developers more efficient by taking care of some of th
 
 Features
 -----------
-* Import platform into workspace
+* [Import platform into workspace](docs/importer/importer.md)
 * Synchronize extensions with the Hybris Commerce Suite platform including synchronizing libraries and classpaths managed in the platform
 * Configure the runtime JVM with optimal settings to run JUnit tests
 * Add the JDBC driver to the classpath (required to be able to run JUnit tests)

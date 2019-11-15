@@ -72,13 +72,7 @@ public class ImportPlatformPage extends WizardPage
 		{
 			@Override
 			public void modifyText( ModifyEvent e )
-			{
-				// no validation just yet, as this even gets triggered:
-				// (1) copy and paste: once
-				// (2) manual typing: once per character entered
-				// (3) per change button - selection: once
-				// so because of #2: need to do validation when submitting the wizard (in it's performFinish())
-				
+			{				
 				setPageComplete(true);
 				// let the wizard update it's buttons
 				getWizard().getContainer().updateButtons();
