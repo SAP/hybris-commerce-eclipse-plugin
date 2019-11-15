@@ -64,19 +64,14 @@ public class BuildUtils {
 					launchCfg = createAntBuildConfig(cfg, "clean,all", projectLocation, project.getName());
 				}
 			}
-			ILaunch launch = launchCfg.launch(ILaunchManager.RUN_MODE, monitor);
-
-			while (!launch.isTerminated()) {
-				try {
-					Thread.sleep(100);
-				} catch (InterruptedException e) {
-					break;
-				}
+			
+			if (launchCfg != null ) {
+				launchCfg.launch(ILaunchManager.RUN_MODE, monitor);
 			}
 
 			if (cfg.equals(PLATFORM_CLEAN_BUILD_CONFIG)) {
 				refreshWorkspaceAndBuild(monitor);
-			} else if (!cfg.equals(PLATFORM_CLEAN_BUILD_CONFIG) && !cfg.equals(PLATFORM_BUILD_CONFIG)) {
+			} else if (!cfg.equals(PLATFORM_CLEAN_BUILD_CONFIG) && !cfg.equals(PLATFORM_BUILD_CONFIG)) { // NOSONAR
 				refreshPlatformAndCurrentProject(project);
 			}
 

@@ -76,6 +76,7 @@ public class ExtensionModuleConfigurer {
 		} catch (InvocationTargetException e) {
 			Activator.logError("InvocationTargetException", e);
 		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
 			Activator.logError("InterruptedException", e);
 		}
 	}
@@ -106,6 +107,7 @@ public class ExtensionModuleConfigurer {
 			Activator.logError("InvocationTargetException", e);
 		} catch (InterruptedException e) {
 			Activator.logError("InterruptedException", e);
+			Thread.currentThread().interrupt();
 		}
 
 	}

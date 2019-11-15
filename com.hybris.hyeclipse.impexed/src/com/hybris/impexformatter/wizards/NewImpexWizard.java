@@ -60,6 +60,7 @@ public class NewImpexWizard extends Wizard implements INewWizard {
 			getContainer().run(true, false, irwp);
 		}
 		catch (InterruptedException ie) {
+			Thread.currentThread().interrupt();
 			return false;
 		}
 		catch (InvocationTargetException ite) {

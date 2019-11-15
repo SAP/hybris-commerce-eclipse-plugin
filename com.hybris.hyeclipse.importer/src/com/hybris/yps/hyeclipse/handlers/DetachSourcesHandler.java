@@ -11,29 +11,27 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
 
+import com.hybris.hyeclipse.ytypesystem.Activator;
 import com.hybris.yps.hyeclipse.utils.ProjectSourceUtil;
 
-public class DetachSourcesHandler extends AbstractHandler 
-{
+public class DetachSourcesHandler extends AbstractHandler {
 
 	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException 
-	{
+	public Object execute(ExecutionEvent event) throws ExecutionException {
 
 		Shell activeShell = HandlerUtil.getActiveShell(event);
 		IRunnableWithProgress runner = ProjectSourceUtil.getRunner();
 
-		try
-		{
-			new ProgressMonitorDialog( activeShell ).run( true, false, runner );
+		try {
+			new ProgressMonitorDialog(activeShell).run(true, false, runner);
 
+		} catch (InvocationTargetException e) {
+			Activator.logError("Error detaching sources", e);
+			MessageDialog.openError(activeShell, "Error detaching sources", e.getMessage());
+		} catch (InterruptedException e) {
+			Activator.logError("Error detaching sources", e);
+			Thread.currentThread().interrupt();
 		}
-		catch( InvocationTargetException | InterruptedException e )
-		{
-			Throwable t = (e instanceof InvocationTargetException) ? e.getCause() : e;
-			MessageDialog.openError( activeShell, "Error detaching sources", t.toString() );
-		}
-
 		return null;
 	}
 

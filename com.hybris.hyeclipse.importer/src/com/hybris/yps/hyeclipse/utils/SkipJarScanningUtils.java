@@ -1,8 +1,5 @@
 package com.hybris.yps.hyeclipse.utils;
 
-import com.hybris.yps.hyeclipse.Activator;
-import com.hybris.yps.hyeclipse.ExtensionHolder;
-
 import java.io.File;
 import java.io.PrintWriter;
 import java.nio.file.Files;
@@ -15,7 +12,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
+
+import com.hybris.yps.hyeclipse.Activator;
+import com.hybris.yps.hyeclipse.ExtensionHolder;
 
 /**
  * Created by Qiang Zeng on 26/06/2017.
@@ -47,6 +46,10 @@ public class SkipJarScanningUtils {
 
 	private static Activator plugin = Activator.getDefault();
 	private static final boolean debug = plugin.isDebugging();
+	
+	private SkipJarScanningUtils() {
+		throw new IllegalStateException("Utility class");
+	}
 
 	public static Set<ExtensionHolder> getAllExtensionsForPlatform(String platformHome) {
 
@@ -105,19 +108,18 @@ public class SkipJarScanningUtils {
 
 		try {
 			for (String dirToCheck : dirsToCheck) {
-				File libDir = new File(extDir.getAbsolutePath() + "/" + dirToCheck);
+				File libDir = Paths.get(extDir.getAbsolutePath(), dirToCheck).toFile();
 				includeJarToSkip(jarNames, libDir);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			Activator.logError("could not skip jar file", e);
 		}
 	}
 
 	private static void includeJarToSkip(List<String> jarNameSet, File dir) {
 		for (String excludedPath : excludedJarPaths) {
 			if (dir.getAbsolutePath().endsWith(excludedPath)) {
-				if (debug)
-					Activator.log(">>>>> Not to skip:  " + dir.getAbsolutePath());
+				Activator.log(">>>>> Not to skip:  " + dir.getAbsolutePath());
 				return;
 			}
 		}
