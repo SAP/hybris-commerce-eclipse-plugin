@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="com.hybris.hyeclipse.feature"
-      label="SAP Hybris Commerce, development tools for Eclipse"
-      version="1.0.4.qualifier"
-      provider-name="SAP Hybris Expert Services">
+      label="SAP Commerce Cloud - development tools for Eclipse"
+      version="1.4.0.RELEASE"
+      provider-name="SAP - Expert Services">
 
    <description url="https://wiki.hybris.com/display/hyps/SAP+Hybris+Commerce+development+tools+for+Eclipse">
       SAP Hybris Commerce, development tools for Eclipse is a suite of Eclipse plugins for SAP Hybris Commerce projects that improves developer productivity by providing functionality such as:
@@ -176,20 +176,6 @@ All rights reserved.
 
    <plugin
          id="com.hybris.hyeclipse.hac"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.hybris.hyeclipse.script.executor"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.hybris.hyeclipse.impex.importer"
          download-size="0"
          install-size="0"
          version="0.0.0"

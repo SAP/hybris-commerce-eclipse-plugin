@@ -1,6 +1,6 @@
 # SAP Commerce Project Importer
 
-Project Importer functionality aims to import SAP Commerce platform with extensions as Eclipse projects and solve dependency rules based on ```project.xml``` file.
+Project Importer functionality aims to import SAP Commerce platform with extensions as Eclipse projects and solve dependency rules based on `project.xml` file.
 
 ![Project Import Wizard](imgs/importing-p.gif)
 
@@ -10,10 +10,10 @@ Importer contains set of features and options available for developers. Most of 
 
 ### Project Import Wizard
 
-Plugin provides new option available in IDE standard Import wizard option. Option is available in menu: ```File -> Import...```.
-There you can find category ```SAP Hybris [y]``` (yeap.. We still love to use *that* old name) and there ```Import SAP Hybris Platform```.
+Plugin provides new option available in IDE standard Import wizard option. Option is available in menu: `File -> Import...`.
+There you can find category `SAP Hybris [y]` (yeap.. We still love to use *that* old name) and there `Import SAP Hybris Platform`.
 
-Next wizard step shows list of checkboxes available during import and available directory field. It is required to point valid ```hybris/bin/platform``` folder for your project.
+Next wizard step shows list of checkboxes available during import and available directory field. It is required to point valid `hybris/bin/platform` folder for your project.
 
 
 

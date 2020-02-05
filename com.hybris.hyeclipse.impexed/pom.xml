@@ -7,18 +7,12 @@
 	<parent>
 		<groupId>com.hybris.hyeclipse</groupId>
 		<artifactId>com.hybris.hyeclipse.parent</artifactId>
-		<version>1.0.4</version>
+		<version>1.4.0.RELEASE</version>
 	</parent>
 	
 	<artifactId>com.hybris.hyeclipse.impexed</artifactId>
 	<packaging>eclipse-plugin</packaging>
-	<name>SAP Hybris Commerce, development tools for Eclipse impexed (plugin)</name>
+	<name>SAP Commerce Cloud - Eclipse plugin impexed</name>
 	<description>Impex Editor</description>
-	<version>1.0.4-SNAPSHOT</version>
-	<organization>
-		<url>https://wiki.hybris.com/display/hyps</url>
-		<name>SAP Hybris Expert Services</name>
-	</organization>
-	<url>https://wiki.hybris.com/display/hyps/SAP+Hybris+Commerce+development+tools+for+Eclipse</url>
 </project>
 

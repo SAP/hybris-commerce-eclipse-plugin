@@ -7,20 +7,12 @@
 	<parent>
 		<groupId>com.hybris.hyeclipse</groupId>
 		<artifactId>com.hybris.hyeclipse.parent</artifactId>
-		<version>1.0.4</version>
+		<version>1.4.0.RELEASE</version>
 	</parent>
 
 	<artifactId>com.hybris.hyeclipse.hac</artifactId>
 	<packaging>eclipse-plugin</packaging>
-	<name>SAP Hybris Commerce, library for communication with hAC page.</name>
+	<name>SAP Commerce Cloud - for hAC</name>
 	<description>HAC communication library</description>
-	<version>1.0.4-SNAPSHOT</version>
-	<organization>
-		<url>https://wiki.hybris.com/display/hyps</url>
-		<name>SAP Hybris Expert Services</name>
-	</organization>
-	<url>https://wiki.hybris.com/display/hyps/SAP+Hybris+Commerce+development+tools+for+Eclipse</url>
-
-
 </project>
 

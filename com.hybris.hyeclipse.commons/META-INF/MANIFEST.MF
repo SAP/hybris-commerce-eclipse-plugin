@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Utils
 Bundle-SymbolicName: com.hybris.hyeclipse.commons;singleton:=true
-Bundle-Version: 1.0.4.qualifier
+Bundle-Version: 1.4.0.RELEASE
 Bundle-Activator: com.hybris.hyeclipse.commons.Activator
 Bundle-Vendor: HYBRIS
 Require-Bundle: org.eclipse.ui,

@@ -7,17 +7,12 @@
 	<parent>
 		<groupId>com.hybris.hyeclipse</groupId>
 		<artifactId>com.hybris.hyeclipse.parent</artifactId>
-		<version>1.0.4</version>
+		<version>1.4.0.RELEASE</version>
 	</parent>
 
 	<artifactId>com.hybris.hyeclipse.site</artifactId>
 	<packaging>eclipse-repository</packaging>
-	<name>SAP Hybris Commerce, development tools for Eclipse (site)</name>
-	<description>SAP Hybris Commerce, development tools for Eclipse (site)</description>
-	<version>1.0.4-SNAPSHOT</version>
+	<name>SAP Commerce Cloud - Eclipse plugin (site)</name>
+	<description>SAP Commerce Cloud - Eclipse plugin (site)</description>
 	<url>https://wiki.hybris.com/display/hyps/SAP+Hybris+Commerce+development+tools+for+Eclipse</url>
-	<organization>
-		<name>SAP Hybris Expert Services</name>
-		<url>https://wiki.hybris.com/display/hyps</url>
-	</organization>
 </project>
