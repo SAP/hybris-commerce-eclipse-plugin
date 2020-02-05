@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: junit
 Bundle-SymbolicName: com.hybris.hyeclipse.junit;singleton:=true
-Bundle-Version: 1.4.0.RELEASE
+Bundle-Version: 1.4.1.qualifier
 Bundle-Activator: com.hybris.hyeclipse.junit.Activator
 Bundle-Vendor: SAP - Expert Services
 Require-Bundle: org.eclipse.ui,
