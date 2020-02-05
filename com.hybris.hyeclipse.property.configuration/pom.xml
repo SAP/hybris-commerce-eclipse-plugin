@@ -12,9 +12,8 @@
 
 	<artifactId>com.hybris.hyeclipse.property.configuration</artifactId>
 	<packaging>eclipse-plugin</packaging>
-	<name>SAP Hybris Commerce, development tools for Eclipse, property configuration (plugin)</name>
+	<name>SAP Commerce Cloud - Eclipse plugin, property configuration </name>
 	<description>HAC property configuration plugin</description>
-	<version>1.0.4-SNAPSHOT</version>
 	<organization>
 		<url>https://wiki.hybris.com/display/hyps</url>
 		<name>SAP Hybris Expert Services</name>

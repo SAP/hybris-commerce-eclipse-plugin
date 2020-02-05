@@ -82,6 +82,7 @@ public class NewExtensionWizard extends Wizard implements INewWizard {
 		try {
 			getContainer().run(true, false, runnable);
 		} catch (InterruptedException ie) {
+			Thread.currentThread().interrupt();
 			return false;
 		} catch (InvocationTargetException ite) {
 			Throwable realException = ite.getTargetException();

@@ -97,7 +97,7 @@ public class ExtensionUtils {
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(description.getName());
 		project.create(description, null);
 		project.open(null);
-		// remomve the builder
+		// remove the builder
 		FixProjectsUtils.removeBuildersFromProject(monitor, project);
 	}
 
@@ -153,14 +153,7 @@ public class ExtensionUtils {
 					}
 				});
 			}
-			while (!launch.isTerminated()) {
-				try {
-					Thread.sleep(100);
-				} catch (InterruptedException e) {
-					break;
-				}
-			}
-			if (!buildWasSuccessful[0]) {
+			if (Boolean.FALSE == buildWasSuccessful[0]) {
 				throw new CoreException(new Status(IStatus.ERROR, "com.hybris.hyeclipse.extgen", "Ant build failed"));
 			}
 

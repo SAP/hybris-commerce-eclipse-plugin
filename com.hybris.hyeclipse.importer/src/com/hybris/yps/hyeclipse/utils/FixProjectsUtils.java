@@ -108,7 +108,7 @@ public class FixProjectsUtils {
 		}
 		return projectsNotInLocalExts;
 	}
-	
+		
 	public static Set<ExtensionHolder> getExtensionsNotInWorkspace(String platformHome) {
 
 		Set<ExtensionHolder> exts = getAllExtensionsForPlatform(platformHome);

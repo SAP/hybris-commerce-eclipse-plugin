@@ -7,18 +7,12 @@
 	<parent>
 		<groupId>com.hybris.hyeclipse</groupId>
 		<artifactId>com.hybris.hyeclipse.parent</artifactId>
-		<version>1.0.4</version>
+		<version>1.4.1-SNAPSHOT</version>
 	</parent>
 	
 	<artifactId>com.hybris.hyeclipse.emf.beans</artifactId>
 	<packaging>eclipse-plugin</packaging>
-	<name>SAP Hybris Commerce, development tools for Eclipse beans model plugin</name>
+	<name>SAP Commerce Cloud - Eclipse plugin beans model</name>
 	<description>Beans Model</description>
-	<version>1.0.4-SNAPSHOT</version>
-	<organization>
-		<url>https://wiki.hybris.com/display/hyps</url>
-		<name>SAP Hybris Expert Services</name>
-	</organization>
-	<url>https://wiki.hybris.com/display/hyps/SAP+Hybris+Commerce+development+tools+for+Eclipse</url>
 </project>
 

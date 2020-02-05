@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ProjectImporter
 Bundle-SymbolicName: com.hybris.hyeclipse.importer;singleton:=true
-Bundle-Version: 1.0.4.qualifier
+Bundle-Version: 1.4.1.qualifier
 Bundle-Activator: com.hybris.yps.hyeclipse.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
@@ -21,7 +21,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.expressions,
  com.hybris.hyeclipse.tsv;bundle-version="[1.0.0,2.0.0)"
 Bundle-ClassPath: .
-Bundle-Vendor: SAP Hybris Expert Services
+Bundle-Vendor: SAP - Expert Services
 Export-Package: com.hybris.yps.hyeclipse,
  com.hybris.yps.hyeclipse.extensionmods,
  com.hybris.yps.hyeclipse.handlers,

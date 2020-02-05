@@ -60,16 +60,15 @@ public class NewExtensionWizardPage extends WizardPage {
 		layout.numColumns = 3;
 		layout.verticalSpacing = 9;
 
-		extensionNameText = prepareTextGUI(container, "&Name:", 2, extensionNameText);
-		extensionPackageText = prepareTextGUI(container, "&Package:", 2, extensionPackageText);
-		extensionTemplateCombo = prepareComboGUI(container, "&Template:", 2, extensionTemplateCombo);
-		extensionDirectoryField = prepareDirectoryFieldEditorGUI(container, "[y] extension location: ",
-				extensionDirectoryField);
+		extensionNameText = prepareTextGUI(container, "&Name:", 2);
+		extensionPackageText = prepareTextGUI(container, "&Package:", 2);
+		extensionTemplateCombo = prepareComboGUI(container, "&Template:", 2);
+		extensionDirectoryField = prepareDirectoryFieldEditorGUI(container, "[y] extension location: ");
 
-		coreModuleCheckbox = prepareCheckboxGUI(container, "&Core module", 1, coreModuleCheckbox, true);
-		webModuleCheckbox = prepareCheckboxGUI(container, "&Web module", 2, webModuleCheckbox, false);
-		autoImportCheckbox = prepareCheckboxGUI(container, "&Auto import", 3, autoImportCheckbox, true);
-		workingSetCombo = prepareComboGUI(container, "&Working Set:", 2, workingSetCombo);
+		coreModuleCheckbox = prepareCheckboxGUI(container, "&Core module", 1, true);
+		webModuleCheckbox = prepareCheckboxGUI(container, "&Web module", 2, false);
+		autoImportCheckbox = prepareCheckboxGUI(container, "&Auto import", 3, true);
+		workingSetCombo = prepareComboGUI(container, "&Working Set:", 2);
 		initialize();
 		dialogChanged();
 		setControl(container);
@@ -190,22 +189,16 @@ public class NewExtensionWizardPage extends WizardPage {
 	 *            container for which element is set
 	 * @param label
 	 *            label for the GUI element
-	 * @param extensionDirectoryField
-	 *            {@link DirectoryFieldEditor} to be prepared
 	 * @return {@link DirectoryFieldEditor}
 	 */
-	private DirectoryFieldEditor prepareDirectoryFieldEditorGUI(Composite container, String label,
-			DirectoryFieldEditor extensionDirectoryField) {
-		extensionDirectoryField = new DirectoryFieldEditor("fileSelect", label, container);
-		extensionDirectoryField.getTextControl(container).addModifyListener(new ModifyListener() {
-			@Override
-			public void modifyText(ModifyEvent e) {
+	private DirectoryFieldEditor prepareDirectoryFieldEditorGUI(Composite container, String label) {
+		DirectoryFieldEditor field = new DirectoryFieldEditor("fileSelect", label, container);
+		field.getTextControl(container).addModifyListener(e -> {
 				setPageComplete(true);
 				getWizard().getContainer().updateButtons();
 				setErrorMessage(null);
-			}
 		});
-		return extensionDirectoryField;
+		return field;
 	}
 
 	/**
@@ -219,19 +212,15 @@ public class NewExtensionWizardPage extends WizardPage {
 	 *            {@link DirectoryFieldEditor} to be prepared
 	 * @return {@link Text}
 	 */
-	private Text prepareTextGUI(Composite container, String labelText, int horizontalSpan, Text guiElement) {
+	private Text prepareTextGUI(Composite container, String labelText, int horizontalSpan) {
 		Label label = new Label(container, SWT.NULL);
 		label.setText(labelText);
 
-		guiElement = new Text(container, SWT.BORDER | SWT.SINGLE);
+		Text guiElement = new Text(container, SWT.BORDER | SWT.SINGLE);
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.horizontalSpan = horizontalSpan;
 		guiElement.setLayoutData(gd);
-		guiElement.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				dialogChanged();
-			}
-		});
+		guiElement.addModifyListener(e -> dialogChanged());
 		return guiElement;
 	}
 
@@ -246,18 +235,14 @@ public class NewExtensionWizardPage extends WizardPage {
 	 *            {@link Combo} to be prepared
 	 * @return {@link Text}
 	 */
-	private Combo prepareComboGUI(Composite container, String labelText, int horizontalSpan, Combo guiElement) {
+	private Combo prepareComboGUI(Composite container, String labelText, int horizontalSpan) {
 		Label label = new Label(container, SWT.READ_ONLY);
 		label.setText(labelText);
-		guiElement = new Combo(container, SWT.BORDER | SWT.SINGLE);
+		Combo guiElement = new Combo(container, SWT.BORDER | SWT.SINGLE);
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.horizontalSpan = horizontalSpan;
 		guiElement.setLayoutData(gd);
-		guiElement.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				dialogChanged();
-			}
-		});
+		guiElement.addModifyListener( e -> dialogChanged());
 		return guiElement;
 	}
 
@@ -268,13 +253,10 @@ public class NewExtensionWizardPage extends WizardPage {
 	 *            container for which element is set
 	 * @param label
 	 *            label for the GUI element
-	 * @param guiElement
-	 *            {@link Button} to be prepared
 	 * @return {@link Text}
 	 */
-	private Button prepareCheckboxGUI(Composite container, String labelText, int horizontalSpan, Button guiElement,
-			boolean checked) {
-		guiElement = new Button(container, SWT.CHECK);
+	private Button prepareCheckboxGUI(Composite container, String labelText, int horizontalSpan, boolean checked) {
+		Button guiElement = new Button(container, SWT.CHECK);
 		guiElement.setText(labelText);
 		guiElement.setSelection(checked);
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);

@@ -39,7 +39,7 @@ import com.hybris.yps.hyeclipse.ExtensionHolder;
 public class Importer {
 	
 	private static Activator plugin = Activator.getDefault();
-	private static final boolean debug = Activator.getDefault().isDebugging();
+	private static final boolean DEBUG = Activator.getDefault().isDebugging();
 	
 	private static final String HYBRIS_NATURE_ID = "com.hybris.hyeclipse.tsv.hybris";
 	private static final String SPRING_NATURE_ID = "org.springframework.ide.eclipse.core.springnature";
@@ -85,28 +85,25 @@ public class Importer {
 	}
 
 	private void importExtensionsNotInWorkspace(IProgressMonitor monitor, File platformHome) throws CoreException {
-		if (debug)
 			Activator.log("Retrieving extensions not in workspace");
 		 
 		double version = getPlatformVersion(platformHome);
 		
 		Collection<ExtensionHolder> extensions = FixProjectsUtils.getExtensionsNotInWorkspace(platformHome.getAbsolutePath());
-		if (extensions != null && extensions.isEmpty() == false) {
+		if (!extensions.isEmpty()) {
 			monitor.setTaskName("Importing extensions");
 			monitor.beginTask("Importing extensions", extensions.size());
 			int progress = 0;
 			for (ExtensionHolder extensionHolder : extensions) {
 				Path path = new Path(extensionHolder.getPath() + "/.project");
 				if (path.toFile().exists()) {
-					
-					if (debug)
-						Activator.log("Importing project [" + extensionHolder + "]");
+					Activator.log("Importing project [" + extensionHolder + "]");
 					importProject(monitor, path, version);
 					// fix the modules (e.g. remove hmc module if not needed)
 					fixModules(monitor, extensionHolder);
 				}
 				else {
-					if (debug)
+					if (DEBUG)
 						Activator.log("Not importing extension [" + extensionHolder + "] because it is not an eclipse project");
 				}
 				progress++;
@@ -116,7 +113,7 @@ public class Importer {
 	}
 
 	private void closeProjectsThatAreNotReferenced(IProgressMonitor monitor, File platformHome) throws CoreException {
-		if (debug)
+		if (DEBUG)
 			Activator.log("Retrieving projects not in localextensions using platformhome [" + platformHome.getAbsolutePath() + "]");
 		Set<IProject> projectsToClose = FixProjectsUtils.getProjectsNotInLocalExtensionsFile(platformHome.getAbsolutePath());
 
@@ -132,7 +129,7 @@ public class Importer {
 				if (referencingProjects != null) {
 					for (IProject proj : referencingProjects) {
 						if (!projectsToClose.contains(proj)) {
-							if (debug)
+							if (DEBUG)
 								Activator.log("Aborting close of project [" + projectToClose.getName() + "] because it is referenced by [" + proj.getName() + "]");
 							abortClose = true;
 						}
@@ -141,7 +138,7 @@ public class Importer {
 
 				// close projects
 				if (!abortClose) {
-					if (debug)
+					if (DEBUG)
 						Activator.log("Closing project [" + projectToClose.getName() + "]");
 					projectToClose.close(monitor);
 				}
@@ -531,7 +528,7 @@ public class Importer {
 				// remove JAR if it doesn't exist, only do this if the jar file is located in this project, we leave jars references from different projects
 				if (classpathEntryFile.getPath().endsWith(".jar") && classpathEntryFile.getPath().startsWith("/" + project.getName() + "/") && !project.getFile(classpathEntryFile.getPath().replace("/" + project.getName() + "/", "/")).exists()) {
 					changedClassPath = true;
-					if (debug)
+					if (DEBUG)
 						Activator.log("libary [" + classpathEntry.getPath() + "] not found for project [ " + project.getName() + "]");
 				}
 				else {
@@ -625,22 +622,10 @@ public class Importer {
 				// extract currently enabled role & instance from active-role-env.properties
 				// https://wiki.hybris.com/display/RD/hybris+server+roles)
 				Properties prop = new Properties();
-				InputStream input = null;
-				try {
-					input = new FileInputStream(activeRoleEnvPropertyFile.getLocation().toFile());
+				try (InputStream input = new FileInputStream(activeRoleEnvPropertyFile.getLocation().toFile())) {
 					prop.load(input);
-				}
-				catch (IOException e) {
+				} catch (IOException e) {
 					throw new IllegalStateException(e);
-				}
-				finally {
-					if (input != null) {
-						try {
-							input.close();
-						} catch (IOException e) {
-							throw new IllegalStateException(e);
-						}
-					}
 				}
 				String activeRole = prop.getProperty("ACTIVE_ROLE").replace("${platformhome}", platformHome.toString());
 				String activeInstance = prop.getProperty("ACTIVE_ROLE_INSTANCE").replace("${platformhome}", platformHome.toString());
@@ -651,7 +636,7 @@ public class Importer {
 			    File instancePropertiesFile = new File(instanceConfigDir, "instance.properties");
 			    
 			   IPath location = new Path(instancePropertiesFile.toString());
-			   if (debug) {
+			   if (DEBUG) {
 				   Activator.log("location = "+location.toString());
 				   Activator.log("instancePropertiesLink = "+instancePropertiesLink.toString());
 			   }
@@ -697,7 +682,7 @@ public class Importer {
 				 {
 					 // check if this Resource is on the classpath
 					 if (!javaProject.isOnClasspath(res)) {
-						 if (debug)
+						 if (DEBUG)
 							 Activator.log("Adding library [" + res.getFullPath() + "] to classpath for project [" + javaProject.getProject().getName() + "]");
 						 FixProjectsUtils.addToClassPath(res, IClasspathEntry.CPE_LIBRARY, javaProject, monitor);
 					 }

@@ -42,9 +42,9 @@
       </plugin>
     </plugins>
   </build>
-  <name>SAP Hybris Commerce, development tools for Eclipse (product)</name>
+  <name>SAP Commerce Cloud - Eclipse plugin (product)</name>
   <url>https://wiki.hybris.com/display/hyps/SAP+Hybris+Commerce+development+tools+for+Eclipse</url>
-  <description>SAP Hybris Commerce, development tools for Eclipse (product)</description>
+  <description>SAP Commerce Cloud - Eclipse plugin (product)</description>
   <organization>
   	<name>SAP Hybris Expert Services</name>
   	<url>https://wiki.hybris.com/display/hyps</url>

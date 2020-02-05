@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: TSV
+Bundle-Name: TSV Extended
 Bundle-SymbolicName: com.hybris.hyeclipse.tsv.extended;singleton:=true
-Bundle-Version: 1.0.4.qualifier
+Bundle-Version: 1.4.1.qualifier
 Bundle-Activator: com.hybris.hyeclipse.tsv.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
@@ -29,3 +29,4 @@ Export-Package: com.hybris.hyeclipse.tsv,
  com.hybris.hyeclipse.tsv.wizards,
  com.hybris.hyeclipse.tsvextended.handlers
 Automatic-Module-Name: com.hybris.hyeclipse.tsv.extended
+Bundle-Vendor: SAP - Expert Services

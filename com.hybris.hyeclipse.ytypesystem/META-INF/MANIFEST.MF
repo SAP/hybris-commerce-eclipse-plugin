@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: YTypeSystem
 Bundle-SymbolicName: com.hybris.hyeclipse.ytypesystem;singleton:=true
-Bundle-Version: 1.0.4.qualifier
+Bundle-Version: 1.4.1.qualifier
 Bundle-Activator: com.hybris.hyeclipse.ytypesystem.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -15,5 +15,5 @@ DynamicImport-Package: *
 Export-Package: com.hybris.hyeclipse.ytypesystem,
  com.hybris.hyeclipse.ytypesystem.handlers,
  com.hybris.yps.hyeclipse
-Bundle-Vendor: SAP Hybris Expert Services
+Bundle-Vendor: SAP - Expert Services
 Automatic-Module-Name: com.hybris.hyeclipse.ytypesystem

@@ -7,15 +7,14 @@
 	<parent>
 		<groupId>com.hybris.hyeclipse</groupId>
 		<artifactId>com.hybris.hyeclipse.parent</artifactId>
-		<version>1.0.4</version>
+		<version>1.4.1-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>com.hybris.hyeclipse.feature</artifactId>
-	<version>1.0.4-SNAPSHOT</version>
 	<packaging>eclipse-feature</packaging>
 	
-	<name>SAP Hybris Commerce, development tools for Eclipse (feature)</name>
-	<description>SAP Hybris Commerce, development tools for Eclipse (feature)</description>
+	<name>SAP Commerce Cloud - Eclipse plugin (feature)</name>
+	<description>SAP Commerce Cloud - Eclipse plugin (feature)</description>
 
 	<url>https://wiki.hybris.com/display/hyps/SAP+Hybris+Commerce+development+tools+for+Eclipse</url>
 	<organization>

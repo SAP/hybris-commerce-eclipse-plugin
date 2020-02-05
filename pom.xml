@@ -5,9 +5,9 @@
 
 	<groupId>com.hybris.hyeclipse</groupId>
 	<artifactId>com.hybris.hyeclipse.parent</artifactId>
-	<version>1.0.4</version>
+	<version>1.4.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>SAP Hybris Commerce, development tools for Eclipse (parent)</name>
+	<name>SAP Commerce Cloud - Eclipse plugin (parent)</name>
 
 	<developers>
 	</developers>
@@ -32,9 +32,7 @@
 	<modules>
 		<module>com.hybris.hyeclipse.commons</module>
 		<module>com.hybris.hyeclipse.hac</module>
-		<module>com.hybris.hyeclipse.script.executor</module>
 		<module>com.hybris.hyeclipse.impexed</module>
-		<module>com.hybris.hyeclipse.impex.importer</module>
 		<module>com.hybris.hyeclipse.importer</module>
 		<module>com.hybris.hyeclipse.site</module>
 		<module>com.hybris.hyeclipse.feature</module>

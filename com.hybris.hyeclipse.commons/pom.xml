@@ -7,20 +7,13 @@
 	<parent>
 		<groupId>com.hybris.hyeclipse</groupId>
 		<artifactId>com.hybris.hyeclipse.parent</artifactId>
-		<version>1.0.4</version>
+		<version>1.4.1-SNAPSHOT</version>
 		<relativePath>../</relativePath>
 	</parent>
 
 	<artifactId>com.hybris.hyeclipse.commons</artifactId>
 	<packaging>eclipse-plugin</packaging>
-	<name>SAP Hybris Commerce, common classes for hybris's eclipse plugin</name>
-	<description>Common classes for plugin decelopment</description>
-	<version>1.0.4-SNAPSHOT</version>
-	<organization>
-		<url>https://wiki.hybris.com/display/hyps</url>
-		<name>SAP Hybris Expert Services</name>
-	</organization>
-	<url>https://wiki.hybris.com/display/hyps/SAP+Hybris+Commerce+development+tools+for+Eclipse</url>
-
+	<name>SAP Commerce Cloud - commons</name>
+	<description>Common classes for plugin development</description>
 </project>
 
