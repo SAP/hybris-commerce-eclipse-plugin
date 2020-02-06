@@ -30,7 +30,7 @@ To install the plugin visit the [Eclipse Marketplace](https://marketplace.eclips
 Development
 --------------
 
-Plugin is released as a open-source project. If you want to contribute to it, can find more information about setup in [Development](docs/dev/development.md) section.
+Plugin is released as a open-source project. If you want to contribute to it, can find more information about setup in [Development](docs/dev/development.md) section and in [Code of Conduct](CODE_OF_CONDUCT.md)
 
 
 Compile and Install From Source
