@@ -33,6 +33,7 @@ public class BuildUtils {
 	private static final String PLATFORM_BUILD_CONFIG = "yplatform_build";
 	private static final String PLATFORM_CLEAN_BUILD_CONFIG = "yplatform_clean_build";
 	private static final String PLATFORM_NAME = "platform";
+	private static final String PLATFORM_UPDATE = "yplatform_update";
 
 	/**
 	 * Runs a ant build for project according to specified configuration
@@ -62,6 +63,8 @@ public class BuildUtils {
 					launchCfg = createAntBuildConfig(cfg, "all", projectLocation, projectName);
 				} else if (cfg.contains(PLATFORM_CLEAN_BUILD_CONFIG)) {
 					launchCfg = createAntBuildConfig(cfg, "clean,all", projectLocation, project.getName());
+				} else if (cfg.contains(PLATFORM_UPDATE)) {
+					launchCfg = createAntBuildConfig(cfg, "updatesystem", projectLocation, project.getName());
 				}
 			}
 			
