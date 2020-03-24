@@ -53,6 +53,17 @@
          	</with>
          </enabledWhen>
       </handler>
+	   
+      <handler commandId="com.hybris.yps.hyeclipse.YPlatformUpdateCommand" 
+            class="com.hybris.yps.hyeclipse.handlers.YPlatformUpdateHandler">
+         <enabledWhen>
+         	<with variable="com.hybris.hyeclipse.properties.platformHome">
+         		<equals value="ENABLED">
+                </equals>
+         	</with>
+         </enabledWhen>
+      </handler>
+	   
       <handler commandId="com.hybris.yps.hyeclipse.AttachSourcesCommand" 
             class="com.hybris.yps.hyeclipse.handlers.AttachSourcesHandler">
          <enabledWhen>
@@ -113,6 +124,10 @@
             <command label="clean all" commandId="com.hybris.yps.hyeclipse.YPlatformCleanAndBuildCommand"
                   tooltip="Platform Clean Build"
                   id="com.hybris.yps.hyeclipse.menu.YPlatformCleanAndBuildMenu">
+            </command>
+	    <command label="update" commandId="com.hybris.yps.hyeclipse.YPlatformUpdateCommand"
+                  tooltip="Update"
+                  id="com.hybris.yps.hyeclipse.menu.YPlatformUpdateMenu">
             </command>
             </menu>
             <menu label="Extras"
