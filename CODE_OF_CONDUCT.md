@@ -74,3 +74,8 @@ available at https://www.contributor-covenant.org/version/1/4/code-of-conduct.ht
 
 For answers to common questions about this code of conduct, see
 https://www.contributor-covenant.org/faq
+
+## Developer Certificate of Origin (DCO)
+
+Due to legal reasons, contributors will be asked to accept a DCO before they submit the first pull request to this projects, this happens in an automated fashion during the submission process. SAP uses [the standard DCO text of the Linux Foundation](https://developercertificate.org/).
+
