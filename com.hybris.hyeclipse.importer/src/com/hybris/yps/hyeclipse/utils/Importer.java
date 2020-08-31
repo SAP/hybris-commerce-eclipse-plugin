@@ -165,7 +165,7 @@ public class Importer {
 			while ((s = br.readLine()) != null) {
 				if (s.startsWith("version=")) {
 					String[] split = s.split("=");
-					return Double.valueOf(split[1].substring(0, 3));
+					return Double.valueOf(split[1]);
 				}
 			}
 			return 6.3;
