@@ -19,7 +19,7 @@ Import-Package: org.eclipse.jdt.core,
 Bundle-Activator: com.hybris.impexformatter.Activator
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
-Bundle-Vendor: SAP - Expert Services
+Bundle-Vendor: SAP
 Automatic-Module-Name: com.hybris.hyeclipse.impexed
 Export-Package: com.hybris.impexformatter,
  com.hybris.impexformatter.actions,

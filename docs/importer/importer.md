@@ -11,7 +11,7 @@ Importer contains set of features and options available for developers. Most of 
 ### Project Import Wizard
 
 Plugin provides new option available in IDE standard Import wizard option. Option is available in menu: `File -> Import...`.
-There you can find category `SAP Hybris [y]` (yeap.. We still love to use *that* old name) and there `Import SAP Hybris Platform`.
+There you can find category `SAP` and there `Import SAP Platform`.
 
 Next wizard step shows list of checkboxes available during import and available directory field. It is required to point valid `hybris/bin/platform` folder for your project.
 

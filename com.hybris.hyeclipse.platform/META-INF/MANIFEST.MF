@@ -15,4 +15,4 @@ Bundle-Activator: com.hybris.hyeclipse.platform.internal.Plugin
 Export-Package: com.hybris.hyeclipse.platform;version="1.0.3",
  com.hybris.hyeclipse.platform.internal;x-internal:=true
 Automatic-Module-Name: com.hybris.hyeclipse.platform
-Bundle-Vendor: SAP - Expert Services
+Bundle-Vendor: SAP

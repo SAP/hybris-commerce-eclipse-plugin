@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="SAP Hybris Commerce, development tools for Eclipse" uid="com.hybris.hyeclipse.product" version="1.0.4.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="SAP Commerce, development tools for Eclipse" uid="com.hybris.hyeclipse.product" version="1.0.4.qualifier" useFeatures="true" includeLaunchers="true">
 
 
    <configIni use="default">

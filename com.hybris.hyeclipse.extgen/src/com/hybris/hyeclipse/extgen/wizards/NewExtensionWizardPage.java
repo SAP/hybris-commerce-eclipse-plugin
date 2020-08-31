@@ -1,9 +1,22 @@
+/*******************************************************************************
+ * Copyright 2020 SAP
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License.  You may obtain a copy
+ * of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ ******************************************************************************/
 package com.hybris.hyeclipse.extgen.wizards;
 
 import java.io.File;
-
 import java.util.regex.Pattern;
-import org.osgi.service.prefs.BackingStoreException;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -11,8 +24,6 @@ import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -22,10 +33,9 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkingSet;
-import org.eclipse.ui.IWorkingSetManager;
 import org.eclipse.ui.PlatformUI;
+import org.osgi.service.prefs.BackingStoreException;
 
 import com.hybris.hyeclipse.extgen.Activator;
 import com.hybris.hyeclipse.extgen.utils.ExtensionUtils;
@@ -63,7 +73,7 @@ public class NewExtensionWizardPage extends WizardPage {
 		extensionNameText = prepareTextGUI(container, "&Name:", 2);
 		extensionPackageText = prepareTextGUI(container, "&Package:", 2);
 		extensionTemplateCombo = prepareComboGUI(container, "&Template:", 2);
-		extensionDirectoryField = prepareDirectoryFieldEditorGUI(container, "[y] extension location: ");
+		extensionDirectoryField = prepareDirectoryFieldEditorGUI(container, " extension location: ");
 
 		coreModuleCheckbox = prepareCheckboxGUI(container, "&Core module", 1, true);
 		webModuleCheckbox = prepareCheckboxGUI(container, "&Web module", 2, false);

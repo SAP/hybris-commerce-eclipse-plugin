@@ -13,7 +13,7 @@
 
 		<cleanUpConfigurationUI
 			class="com.hybris.hyeclipse.editor.copyright.page.CopyrightTabPage"
-			name="[y] Hybris actions" cleanUpKind="saveAction">
+			name="Actions" cleanUpKind="saveAction">
 		</cleanUpConfigurationUI>
 	</extension>
 
@@ -22,7 +22,7 @@
 			id="com.hybris.hyeclipse.editor.preferences.CopyrightPreferencePage"
 			class="com.hybris.hyeclipse.editor.preferences.CopyrightPreferencePage"
 			category="com.hybris.yps.hyeclipse.preferences.HyEclipsePreferencePage"
-			name="[y] Copyright Preferences">
+			name="Copyright Preferences">
 		</page>
 	</extension>
 

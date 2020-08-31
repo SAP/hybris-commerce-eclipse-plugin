@@ -33,7 +33,7 @@
          point="org.eclipse.ui.menus">
       <menuContribution
             locationURI="menu:org.eclipse.ui.main.menu?after=additions">
-         <menu label="SAP Hybris [y]"
+         <menu label="SAP"
                id="com.hybris.yps.hyeclipse.menu">
                <menu label="Type System Validation"
                id="com.hybris.hyeclipse.tsv.menu">
@@ -78,7 +78,7 @@
             class="com.hybris.hyeclipse.tsv.preferences.TSVPreferencePage"
             id="com.hybris.hyeclipse.tsv.preferences.TSVPreferencePage"
             category="com.hybris.yps.hyeclipse.preferences.HyEclipsePreferencePage"
-            name="[y] TSV Preferences">
+            name="TSV Preferences">
       </page>
    </extension>
    

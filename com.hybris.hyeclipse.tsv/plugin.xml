@@ -23,7 +23,7 @@
             locationURI="popup:org.eclipse.ui.projectConfigure?after=additions">
          <command
                commandId="com.hybris.hyeclipse.tsv.addRemoveHybrisNature"
-               label="Disable SAP Hybris Nature"
+               label="Disable SAP Nature"
                style="push">
             <visibleWhen
                   checkEnabled="false">
@@ -46,7 +46,7 @@
          </command>
          <command
                commandId="com.hybris.hyeclipse.tsv.addRemoveHybrisNature"
-               label="Enable SAP Hybris Nature"
+               label="Enable SAP Nature"
                style="push">
             <visibleWhen
                   checkEnabled="false">

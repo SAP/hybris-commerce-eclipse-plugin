@@ -36,7 +36,7 @@
          <menu
                icon="icons/hybris.ico"
                id="com.hybris.hyeclipse.properties.configuration.menu"
-               label="[y] Properties">
+               label="Properties">
             <command
                   commandId="com.hybris.hyeclipse.property.configuration.saveProperties"
                   label="Upload platform config"

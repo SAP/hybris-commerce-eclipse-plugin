@@ -94,7 +94,7 @@
    
    <extension point="org.eclipse.ui.menus">
       <menuContribution locationURI="menu:org.eclipse.ui.main.menu?after=additions">
-         <menu label="SAP Hybris [y]"
+         <menu label="SAP"
                id="com.hybris.yps.hyeclipse.menu">
             <command label="Synchronize Projects with yPlatform" commandId="com.hybris.yps.hyeclipse.FixProjectsCommand"
                   tooltip="Synchronize Projects with yPlatform"
@@ -104,7 +104,7 @@
                   tooltip="Refresh all projects then do a clean build"
                   id="com.hybris.yps.hyeclipse.menu.EclipseRefreshAndBuildMenu">
             </command>
-            <menu label="[y] Platform Build"
+            <menu label="Platform Build"
                id="com.hybris.yps.hyeclipse.menu.platformbuild">
             <command label="all" commandId="com.hybris.yps.hyeclipse.YPlatformRefreshAndBuildCommand"
                   tooltip="Build Platform All"
@@ -139,16 +139,16 @@
    </extension>
    
    <extension point="org.eclipse.ui.importWizards">
-      <category name="SAP Hybris [y]"
+      <category name="SAP"
             id="com.hybris.yps.hyeclipse.wizards">
       </category>
-      <wizard name="Import SAP Hybris Platform"
+      <wizard name="Import SAP Platform"
       		icon="icon/hybris.ico"
             category="com.hybris.yps.hyeclipse.wizards"
             class="com.hybris.yps.hyeclipse.wizards.ImportPlatformWizard"
             id="com.hybris.yps.hyeclipse.wizards.importplatform">
          <description>
-            Import the SAP Hybris platform and extensions as defined in localextensions.xml
+            Import the SAP platform and extensions as defined in localextensions.xml
          </description>
       </wizard>
    </extension>
@@ -157,7 +157,7 @@
       <page
             class="com.hybris.yps.hyeclipse.preferences.HyEclipsePreferencePage"
             id="com.hybris.yps.hyeclipse.preferences.HyEclipsePreferencePage"
-            name="SAP Hybris Commerce, development tools for Eclipse">
+            name="SAP Commerce, development tools for Eclipse">
       </page>
    </extension>
   
@@ -229,7 +229,7 @@
                label="SAP Commerce Help"
                style="push" icon="icon/hybris.ico">
          </command>
-         <menu label="SAP Hybris Application Lifecycle Framework (ALF)"
+         <menu label="SAP Application Lifecycle Framework (ALF)"
                id="com.hybris.yps.hyeclipse.menu.alf" icon="icon/hybris.ico">
          <command
                commandId="com.hybris.yps.hyeclipse.handlers.help.OpenALFHandler"
@@ -250,14 +250,14 @@
          </command>
          <command
                commandId="com.hybris.yps.hyeclipse.handlers.help.OpenExpertServicesHandler"
-               label="SAP Hybris Expert Services"
+               label="SAP Expert Services"
                style="push"
                >
          </command>
          </menu>
           <command
                commandId="com.hybris.yps.hyeclipse.handlers.help.OpenExpertsForumHandler"
-               label="SAP Hybris Experts Forum"
+               label="SAP Experts Forum"
                style="push" icon="icon/hybris.ico">
          </command>
           <command

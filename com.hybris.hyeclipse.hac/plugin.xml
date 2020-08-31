@@ -7,7 +7,7 @@
        <page id="com.hybris.hyeclipse.hac.preferences.HACPreferencePage"
 	    	class="com.hybris.hyeclipse.hac.preferences.HACPreferencePage"
         	category="com.hybris.yps.hyeclipse.preferences.HyEclipsePreferencePage"
-        	name="[y] hAC connection Preferences">
+        	name=" hAC connection Preferences">
        </page>
    </extension>
    
