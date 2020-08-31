@@ -27,7 +27,7 @@
             base-type="org.eclipse.core.runtime.xml"
             file-extensions="xml"
             id="com.hybris.hyeclipse.emf.beans.descriptor"
-            name="SAP Hybris Beans Descriptor"
+            name="SAP Beans Descriptor"
             priority="normal">
          <describer
                class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">

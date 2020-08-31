@@ -29,4 +29,4 @@ Export-Package: com.hybris.hyeclipse.tsv,
  com.hybris.hyeclipse.tsv.wizards,
  com.hybris.hyeclipse.tsvextended.handlers
 Automatic-Module-Name: com.hybris.hyeclipse.tsv.extended
-Bundle-Vendor: SAP - Expert Services
+Bundle-Vendor: SAP

@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Tests
-Bundle-SymbolicName: com.hybris.hyeclipse.tests
+Bundle-SymbolicName: com.hybris.hyeclipse.tests;singleton:=true
 Bundle-Version: 1.4.1.qualifier
-Bundle-Vendor: SAP - Expert Services
+Bundle-Vendor: SAP
 Fragment-Host: com.hybris.hyeclipse.importer
 Automatic-Module-Name: com.hybris.hyeclipse.tests
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8

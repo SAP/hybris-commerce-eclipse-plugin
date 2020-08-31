@@ -14,29 +14,11 @@
          </enabledWhen>
       </handler>
    </extension>
-   
-   <!--
-   <extension
-         point="org.eclipse.ui.menus">
-      <menuContribution locationURI="menu:org.eclipse.ui.main.menu?after=additions">
-         <menu label="SAP Hybris [y]"
-               id="com.hybris.yps.hyeclipse.menu">
-     		 	<command
-            		label="Generate New Extension"
-            		commandId="com.hybris.yps.hyeclipse.GenerateNewExtension"
-                	tooltip="Start new extension wizard"
-                	id="com.hybris.yps.hyeclipse.menu.GenerateNewExtension">
-      			</command>
-      	 </menu>
-      </menuContribution>
-   </extension>
-   -->
-   
    <extension
 		point="org.eclipse.ui.newWizards">
 		<category
         id="sapHybris"
-        name="SAP Hybris [y]">
+        name="SAP">
 		</category>
 		<wizard
         category="sapHybris"

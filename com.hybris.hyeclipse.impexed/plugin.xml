@@ -19,7 +19,7 @@
 		point="org.eclipse.ui.newWizards">
 		<category
         id="sapHybris"
-        name="SAP Hybris [y]">
+        name="SAP">
 		</category>
 		<wizard
 			name="New impex file"
@@ -37,7 +37,7 @@
 			targetID="com.hybris.impexformatter.editors.ImpexPageEditor">
 			<action
 				id="impex.format.action"
-				label="[y]format impex"
+				label="format impex"
 				class="com.hybris.impexformatter.editors.ImpexFormatAction"
 				definitionId="impexFormatter"/>
 		</editorContribution>
@@ -47,17 +47,17 @@
 		point="org.eclipse.ui.commands">
 		<category
 			id="impexCategory"
-			name="[y] Impex source"
+			name="Impex source"
 			description="Category for impex"/>
 		<command
             id="impexFormatter"
-            name="[y] Impex Format"
+            name="Impex Format"
             categoryId="impexCategory">
 		</command>
 		<command
             id="com.hybris.impexformatter.wizards.NewImpexWizard"
             defaultHandler="com.hybris.impexformatter.handlers.NewImpexWizardHandler"
-            name="[y] Impex Wizard"
+            name="Impex Wizard"
             categoryId="impexCategory">
 		</command>
 	</extension>
@@ -99,7 +99,7 @@
 			class="com.hybris.impexformatter.preferences.ImpexPreferencePage"
             id="com.hybris.impexformatter.preferences.ImpexPreferencePage"
             category="com.hybris.yps.hyeclipse.preferences.HyEclipsePreferencePage"
-            name="[y] Impex Editor Preferences">
+            name="Impex Editor Preferences">
 		</page>
 	</extension>
 	
@@ -108,5 +108,4 @@
 		<initializer
 			class="com.hybris.impexformatter.preferences.PreferenceInitializer"/>
 	</extension>
-	
 </plugin>

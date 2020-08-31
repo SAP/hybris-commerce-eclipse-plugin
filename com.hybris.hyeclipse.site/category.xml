@@ -3,9 +3,9 @@
    <feature url="features/com.hybris.hyeclipse.feature_0.0.0.jar" id="com.hybris.hyeclipse.feature" version="0.0.0">
       <category name="com.hybris.hyeclipse"/>
    </feature>
-   <category-def name="com.hybris.hyeclipse" label="SAP Hybris Commerce, development tools for Eclipse">
+   <category-def name="com.hybris.hyeclipse" label="SAP Commerce, development tools for Eclipse">
       <description>
-         SAP Hybris Commerce, development tools for Eclipse is a suite of Eclipse plugins for SAP Hybris Commerce projects that improves developer productivity.
+         SAP Commerce, development tools for Eclipse is a suite of Eclipse plugins for SAP Commerce projects that improves developer productivity.
       </description>
    </category-def>
 </site>

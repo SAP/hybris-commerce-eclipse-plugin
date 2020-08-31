@@ -11,11 +11,11 @@
 	</parent>
 	<artifactId>com.hybris.hyeclipse.junit</artifactId>
 	<packaging>eclipse-plugin</packaging>
-	<name>SAP Commerce Cloud - Eclipse plugin junit </name>
+	<name>SAP Commerce Cloud - Eclipse plugin junit</name>
 	<description>JUnit Integration Tests Runner</description>
 	<organization>
 		<url>https://wiki.hybris.com/display/hyps</url>
-		<name>SAP Hybris Expert Services</name>
+		<name>SAP Expert Services</name>
 	</organization>
 	<url>https://wiki.hybris.com/display/hyps/SAP+Hybris+Commerce+development+tools+for+Eclipse</url>
 </project>
