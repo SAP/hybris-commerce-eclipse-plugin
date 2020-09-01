@@ -62,6 +62,7 @@ public class Importer {
 	private static final String SPRINGBEANS_FILE = ".springBeans";
 	
 	private static final double JVM8_VERSION = 5.6d;
+	private static final double JVM11_VERSION = 1811d;
 	
 	public void resetProjectsFromLocalExtensions(File platformHome, IProgressMonitor monitor,  boolean fixClasspath, boolean removeHybrisGenerator, boolean createWorkingSets, boolean useMultiThread, boolean skipJarScanning) throws CoreException {
 		plugin.resetPlatform(platformHome.getAbsolutePath());
@@ -118,6 +119,7 @@ public class Importer {
 					fixModules(monitor, extensionHolder);
 				}
 				else {
+					// TODO fix skipping eclipse projects. create them and add to workspace
 					if (DEBUG)
 						Activator.log("Not importing extension [" + extensionHolder + "] because it is not an eclipse project");
 				}
