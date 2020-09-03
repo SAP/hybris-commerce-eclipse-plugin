@@ -36,3 +36,8 @@ Plugin is released as a open-source project. If you want to contribute to it, ca
 Compile and Install From Source
 -------------------------------
 Execute "mvn install" to create an Eclipse local update site archive in com.hybris.hyeclipse.site/target. Import it in Eclipse by going to Help -> Install New Software then click the "Add" button
+
+Knowledge Database
+--------------
+
+Please find [Knowledge Database](docs/kb/info.md)  which describe solutions for known issues.
