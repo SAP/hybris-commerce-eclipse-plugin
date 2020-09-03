@@ -259,11 +259,10 @@ public class ImportPlatformWizard extends Wizard implements IImportWizard
 		List<Status> childStatuses = new ArrayList<>();
 		StackTraceElement[] stackTraces = e.getStackTrace();
 		for (StackTraceElement stackTraceElement : stackTraces) {
-	         Status status = new Status(IStatus.ERROR,
-	                    "com.hybris.hyeclipse.importer", stackTraceElement.toString());
+	         Status status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, stackTraceElement.toString());
 	            childStatuses.add(status);
 		}
-		return new MultiStatus("com.hybris.hyeclipse.importer", IStatus.ERROR, childStatuses.toArray(new Status[] {}), e.toString(), e);
+		return new MultiStatus(Activator.PLUGIN_ID, IStatus.ERROR, childStatuses.toArray(new Status[] {}), e.toString(), e);
 	}
 
 	protected boolean isAutoBuildEnabled()
