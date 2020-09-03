@@ -109,8 +109,8 @@ public class ImportPlatformWizard extends Wizard implements IImportWizard
 			MessageDialog
 					.openError(
 							getShell(),
-							"Invalid platform directory",
-							"The platform directory is invalid. Please set the location to a valid directory (e.g. <path>/hybris/bin/platform) and make sure the platform has been built already (\"ant all\")." );
+							Messages.ImportWizard_invalid_platform_dir,
+							Messages.ImportWizard_invalid_platform_dir_info );
 			//TODO: set focus to the input field in question
 			
 			// abort
@@ -124,8 +124,8 @@ public class ImportPlatformWizard extends Wizard implements IImportWizard
 			MessageDialog
 			.openError(
 					getShell(),
-					"Unreadable or non-existing file specified",
-					"Please make sure the archive you selected is readable to the current user and exists." );
+					Messages.ImportWizard_wrong_src_zip,
+					Messages.ImportWizard_wrong_src_zip_info );
 			
 			//TODO: set focus to the input field in question
 			
@@ -161,7 +161,7 @@ public class ImportPlatformWizard extends Wizard implements IImportWizard
 		}
 		catch( InvocationTargetException | InterruptedException e )
 		{
-			MessageDialog.openError( getShell(), "Error attaching sources", e.toString() );
+			MessageDialog.openError( getShell(), Messages.ImportWizard_error_attaching_srcs, e.toString() );
 			Thread.currentThread().interrupt();
 		}
 		
@@ -186,8 +186,8 @@ public class ImportPlatformWizard extends Wizard implements IImportWizard
 		//Set platform home as workspace preference
 		try {
 			String platformDirStr = platformDir.getCanonicalPath();
-			Preferences preferences = InstanceScope.INSTANCE.getNode("com.hybris.hyeclipse.preferences");
-			preferences.put("platform_home", platformDirStr);
+			Preferences preferences = InstanceScope.INSTANCE.getNode("com.hybris.hyeclipse.preferences"); //$NON-NLS-1$
+			preferences.put("platform_home", platformDirStr); //$NON-NLS-1$
 			preferences.flush();
 		}
 		catch (IOException ioe) {
@@ -204,8 +204,8 @@ public class ImportPlatformWizard extends Wizard implements IImportWizard
 				List<IProject> projects = Arrays.asList( ResourcesPlugin.getWorkspace().getRoot().getProjects() );
 				if( removeExistingProjects && projects != null && (!projects.isEmpty()) )
 				{
-					monitor.setTaskName( "Removing projects" );
-					monitor.beginTask( "Removing projects", projects.size() );
+					monitor.setTaskName( Messages.ImportWizard_removing_extension );
+					monitor.beginTask( Messages.ImportWizard_removing_extension, projects.size() ); //$NON-NLS-1$
 					int progress = 0;
 					for( IProject project: projects )
 					{
@@ -242,13 +242,11 @@ public class ImportPlatformWizard extends Wizard implements IImportWizard
 		}
 		catch( InvocationTargetException | InterruptedException | RuntimeException e )
 		{
-			Activator.logError("Failed to import the platform",e);
+			Activator.logError(Messages.ImportWizard_error_on_import,e);
 			Throwable cause = e.getCause();
 
-			ErrorDialog.openError(this.page1.getControl().getShell(), "Error while importing SAP Commerce project", ""
-					+ "Error occured during importing project.\n"
-					+ "Try to reproduce issue running \"ant clean all\" in termminal\n"
-					+ "More details in stack trace below\n", createErrorStatus(cause));
+			ErrorDialog.openError(this.page1.getControl().getShell(), Messages.error_on_import, 
+					Messages.error_on_import_info, createErrorStatus(cause));
 			enableAutoBuild( autobuildEnabled );
 			Thread.currentThread().interrupt();
 		}
@@ -269,7 +267,7 @@ public class ImportPlatformWizard extends Wizard implements IImportWizard
 	{
 		IPreferencesService service = Platform.getPreferencesService();
 		String qualifier = ResourcesPlugin.getPlugin().getBundle().getSymbolicName();
-		String key = "description.autobuilding";
+		String key = "description.autobuilding"; //$NON-NLS-1$
 		IScopeContext[] contexts = { InstanceScope.INSTANCE, ConfigurationScope.INSTANCE};
 		return service.getBoolean( qualifier, key, false, contexts );
 	}
@@ -278,7 +276,7 @@ public class ImportPlatformWizard extends Wizard implements IImportWizard
 	{
 		String qualifier = ResourcesPlugin.getPlugin().getBundle().getSymbolicName();
 		IEclipsePreferences node = InstanceScope.INSTANCE.getNode( qualifier );
-		node.putBoolean( "description.autobuilding", enable );
+		node.putBoolean( "description.autobuilding", enable ); //$NON-NLS-1$
 		try
 		{
 			node.flush();
@@ -297,14 +295,14 @@ public class ImportPlatformWizard extends Wizard implements IImportWizard
 		}
 		catch( CoreException e )
 		{
-			Activator.logError("Failed to import the platform",e);
+			Activator.logError(Messages.error_on_import,e);
 			throw new InvocationTargetException( e );
 		}
 	}
 
 	protected void fixRuntimeEnvironment()
 	{
-		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject( "platform" );
+		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject( "platform" ); //$NON-NLS-1$
 		IJavaProject javaProject = JavaCore.create( project );
 		IVMInstall javaInstall = null;
 		try
@@ -335,7 +333,7 @@ public class ImportPlatformWizard extends Wizard implements IImportWizard
 		if( javaVmParams == null || javaVmParams.length == 0 )
 		{
 			AbstractVMInstall abstractVMInstall = (AbstractVMInstall) javaInstall;
-			abstractVMInstall.setVMArgs("-Xmx1500M -XX:MaxPermSize=300M");
+			abstractVMInstall.setVMArgs("-Xmx1500M -XX:MaxPermSize=300M"); //$NON-NLS-1$
 		}
 	}
 }
