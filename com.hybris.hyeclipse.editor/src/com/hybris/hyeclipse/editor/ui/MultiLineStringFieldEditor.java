@@ -18,8 +18,6 @@ package com.hybris.hyeclipse.editor.ui;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.KeyAdapter;
@@ -115,12 +113,7 @@ public class MultiLineStringFieldEditor extends StringFieldEditor {
 			default:
 				Assert.isTrue(false, UNKNOWN_VALIDATE_STRATEGY);
 			}
-			textFieldML.addDisposeListener(new DisposeListener() {
-				@Override
-				public void widgetDisposed(final DisposeEvent event) {
-					textFieldML = null;
-				}
-			});
+			textFieldML.addDisposeListener(e -> textFieldML = null);
 			if (textLimitML > 0) {
 				textFieldML.setTextLimit(textLimitML);
 			}

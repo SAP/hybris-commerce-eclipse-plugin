@@ -16,11 +16,13 @@
 package com.hybris.hyeclipse.commons.utils;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
@@ -54,7 +56,7 @@ public final class EclipseFileUtils {
 	 * @return active editor file
 	 */
 	public static IFile getActiveEditorFile() {
-		return (IFile) getActiveWorkbenchWindow().getActivePage().getActiveEditor().getEditorInput().getAdapter(IFile.class);
+		return getActiveWorkbenchWindow().getActivePage().getActiveEditor().getEditorInput().getAdapter(IFile.class);
 	}
 	
 	/**
@@ -70,7 +72,7 @@ public final class EclipseFileUtils {
 		if (selection instanceof IStructuredSelection) {
 			final IStructuredSelection ssel = (IStructuredSelection) selection;
 			final Object obj = ssel.getFirstElement();
-			file = (IFile) Platform.getAdapterManager().getAdapter(obj, IFile.class);
+			file = Platform.getAdapterManager().getAdapter(obj, IFile.class);
 		} else if (selection instanceof TextSelection) {
 			file = getActiveEditorFile();
 		}
@@ -112,7 +114,7 @@ public final class EclipseFileUtils {
 		final IEditorPart editorPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
 		                .getActiveEditor();
 		
-		if ( editorPart != null && editorPart instanceof ITextEditor) {
+		if (editorPart instanceof ITextEditor) {
 			final ITextEditor editor = (ITextEditor) editorPart;
 			final ISelection selection = editor.getSelectionProvider().getSelection();
 			if (selection instanceof TextSelection) {
@@ -129,7 +131,7 @@ public final class EclipseFileUtils {
 	 * @return selected text in file, if none is selected empty string will be returned
 	 */
 	public static String getCurrentSelectedText() {
-		return getCurrentTextSelection().map(TextSelection::getText).orElse(CharactersConstants.EMPTY_STRING);
+		return getCurrentTextSelection().map(TextSelection::getText).orElse(StringUtils.EMPTY);
 	}
 	
 	/**
@@ -142,7 +144,7 @@ public final class EclipseFileUtils {
 	public static String getContentOfFiles(final Set<IFile> files) {
 		final StringBuilder filesContent = new StringBuilder();
 
-		files.forEach(file -> filesContent.append(getContentOfFile(file)).append(CharactersConstants.NEW_LINE));
+		files.forEach(file -> filesContent.append(getContentOfFile(file)).append(StringUtils.LF));
 
 		return filesContent.toString();
 	}
@@ -156,10 +158,10 @@ public final class EclipseFileUtils {
 	 */
 	public static String getContentOfFile(final IFile file) {
 		try {
-			return IOUtils.toString(file.getContents(), CharactersConstants.UTF_8_ENCODING);
+			return IOUtils.toString(file.getContents(), StandardCharsets.UTF_8);
 		} catch (CoreException | IOException e) {
 			ConsoleUtils.printError(e.getMessage());
 		}
-		return CharactersConstants.EMPTY_STRING;
+		return StringUtils.EMPTY;
 	}
 }

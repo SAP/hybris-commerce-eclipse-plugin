@@ -67,7 +67,7 @@ import com.hybris.yps.hyeclipse.ExtensionHolder;
 public class FixProjectsUtils {
 	
 	private static Activator plugin = Activator.getDefault();
-	private static final boolean debug = plugin.isDebugging();
+	private static final boolean DEBUG = plugin.isDebugging();
 	
 	public static Set<ExtensionHolder> getAllExtensionsForPlatform(String platformHome) {
 		Set<ExtensionHolder> allExtensions  = plugin.getAllExtensionsForPlatform(platformHome);
@@ -85,7 +85,7 @@ public class FixProjectsUtils {
 		Set<IProject> allHybrisProjects = getAllHybrisProjects();
 		
 		Set<IProject> projectsNotInLocalExts = new HashSet<IProject>();
-		if (debug)
+		if (DEBUG)
 			Activator.log("Getting Projects not in localextensions.xml");
 		for (IProject project : allHybrisProjects)
 		{
@@ -99,7 +99,7 @@ public class FixProjectsUtils {
 				{
 				if (Files.isSameFile(projectLocation, extLocation) || (project.getName().equals("platform") || (project.getName().equals("config"))))
 				{
-					if (debug)
+					if (DEBUG)
 						Activator.log("Ext in workspace and localextensions.xml: ext [" + ext.getPath() + "] project [" + project.getLocation().toFile().getAbsolutePath() + "]");
 					found = true;
 					break;
@@ -112,7 +112,7 @@ public class FixProjectsUtils {
 			// if we get here there is no path
 			if (!found)
 			{
-				if (debug)
+				if (DEBUG)
 					Activator.log("No match in localextensions for project [" + project.getName() + "] path [" + project.getLocation().toFile().getAbsolutePath() + "]");
 				if (!project.getName().equals("platform") && !project.getName().equals("config")) {
 				projectsNotInLocalExts.add(project);
@@ -135,13 +135,13 @@ public class FixProjectsUtils {
 		Set<IProject> allHybrisProjects = getAllHybrisProjects();
 
 		Set<ExtensionHolder> extensionsNotInWorkspace = new HashSet<ExtensionHolder>();
-		if (debug)
+		if (DEBUG)
 			Activator.log("Getting extensions not in workspace");
 		for (ExtensionHolder ext : exts) {
 			
 			boolean found = false;
 			for (IProject project : allHybrisProjects) {
-				if (debug)
+				if (DEBUG)
 					Activator.log("ext [" + ext.getPath() + "] project [" + project.getLocation().toFile().getAbsolutePath() + "]");
 				
 				Path projectLocation = Paths.get(project.getLocation().toFile().getAbsolutePath());
@@ -150,7 +150,7 @@ public class FixProjectsUtils {
 				{
 					if (Files.isSameFile(projectLocation, extLocation))
 					{
-						if (debug)
+						if (DEBUG)
 							Activator.log("Match in workspace and localextensions.xml: ext [" + ext.getPath() + "] project [" + project.getLocation().toFile().getAbsolutePath() + "]");
 						found = true;
 						break;
@@ -164,7 +164,7 @@ public class FixProjectsUtils {
 			// if we get here there is no match
 			if (!found)
 			{
-				if (debug)
+				if (DEBUG)
 					Activator.log("No match in workspace for extension [" + ext.getName() + "] path [" + ext.getPath() + "]");
 				extensionsNotInWorkspace.add(ext);
 			}
@@ -185,7 +185,7 @@ public class FixProjectsUtils {
 		{
 			if (isAHybrisExtension(project))
 			{
-				if (debug)
+				if (DEBUG)
 					Activator.log("hybris project found [" +  project.getName() + "]");
 				filteredProjects.add(project);
 			}
@@ -201,7 +201,7 @@ public class FixProjectsUtils {
 		{
 			if (isAHybrisExtension(project) && project.isOpen())
 			{
-				if (debug)
+				if (DEBUG)
 					Activator.log("hybris project found [" +  project.getName() + "]");
 				filteredProjects.add(project);
 			}
@@ -234,7 +234,7 @@ public class FixProjectsUtils {
 	
 	public static boolean isATemplateExtension(IProject project)
 	{
-		return project.getLocation().toFile().getAbsolutePath().indexOf("ext-template") > 0;
+		return project.getLocation().append("extgen.properties").toFile().exists();
 	}
 	
 	public static boolean isACustomerExtension(IProject project)
@@ -357,7 +357,7 @@ public class FixProjectsUtils {
 				if (res.getFullPath().equals(entry.getPath()))
 				{
 					changed = true;
-					if (debug)
+					if (DEBUG)
 						Activator.log("Removing src path [" + res.getFullPath() + "] for project [" + javaProject.getProject().getName() + "]");
 					iterator.remove();
 				}
