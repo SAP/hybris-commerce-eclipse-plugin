@@ -18,6 +18,7 @@ package com.hybris.yps.hyeclipse.wizards;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,7 +26,10 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -36,6 +40,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.launching.AbstractVMInstall;
 import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.JavaRuntime;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -58,6 +63,7 @@ import com.hybris.yps.hyeclipse.utils.ProjectSourceUtil;
  * Wizard to walk the user through importing all projects from a given platform directory.
  * 
  * @author brendan
+ * @author Pawel Wolanski
  *
  */
 public class ImportPlatformWizard extends Wizard implements IImportWizard
@@ -155,8 +161,8 @@ public class ImportPlatformWizard extends Wizard implements IImportWizard
 		}
 		catch( InvocationTargetException | InterruptedException e )
 		{
-			Throwable t = (e instanceof InvocationTargetException) ? e.getCause() : e;
-			MessageDialog.openError( getShell(), "Error attaching sources", t.toString() );
+			MessageDialog.openError( getShell(), "Error attaching sources", e.toString() );
+			Thread.currentThread().interrupt();
 		}
 		
 	}
@@ -196,7 +202,7 @@ public class ImportPlatformWizard extends Wizard implements IImportWizard
 			public void run( IProgressMonitor monitor ) throws InvocationTargetException
 			{
 				List<IProject> projects = Arrays.asList( ResourcesPlugin.getWorkspace().getRoot().getProjects() );
-				if( removeExistingProjects && projects != null && (projects.size() > 0) )
+				if( removeExistingProjects && projects != null && (!projects.isEmpty()) )
 				{
 					monitor.setTaskName( "Removing projects" );
 					monitor.beginTask( "Removing projects", projects.size() );
@@ -218,13 +224,12 @@ public class ImportPlatformWizard extends Wizard implements IImportWizard
 						monitor.worked( progress );
 					}
 				}
-				importPlatform( monitor, projects, platformDir, fixClasspath, removeHybrisBuilder, createWorkingSet, useMultiThread, skipJarScanning);
+				importPlatform( monitor, platformDir, fixClasspath, removeHybrisBuilder, createWorkingSet, useMultiThread, skipJarScanning);
 				// fix JRE settings to make it easier to run tests
-				fixRuntimeEnvironment( platformDir.getAbsolutePath() );
+				fixRuntimeEnvironment();
 				
 				//Enable the menu options now we have a platform_home
-				ISourceProviderService sourceProvicerSerivce = 
-				        (ISourceProviderService)PlatformUI.getWorkbench().getService(
+				ISourceProviderService sourceProvicerSerivce = PlatformUI.getWorkbench().getService(
 				                ISourceProviderService.class);
 				
 				CommandState commandStateService = (CommandState) sourceProvicerSerivce.getSourceProvider(CommandState.ID);
@@ -235,14 +240,30 @@ public class ImportPlatformWizard extends Wizard implements IImportWizard
 		{
 			new ProgressMonitorDialog( getContainer().getShell() ).run( true, false, importer );
 		}
-		catch( InvocationTargetException | InterruptedException e )
+		catch( InvocationTargetException | InterruptedException | RuntimeException e )
 		{
 			Activator.logError("Failed to import the platform",e);
-			Throwable t = (e instanceof InvocationTargetException) ? e.getCause() : e;
-			MessageDialog.openError( this.page1.getControl().getShell(), "Error", t.toString() );
+			Throwable cause = e.getCause();
+
+			ErrorDialog.openError(this.page1.getControl().getShell(), "Error while importing SAP Commerce project", ""
+					+ "Error occured during importing project.\n"
+					+ "Try to reproduce issue running \"ant clean all\" in termminal\n"
+					+ "More details in stack trace below\n", createErrorStatus(cause));
 			enableAutoBuild( autobuildEnabled );
+			Thread.currentThread().interrupt();
 		}
 		enableAutoBuild( autobuildEnabled );
+	}
+
+	private IStatus createErrorStatus(Throwable e) {
+		List<Status> childStatuses = new ArrayList<>();
+		StackTraceElement[] stackTraces = e.getStackTrace();
+		for (StackTraceElement stackTraceElement : stackTraces) {
+	         Status status = new Status(IStatus.ERROR,
+	                    "com.hybris.hyeclipse.importer", stackTraceElement.toString());
+	            childStatuses.add(status);
+		}
+		return new MultiStatus("com.hybris.hyeclipse.importer", IStatus.ERROR, childStatuses.toArray(new Status[] {}), e.toString(), e);
 	}
 
 	protected boolean isAutoBuildEnabled()
@@ -269,7 +290,7 @@ public class ImportPlatformWizard extends Wizard implements IImportWizard
 		}
 	}
 
-	protected void importPlatform( IProgressMonitor monitor, List<IProject> projects, File platformDir , boolean fixClasspath, boolean removeHybrisGenerator, boolean createWorkingSets, boolean useMultiThread, boolean skipJarScanning) throws InvocationTargetException
+	protected void importPlatform( IProgressMonitor monitor, File platformDir , boolean fixClasspath, boolean removeHybrisGenerator, boolean createWorkingSets, boolean useMultiThread, boolean skipJarScanning) throws InvocationTargetException
 	{
 		try
 		{
@@ -282,7 +303,7 @@ public class ImportPlatformWizard extends Wizard implements IImportWizard
 		}
 	}
 
-	protected void fixRuntimeEnvironment( String platformDir )
+	protected void fixRuntimeEnvironment()
 	{
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject( "platform" );
 		IJavaProject javaProject = JavaCore.create( project );
@@ -305,7 +326,7 @@ public class ImportPlatformWizard extends Wizard implements IImportWizard
 	}
 
 	/**
-	 * To be able to run JUnit tests and standalone applications the heap sizes need to be increased
+	 * To be able to run JUnit tests and stand-alone applications the heap sizes need to be increased
 	 * 
 	 * @param javaInstall
 	 */
