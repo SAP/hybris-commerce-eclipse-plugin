@@ -43,12 +43,6 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * @generated
  */
 public abstract class AbstractPojoImpl extends MinimalEObjectImpl.Container implements AbstractPojo {
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public static final String copyright = "Copyright by SAP";
 
 	/**
 	 * The default value of the '{@link #getClass_() <em>Class</em>}' attribute.
@@ -68,7 +62,7 @@ public abstract class AbstractPojoImpl extends MinimalEObjectImpl.Container impl
 	 * @generated
 	 * @ordered
 	 */
-	protected String class_ = CLASS_EDEFAULT;
+	protected String clazz = CLASS_EDEFAULT;
 
 	/**
 	 * The default value of the '{@link #getTemplate() <em>Template</em>}' attribute.
@@ -115,7 +109,7 @@ public abstract class AbstractPojoImpl extends MinimalEObjectImpl.Container impl
 	 * @generated
 	 */
 	public String getClass_() {
-		return class_;
+		return clazz;
 	}
 
 	/**
@@ -124,10 +118,10 @@ public abstract class AbstractPojoImpl extends MinimalEObjectImpl.Container impl
 	 * @generated
 	 */
 	public void setClass(String newClass) {
-		String oldClass = class_;
-		class_ = newClass;
+		String oldClass = clazz;
+		clazz = newClass;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, BeansPackage.ABSTRACT_POJO__CLASS, oldClass, class_));
+			eNotify(new ENotificationImpl(this, Notification.SET, BeansPackage.ABSTRACT_POJO__CLASS, oldClass, clazz));
 	}
 
 	/**
@@ -163,6 +157,8 @@ public abstract class AbstractPojoImpl extends MinimalEObjectImpl.Container impl
 				return getClass_();
 			case BeansPackage.ABSTRACT_POJO__TEMPLATE:
 				return getTemplate();
+			default:
+				break;
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -181,6 +177,8 @@ public abstract class AbstractPojoImpl extends MinimalEObjectImpl.Container impl
 			case BeansPackage.ABSTRACT_POJO__TEMPLATE:
 				setTemplate((String)newValue);
 				return;
+			default:
+				break;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -199,6 +197,8 @@ public abstract class AbstractPojoImpl extends MinimalEObjectImpl.Container impl
 			case BeansPackage.ABSTRACT_POJO__TEMPLATE:
 				setTemplate(TEMPLATE_EDEFAULT);
 				return;
+			default:
+				break;
 		}
 		super.eUnset(featureID);
 	}
@@ -212,9 +212,11 @@ public abstract class AbstractPojoImpl extends MinimalEObjectImpl.Container impl
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
 			case BeansPackage.ABSTRACT_POJO__CLASS:
-				return CLASS_EDEFAULT == null ? class_ != null : !CLASS_EDEFAULT.equals(class_);
+				return clazz != null;
 			case BeansPackage.ABSTRACT_POJO__TEMPLATE:
-				return TEMPLATE_EDEFAULT == null ? template != null : !TEMPLATE_EDEFAULT.equals(template);
+				return template != null;
+			default:
+				break;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -228,9 +230,9 @@ public abstract class AbstractPojoImpl extends MinimalEObjectImpl.Container impl
 	public String toString() {
 		if (eIsProxy()) return super.toString();
 
-		StringBuffer result = new StringBuffer(super.toString());
+		StringBuilder result = new StringBuilder(super.toString());
 		result.append(" (class: ");
-		result.append(class_);
+		result.append(clazz);
 		result.append(", template: ");
 		result.append(template);
 		result.append(')');

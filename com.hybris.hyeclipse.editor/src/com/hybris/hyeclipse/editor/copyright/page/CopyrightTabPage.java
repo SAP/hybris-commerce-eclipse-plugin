@@ -111,6 +111,7 @@ public class CopyrightTabPage implements ICleanUpConfigurationUI {
 
 			@Override
 			public void controlMoved(final ControlEvent e) {
+				// intentionally empty
 			}
 
 			@Override
@@ -245,17 +246,9 @@ public class CopyrightTabPage implements ICleanUpConfigurationUI {
 			}
 
 			final Rectangle area = fContainer.getClientArea();
-			if (area.width > x) {
-				fContainer.setExpandHorizontal(true);
-			} else {
-				fContainer.setExpandHorizontal(false);
-			}
-
-			if (area.height > y) {
-				fContainer.setExpandVertical(true);
-			} else {
-				fContainer.setExpandVertical(false);
-			}
+			
+			fContainer.setExpandHorizontal(area.width > x);
+			fContainer.setExpandVertical(area.height > y);
 
 			if (wHint != SWT.DEFAULT) {
 				x = wHint;

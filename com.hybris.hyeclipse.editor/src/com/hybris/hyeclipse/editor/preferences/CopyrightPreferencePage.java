@@ -29,18 +29,13 @@ import com.hybris.hyeclipse.editor.ui.MultiLineStringFieldEditor;
 public class CopyrightPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 	private static final int FIELD_WIDTH = 5;
 
-	private static interface LABELS {
+	private final class LABELS {
 		static final String COPYRIGHT_CONTENTS = "Copyright contents: ";
 		static final String COPYRIGHT_FIRST_LINE = "First line: ";
 		static final String COPYRIGHT_LINE_PREFIX = "Line prefix: ";
 		static final String COPYRIGHT_LAST_LINE = "Last line: ";
 		static final String COPYRIGHT_PREFERENCES = "Copyright preferences";
 	}
-
-	private StringFieldEditor copyrightContent;
-	private StringFieldEditor firstLine;
-	private StringFieldEditor linePrefix;
-	private StringFieldEditor lastLine;
 
 	public CopyrightPreferencePage() {
 		super(GRID);
@@ -60,13 +55,13 @@ public class CopyrightPreferencePage extends FieldEditorPreferencePage implement
 	 */
 	@Override
 	protected void createFieldEditors() {
-		copyrightContent = new MultiLineStringFieldEditor(CopyrightPreferenceConstants.COPYRIGHT_CONTENT,
+		StringFieldEditor copyrightContent = new MultiLineStringFieldEditor(CopyrightPreferenceConstants.COPYRIGHT_CONTENT,
 				LABELS.COPYRIGHT_CONTENTS, getFieldEditorParent());
-		firstLine = new StringFieldEditor(CopyrightPreferenceConstants.COPYRIGHT_FIRST_LINE,
+		StringFieldEditor firstLine = new StringFieldEditor(CopyrightPreferenceConstants.COPYRIGHT_FIRST_LINE,
 				LABELS.COPYRIGHT_FIRST_LINE, FIELD_WIDTH, getFieldEditorParent());
-		linePrefix = new StringFieldEditor(CopyrightPreferenceConstants.COPYRIGHT_LINE_PREFIX,
+		StringFieldEditor linePrefix = new StringFieldEditor(CopyrightPreferenceConstants.COPYRIGHT_LINE_PREFIX,
 				LABELS.COPYRIGHT_LINE_PREFIX, FIELD_WIDTH, getFieldEditorParent());
-		lastLine = new StringFieldEditor(CopyrightPreferenceConstants.COPYRIGHT_LAST_LINE, LABELS.COPYRIGHT_LAST_LINE,
+		StringFieldEditor lastLine = new StringFieldEditor(CopyrightPreferenceConstants.COPYRIGHT_LAST_LINE, LABELS.COPYRIGHT_LAST_LINE,
 				FIELD_WIDTH, getFieldEditorParent());
 		addField(copyrightContent);
 		addField(firstLine);

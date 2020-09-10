@@ -2,7 +2,7 @@
 <feature
       id="com.hybris.hyeclipse.feature"
       label="SAP Commerce Cloud - development tools for Eclipse"
-      version="1.4.1.qualifier"
+      version="1.5.0.RELEASE"
       provider-name="SAP">
 
    <description url="https://wiki.hybris.com/display/hyps/SAP+Hybris+Commerce+development+tools+for+Eclipse">

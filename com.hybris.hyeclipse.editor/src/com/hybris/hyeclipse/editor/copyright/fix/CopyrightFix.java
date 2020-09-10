@@ -28,7 +28,7 @@ import com.hybris.hyeclipse.editor.copyright.manager.CopyrightManager;
  */
 public class CopyrightFix implements ICleanUpFix {
 
-	private final static CopyrightManager copyrightManager = new CopyrightManager();
+	private static final CopyrightManager copyrightManager = new CopyrightManager();
 	private final CompilationUnitChange change;
 
 	protected CopyrightFix(final CompilationUnitChange change) {

@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.util.Base64;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -75,7 +76,7 @@ public final class PreferencesUtils {
 	public static <T extends Serializable> Optional<T> readObjectFromStore(final IPreferenceStore store, final String preferenceKey) {
 		Optional<T> result = Optional.empty();
 		final String storedPreference = store.getString(preferenceKey);
-		final byte bytes[] = Base64.getDecoder().decode(storedPreference);
+		final byte[] bytes = Base64.getDecoder().decode(storedPreference);
 		
 		try( final ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(bytes)) ) {
 			result = Optional.of( (T) objectInputStream.readObject());
@@ -104,6 +105,6 @@ public final class PreferencesUtils {
 			ConsoleUtils.printError(exception.getMessage());
 		} 
 		
-		return CharactersConstants.EMPTY_STRING;
+		return StringUtils.EMPTY;
 	}
 }
