@@ -22,6 +22,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Paths;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collection;
@@ -31,6 +32,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
+import org.eclipse.core.internal.resources.ProjectDescription;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -111,18 +113,20 @@ public class Importer {
 			monitor.beginTask("Importing extensions", extensions.size());
 			int progress = 0;
 			for (ExtensionHolder extensionHolder : extensions) {
-				IPath path = new Path(extensionHolder.getPath()).append("/.project");
-				if (path.toFile().exists() || isHybrisExtension(path)) {
-					Activator.log("Importing project [" + extensionHolder + "]");
-					importProject(monitor, path, version);
+				Path extP = new Path(extensionHolder.getPath());
+				IPath projectFilepath = new Path(extensionHolder.getPath()).append("/.project");
+				boolean projectFileExist = projectFilepath.toFile().exists();
+				if (projectFileExist) {
+					Activator.log("Importing Eclipse project [" + extensionHolder + "]");
+					importProject(monitor, projectFilepath, version);
 					// fix the modules (e.g. remove hmc module if not needed)
-					fixModules(monitor, extensionHolder);
-				} else {
-					// TODO fix skipping eclipse projects. create them and add to workspace
-					if (DEBUG)
-						Activator.log(MessageFormat.format(
-								"Not importing extension [{0}] because it is not an eclipse project", extensionHolder));
+				} else if (isHybrisExtension(extP)){
+					Activator.log(MessageFormat.format(
+							"Trying to create project [{0}] in IDE", extensionHolder));
+					createProject(monitor, extP, version, extensionHolder.getName());
+					
 				}
+				fixModules(monitor, extensionHolder);
 				progress++;
 				monitor.worked(progress);
 			}
@@ -188,6 +192,28 @@ public class Importer {
 		addHybrisNature(project, progress.newChild(30));
 		return project;
 	}
+	
+	private IProject createProject(IProgressMonitor monitor, IPath path, double version, String name) throws CoreException {
+		final SubMonitor progress = SubMonitor.convert(monitor, 120);
+		IProjectDescription description = createDescription(path, name);
+		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(name);
+		project.create(description, progress.newChild(30));
+		fixProjectCompilerSettings(monitor, project, version);
+		project.open(progress.newChild(30));
+		FixProjectsUtils.removeBuildersFromProject(progress.newChild(30), project);
+		addHybrisNature(project, progress.newChild(30));
+		return project;
+	}
+	
+
+	private IProjectDescription createDescription(IPath path, String name) {
+		ProjectDescription d = new ProjectDescription();
+		d.setName(name);
+		d.setLocation(path);
+		d.setLocationURI(path.toFile().toURI());
+		
+		return d;
+	}
 
 	private double getPlatformVersion(File platformHome) {
 		java.nio.file.Path buildNumberPath = platformHome.toPath().resolve("build.number");
@@ -211,8 +237,8 @@ public class Importer {
 					"org.eclipse.jdt.core.compiler.problem.unusedLocal",
 					"org.eclipse.jdt.core.compiler.problem.unnecessaryTypeCheck",
 					"org.eclipse.jdt.core.compiler.problem.undocumentedEmptyBlock");
-
-			File settingsFile = new File(project.getLocation() + "/" + (SETTINGS_FILE));
+			
+			File settingsFile = project.getLocation().toFile().toPath().resolve(SETTINGS_FILE).toFile();
 			if (settingsFile.exists()) {
 
 				String s;
@@ -271,18 +297,11 @@ public class Importer {
 
 	private void addHybrisNature(IProject project, IProgressMonitor monitor) throws CoreException {
 		IProjectDescription description = project.getDescription();
-		String[] natures = description.getNatureIds();
 
-		for (int i = 0; i < natures.length; ++i) {
-			if (HYBRIS_NATURE_ID.equals(natures[i])) {
-				return;
-			}
-		}
-
-		// Add the nature
-		String[] newNatures = new String[natures.length + 1];
-		System.arraycopy(natures, 0, newNatures, 0, natures.length);
-		newNatures[natures.length] = HYBRIS_NATURE_ID;
+		Set<String> natSet = new HashSet<>(Arrays.asList(description.getNatureIds()));
+		natSet.add(HYBRIS_NATURE_ID);
+		natSet.add(JavaCore.NATURE_ID);
+		String[] newNatures = natSet.toArray(new String[natSet.size()]);
 		description.setNatureIds(newNatures);
 		project.setDescription(description, monitor);
 	}
