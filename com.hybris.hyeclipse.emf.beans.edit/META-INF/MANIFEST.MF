@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: com.hybris.hyeclipse.emf.beans.edit;singleton:=true
-Bundle-Version: 1.4.1.qualifier
+Bundle-Version: 1.5.0.RELEASE
 Bundle-ClassPath: .
 Bundle-Activator: com.hybris.hyeclipse.emf.beans.provider.BeansEditPlugin$Implementation
 Bundle-Vendor: %providerName
