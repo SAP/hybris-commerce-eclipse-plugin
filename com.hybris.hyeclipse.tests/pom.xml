@@ -6,7 +6,7 @@
   <parent>
   	<groupId>com.hybris.hyeclipse</groupId>
   	<artifactId>com.hybris.hyeclipse.parent</artifactId>
-  	<version>1.5.0.RELEASE</version>
+  	<version>1.5.1-SNAPSHOT</version>
   </parent>
   
   <build>
