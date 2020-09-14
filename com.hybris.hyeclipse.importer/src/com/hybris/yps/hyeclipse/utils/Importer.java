@@ -31,6 +31,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.internal.resources.ProjectDescription;
 import org.eclipse.core.resources.IFile;
@@ -67,6 +69,7 @@ public class Importer {
 
 	private static final double JVM8_VERSION = 5.6d;
 	private static final double JVM11_VERSION = 1811d;
+	Pattern platformVersionPattern = Pattern.compile("[0-9]*\\.[0-9]*");
 
 	public void resetProjectsFromLocalExtensions(File platformHome, IProgressMonitor monitor, boolean fixClasspath,
 			boolean removeHybrisGenerator, boolean createWorkingSets, boolean useMultiThread, boolean skipJarScanning)
@@ -215,18 +218,32 @@ public class Importer {
 		return d;
 	}
 
-	private double getPlatformVersion(File platformHome) {
+	protected double getPlatformVersion(File platformHome) {
 		java.nio.file.Path buildNumberPath = platformHome.toPath().resolve("build.number");
 		Double platformVersion = 6.3d;
+		String propertyVersion = "";
 		try (FileReader fr = new FileReader(buildNumberPath.toFile())) {
 			Properties platformProps = new Properties();
 			platformProps.load(fr);
-			String propertyVersion = platformProps.getProperty("version", "6.3");
-			platformVersion = Double.valueOf(propertyVersion);
+			propertyVersion = platformProps.getProperty("version", platformVersion.toString());
+			platformVersion = convertPlatformVersion(propertyVersion, platformVersion);
 		} catch (IOException e) {
 			throw new IllegalStateException(MessageFormat.format("Error reading file {0}", buildNumberPath), e);
 		}
 		return platformVersion;
+	}
+	
+	protected Double convertPlatformVersion(final String platformVersion, final Double def) {
+		Matcher m = platformVersionPattern.matcher(platformVersion);
+		Double ret = def;
+		if (m.find()) {
+			try {
+				ret = Double.valueOf(m.group());
+			} catch (NumberFormatException e) {
+				Activator.log(MessageFormat.format("Platform version not in SAP format [dd].[dd] but {0}. Falling back to version {1}", m.group(), platformVersion));
+			}
+		}
+		return ret;
 	}
 
 	private void fixProjectCompilerSettings(IProgressMonitor monitor, IProject project, double platformVersion) {
