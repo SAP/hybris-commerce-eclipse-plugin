@@ -18,6 +18,7 @@ package com.hybris.impexformatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
@@ -28,19 +29,17 @@ import org.eclipse.jface.text.TypedRegion;
 
 public class ImpexDocumentPartitioner implements IDocumentPartitioner {
 	
-	public final static String IMPEX_DATA = "__y_impex_data";
-	public final static String IMPEX_COMMENT = "__y_impex_comment";
-	public final static String IMPEX_INSTRUCTION = "__y_impex_instruction";
-	public final static String IMPEX_HEADER = "__y_impex_header";
+	public static final String IMPEX_DATA = "__y_impex_data";
+	public static final String IMPEX_COMMENT = "__y_impex_comment";
+	public static final String IMPEX_INSTRUCTION = "__y_impex_instruction";
+	public static final String IMPEX_HEADER = "__y_impex_header";
 	private IDocument fDocument;
 	
 	public ImpexDocumentPartitioner() {}
 	
-	@SuppressWarnings("deprecation")
 	@Override
 	public void connect(IDocument document) {
-		
-		org.eclipse.jface.util.Assert.isNotNull(document);
+		Assert.isNotNull(document);
 		fDocument = document;
 	}
 	
@@ -164,24 +163,22 @@ public class ImpexDocumentPartitioner implements IDocumentPartitioner {
 
 	@Override
 	public void disconnect() {
-		
+		// Intentionally left blank
 	}
 
 	@Override
 	public void documentAboutToBeChanged(DocumentEvent arg0) {
-		
+		// Intentionally left blank
 	}
 
 	@Override
 	public boolean documentChanged(DocumentEvent arg0) {
-		
 		return false;
 	}
 
 	@Override
 	public String[] getLegalContentTypes() {
-		
-		return null;
+		return new String[] {};
 	}
 
 }

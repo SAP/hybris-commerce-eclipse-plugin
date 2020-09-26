@@ -154,11 +154,9 @@ class BeansGenerator implements IRunnableWithProgress {
 		return rawTypeName + "<" + getTypeName(elementType) + ">";
 	}
 	
-	@SuppressWarnings("deprecation")
 	private String getCollectionTypeName(YCollectionType collectionType) {
 		switch (collectionType.getTypeOfCollection()) {
 		case SET:
-		case SORTED_SET:
 			return getCollectionTypeName("java.util.Set", collectionType.getElementType());
 		case LIST:
 			return getCollectionTypeName("java.util.List", collectionType.getElementType());
