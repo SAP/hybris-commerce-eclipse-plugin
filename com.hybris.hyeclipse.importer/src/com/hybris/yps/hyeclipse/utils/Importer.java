@@ -22,7 +22,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Paths;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collection;
@@ -82,7 +81,7 @@ public class Importer {
 		if (fixClasspath) {
 			fixMissingProjectDependencies(monitor, platformHome);
 			fixMissingProjectResources(monitor, platformHome);
-			fixProjectClasspaths(monitor, platformHome);
+			fixProjectClasspaths(monitor);
 		}
 
 		if (removeHybrisGenerator) {
@@ -101,7 +100,7 @@ public class Importer {
 			SkipJarScanningUtils.skipJarScanning(platformHome);
 		}
 
-		fixSpringBeans(monitor, platformHome);
+		fixSpringBeans(monitor);
 	}
 
 	private void importExtensionsNotInWorkspace(IProgressMonitor monitor, File platformHome) throws CoreException {
@@ -189,7 +188,7 @@ public class Importer {
 		IProjectDescription description = ResourcesPlugin.getWorkspace().loadProjectDescription(path);
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(description.getName());
 		project.create(description, progress.newChild(30));
-		fixProjectCompilerSettings(monitor, project, version);
+		fixProjectCompilerSettings(project, version);
 		project.open(progress.newChild(30));
 		FixProjectsUtils.removeBuildersFromProject(progress.newChild(30), project);
 		addHybrisNature(project, progress.newChild(30));
@@ -201,7 +200,7 @@ public class Importer {
 		IProjectDescription description = createDescription(path, name);
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(name);
 		project.create(description, progress.newChild(30));
-		fixProjectCompilerSettings(monitor, project, version);
+		fixProjectCompilerSettings(project, version);
 		project.open(progress.newChild(30));
 		FixProjectsUtils.removeBuildersFromProject(progress.newChild(30), project);
 		addHybrisNature(project, progress.newChild(30));
@@ -246,14 +245,15 @@ public class Importer {
 		return ret;
 	}
 
-	private void fixProjectCompilerSettings(IProgressMonitor monitor, IProject project, double platformVersion) {
+	private void fixProjectCompilerSettings(IProject project, double platformVersion) {
 		// don't fix project or custom extensions
+		List<String> compileProblems = Arrays.asList("org.eclipse.jdt.core.compiler.problem.autoboxing",
+				"org.eclipse.jdt.core.compiler.problem.emptyStatement",
+				"org.eclipse.jdt.core.compiler.problem.unusedLocal",
+				"org.eclipse.jdt.core.compiler.problem.unnecessaryTypeCheck",
+				"org.eclipse.jdt.core.compiler.problem.undocumentedEmptyBlock");
+		
 		if (FixProjectsUtils.isAPlatformExtension(project) && !FixProjectsUtils.isATemplateExtension(project)) {
-			List<String> compileProblems = Arrays.asList("org.eclipse.jdt.core.compiler.problem.autoboxing",
-					"org.eclipse.jdt.core.compiler.problem.emptyStatement",
-					"org.eclipse.jdt.core.compiler.problem.unusedLocal",
-					"org.eclipse.jdt.core.compiler.problem.unnecessaryTypeCheck",
-					"org.eclipse.jdt.core.compiler.problem.undocumentedEmptyBlock");
 			
 			File settingsFile = project.getLocation().toFile().toPath().resolve(SETTINGS_FILE).toFile();
 			if (settingsFile.exists()) {
@@ -340,7 +340,7 @@ public class Importer {
 	 * 
 	 * @param monitor
 	 */
-	private void fixProjectClasspaths(IProgressMonitor monitor, File platformHome) {
+	private void fixProjectClasspaths(IProgressMonitor monitor) {
 		if (ResourcesPlugin.getWorkspace().getRoot().getProjects() == null) {
 			return;
 		}
@@ -373,7 +373,7 @@ public class Importer {
 		}
 	}
 
-	private void fixSpringBeans(IProgressMonitor monitor, File platformHome) {
+	private void fixSpringBeans(IProgressMonitor monitor) {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IWorkspaceRoot root = workspace.getRoot();
 		IProject[] projects = root.getProjects();
@@ -390,15 +390,9 @@ public class Importer {
 
 			try {
 
-				if (!project.isOpen()) {
-					continue;
-				}
-
-				if (!FixProjectsUtils.isAHybrisExtension(project)) {
-					continue;
-				}
-
-				if (!project.hasNature(SPRING_NATURE_ID)) {
+				if (!project.isOpen() ||
+						!FixProjectsUtils.isAHybrisExtension(project) ||
+						!project.hasNature(SPRING_NATURE_ID)) {
 					continue;
 				}
 
@@ -460,11 +454,10 @@ public class Importer {
 
 	private String[] getAllSpringXmlFiles(IProject project) {
 		String projectName = project.getName();
-		String[] allfiles = { //
+		return new String[] { //
 				"resources/" + projectName + "-spring.xml", //
 				"web/webroot/WEB-INF/" + projectName + "-web-spring.xml", //
 		};
-		return allfiles;
 	}
 
 	/**
@@ -482,11 +475,10 @@ public class Importer {
 			boolean found = false;
 			for (IClasspathEntry classpathEntry : classPathEntries) {
 				// fix missing runtime
-				if (classpathEntry.getEntryKind() == IClasspathEntry.CPE_CONTAINER) {
-					if (classpathEntry.getPath().toString().startsWith("org.eclipse.jdt.launching.JRE_CONTAINER")) {
-						found = true;
-						break;
-					}
+				if (classpathEntry.getEntryKind() == IClasspathEntry.CPE_CONTAINER && 
+					classpathEntry.getPath().toString().startsWith("org.eclipse.jdt.launching.JRE_CONTAINER")) {
+					found = true;
+					break;
 				}
 			}
 
@@ -518,22 +510,20 @@ public class Importer {
 
 			IProject acceleratorstorefrontcommonsProject = ResourcesPlugin.getWorkspace().getRoot()
 					.getProject("acceleratorstorefrontcommons");
-			if (acceleratorstorefrontcommonsProject != null && acceleratorstorefrontcommonsProject.exists()) {
-				if (!javaProject.isOnClasspath(acceleratorstorefrontcommonsProject)) {
-					FixProjectsUtils.addToClassPath(acceleratorstorefrontcommonsProject, IClasspathEntry.CPE_PROJECT,
-							javaProject, monitor);
-				}
+			if (acceleratorstorefrontcommonsProject != null && acceleratorstorefrontcommonsProject.exists() && 
+				!javaProject.isOnClasspath(acceleratorstorefrontcommonsProject)) {
+				FixProjectsUtils.addToClassPath(acceleratorstorefrontcommonsProject, IClasspathEntry.CPE_PROJECT,
+						javaProject, monitor);
 			}
 		}
 
 		if (projectName.equals("stocknotificationaddon")) {
 			IProject notificationfacadesProject = ResourcesPlugin.getWorkspace().getRoot()
 					.getProject("notificationfacades");
-			if (notificationfacadesProject != null && notificationfacadesProject.exists()) {
-				if (!javaProject.isOnClasspath(notificationfacadesProject)) {
-					FixProjectsUtils.addToClassPath(notificationfacadesProject, IClasspathEntry.CPE_PROJECT,
-							javaProject, monitor);
-				}
+			if (notificationfacadesProject != null && notificationfacadesProject.exists() &&
+				!javaProject.isOnClasspath(notificationfacadesProject)) {
+				FixProjectsUtils.addToClassPath(notificationfacadesProject, IClasspathEntry.CPE_PROJECT,
+						javaProject, monitor);
 			}
 		}
 	}

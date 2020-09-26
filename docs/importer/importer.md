@@ -24,4 +24,3 @@ That is default approach with importing projects for SAP Commerce till version 1
 That approach is supported by most IDEs on market.
 
 Project Importer functionality will be supported and fixes will be provided, but implementation will be focused on other areas of SAP Commerce plugin.
- No newline at end of file

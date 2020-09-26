@@ -34,4 +34,4 @@ Feature introduction. Possibility to add new file from File -> New.. -> Other (&
 
 | Eclipse | SAP Commerce |
 | ------- | ------------ |
-| (2018-12, 2019-*) | 6.6+, 1808+, 1905+ |
+| (2018-12, 2019-*, 2020-*) | 6.6+, 1808+, 1905+ |

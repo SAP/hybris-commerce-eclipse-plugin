@@ -23,10 +23,7 @@ import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
@@ -230,14 +227,7 @@ public class Activator extends AbstractUIPlugin {
 			Hashtable<String, String> props = null;
 			try {
 				props = loadProperties(getPlatformHome());
-				Field singletonField = SystemConfig.class.getDeclaredField("singleton");
-				singletonField.setAccessible(true);
-				singletonField.set(this, null);
-				Field instanceField = PlatformConfig.class.getDeclaredField("instance");
-				instanceField.setAccessible(true);
-				instanceField.set(this, null);
-			} catch (NoSuchFieldException | SecurityException | IOException | IllegalArgumentException
-					| IllegalAccessException e) {
+			} catch (SecurityException | IOException | IllegalArgumentException e) {
 				logError("(NoSuchField|IO|Security|IllegalArgument|IllegalAccess)Exception", e);
 			} catch (java.lang.UnsupportedClassVersionError err) {
 				final Status status = new Status(IStatus.ERROR, Activator.PLUGIN_ID,
