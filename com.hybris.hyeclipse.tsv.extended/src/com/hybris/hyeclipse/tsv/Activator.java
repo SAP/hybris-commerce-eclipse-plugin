@@ -19,7 +19,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
-import org.springframework.context.ApplicationContext;
 
 public class Activator extends AbstractUIPlugin {
 
@@ -29,7 +28,6 @@ public class Activator extends AbstractUIPlugin {
 	// The shared instance
 	private static Activator plugin;
 	
-	private ApplicationContext applicationContext = null;
 	
 	@Override
 	public void start(BundleContext context) throws Exception {
@@ -66,15 +64,7 @@ public class Activator extends AbstractUIPlugin {
 	public static ImageDescriptor getImageDescriptor(String path) {
 		return imageDescriptorFromPlugin(PLUGIN_ID, path);
 	}
-	
-	public ApplicationContext getApplicationContext() {
-		return applicationContext;
-	}
-	
-	public void setApplicationContext(ApplicationContext applicationContext) {
-		this.applicationContext = applicationContext;
-	}
-	
+		
 	public void log(String msg, Exception e) {
 		Status status = null;
 		if (e != null) {

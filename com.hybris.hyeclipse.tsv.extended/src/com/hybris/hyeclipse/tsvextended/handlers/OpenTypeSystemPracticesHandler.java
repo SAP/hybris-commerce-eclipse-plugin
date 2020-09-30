@@ -25,6 +25,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
 import com.hybris.hyeclipse.tsv.Activator;
+import com.hybris.hyeclipse.tsv.Messages;
 
 public class OpenTypeSystemPracticesHandler extends AbstractHandler {
 
@@ -34,13 +35,13 @@ public class OpenTypeSystemPracticesHandler extends AbstractHandler {
 			String url = getURL();
 			PlatformUI.getWorkbench().getBrowserSupport().getExternalBrowser().openURL(new URL(url));
 		} catch (PartInitException | MalformedURLException e) {
-			Activator.logError("Could not open link ", e);
+			Activator.logError(Messages.TSVPracticesError, e);
 		}
 		return null;
 	}
 	
 	protected String getURL() {
-		return "https://wiki.hybris.com/display/hybrisALF/Type+System";
+		return Messages.TSVPracticesLink;
 	}
 
 }

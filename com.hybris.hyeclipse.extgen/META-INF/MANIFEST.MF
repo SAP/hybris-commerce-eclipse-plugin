@@ -7,15 +7,11 @@ Bundle-Activator: com.hybris.hyeclipse.extgen.Activator
 Bundle-Vendor: SAP
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.eclipse.jface,
- org.eclipse.jdt.core,
- org.eclipse.ui.workbench,
- org.eclipse.ui.ide,
  org.eclipse.debug.core,
  org.apache.commons.io,
  com.hybris.hyeclipse.ytypesystem;bundle-version="[1.0.0,2.0.0)",
  com.hybris.hyeclipse.importer;bundle-version="[1.0.0,2.0.0)"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.core.resources
 Automatic-Module-Name: com.hybris.hyeclipse.extgen

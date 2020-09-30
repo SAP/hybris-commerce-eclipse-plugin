@@ -36,7 +36,6 @@
 		<module>com.hybris.hyeclipse.feature</module>
 		<module>com.hybris.hyeclipse.ytypesystem</module>
 		<module>com.hybris.hyeclipse.platform</module>
-		<module>com.hybris.hyeclipse.tsv</module>
 		<module>com.hybris.hyeclipse.tsv.extended</module>
 		<module>com.hybris.hyeclipse.emf.beans</module>
 		<module>com.hybris.hyeclipse.emf.beans.edit</module>

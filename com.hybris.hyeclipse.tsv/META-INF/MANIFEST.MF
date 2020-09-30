@@ -17,8 +17,6 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="[3.9.100,4.0.0)",
  org.eclipse.jdt.launching;bundle-version="[3.7.1,4.0.0)"
 Bundle-ClassPath: .,
  lib/tsv-2.1.0-jar-with-dependencies.jar
-Export-Package: com.hybris.hyeclipse.tsv,
- com.hybris.hyeclipse.tsv.builder,
- com.hybris.hyeclipse.tsv.validator;version="1.0.3"
+Export-Package: com.hybris.hyeclipse.tsv
 Automatic-Module-Name: com.hybris.hyeclipse.tsv
 Bundle-Vendor: SAP

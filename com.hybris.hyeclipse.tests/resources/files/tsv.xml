@@ -1,0 +1,723 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<validation_results>
+    <result>
+        <filename>cswebservices-items.xml</filename>
+        <line>22</line>
+        <rule_id>NoDatabaseIndexesForUniqueAttributesOfType</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>ProductExpressUpdateCleanerCronJob</element>
+        <description>No database indexes defined for unique attributes of type</description>
+    </result>
+    <result>
+        <filename>cswebservices-items.xml</filename>
+        <line>33</line>
+        <rule_id>NoDatabaseIndexesForUniqueAttributesOfType</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>OrderStatusUpdateCleanerCronJob</element>
+        <description>No database indexes defined for unique attributes of type</description>
+    </result>
+    <result>
+        <filename>cswebservices-items.xml</filename>
+        <line>45</line>
+        <rule_id>NoDatabaseIndexesForUniqueAttributesOfType</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>OldCartRemovalCronJob</element>
+        <description>No database indexes defined for unique attributes of type</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>556</line>
+        <rule_id>MandatoryFieldMustHaveInitialValue</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>ShipDeckInfo.deckId</element>
+        <description>Mandatory fields (where optional='false') must either have initial set to 'true' or a default value defined</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>573</line>
+        <rule_id>MandatoryFieldMustHaveInitialValue</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>CabinCategoryInfo.categoryId</element>
+        <description>Mandatory fields (where optional='false') must either have initial set to 'true' or a default value defined</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>612</line>
+        <rule_id>MandatoryFieldMustHaveInitialValue</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>TransportVehicleAttribute.uid</element>
+        <description>Mandatory fields (where optional='false') must either have initial set to 'true' or a default value defined</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>617</line>
+        <rule_id>MandatoryFieldMustHaveInitialValue</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>TransportVehicleAttribute.code</element>
+        <description>Mandatory fields (where optional='false') must either have initial set to 'true' or a default value defined</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>640</line>
+        <rule_id>MandatoryFieldMustHaveInitialValue</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>CruiseTravelProvider.cruiseLineCode</element>
+        <description>Mandatory fields (where optional='false') must either have initial set to 'true' or a default value defined</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>650</line>
+        <rule_id>MandatoryFieldMustHaveInitialValue</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>CruiseTravelProvider.imagePath</element>
+        <description>Mandatory fields (where optional='false') must either have initial set to 'true' or a default value defined</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>662</line>
+        <rule_id>MandatoryFieldMustHaveInitialValue</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>CruiseTravelProviderInfo.uid</element>
+        <description>Mandatory fields (where optional='false') must either have initial set to 'true' or a default value defined</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>667</line>
+        <rule_id>MandatoryFieldMustHaveInitialValue</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>CruiseTravelProviderInfo.code</element>
+        <description>Mandatory fields (where optional='false') must either have initial set to 'true' or a default value defined</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>682</line>
+        <rule_id>MandatoryFieldMustHaveInitialValue</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>CruiseTravelProviderInfo.dataTypeName</element>
+        <description>Mandatory fields (where optional='false') must either have initial set to 'true' or a default value defined</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>725</line>
+        <rule_id>MandatoryFieldMustHaveInitialValue</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>TravelProviderAttribute.uid</element>
+        <description>Mandatory fields (where optional='false') must either have initial set to 'true' or a default value defined</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>730</line>
+        <rule_id>MandatoryFieldMustHaveInitialValue</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>TravelProviderAttribute.code</element>
+        <description>Mandatory fields (where optional='false') must either have initial set to 'true' or a default value defined</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>735</line>
+        <rule_id>MandatoryFieldMustHaveInitialValue</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>TravelProviderAttribute.name</element>
+        <description>Mandatory fields (where optional='false') must either have initial set to 'true' or a default value defined</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>740</line>
+        <rule_id>MandatoryFieldMustHaveInitialValue</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>TravelProviderAttribute.value</element>
+        <description>Mandatory fields (where optional='false') must either have initial set to 'true' or a default value defined</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>752</line>
+        <rule_id>MandatoryFieldMustHaveInitialValue</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>TransportFacilityInfo.uid</element>
+        <description>Mandatory fields (where optional='false') must either have initial set to 'true' or a default value defined</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>757</line>
+        <rule_id>MandatoryFieldMustHaveInitialValue</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>TransportFacilityInfo.facilityId</element>
+        <description>Mandatory fields (where optional='false') must either have initial set to 'true' or a default value defined</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>762</line>
+        <rule_id>MandatoryFieldMustHaveInitialValue</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>TransportFacilityInfo.displayName</element>
+        <description>Mandatory fields (where optional='false') must either have initial set to 'true' or a default value defined</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>864</line>
+        <rule_id>MandatoryFieldMustHaveInitialValue</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>CabinCategory.categoryCode</element>
+        <description>Mandatory fields (where optional='false') must either have initial set to 'true' or a default value defined</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>869</line>
+        <rule_id>MandatoryFieldMustHaveInitialValue</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>CabinCategory.categoryId</element>
+        <description>Mandatory fields (where optional='false') must either have initial set to 'true' or a default value defined</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>875</line>
+        <rule_id>MandatoryFieldMustHaveInitialValue</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>CabinCategory.cabinType</element>
+        <description>Mandatory fields (where optional='false') must either have initial set to 'true' or a default value defined</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>1359</line>
+        <rule_id>MandatoryFieldMustHaveInitialValue</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>CSDymanicPreferences.label</element>
+        <description>Mandatory fields (where optional='false') must either have initial set to 'true' or a default value defined</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>1044</line>
+        <rule_id>BooleanFieldCannotBeOptional</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>AbstractBannerComponent.isBannerForHompePage</element>
+        <description>Fields of type java.lang.Boolean must be mandatory (optional='false') or a default value defined</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>1376</line>
+        <rule_id>BooleanFieldCannotBeOptional</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>CSDymanicPreferences.isSelectedByUser</element>
+        <description>Fields of type java.lang.Boolean must be mandatory (optional='false') or a default value defined</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>928</line>
+        <rule_id>FieldNameMustStartWithLowercaseLetter</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>PriceRow.NCCF</element>
+        <description>Item attribute names must start with a lowercase letter</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>53</line>
+        <rule_id>ListsInRelationShouldBeAvoided</rule_id>
+        <rule_priority>L</rule_priority>
+        <state>FAIL</state>
+        <element>DestinationToDestinationChildRelation.destinationChild</element>
+        <description>Any side of a relation that has cardinality='many' should have collectiontype='set' unless absolutely necessary</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>64</line>
+        <rule_id>ListsInRelationShouldBeAvoided</rule_id>
+        <rule_priority>L</rule_priority>
+        <state>FAIL</state>
+        <element>ShipInfoShipFeatureInfoRelation.shipFeatureInfo</element>
+        <description>Any side of a relation that has cardinality='many' should have collectiontype='set' unless absolutely necessary</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>75</line>
+        <rule_id>ListsInRelationShouldBeAvoided</rule_id>
+        <rule_priority>L</rule_priority>
+        <state>FAIL</state>
+        <element>ShipInfoShipDeckRelation.shipDeck</element>
+        <description>Any side of a relation that has cardinality='many' should have collectiontype='set' unless absolutely necessary</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>86</line>
+        <rule_id>ListsInRelationShouldBeAvoided</rule_id>
+        <rule_priority>L</rule_priority>
+        <state>FAIL</state>
+        <element>ShipInfoCabinCategoryRelation.cabinCategory</element>
+        <description>Any side of a relation that has cardinality='many' should have collectiontype='set' unless absolutely necessary</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>98</line>
+        <rule_id>ListsInRelationShouldBeAvoided</rule_id>
+        <rule_priority>L</rule_priority>
+        <state>FAIL</state>
+        <element>ShipFeatureInfoShipDeckInfoRelation.shipDeckInfo</element>
+        <description>Any side of a relation that has cardinality='many' should have collectiontype='set' unless absolutely necessary</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>110</line>
+        <rule_id>ListsInRelationShouldBeAvoided</rule_id>
+        <rule_priority>L</rule_priority>
+        <state>FAIL</state>
+        <element>ShipFeatureInfoCabinCategoryInfoRelation.cabinCategoryInfo</element>
+        <description>Any side of a relation that has cardinality='many' should have collectiontype='set' unless absolutely necessary</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>123</line>
+        <rule_id>ListsInRelationShouldBeAvoided</rule_id>
+        <rule_priority>L</rule_priority>
+        <state>FAIL</state>
+        <element>TransportVehicleInfoTransportVehicleAttributeRelation.transportVehicleAttribute</element>
+        <description>Any side of a relation that has cardinality='many' should have collectiontype='set' unless absolutely necessary</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>136</line>
+        <rule_id>ListsInRelationShouldBeAvoided</rule_id>
+        <rule_priority>L</rule_priority>
+        <state>FAIL</state>
+        <element>CruiseTravelProviderCruiseTravelProviderInfoRelation.cruiseTravelProviderInfo</element>
+        <description>Any side of a relation that has cardinality='many' should have collectiontype='set' unless absolutely necessary</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>149</line>
+        <rule_id>ListsInRelationShouldBeAvoided</rule_id>
+        <rule_priority>L</rule_priority>
+        <state>FAIL</state>
+        <element>TravelProviderTravelProviderAttributeRelation.travelProviderAttribute</element>
+        <description>Any side of a relation that has cardinality='many' should have collectiontype='set' unless absolutely necessary</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>161</line>
+        <rule_id>ListsInRelationShouldBeAvoided</rule_id>
+        <rule_priority>L</rule_priority>
+        <state>FAIL</state>
+        <element>TransportFacilityTransportFacilityInfoRelation.transportFacilityInfo</element>
+        <description>Any side of a relation that has cardinality='many' should have collectiontype='set' unless absolutely necessary</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>169</line>
+        <rule_id>ListsInRelationShouldBeAvoided</rule_id>
+        <rule_priority>L</rule_priority>
+        <state>FAIL</state>
+        <element>CabinRateProductToSailingRelation.cabinRateProduct</element>
+        <description>Any side of a relation that has cardinality='many' should have collectiontype='set' unless absolutely necessary</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>185</line>
+        <rule_id>ListsInRelationShouldBeAvoided</rule_id>
+        <rule_priority>L</rule_priority>
+        <state>FAIL</state>
+        <element>TravelOrderEntryInfoToOrderCruisePreference.orderCruisePreference</element>
+        <description>Any side of a relation that has cardinality='many' should have collectiontype='set' unless absolutely necessary</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>197</line>
+        <rule_id>ListsInRelationShouldBeAvoided</rule_id>
+        <rule_priority>L</rule_priority>
+        <state>FAIL</state>
+        <element>PassengerInfoToOrderCruiseSpecialRequest.orderCruiseSpecialRequest</element>
+        <description>Any side of a relation that has cardinality='many' should have collectiontype='set' unless absolutely necessary</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>205</line>
+        <rule_id>ListsInRelationShouldBeAvoided</rule_id>
+        <rule_priority>L</rule_priority>
+        <state>FAIL</state>
+        <element>CustomerToCSCruisingStylesRelation.csCruisingStyles</element>
+        <description>Any side of a relation that has cardinality='many' should have collectiontype='set' unless absolutely necessary</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>217</line>
+        <rule_id>ListsInRelationShouldBeAvoided</rule_id>
+        <rule_priority>L</rule_priority>
+        <state>FAIL</state>
+        <element>CustomerToCSCruiseLineLoyaltyRelation.csCruiseLineLoyalty</element>
+        <description>Any side of a relation that has cardinality='many' should have collectiontype='set' unless absolutely necessary</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>347</line>
+        <rule_id>NoDatabaseIndexesForUniqueAttributesOfType</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>Destination</element>
+        <description>No database indexes defined for unique attributes of type</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>419</line>
+        <rule_id>NoDatabaseIndexesForUniqueAttributesOfType</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>DestinationChild</element>
+        <description>No database indexes defined for unique attributes of type</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>449</line>
+        <rule_id>NoDatabaseIndexesForUniqueAttributesOfType</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>Location</element>
+        <description>No database indexes defined for unique attributes of type</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>900</line>
+        <rule_id>NoDatabaseIndexesForUniqueAttributesOfType</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>CabinRateProduct</element>
+        <description>No database indexes defined for unique attributes of type</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>966</line>
+        <rule_id>NoDatabaseIndexesForUniqueAttributesOfType</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>ApparelProduct</element>
+        <description>No database indexes defined for unique attributes of type</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>979</line>
+        <rule_id>NoDatabaseIndexesForUniqueAttributesOfType</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>ApparelStyleVariantProduct</element>
+        <description>No database indexes defined for unique attributes of type</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>1002</line>
+        <rule_id>NoDatabaseIndexesForUniqueAttributesOfType</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>ApparelSizeVariantProduct</element>
+        <description>No database indexes defined for unique attributes of type</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>1019</line>
+        <rule_id>NoDatabaseIndexesForUniqueAttributesOfType</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>ElectronicsColorVariantProduct</element>
+        <description>No database indexes defined for unique attributes of type</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>1035</line>
+        <rule_id>NoDatabaseIndexesForUniqueAttributesOfType</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>AbstractBannerComponent</element>
+        <description>No database indexes defined for unique attributes of type</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>1059</line>
+        <rule_id>NoDatabaseIndexesForUniqueAttributesOfType</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>CSMarketingTextComponent</element>
+        <description>No database indexes defined for unique attributes of type</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>1097</line>
+        <rule_id>NoDatabaseIndexesForUniqueAttributesOfType</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>CruisePromoTileComponent</element>
+        <description>No database indexes defined for unique attributes of type</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>1127</line>
+        <rule_id>NoDatabaseIndexesForUniqueAttributesOfType</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>CSMarketingPromoOffersComponent</element>
+        <description>No database indexes defined for unique attributes of type</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>1214</line>
+        <rule_id>NoDatabaseIndexesForUniqueAttributesOfType</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>CSMarketingPromoOffersComponents</element>
+        <description>No database indexes defined for unique attributes of type</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>1242</line>
+        <rule_id>NoDatabaseIndexesForUniqueAttributesOfType</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>CSSearchCruiseVisualWidgetComponent</element>
+        <description>No database indexes defined for unique attributes of type</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>1269</line>
+        <rule_id>NoDatabaseIndexesForUniqueAttributesOfType</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>CSSearchCruiseMaskedWidgetComponent</element>
+        <description>No database indexes defined for unique attributes of type</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>1355</line>
+        <rule_id>NoDatabaseIndexesForUniqueAttributesOfType</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>CSDymanicPreferences</element>
+        <description>No database indexes defined for unique attributes of type</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>1383</line>
+        <rule_id>NoDatabaseIndexesForUniqueAttributesOfType</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>Customer</element>
+        <description>No database indexes defined for unique attributes of type</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>1411</line>
+        <rule_id>NoDatabaseIndexesForUniqueAttributesOfType</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>OrderCruiseSpecialRequest</element>
+        <description>No database indexes defined for unique attributes of type</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>1440</line>
+        <rule_id>NoDatabaseIndexesForUniqueAttributesOfType</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>OrderCruisePreference</element>
+        <description>No database indexes defined for unique attributes of type</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>1472</line>
+        <rule_id>NoDatabaseIndexesForUniqueAttributesOfType</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>Cart</element>
+        <description>No database indexes defined for unique attributes of type</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>231</line>
+        <rule_id>NoUniqueAttributesDefinedForType</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>Sailings</element>
+        <description>No unique attributes defined for type</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>301</line>
+        <rule_id>NoUniqueAttributesDefinedForType</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>CruiseTravelRoute</element>
+        <description>No unique attributes defined for type</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>322</line>
+        <rule_id>NoUniqueAttributesDefinedForType</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>ShipInfo</element>
+        <description>No unique attributes defined for type</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>434</line>
+        <rule_id>NoUniqueAttributesDefinedForType</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>TransportFacility</element>
+        <description>No unique attributes defined for type</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>491</line>
+        <rule_id>NoUniqueAttributesDefinedForType</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>ShipFeatureInfo</element>
+        <description>No unique attributes defined for type</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>552</line>
+        <rule_id>NoUniqueAttributesDefinedForType</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>ShipDeckInfo</element>
+        <description>No unique attributes defined for type</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>569</line>
+        <rule_id>NoUniqueAttributesDefinedForType</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>CabinCategoryInfo</element>
+        <description>No unique attributes defined for type</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>608</line>
+        <rule_id>NoUniqueAttributesDefinedForType</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>TransportVehicleAttribute</element>
+        <description>No unique attributes defined for type</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>637</line>
+        <rule_id>NoUniqueAttributesDefinedForType</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>CruiseTravelProvider</element>
+        <description>No unique attributes defined for type</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>658</line>
+        <rule_id>NoUniqueAttributesDefinedForType</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>CruiseTravelProviderInfo</element>
+        <description>No unique attributes defined for type</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>721</line>
+        <rule_id>NoUniqueAttributesDefinedForType</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>TravelProviderAttribute</element>
+        <description>No unique attributes defined for type</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>748</line>
+        <rule_id>NoUniqueAttributesDefinedForType</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>TransportFacilityInfo</element>
+        <description>No unique attributes defined for type</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>814</line>
+        <rule_id>NoUniqueAttributesDefinedForType</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>ShipDeck</element>
+        <description>No unique attributes defined for type</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>925</line>
+        <rule_id>NoUniqueAttributesDefinedForType</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>PriceRow</element>
+        <description>No unique attributes defined for type</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>948</line>
+        <rule_id>NoUniqueAttributesDefinedForType</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>PassengerInformation</element>
+        <description>No unique attributes defined for type</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>1286</line>
+        <rule_id>NoUniqueAttributesDefinedForType</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>CSCruiseLineLoyalty</element>
+        <description>No unique attributes defined for type</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>1303</line>
+        <rule_id>NoUniqueAttributesDefinedForType</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>CSCruisingStyles</element>
+        <description>No unique attributes defined for type</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>1322</line>
+        <rule_id>NoUniqueAttributesDefinedForType</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>CSGeneralPreferences</element>
+        <description>No unique attributes defined for type</description>
+    </result>
+    <result>
+        <filename>cscore-items.xml</filename>
+        <line>1395</line>
+        <rule_id>NoUniqueAttributesDefinedForType</rule_id>
+        <rule_priority>M</rule_priority>
+        <state>FAIL</state>
+        <element>TravelOrderEntryInfo</element>
+        <description>No unique attributes defined for type</description>
+    </result>
+</validation_results>

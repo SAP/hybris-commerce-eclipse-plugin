@@ -43,16 +43,16 @@ import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+//import org.springframework.context.ApplicationContext;
+//import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.hybris.hyeclipse.tsv.editors.TSVResultsInput;
 import com.hybris.hyeclipse.tsv.editors.TSVResultsStorage;
-import com.hybris.ps.tsv.main.CmdLineOptions;
-import com.hybris.ps.tsv.main.TSVMain;
-import com.hybris.ps.tsv.output.OutputFormat;
-import com.hybris.ps.tsv.results.IResult;
-import com.hybris.ps.tsv.rules.IRuleSet;
+//import com.hybris.ps.tsv.main.CmdLineOptions;
+//import com.hybris.ps.tsv.main.TSVMain;
+//import com.hybris.ps.tsv.output.OutputFormat;
+//import com.hybris.ps.tsv.results.IResult;
+//import com.hybris.ps.tsv.rules.IRuleSet;
 
 public class RunTSVWizard extends Wizard implements INewWizard {
 	private RunTSVWizardPage page;
@@ -142,32 +142,32 @@ public class RunTSVWizard extends Wizard implements INewWizard {
 	
 	private void runTSVAnalysis(File scanDir) {
 		
-		ApplicationContext appContext = new ClassPathXmlApplicationContext(new String[]{ TSV_SPRING_CONFIG });
-		TSVMain tsvMain = (TSVMain) appContext.getBean(TSV_MAIN_BEAN);
-		CmdLineOptions options = (CmdLineOptions) appContext.getBean(TSV_OPTIONS_BEAN);
-		options.setErrorsOnly(true);
-		
-		List<File> inputFiles = new ArrayList<File>();
-		inputFiles.add(scanDir);
-		try {
-			List<File> files = tsvMain.getFileService().locateFiles(inputFiles);
-			IRuleSet ruleSet = tsvMain.getRuleService().loadDefaultRules();
-			
-			for (File file : files) {
-				tsvMain.getTestExecutionService().execute(file,  ruleSet);
-	        }
-			
-			List<IResult> results = tsvMain.getResultProvider().getResults();
-			
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			tsvMain.getOutputGenerator().generate(baos, OutputFormat.XML, results);
-			byte[] bytes = baos.toByteArray();
-	        ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-	        setResultsString(fromStream(bais));
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
+//		ApplicationContext appContext = new ClassPathXmlApplicationContext(new String[]{ TSV_SPRING_CONFIG });
+//		TSVMain tsvMain = (TSVMain) appContext.getBean(TSV_MAIN_BEAN);
+//		CmdLineOptions options = (CmdLineOptions) appContext.getBean(TSV_OPTIONS_BEAN);
+//		options.setErrorsOnly(true);
+//		
+//		List<File> inputFiles = new ArrayList<File>();
+//		inputFiles.add(scanDir);
+//		try {
+//			List<File> files = tsvMain.getFileService().locateFiles(inputFiles);
+//			IRuleSet ruleSet = tsvMain.getRuleService().loadDefaultRules();
+//			
+//			for (File file : files) {
+//				tsvMain.getTestExecutionService().execute(file,  ruleSet);
+//	        }
+//			
+//			List<IResult> results = tsvMain.getResultProvider().getResults();
+//			
+//			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//			tsvMain.getOutputGenerator().generate(baos, OutputFormat.XML, results);
+//			byte[] bytes = baos.toByteArray();
+//	        ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+//	        setResultsString(fromStream(bais));
+//		}
+//		catch (Exception e) {
+//			e.printStackTrace();
+//		}
 		
 	}
 

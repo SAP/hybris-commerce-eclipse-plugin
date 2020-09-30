@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-
    <extension
          point="org.eclipse.ui.commands">
       <category
@@ -9,7 +8,7 @@
             id="com.hybris.hyeclipse.tsv.commands.category">
       </category>
       <command
-            name="Run Extended Type System Validation"
+            name="Run Validation"
             categoryId="com.hybris.hyeclipse.tsv.commands.category"
             id="com.hybris.hyeclipse.tsvextended.commands.tsvCommand">
       </command>
