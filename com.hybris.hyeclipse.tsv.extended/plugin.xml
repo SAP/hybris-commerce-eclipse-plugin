@@ -2,75 +2,10 @@
 <?eclipse version="3.4"?>
 <plugin>
 
-   <extension
-         point="org.eclipse.ui.commands">
-      <category
-            name="TSV Category"
-            id="com.hybris.hyeclipse.tsv.commands.category">
-      </category>
-      <command
-            name="Run Extended Type System Validation"
-            categoryId="com.hybris.hyeclipse.tsv.commands.category"
-            id="com.hybris.hyeclipse.tsvextended.commands.tsvCommand">
-      </command>
-      <command
-            categoryId="com.hybris.hyeclipse.tsv.commands.category"
-            defaultHandler="com.hybris.hyeclipse.tsvextended.handlers.OpenTypeSystemPracticesHandler"
-            id="com.hybris.hyeclipse.tsvextended.commands.tsvHelpCommand"
-            name="openTypeSystemPracticesHandler">
-      </command>
-   </extension>
    
-   <extension
-         point="org.eclipse.ui.handlers">
-      <handler
-            commandId="com.hybris.hyeclipse.tsvextended.commands.tsvCommand"
-            class="com.hybris.hyeclipse.tsvextended.handlers.TSVExtendedHandlerWrapper">
-      </handler>
-   </extension>
    
-   <extension
-         point="org.eclipse.ui.menus">
-      <menuContribution
-            locationURI="menu:org.eclipse.ui.main.menu?after=additions">
-         <menu label="SAP"
-               id="com.hybris.yps.hyeclipse.menu">
-               <menu label="Type System Validation"
-               id="com.hybris.hyeclipse.tsv.menu">
-            <command
-                  commandId="com.hybris.hyeclipse.tsvextended.commands.tsvCommand"
-                  id="com.hybris.hyeclipse.tsvextended.menus.tsvCommand">
-            </command>
-            <command
-                  commandId="com.hybris.hyeclipse.tsvextended.commands.tsvHelpCommand"
-                  id="com.hybris.hyeclipse.tsvextended.menus.tsvHelpCommand"
-                  label="Type System Recommended Practices">
-            </command>
-            </menu>
-         </menu>
-      </menuContribution>
-   </extension>
    
-   <extension
-         point="org.eclipse.ui.editors">
-      <editor
-            class="com.hybris.hyeclipse.tsv.editors.TSVEditor"
-            extensions="tsv"
-            icon="icon/hybris.ico"
-            id="com.hybris.hyeclipse.tsv.editors.TSVEditor"
-            name="TSV Editor">
-      </editor>
-   </extension>
    
-   <extension
-         point="org.eclipse.core.contenttype.contentTypes">
-		<content-type base-type="org.eclipse.core.runtime.xml"
-			file-extensions="tsv"
-            id="com.hybris.hyeclipse.tsv.contenttype.tsv"
-            name="TSV File"
-            priority="normal">
-		</content-type>      
-   </extension>
    
    <extension
          point="org.eclipse.ui.preferencePages">
