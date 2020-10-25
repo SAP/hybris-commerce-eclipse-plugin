@@ -39,9 +39,10 @@ mvn org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=1.5.0.RELEA
 mvn clean install
 rm -rf updatesite/neon && cp -R com.hybris.hyeclipse.site/target/repository updatesite/neon
 # push all changes to your git repository
-git add updatesite/neon/* updatesite/neon/*/* */*/MANIFEST.MF */pom.xml */feature.xml
+git add updatesite/neon/* updatesite/neon/*/* */*/MANIFEST.MF */pom.xml */feature.xml pom.xml
 # git add <changed files>
 git push origin master
 # create pull request on github.com from your private repository
 mvn org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=1.5.1-SNAPSHOT
+git add . */*/MANIFEST.MF */pom.xml */feature.xml pom.xml
 ```

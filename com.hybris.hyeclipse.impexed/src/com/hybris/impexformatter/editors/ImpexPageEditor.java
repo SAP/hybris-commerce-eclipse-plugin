@@ -52,7 +52,7 @@ import com.hybris.impexformatter.actions.Formatter;
 public class ImpexPageEditor extends MultiPageEditorPart implements IResourceChangeListener {
 
 	/** The text editor used in page 0. */
-	private static ImpexEditor editor;
+	private ImpexEditor editor;
 
 	/**
 	 * Creates a multi-page editor example.
@@ -134,32 +134,33 @@ public class ImpexPageEditor extends MultiPageEditorPart implements IResourceCha
 		}
 	}
 
-	static void formatText() {
-
-		String unformattedText = editor.getDocumentProvider().getDocument(editor.getEditorInput()).get();
-
-		try (BufferedReader reader = new BufferedReader(new StringReader(unformattedText));
-		                StringWriter writer = new StringWriter()) {
-			String line = null;
-			while ((line = reader.readLine()) != null) {
-				while (line.toUpperCase(Locale.ENGLISH).matches(Formatter.HEADER_MODE)) {
-					// start of new block
-					line = Formatter.formatData(reader, writer, line);
-					if (line == null) {
-						break;
+	static void formatText(IEditorPart editorPart) {
+		if(editorPart instanceof ImpexPageEditor) {
+			String unformattedText = ((ImpexPageEditor)editorPart).editor.getDocumentProvider().getDocument(editorPart.getEditorInput()).get();
+	
+			try (BufferedReader reader = new BufferedReader(new StringReader(unformattedText));
+			                StringWriter writer = new StringWriter()) {
+				String line = null;
+				while ((line = reader.readLine()) != null) {
+					while (line.toUpperCase(Locale.ENGLISH).matches(Formatter.HEADER_MODE)) {
+						// start of new block
+						line = Formatter.formatData(reader, writer, line);
+						if (line == null) {
+							break;
+						}
+					}
+					if (line != null) {
+						writer.append(line);
+						writer.write(System.getProperty(Formatter.LINE_SEPARATOR));
 					}
 				}
-				if (line != null) {
-					writer.append(line);
-					writer.write(System.getProperty(Formatter.LINE_SEPARATOR));
-				}
+	
+				((ImpexPageEditor)editorPart).editor.getDocumentProvider().getDocument(editorPart.getEditorInput()).set(writer.toString());
+	
 			}
-
-			editor.getDocumentProvider().getDocument(editor.getEditorInput()).set(writer.toString());
-
-		}
-		catch (final IOException e) {
-			Activator.logError("IOException", e);
+			catch (final IOException e) {
+				Activator.logError("IOException", e);
+			}
 		}
 	}
 

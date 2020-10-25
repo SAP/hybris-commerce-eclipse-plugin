@@ -5,11 +5,17 @@
 
 	<groupId>com.hybris.hyeclipse</groupId>
 	<artifactId>com.hybris.hyeclipse.parent</artifactId>
-	<version>1.5.3.RELEASE</version>
+	<version>1.5.4.RELEASE</version>
 	<packaging>pom</packaging>
 	<name>SAP Commerce Cloud - Eclipse plugin (parent)</name>
 
 	<developers>
+		<developer>
+			<email>pawel.wolanski@sap.com</email>
+			<name>Pawel Wolanski</name>
+			<organization>SAP SE</organization>
+			<timezone>CET</timezone>
+		</developer>
 	</developers>
 	<contributors>
 	</contributors>
@@ -63,7 +69,7 @@
 	                <groupId>org.sonarsource.scanner.maven</groupId>
 	                <artifactId>sonar-maven-plugin</artifactId>
 	                <version>3.7.0.1746</version>
-	            </plugin>
+		        </plugin>
 	        </plugins>
 	    </pluginManagement>
 		<plugins>
