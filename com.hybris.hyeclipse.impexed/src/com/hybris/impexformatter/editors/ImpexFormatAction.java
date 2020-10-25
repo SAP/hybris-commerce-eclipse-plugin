@@ -27,9 +27,13 @@ import org.eclipse.ui.IEditorPart;
  */
 public class ImpexFormatAction implements IEditorActionDelegate {
 
+	private IEditorPart editorPart = null;
+	
 	@Override
 	public void run(IAction arg0) {
-		ImpexPageEditor.formatText();
+		if(editorPart != null) {
+			ImpexPageEditor.formatText(editorPart);
+		}
 	}
 
 	@Override
@@ -39,7 +43,7 @@ public class ImpexFormatAction implements IEditorActionDelegate {
 
 	@Override
 	public void setActiveEditor(IAction arg0, IEditorPart arg1) {
-		
+		this.editorPart = arg1;
 	}
 
 }
