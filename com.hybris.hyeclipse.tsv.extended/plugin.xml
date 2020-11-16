@@ -36,6 +36,39 @@
             class="com.hybris.hyeclipse.tsv.preferences.PreferenceInitializer">
       </initializer>
    </extension>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            default-charset="UTF-8"
+            id="com.hybris.hyeclipse.tsv.xml"
+            name="SAP Commerce XML Item Type File"
+            priority="normal">
+         <describer
+               class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+            <parameter
+                  name="element"
+                  value="items">
+            </parameter>
+         </describer>
+      </content-type>
+      <file-association
+            content-type="com.hybris.hyeclipse.tsv.xml"
+            file-patterns="*-items.xml">
+      </file-association>
+   </extension>
+   <extension
+         point="org.eclipse.lsp4e.languageServer">
+      <server
+            class="com.hybris.hyeclipse.tsv.lsp.provider.StreamConnectionProvider"
+            id="com.hybris.hyeclipse.tsv.types"
+            label="SAP Commerce Item Types Server">
+      </server>
+      <contentTypeMapping
+            contentType="com.hybris.hyeclipse.tsv.xml"
+            id="com.hybris.hyeclipse.tsv.xml.mapping">
+      </contentTypeMapping>
+   </extension>
    
 
 </plugin>

@@ -20,6 +20,7 @@ import java.util.EnumMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -122,7 +123,9 @@ abstract class TsvBuilder extends IncrementalProjectBuilder {
         deleteMarkers(file);
         for (final IResult result : results) {
         	if (result.getState() == ResultState.FAIL || result.getState() == ResultState.ERROR) {
-				addMarker(file, result.getDescription(), result.getLine() != null ? result.getLine().intValue() : 1, IMarker.SEVERITY_ERROR,
+        		
+				int lineNo = StringUtils.isNumeric(result.getLine()) ? Integer.valueOf(result.getLine()) : 1;
+				addMarker(file, result.getDescription(), lineNo, IMarker.SEVERITY_ERROR,
 						priorityMap.get(result.getRule().getPriority()));
         	}
         	progress.worked(1);

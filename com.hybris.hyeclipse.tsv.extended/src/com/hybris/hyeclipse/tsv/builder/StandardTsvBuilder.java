@@ -18,6 +18,7 @@ package com.hybris.hyeclipse.tsv.builder;
 import org.eclipse.core.runtime.CoreException;
 
 import com.hybris.hyeclipse.tsv.validator.ItemsXmlValidator;
+import com.hybris.ps.tsv.extended.TsvExtendedMain;
 
 public class StandardTsvBuilder extends TsvBuilder {
 
@@ -30,6 +31,8 @@ public class StandardTsvBuilder extends TsvBuilder {
 
 	@Override
 	protected ItemsXmlValidator getValidator() throws CoreException {
+		TsvExtendedMain tsv = new TsvExtendedMain();
+		return null;
 //		ApplicationContext appContext = new ClassPathXmlApplicationContext(new String[]{ TSV_SPRING_CONFIG });
 //		TSVMain tsvMain = (TSVMain) appContext.getBean(TSV_MAIN_BEAN);
 //		CmdLineOptions options = (CmdLineOptions) appContext.getBean(TSV_OPTIONS_BEAN);
