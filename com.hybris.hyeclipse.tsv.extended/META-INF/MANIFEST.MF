@@ -12,9 +12,9 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.ide,
  org.eclipse.wst.sse.ui,
  com.hybris.hyeclipse.platform;bundle-version="[1.0.0,2.0.0]",
- org.eclipse.lsp4j;bundle-version="0.9.0",
- org.eclipse.lsp4j.jsonrpc;bundle-version="0.9.0",
- org.eclipse.lsp4e;bundle-version="0.9.0"
+ org.eclipse.lsp4j,
+ org.eclipse.lsp4j.jsonrpc,
+ org.eclipse.lsp4e
 Bundle-ClassPath: lib/tsv-extended-3.0.1-all.jar,
  .
 Export-Package: com.hybris.hyeclipse.tsv;
