@@ -41,6 +41,7 @@
       <content-type
             base-type="org.eclipse.core.runtime.xml"
             default-charset="UTF-8"
+            file-patterns="*-items.xml"
             id="com.hybris.hyeclipse.tsv.xml"
             name="SAP Commerce XML Item Type File"
             priority="normal">
@@ -68,6 +69,17 @@
             contentType="com.hybris.hyeclipse.tsv.xml"
             id="com.hybris.hyeclipse.tsv.xml.mapping">
       </contentTypeMapping>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="com.hybris.hyeclipse.tsv.extended.editors.XMLEditor"
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            extensions="xml"
+            icon="icons/sample.png"
+            id="com.hybris.hyeclipse.tsv.extended.editors.XMLEditor"
+            name="Sample XML Editor">
+      </editor>
    </extension>
    
 
