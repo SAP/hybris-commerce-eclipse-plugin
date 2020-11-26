@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: YTypeSystem
 Bundle-SymbolicName: com.hybris.hyeclipse.ytypesystem;singleton:=true
-Bundle-Version: 1.5.4.RELEASE
+Bundle-Version: 1.5.5.qualifier
 Bundle-Activator: com.hybris.hyeclipse.ytypesystem.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
