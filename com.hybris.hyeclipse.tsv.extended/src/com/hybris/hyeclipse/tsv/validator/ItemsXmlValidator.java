@@ -82,7 +82,7 @@ public class ItemsXmlValidator {
 				final Document doc = parseItemsXml(is, progress.newChild(20));
 				final SubMonitor ruleCheckMonitor = progress.newChild(80).setWorkRemaining(ruleSet.getRules().size());
 				for (final IRule rule : ruleSet.getRules()) {
-					results.addAll(rule.check(itemsXmlLocation, doc));
+					results.addAll(rule.check(itemsXmlLocation, doc, null).getRuleResults());
 					ruleCheckMonitor.worked(1);
 				}
 	        }
