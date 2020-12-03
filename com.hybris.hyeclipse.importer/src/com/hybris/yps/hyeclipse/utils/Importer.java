@@ -152,7 +152,7 @@ public class Importer {
 			Activator.log("Retrieving projects not in localextensions using platformhome ["
 					+ platformHome.getAbsolutePath() + "]");
 		Set<IProject> projectsToClose = FixProjectsUtils
-				.getProjectsNotInLocalExtensionsFile(platformHome.getAbsolutePath());
+				.getProjectsNotInLocalExtensionsFile();
 
 		// close projects from the above set that are not referenced by a
 		// project that is not scheduled for closing
@@ -633,7 +633,7 @@ public class Importer {
 	}
 
 	private void fixMissingProjectDependencies(IProgressMonitor monitor, File platformHome) throws JavaModelException {
-		Set<ExtensionHolder> extensions = FixProjectsUtils.getAllExtensionsForPlatform(platformHome.getAbsolutePath());
+		Set<ExtensionHolder> extensions = FixProjectsUtils.getAllExtensionsForPlatform();
 		Set<IProject> projects = FixProjectsUtils.getAllOpenHybrisProjects();
 		for (IProject project : projects) {
 			for (ExtensionHolder extHolder : extensions) {

@@ -17,6 +17,7 @@ package com.hybris.yps.hyeclipse.utils;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -60,16 +61,10 @@ public class SkipJarScanningUtils {
 	}
 
 	private static Activator plugin = Activator.getDefault();
-	private static final boolean debug = plugin.isDebugging();
+	private static final boolean DEBUG = plugin.isDebugging();
 	
 	private SkipJarScanningUtils() {
 		throw new IllegalStateException("Utility class");
-	}
-
-	public static Set<ExtensionHolder> getAllExtensionsForPlatform(String platformHome) {
-
-		Set<ExtensionHolder> allExtensions = plugin.getAllExtensionsForPlatform(platformHome);
-		return allExtensions;
 	}
 
 	public static void skipJarScanning(File platformHome) {
@@ -78,44 +73,37 @@ public class SkipJarScanningUtils {
 
 		File catalinaFile = catalinaPropPath.toFile();
 		List<String> jarNameList = new ArrayList<>();
-		if (catalinaFile.exists()) {
-			try {
-				Set<ExtensionHolder> exts = getAllExtensionsForPlatform(platformHome.getAbsolutePath());
-				if (debug)
-					Activator.log("" + exts);
-				for (ExtensionHolder ext : exts) {
-					File extDir = new File(ext.getPath());
-					skipJarsByExtension(jarNameList, extDir);
-				}
-
-				Collections.sort(jarNameList);
-
-				StringBuilder sb = new StringBuilder();
-				for (String jar : jarNameList) {
-					if (debug)
-						Activator.log(jar);
-					sb.append(",\\\\").append("\n").append(jar);
-				}
-				sb.append("\n").append("\n");
-
-				String content = new String(Files.readAllBytes(Paths.get(catalinaFile.getAbsolutePath())));
-
-				Pattern regex = Pattern.compile(REGEX_TO_REPLACE, Pattern.DOTALL);
-				Matcher regexMatcher = regex.matcher(content);
-				if (regexMatcher.find()) {
-					if (debug)
-						Activator.log(regexMatcher.group(0));
-					content = regexMatcher.replaceAll(REPLACEMENT_PREFIX + sb.toString());
-				}
-
-				try (PrintWriter writer = new PrintWriter(catalinaFile, "UTF-8")) {
-					writer.println(content);	
-				}
-			} catch (Exception e) {
-				throw new IllegalStateException("Failed to access the server.xml file at: " + catalinaPropPath);
+		if (!catalinaFile.exists()) {
+			throw new IllegalStateException(String.format("file %s doesn't exist.", catalinaPropPath));
+		}
+		try {
+			Set<ExtensionHolder> exts = plugin.getAllExtensionsForPlatform();
+			for (ExtensionHolder ext : exts) {
+				File extDir = new File(ext.getPath());
+				skipJarsByExtension(jarNameList, extDir);
 			}
-		} else {
-			throw new IllegalStateException(catalinaPropPath + " doesn't exist.");
+
+			Collections.sort(jarNameList);
+
+			StringBuilder sb = new StringBuilder();
+			for (String jar : jarNameList) {
+				sb.append(",\\\\").append(System.lineSeparator()).append(jar);
+			}
+			sb.append(System.lineSeparator()).append(System.lineSeparator());
+
+			String content = new String(Files.readAllBytes(Paths.get(catalinaFile.getAbsolutePath())));
+
+			Pattern regex = Pattern.compile(REGEX_TO_REPLACE, Pattern.DOTALL);
+			Matcher regexMatcher = regex.matcher(content);
+			if (regexMatcher.find()) {
+				content = regexMatcher.replaceAll(REPLACEMENT_PREFIX + sb.toString());
+			}
+
+			try (PrintWriter writer = new PrintWriter(catalinaFile, StandardCharsets.UTF_8.name())) {
+				writer.println(content);	
+			}
+		} catch (Exception e) {
+			throw new IllegalStateException("Failed to access the server.xml file at: " + catalinaPropPath);
 		}
 	}
 
@@ -138,14 +126,14 @@ public class SkipJarScanningUtils {
 				return;
 			}
 		}
-
+		
 		if (dir.exists() && dir.listFiles() != null) {
 			for (File file : dir.listFiles()) {
 				if (file.getName().endsWith("jar") && !jarNameSet.contains(file.getName())) {
 					boolean addToSkip = true;
 					for (String excludedPrefix : excludedJarNamePrefixes) {
 						if (file.getName().startsWith(excludedPrefix)) {
-							if (debug)
+							if (DEBUG)
 								Activator.log(">>>>> Not to skip:  " + file.getName());
 							addToSkip = false;
 							break;
