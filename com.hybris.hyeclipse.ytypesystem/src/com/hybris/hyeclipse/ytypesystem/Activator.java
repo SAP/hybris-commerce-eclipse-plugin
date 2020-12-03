@@ -22,7 +22,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
@@ -217,7 +219,10 @@ public class Activator extends AbstractUIPlugin {
 
 	private File entryToFile(String url) throws IOException, URISyntaxException {
 		Bundle bundle = getDefault().getBundle();
-		return Paths.get(FileLocator.toFileURL(bundle.getEntry(url)).toURI()).toFile();
+		URL bundleUrl = bundle.getEntry(url);
+		URL fileUrl = FileLocator.toFileURL(bundleUrl);
+		
+		return new File(new URI(fileUrl.getProtocol(), fileUrl.getPath(), null));
 	}
 
 	public SystemConfig getSystemConfig() {
