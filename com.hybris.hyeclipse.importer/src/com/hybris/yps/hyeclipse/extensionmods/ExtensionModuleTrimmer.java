@@ -160,8 +160,7 @@ public class ExtensionModuleTrimmer {
 		// Project is missing required source folder: 'web/src'
 		IJavaProject javaProject = JavaCore.create(project);
 		if (javaProject.isOnClasspath(project.getFolder(classpathEntry))) {
-			FixProjectsUtils.removeFromClassPath(project.getFolder(classpathEntry), IClasspathEntry.CPE_SOURCE,
-					javaProject, monitor);
+			FixProjectsUtils.removeFromClassPath(project.getFolder(classpathEntry), javaProject, monitor);
 		}
 	}
 

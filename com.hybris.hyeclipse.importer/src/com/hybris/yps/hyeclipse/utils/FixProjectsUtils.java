@@ -57,21 +57,25 @@ import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 import com.hybris.yps.hyeclipse.Activator;
 import com.hybris.yps.hyeclipse.ExtensionHolder;
 
 public class FixProjectsUtils {
 	
+	private static final String EXTENSIONINFO_XML = "extensioninfo.xml";
+	private static final String CONFIG_DIR = "config";
+	public static final String PLATFORM_DIR = "platform";
 	private static Activator plugin = Activator.getDefault();
 	private static final boolean DEBUG = plugin.isDebugging();
 	
-	public static Set<ExtensionHolder> getAllExtensionsForPlatform(String platformHome) {
-		Set<ExtensionHolder> allExtensions  = plugin.getAllExtensionsForPlatform(platformHome);
-		return allExtensions;
+	private FixProjectsUtils() {
+		// hiding implicit constructor
+	}
+	
+	public static Set<ExtensionHolder> getAllExtensionsForPlatform() {
+		return plugin.getAllExtensionsForPlatform();
 	}
 	
 	public static String getConfigDirectory()
@@ -79,97 +83,73 @@ public class FixProjectsUtils {
 		return plugin.getConfigDirectory();
 	}
 	
-	public static Set<IProject> getProjectsNotInLocalExtensionsFile(String platformHome)
-	{
-		Set<ExtensionHolder> exts = getAllExtensionsForPlatform(platformHome);
+	public static Set<IProject> getProjectsNotInLocalExtensionsFile() {
+		Set<ExtensionHolder> exts = getAllExtensionsForPlatform();
 		Set<IProject> allHybrisProjects = getAllHybrisProjects();
-		
-		Set<IProject> projectsNotInLocalExts = new HashSet<IProject>();
-		if (DEBUG)
-			Activator.log("Getting Projects not in localextensions.xml");
-		for (IProject project : allHybrisProjects)
-		{
+
+		Set<IProject> projectsNotInLocalExts = new HashSet<>();
+		for (IProject project : allHybrisProjects) {
 			boolean found = false;
-			for (ExtensionHolder ext : exts)
-			{
-				
+			for (ExtensionHolder ext : exts) {
+
 				Path projectLocation = Paths.get(project.getLocation().toFile().getAbsolutePath());
 				Path extLocation = Paths.get(ext.getPath());
-				try
-				{
-				if (Files.isSameFile(projectLocation, extLocation) || (project.getName().equals("platform") || (project.getName().equals("config"))))
-				{
-					if (DEBUG)
-						Activator.log("Ext in workspace and localextensions.xml: ext [" + ext.getPath() + "] project [" + project.getLocation().toFile().getAbsolutePath() + "]");
-					found = true;
-					break;
-				}
-				} catch (IOException e)
-				{
+				try {
+					if (Files.isSameFile(projectLocation, extLocation)
+							|| (project.getName().equals(PLATFORM_DIR) || (project.getName().equals(CONFIG_DIR)))) {
+						found = true;
+						break;
+					}
+				} catch (IOException e) {
 					throw new IllegalStateException(e);
 				}
 			}
 			// if we get here there is no path
-			if (!found)
-			{
-				if (DEBUG)
-					Activator.log("No match in localextensions for project [" + project.getName() + "] path [" + project.getLocation().toFile().getAbsolutePath() + "]");
-				if (!project.getName().equals("platform") && !project.getName().equals("config")) {
+			if (!found && (!project.getName().equals(PLATFORM_DIR) && !project.getName().equals(CONFIG_DIR))) {
 				projectsNotInLocalExts.add(project);
 			}
-		}
 		}
 		return projectsNotInLocalExts;
 	}
 		
 	public static Set<ExtensionHolder> getExtensionsNotInWorkspace(String platformHome) {
 
-		Set<ExtensionHolder> exts = getAllExtensionsForPlatform(platformHome);
-		
+		Set<ExtensionHolder> exts = getAllExtensionsForPlatform();
+
 		// add platform and config to the list of extensions
-		ExtensionHolder platformHolder = new ExtensionHolder(platformHome,"platform");
+		ExtensionHolder platformHolder = new ExtensionHolder(platformHome, PLATFORM_DIR);
 		exts.add(platformHolder);
-		ExtensionHolder configHolder = new ExtensionHolder(getConfigDirectory(),"config");
+		ExtensionHolder configHolder = new ExtensionHolder(getConfigDirectory(), CONFIG_DIR);
 		exts.add(configHolder);
-		
+
 		Set<IProject> allHybrisProjects = getAllHybrisProjects();
 
-		Set<ExtensionHolder> extensionsNotInWorkspace = new HashSet<ExtensionHolder>();
-		if (DEBUG)
-			Activator.log("Getting extensions not in workspace");
+		Set<ExtensionHolder> extensionsNotInWorkspace = new HashSet<>();
 		for (ExtensionHolder ext : exts) {
-			
+
 			boolean found = false;
 			for (IProject project : allHybrisProjects) {
-				if (DEBUG)
-					Activator.log("ext [" + ext.getPath() + "] project [" + project.getLocation().toFile().getAbsolutePath() + "]");
-				
 				Path projectLocation = Paths.get(project.getLocation().toFile().getAbsolutePath());
 				Path extLocation = Paths.get(ext.getPath());
-				try
-				{
-					if (Files.isSameFile(projectLocation, extLocation))
-					{
-						if (DEBUG)
-							Activator.log("Match in workspace and localextensions.xml: ext [" + ext.getPath() + "] project [" + project.getLocation().toFile().getAbsolutePath() + "]");
+				try {
+					if (Files.isSameFile(projectLocation, extLocation)) {
+						// Match in workspace and localextensions.xml: between extension & project
 						found = true;
 						break;
 					}
-				}
-				catch (IOException e)
-				{
+				} catch (IOException e) {
 					throw new IllegalStateException(e);
 				}
 			}
 			// if we get here there is no match
-			if (!found)
-			{
+			if (!found) {
 				if (DEBUG)
-					Activator.log("No match in workspace for extension [" + ext.getName() + "] path [" + ext.getPath() + "]");
+					Activator.log(
+							"No match in workspace for extension [" + ext.getName() + "] path [" + ext.getPath() + "]");
 				extensionsNotInWorkspace.add(ext);
 			}
 		}
-		
+
 		return extensionsNotInWorkspace;
 	}
 	
@@ -179,7 +159,7 @@ public class FixProjectsUtils {
 	 */
 	public static Set<IProject> getAllHybrisProjects()
 	{
-		final Set<IProject> filteredProjects = new HashSet<IProject>();
+		final Set<IProject> filteredProjects = new HashSet<>();
 		final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
 		for (IProject project : projects)
 		{
@@ -195,7 +175,7 @@ public class FixProjectsUtils {
 	
 	public static Set<IProject> getAllOpenHybrisProjects()
 	{
-		final Set<IProject> filteredProjects = new HashSet<IProject>();
+		final Set<IProject> filteredProjects = new HashSet<>();
 		final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
 		for (IProject project : projects)
 		{
@@ -216,7 +196,7 @@ public class FixProjectsUtils {
 	 */
 	public static boolean isAHybrisExtension(IProject project) {
 		// handle the 2 special cases
-		if (project.getName().equals("platform") || project.getName().equals("config")) {
+		if (project.getName().equals(PLATFORM_DIR) || project.getName().equals(CONFIG_DIR)) {
 			return true;
 		}
 		else {
@@ -229,7 +209,7 @@ public class FixProjectsUtils {
 	{
 		String path = project.getLocation().toFile().getAbsolutePath();
 		String binDir = "bin" + File.separator;
-		return (path.indexOf(binDir + "ext-") > 0 || path.indexOf(binDir + "platform") > 0);
+		return (path.indexOf(binDir + "ext-") >= 0 || path.indexOf(binDir + PLATFORM_DIR) >= 0);
 	}
 	
 	public static boolean isATemplateExtension(IProject project)
@@ -239,12 +219,12 @@ public class FixProjectsUtils {
 	
 	public static boolean isACustomerExtension(IProject project)
 	{
-		return !isAPlatformExtension(project) && !project.getName().equals("config");
+		return !isAPlatformExtension(project) && !project.getName().equals(CONFIG_DIR);
 	}
 	
 	public static Set<IProject> getAllPlatformProjects()
 	{
-		final Set<IProject> filteredProjects = new HashSet<IProject>();
+		final Set<IProject> filteredProjects = new HashSet<>();
 		final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
 		for (IProject project : projects)
 		{
@@ -258,7 +238,7 @@ public class FixProjectsUtils {
 	
 	public static Set<IProject> getAllCustomerProjects()
 	{
-		final Set<IProject> filteredProjects = new HashSet<IProject>();
+		final Set<IProject> filteredProjects = new HashSet<>();
 		final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
 		for (IProject project : projects)
 		{
@@ -270,19 +250,16 @@ public class FixProjectsUtils {
 		return filteredProjects;
 	}
 	
-	public static void addSourceDirectoriesIfExistingForDir(IProgressMonitor monitor, IProject project, IJavaProject javaProject, String dir) throws JavaModelException {
-		
-		if (project.getFolder(dir).exists())
-		{
-			if (!isOnClasspath(project.getFolder(dir),javaProject, IClasspathEntry.CPE_SOURCE))
-			{
-				// check that we don't have the project on the classpath as a source extension
-				if (isOnClasspath(project,javaProject, IClasspathEntry.CPE_SOURCE))
-				{
-					removeFromClassPath(project, IClasspathEntry.CPE_SOURCE, javaProject, monitor);
-				}
-				addToClassPath(project.getFolder(dir), IClasspathEntry.CPE_SOURCE, javaProject, monitor);
-			}			
+	public static void addSourceDirectoriesIfExistingForDir(IProgressMonitor monitor, IProject project,
+			IJavaProject javaProject, String dir) throws JavaModelException {
+
+		if (project.getFolder(dir).exists()
+				&& (!isOnClasspath(project.getFolder(dir), javaProject, IClasspathEntry.CPE_SOURCE))) {
+			// check that we don't have the project on the class-path as a source extension
+			if (isOnClasspath(project, javaProject, IClasspathEntry.CPE_SOURCE)) {
+				removeFromClassPath(project, javaProject, monitor);
+			}
+			addToClassPath(project.getFolder(dir), IClasspathEntry.CPE_SOURCE, javaProject, monitor);
 		}
 	}
 	
@@ -303,32 +280,25 @@ public class FixProjectsUtils {
 	
 	/**
 	 * Using IJavaProject.isOnClasspath() is not accurate
-	 * @throws JavaModelException 
+	 * 
+	 * @throws JavaModelException
 	 */
-	private static boolean isOnClasspath(IResource resource, IJavaProject javaProject, int type) throws JavaModelException
-	{
-		for (IClasspathEntry classPath : javaProject.getRawClasspath())
-		{	
-			if (classPath.getEntryKind() ==  type)
-			{
-				if (resource.getFullPath().equals(classPath.getPath()))
-				{
-					return true;
-				}
+	private static boolean isOnClasspath(IResource resource, IJavaProject javaProject, int type)
+			throws JavaModelException {
+		for (IClasspathEntry classPath : javaProject.getRawClasspath()) {
+			if ((classPath.getEntryKind() == type) && resource.getFullPath().equals(classPath.getPath())) {
+				return true;
 			}
 		}
-		return false;							
+		return false;
 	}
 	
-	private static void removeSourceDirectoryIfNotExsistingForDir(IProgressMonitor monitor, IProject project, IJavaProject javaProject, String dir) throws JavaModelException {
-		
-		if (!project.getFolder(dir).exists())
-		{
-			if (javaProject.isOnClasspath(project.getFolder(dir)))
-			{
-				removeFromClassPath(project.getFolder(dir), IClasspathEntry.CPE_SOURCE, javaProject, monitor);
-			}				
-		}		
+	private static void removeSourceDirectoryIfNotExsistingForDir(IProgressMonitor monitor, IProject project,
+			IJavaProject javaProject, String dir) throws JavaModelException {
+
+		if (!project.getFolder(dir).exists() && javaProject.isOnClasspath(project.getFolder(dir))) {
+			removeFromClassPath(project.getFolder(dir), javaProject, monitor);
+		}
 	}
 	
 	public static void removeSourceDirectoriesIfNotExisting(IProgressMonitor monitor, IProject project, IJavaProject javaProject) throws JavaModelException {
@@ -343,27 +313,23 @@ public class FixProjectsUtils {
 		removeSourceDirectoryIfNotExsistingForDir(monitor, project, javaProject, "/acceleratoraddon/web/webroot/WEB-INF/tld");
 	}
 	
-	public static void removeFromClassPath(IResource res, int type, IJavaProject javaProject, IProgressMonitor monitor) throws JavaModelException
-	{
-		List<IClasspathEntry> entries = new LinkedList<IClasspathEntry>(Arrays.asList(javaProject.getRawClasspath()));
-		
+	public static void removeFromClassPath(IResource res, IJavaProject javaProject, IProgressMonitor monitor)
+			throws JavaModelException {
+		List<IClasspathEntry> entries = new LinkedList<>(Arrays.asList(javaProject.getRawClasspath()));
+
 		ListIterator<IClasspathEntry> iterator = entries.listIterator();
 		boolean changed = false;
-		while (iterator.hasNext())
-		{
+		while (iterator.hasNext()) {
 			IClasspathEntry entry = iterator.next();
-			if (entry.getEntryKind() ==  IClasspathEntry.CPE_SOURCE)
-			{
-				if (res.getFullPath().equals(entry.getPath()))
-				{
-					changed = true;
-					if (DEBUG)
-						Activator.log("Removing src path [" + res.getFullPath() + "] for project [" + javaProject.getProject().getName() + "]");
-					iterator.remove();
-				}
+			if ((entry.getEntryKind() == IClasspathEntry.CPE_SOURCE) && res.getFullPath().equals(entry.getPath())) {
+				changed = true;
+				if (DEBUG)
+					Activator.log("Removing src path [" + res.getFullPath() + "] for project ["
+							+ javaProject.getProject().getName() + "]");
+				iterator.remove();
 			}
 		}
-		
+
 		if (changed) {
 			setClasspath(entries.toArray(new IClasspathEntry[entries.size()]), javaProject, monitor);
 		}
@@ -371,17 +337,18 @@ public class FixProjectsUtils {
 	
 	public static void addToClassPath(IResource res, int type, IJavaProject javaProject, IProgressMonitor monitor) throws JavaModelException
 	{
-		Set<IClasspathEntry> entries = new HashSet<IClasspathEntry>(Arrays.asList(javaProject.getRawClasspath()));
+		Set<IClasspathEntry> entries = new HashSet<>(Arrays.asList(javaProject.getRawClasspath()));
 		IClasspathEntry entry = null;
 		switch (type) {
-		case IClasspathEntry.CPE_SOURCE: 
-			entry = JavaCore.newSourceEntry(res.getFullPath());
-			break;
 		case IClasspathEntry.CPE_LIBRARY: 
 			entry = JavaCore.newLibraryEntry(res.getFullPath(), null, null, true);
 			break;
 		case IClasspathEntry.CPE_PROJECT: 
 			entry = JavaCore.newProjectEntry(res.getFullPath(), true);
+			break;
+		case IClasspathEntry.CPE_SOURCE:
+		default:
+			entry = JavaCore.newSourceEntry(res.getFullPath());
 			break;
 		}
 			
@@ -428,7 +395,7 @@ public class FixProjectsUtils {
 		monitor.beginTask("Removing module info", 10);
 		String extensionPath = extension.getPath();
 		
-		File extInfo = new File(extensionPath, "extensioninfo.xml");
+		File extInfo = new File(extensionPath, EXTENSIONINFO_XML);
 		if (extInfo.exists()) {
 			try {
 				IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(extension.getName());
@@ -437,19 +404,7 @@ public class FixProjectsUtils {
 				docFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 				docFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
 				DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-				docBuilder.setErrorHandler(new ErrorHandler(){
-					@Override
-				    public void fatalError(SAXParseException exception) throws SAXException
-				    {}
-
-				    @Override
-				    public void error(SAXParseException exception) throws SAXException
-				    {}
-
-				    @Override
-				    public void warning(SAXParseException exception) throws SAXException
-				    {}
-				});
+				docBuilder.setErrorHandler(new org.xml.sax.helpers.DefaultHandler());
 				
 				Document doc = docBuilder.parse(extInfo);
 				boolean updateProject = false;
@@ -497,7 +452,7 @@ public class FixProjectsUtils {
 					transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
 					Transformer transformer = transformerFactory.newTransformer();
 					DOMSource source = new DOMSource(doc);
-					StreamResult result = new StreamResult(new File(extensionPath, "extensioninfo.xml"));
+					StreamResult result = new StreamResult(new File(extensionPath, EXTENSIONINFO_XML));
 					transformer.transform(source, result);
 					monitor.worked(5);
 					
@@ -505,20 +460,8 @@ public class FixProjectsUtils {
 					project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
 				}
 			}
-			catch (ParserConfigurationException pce) {
+			catch (ParserConfigurationException| TransformerException | IOException |SAXException| CoreException pce) {
 				Activator.logError("InvocationTargetException", pce);
-			}
-			catch (TransformerException tfe) {
-				Activator.logError("InvocationTargetException", tfe);
-			}
-			catch (IOException ioe) {
-				Activator.logError("InvocationTargetException", ioe);
-			}
-			catch (SAXException sae) {
-				Activator.logError("InvocationTargetException", sae);
-			}
-			catch (CoreException e) {
-				Activator.logError("InvocationTargetException", e);
 			}
 			
 		}
@@ -527,7 +470,7 @@ public class FixProjectsUtils {
 	}
 	
 	private static void removeSourceFolder(IProgressMonitor monitor, IProject project, String folderName, String classpathEntry)
-			throws CoreException, JavaModelException {
+			throws CoreException {
 		IFolder webFolder = project.getFolder(folderName);
 		if(webFolder != null){
 			webFolder.delete(true, false, monitor);
@@ -536,7 +479,7 @@ public class FixProjectsUtils {
 		IJavaProject javaProject = JavaCore.create(project);
 		if (javaProject.isOnClasspath(project.getFolder(classpathEntry)))
 		{
-			FixProjectsUtils.removeFromClassPath(project.getFolder(classpathEntry), IClasspathEntry.CPE_SOURCE, javaProject, monitor);
+			FixProjectsUtils.removeFromClassPath(project.getFolder(classpathEntry), javaProject, monitor);
 		}
 	}
 
@@ -568,7 +511,8 @@ public class FixProjectsUtils {
 
 	public static void setOutputDirectory(IProgressMonitor monitor, IProject project, IJavaProject javaProject) {
 
-		IPath outputLocation = null, newOutputLocation = null;
+		IPath outputLocation = null;
+		IPath newOutputLocation = null;
 		try {
 			outputLocation = javaProject.getOutputLocation();
 
@@ -578,10 +522,7 @@ public class FixProjectsUtils {
 				javaProject.setOutputLocation(newOutputLocation, monitor);
 			}
 		} catch (JavaModelException e) {
-			System.err.println("project:" + project.getName());
-			System.err.println("outputLocation:" + outputLocation);
-			System.err.println("newOutputLocation:" + newOutputLocation);
-			Activator.logError("Could not set output directory", e);
+			Activator.logError(String.format("Could not set output directory %s for project %s", outputLocation, project.getName()), e);
 		}
 	}
 }

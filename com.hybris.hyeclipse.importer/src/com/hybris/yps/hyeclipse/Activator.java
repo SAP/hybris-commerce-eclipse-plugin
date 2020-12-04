@@ -21,6 +21,7 @@ import java.util.Set;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -47,18 +48,23 @@ public class Activator extends AbstractUIPlugin {
 	private static final String ORG_ECLIPSE_EPP_MPC_NATURELOOKUP = "org.eclipse.epp.mpc.naturelookup";
 	private static final String ORG_ECLIPSE_EPP_MPC_UI_PREFS = "org.eclipse.epp.mpc.ui";
 	
-	/**
-	 * The constructor
-	 */
-	public Activator() {}
 
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
 	 */
+	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-		plugin = this;
+		plugin = this; //NOSONAR
+		
+		resetPlatformBootstrapBundle();
+		
+		disableProjectNatureSolutionLookup();
+		log("Disabled automatic project nature solution lookup");
+	}
+	
+	public void resetPlatformBootstrapBundle() {
 		String platformHomeStr = null;
 		if (platformHome == null) {
 			
@@ -75,17 +81,15 @@ public class Activator extends AbstractUIPlugin {
 				platformHome = new File(platformHomeStr);
 			}
 		}
-		
-		disableProjectNatureSolutionLookup();
-		log("Disabled automatic project nature solution lookup");
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
 	 */
+	@Override
 	public void stop(BundleContext context) throws Exception {
-		plugin = null;
+		plugin = null; //NOSONAR
 		super.stop(context);
 	}
 
@@ -106,6 +110,7 @@ public class Activator extends AbstractUIPlugin {
 	}
 	
 	public void resetPlatform(String platformHome) {
+		resetPlatformBootstrapBundle();
 		
 		try {
 			Preferences preferences = InstanceScope.INSTANCE.getNode("com.hybris.hyeclipse.preferences");
@@ -124,7 +129,7 @@ public class Activator extends AbstractUIPlugin {
 		getTypeSystemExporter().nullifyAllTypeNames();
 	}
 	
-	public Set<ExtensionHolder> getAllExtensionsForPlatform(String platformHome) {
+	public Set<ExtensionHolder> getAllExtensionsForPlatform() {
 		
 		return getTypeSystemExporter().getAllExtensionsForPlatform();
 	}
@@ -145,10 +150,10 @@ public class Activator extends AbstractUIPlugin {
 	public void log(String msg, Exception e) {
 		Status status = null;
 		if (e != null) {
-			status = new Status(Status.ERROR, Activator.PLUGIN_ID, Status.ERROR, msg, e);
+			status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, IStatus.ERROR, msg, e);
 		}
 		else {
-			status = new Status(Status.INFO, Activator.PLUGIN_ID, Status.OK, msg, e);
+			status = new Status(IStatus.INFO, Activator.PLUGIN_ID, IStatus.OK, msg, e);
 		}
 		getLog().log(status);
 	}
