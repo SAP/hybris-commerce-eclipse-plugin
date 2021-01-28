@@ -33,6 +33,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.tools.ant.util.StringUtils;
 import org.eclipse.core.internal.resources.ProjectDescription;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -57,6 +58,7 @@ import com.hybris.yps.hyeclipse.ExtensionHolder;
 
 public class Importer {
 
+	private static final String CONFIG_FOLDER = "config";
 	private static Activator plugin = Activator.getDefault();
 	private static final boolean DEBUG = Activator.getDefault().isDebugging();
 
@@ -65,6 +67,7 @@ public class Importer {
 	private static final String SETTINGS_FILE = ".settings/org.eclipse.jdt.core.prefs";
 	private static final String SPRINGBEANS_FILE = ".springBeans";
 	private static final String HYBRIS_EXTENSION_FILE = "extensioninfo.xml";
+	private static final String LOCAL_EXTENSION_FILE = "localextensions.xml";
 
 	private static final double JVM8_VERSION = 5.6d;
 	private static final double JVM11_VERSION = 1811d;
@@ -136,14 +139,15 @@ public class Importer {
 	}
 
 	/**
-	 * Method checks if given folder is SAP Commerce extension.
+	 * Method checks if given folder is SAP Commerce extension. by checking if there is 
+	 * {@code extensioninfo.xml} or {@code localextensions.xml}. Latter one defines <pre>config</pre> folder, which may be renamed by user.
 	 * 
 	 * @param path to folder found by import process as an extension
 	 * @return <code>true</code> if folder contains
 	 *         {@code Importer#HYBRIS_EXTENSION_FILE}
 	 */
 	protected boolean isHybrisExtension(IPath path) {
-		return path.append(HYBRIS_EXTENSION_FILE).toFile().exists();
+		return path.append(HYBRIS_EXTENSION_FILE).toFile().exists() || path.append(LOCAL_EXTENSION_FILE).toFile().exists();
 	}
 
 	private void closeProjectsThatAreNotReferenced(IProgressMonitor monitor, File platformHome) throws CoreException {
@@ -476,7 +480,7 @@ public class Importer {
 	 */
 	private void fixMissingJavaRuntime(IProgressMonitor monitor, IJavaProject javaProject) throws JavaModelException {
 
-		if (!javaProject.getProject().getName().equals("config")) {
+		if (!javaProject.getProject().getName().equals(CONFIG_FOLDER)) {
 			IClasspathEntry[] classPathEntries = javaProject.getRawClasspath();
 			boolean found = false;
 			for (IClasspathEntry classpathEntry : classPathEntries) {
@@ -677,7 +681,7 @@ public class Importer {
 		IProject config = null;
 		IProject platform = null;
 		for (IProject proj : projects) {
-			if ("config".equals(proj.getName())) {
+			if (CONFIG_FOLDER.equals(proj.getName())) {
 				config = proj;
 			}
 			if ("platform".equals(proj.getName())) {
@@ -708,7 +712,7 @@ public class Importer {
 				// Create the instance.properties link
 				File hybrisRootDir = platform.getLocation().toFile().getParentFile().getParentFile();
 				File instanceConfigDir = new File(
-						new File(new File(new File(hybrisRootDir, "roles"), activeRole), activeInstance), "config");
+						new File(new File(new File(hybrisRootDir, "roles"), activeRole), activeInstance), CONFIG_FOLDER);
 				File instancePropertiesFile = new File(instanceConfigDir, "instance.properties");
 
 				IPath location = new Path(instancePropertiesFile.toString());
