@@ -149,7 +149,6 @@ public class BeansModelWizard extends Wizard implements INewWizard {
 	 */
 	private BeansModelWizardTypeSelectionPage typeSelectionPage;
 	
-//	private BeansGenerator beansGenerator = new BeansGenerator(Activator.getDefault().getPlatformConfig());
 
 	/**
 	 * This just records the information.
@@ -172,7 +171,7 @@ public class BeansModelWizard extends Wizard implements INewWizard {
 	 */
 	protected Collection<String> getInitialObjectNames() {
 		if (initialObjectNames == null) {
-			initialObjectNames = new ArrayList<String>();
+			initialObjectNames = new ArrayList<>();
 			for (EStructuralFeature eStructuralFeature : ExtendedMetaData.INSTANCE.getAllElements(ExtendedMetaData.INSTANCE.getDocumentRoot(beansPackage))) {
 				if (eStructuralFeature.isChangeable()) {
 					EClassifier eClassifier = eStructuralFeature.getEType();
