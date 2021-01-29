@@ -22,6 +22,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collection;
@@ -259,9 +261,9 @@ public class Importer {
 				"org.eclipse.jdt.core.compiler.problem.unusedLocal",
 				"org.eclipse.jdt.core.compiler.problem.unnecessaryTypeCheck",
 				"org.eclipse.jdt.core.compiler.problem.undocumentedEmptyBlock");
-		
+
 		if (FixProjectsUtils.isAPlatformExtension(project) && !FixProjectsUtils.isATemplateExtension(project)) {
-			
+
 			File settingsFile = project.getLocation().toFile().toPath().resolve(SETTINGS_FILE).toFile();
 			if (settingsFile.exists()) {
 
@@ -298,39 +300,36 @@ public class Importer {
 						if (!thisLineChanged) {
 							strBuilder.append(s).append("\n");
 						}
+						// make sure all 1.7 settings are substitute for 1.8
+						// for versions 5.6 and higher
+						if (platformVersion >= JVM8_VERSION && s.contains("1.7")) {
+							fileHasBeenModified = true;
+							thisLineChanged = true;
+							strBuilder.append(s.replace("1.7", "1.8")).append("\n");
+							break;
+						}
+						if (platformVersion >= JVM11_VERSION) {
+							fileHasBeenModified = true;
+							thisLineChanged = true;
+							strBuilder.append(s.replaceAll("1\\.(7|8)", "11")).append("\n");
+							break;
+						}
+						if (!thisLineChanged) {
+							strBuilder.append(s).append("\n");
+						}
 					}
-					// make sure all 1.7 settings are substitute for 1.8
-					// for versions 5.6 and higher
-					if (platformVersion >= JVM8_VERSION && s.contains("1.7")) {
-						fileHasBeenModified = true;
-						thisLineChanged = true;
-						strBuilder.append(s.replace("1.7", "1.8")).append("\n");
-						break;
-					}
-					if (platformVersion >= JVM11_VERSION) {
-						fileHasBeenModified = true;
-						thisLineChanged = true;
-						strBuilder.append(s.replaceAll("1\\.(7|8)", "11")).append("\n");
-						break;
-					}
-					if (!thisLineChanged) {
-						strBuilder.append(s).append("\n");
-					}
-				}
 
-			} catch (IOException e) {
-				throw new IllegalStateException(MessageFormat.format("Error while fixing the compiler settings in {0}",
-						settingsFile.toString()), e);
-			}
-
-			// write the settings if they have changed
-			if (fileHasBeenModified) {
-				try (FileWriter fw = new FileWriter(settingsFile)) {
-					fw.write(strBuilder.toString());
+					// write the settings if they have changed
+					if (fileHasBeenModified) {
+						try (FileWriter fw = new FileWriter(settingsFile)) {
+							fw.write(strBuilder.toString());
+						}
+					}
 				} catch (IOException e) {
 					throw new IllegalStateException(MessageFormat
 							.format("Error while fixing the compiler settings in {0}", settingsFile.toString()), e);
 				}
+
 			}
 		}
 	}
