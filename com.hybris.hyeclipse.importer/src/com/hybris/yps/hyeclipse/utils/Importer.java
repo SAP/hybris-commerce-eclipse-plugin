@@ -22,6 +22,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collection;
@@ -33,7 +35,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.tools.ant.util.StringUtils;
 import org.eclipse.core.internal.resources.ProjectDescription;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -65,6 +66,8 @@ public class Importer {
 	private static final String HYBRIS_NATURE_ID = "com.hybris.hyeclipse.tsv.hybris";
 	private static final String SPRING_NATURE_ID = "org.springframework.ide.eclipse.core.springnature";
 	private static final String SETTINGS_FILE = ".settings/org.eclipse.jdt.core.prefs";
+	private static final String BROKEN_WST_SETTINGS_FILE = ".settings/org.eclipse.wst.validation.prefs";
+	private static final String BROKEN_WST_SETTINGS_FILE_EXT = "promotionengineservices";
 	private static final String SPRINGBEANS_FILE = ".springBeans";
 	private static final String HYBRIS_EXTENSION_FILE = "extensioninfo.xml";
 	private static final String LOCAL_EXTENSION_FILE = "localextensions.xml";
@@ -84,7 +87,7 @@ public class Importer {
 		if (fixClasspath) {
 			fixMissingProjectDependencies(monitor, platformHome);
 			fixMissingProjectResources(monitor, platformHome);
-			fixProjectClasspaths(monitor, platformHome);
+			fixProjectClasspaths(monitor);
 		}
 
 		if (removeHybrisGenerator) {
@@ -103,7 +106,7 @@ public class Importer {
 			SkipJarScanningUtils.skipJarScanning(platformHome);
 		}
 
-		fixSpringBeans(monitor, platformHome);
+		fixSpringBeans(monitor);
 	}
 
 	private void importExtensionsNotInWorkspace(IProgressMonitor monitor, File platformHome) throws CoreException {
@@ -150,41 +153,42 @@ public class Importer {
 		return path.append(HYBRIS_EXTENSION_FILE).toFile().exists() || path.append(LOCAL_EXTENSION_FILE).toFile().exists();
 	}
 
-	private void closeProjectsThatAreNotReferenced(IProgressMonitor monitor, File platformHome) throws CoreException {
+	private void closeProjectsThatAreNotReferenced(IProgressMonitor monitor, File platformHome) {
 		if (DEBUG)
 			Activator.log("Retrieving projects not in localextensions using platformhome ["
 					+ platformHome.getAbsolutePath() + "]");
-		Set<IProject> projectsToClose = FixProjectsUtils
-				.getProjectsNotInLocalExtensionsFile();
+		Set<IProject> projectsToClose = FixProjectsUtils.getProjectsNotInLocalExtensionsFile();
 
 		// close projects from the above set that are not referenced by a
 		// project that is not scheduled for closing
-		if (projectsToClose != null) {
-			for (IProject projectToClose : projectsToClose) {
+		projectsToClose.stream().forEach(p -> {
 
-				// check if this project is a dependency of another project that
-				// is not scheduled to be closed
-				IProject[] referencingProjects = projectToClose.getReferencingProjects();
-				boolean abortClose = false;
-				if (referencingProjects != null) {
-					for (IProject proj : referencingProjects) {
-						if (!projectsToClose.contains(proj)) {
-							if (DEBUG)
-								Activator.log("Aborting close of project [" + projectToClose.getName()
-										+ "] because it is referenced by [" + proj.getName() + "]");
-							abortClose = true;
-						}
+			// check if this project is a dependency of another project that
+			// is not scheduled to be closed
+			IProject[] referencingProjects = p.getReferencingProjects();
+			boolean abortClose = false;
+			if (referencingProjects != null) {
+				for (IProject proj : referencingProjects) {
+					if (!projectsToClose.contains(proj)) {
+						if (DEBUG)
+							Activator.log("Aborting close of project [" + p.getName()
+									+ "] because it is referenced by [" + proj.getName() + "]");
+						abortClose = true;
 					}
 				}
+			}
 
-				// close projects
-				if (!abortClose) {
-					if (DEBUG)
-						Activator.log("Closing project [" + projectToClose.getName() + "]");
-					projectToClose.close(monitor);
+			// close projects
+			if (!abortClose) {
+				if (DEBUG)
+					Activator.log("Closing project [" + p.getName() + "]");
+				try {
+					p.close(monitor);
+				} catch (CoreException e) {
+					Activator.logError(MessageFormat.format("could not close project [{0}]", p.getName()), e);
 				}
 			}
-		}
+		});
 	}
 
 	private IProject importProject(IProgressMonitor monitor, IPath path, double version) throws CoreException {
@@ -212,6 +216,7 @@ public class Importer {
 	}
 	
 
+	@SuppressWarnings("restriction")
 	private IProjectDescription createDescription(IPath path, String name) {
 		ProjectDescription d = new ProjectDescription();
 		d.setName(name);
@@ -250,67 +255,65 @@ public class Importer {
 	}
 
 	private void fixProjectCompilerSettings(IProgressMonitor monitor, IProject project, double platformVersion) {
+		List<String> compileProblems = Arrays.asList("org.eclipse.jdt.core.compiler.problem.autoboxing",
+				"org.eclipse.jdt.core.compiler.problem.emptyStatement",
+				"org.eclipse.jdt.core.compiler.problem.unusedLocal",
+				"org.eclipse.jdt.core.compiler.problem.unnecessaryTypeCheck",
+				"org.eclipse.jdt.core.compiler.problem.undocumentedEmptyBlock");
+		File settingsFile = project.getLocation().toFile().toPath().resolve(SETTINGS_FILE).toFile();
+		final StringBuilder strBuilder = new StringBuilder();
+		String s;
+		boolean fileHasBeenModified = false;
 		// don't fix project or custom extensions
-		if (FixProjectsUtils.isAPlatformExtension(project) && !FixProjectsUtils.isATemplateExtension(project)) {
-			List<String> compileProblems = Arrays.asList("org.eclipse.jdt.core.compiler.problem.autoboxing",
-					"org.eclipse.jdt.core.compiler.problem.emptyStatement",
-					"org.eclipse.jdt.core.compiler.problem.unusedLocal",
-					"org.eclipse.jdt.core.compiler.problem.unnecessaryTypeCheck",
-					"org.eclipse.jdt.core.compiler.problem.undocumentedEmptyBlock");
-			
-			File settingsFile = project.getLocation().toFile().toPath().resolve(SETTINGS_FILE).toFile();
-			if (settingsFile.exists()) {
-
-				String s;
-				final StringBuilder strBuilder = new StringBuilder();
-				boolean fileHasBeenModified = false;
-				try (FileReader fr = new FileReader(settingsFile); BufferedReader br = new BufferedReader(fr);) {
-					while ((s = br.readLine()) != null) {
-						boolean thisLineChanged = false;
-						for (String compileProblem : compileProblems) {
-							if (s.startsWith(compileProblem)) {
-								if (s.endsWith("error")) {
-									fileHasBeenModified = true;
-									thisLineChanged = true;
-									strBuilder.append(s.replaceAll("error", "warning")).append("\n");
-									break;
-								}
-							}
-							// make sure all 1.7 settins are substitute for 1.8
-							// for versions 5.6 and higher
-							if (platformVersion >= JVM8_VERSION && s.indexOf("1.7") > 0) {
-								fileHasBeenModified = true;
-								thisLineChanged = true;
-								strBuilder.append(s.replaceAll("1\\.7", "1\\.8")).append("\n");
-								break;
-							}
-							if (platformVersion >= JVM11_VERSION) {
-								fileHasBeenModified = true;
-								thisLineChanged = true;
-								strBuilder.append(s.replaceAll("1\\.(7|8)", "11")).append("\n");
-								break;
-							}
-						}
-						if (!thisLineChanged) {
-							strBuilder.append(s).append("\n");
+		if ((FixProjectsUtils.isAPlatformExtension(project) && !FixProjectsUtils.isATemplateExtension(project))
+				&& (settingsFile.exists())) {
+//				try(Stream<String> lines = Files.lines(settingsFilePath); PrintWriter out = new PrintWriter(outSettingsFilePath.toFile())) {
+//					lines.map(l -> compileProblems.stream().anyMatch(p -> l.startsWith(p))).forEachOrdered(out::println);
+//					lines.filter(l -> compileProblems.stream().anyMatch(p -> l.startsWith(p))).filter(l -> l.endsWith("error"));
+//				}
+			try (FileReader fr = new FileReader(settingsFile); BufferedReader br = new BufferedReader(fr);) {
+				while ((s = br.readLine()) != null) {
+					boolean thisLineChanged = false;
+					for (String compileProblem : compileProblems) {
+						if ((s.startsWith(compileProblem)) && (s.endsWith("error"))) {
+							fileHasBeenModified = true;
+							thisLineChanged = true;
+							strBuilder.append(s.replace("error", "warning")).append("\n");
+							break;
 						}
 					}
+					// make sure all 1.7 settings are substitute for 1.8
+					// for versions 5.6 and higher
+					if (platformVersion >= JVM8_VERSION && s.contains("1.7")) {
+						fileHasBeenModified = true;
+						thisLineChanged = true;
+						strBuilder.append(s.replace("1.7", "1.8")).append("\n");
+						break;
+					}
+					if (platformVersion >= JVM11_VERSION) {
+						fileHasBeenModified = true;
+						thisLineChanged = true;
+						strBuilder.append(s.replaceAll("1\\.(7|8)", "11")).append("\n");
+						break;
+					}
+					if (!thisLineChanged) {
+						strBuilder.append(s).append("\n");
+					}
+				}
 
+			} catch (IOException e) {
+				throw new IllegalStateException(MessageFormat.format("Error while fixing the compiler settings in {0}",
+						settingsFile.toString()), e);
+			}
+
+			// write the settings if they have changed
+			if (fileHasBeenModified) {
+				try (FileWriter fw = new FileWriter(settingsFile)) {
+					fw.write(strBuilder.toString());
 				} catch (IOException e) {
-					throw new IllegalStateException(
-							"Error while fixing the compiler settings in " + settingsFile.toString(), e);
+					throw new IllegalStateException(MessageFormat
+							.format("Error while fixing the compiler settings in {0}", settingsFile.toString()), e);
 				}
-
-				// write the settings if they have changed
-				if (fileHasBeenModified) {
-					try (FileWriter fw = new FileWriter(settingsFile)) {
-						fw.write(strBuilder.toString());
-					} catch (IOException e) {
-						throw new IllegalStateException(
-								"Error while fixing the compiler settings in " + settingsFile.toString(), e);
-					}
-				}
-
 			}
 		}
 	}
@@ -343,7 +346,7 @@ public class Importer {
 	 * 
 	 * @param monitor
 	 */
-	private void fixProjectClasspaths(IProgressMonitor monitor, File platformHome) {
+	private void fixProjectClasspaths(IProgressMonitor monitor) {
 		if (ResourcesPlugin.getWorkspace().getRoot().getProjects() == null) {
 			return;
 		}
@@ -353,30 +356,28 @@ public class Importer {
 		monitor.worked(0);
 		int projCnt = 0;
 		for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
-			{
-				try {
-					if (FixProjectsUtils.isAHybrisExtension(project) && project.isOpen()
-							&& project.hasNature(JavaCore.NATURE_ID)) {
-						IJavaProject javaProject = JavaCore.create(project);
-						removeJarFilesThatDontExist(monitor, project, javaProject);
-						addJarFilesNotInClasspath(monitor, project, javaProject);
-						FixProjectsUtils.addSourceDirectoriesIfExisting(monitor, project, javaProject);
-						FixProjectsUtils.removeSourceDirectoriesIfNotExisting(monitor, project, javaProject);
-						FixProjectsUtils.setOutputDirectory(monitor, project, javaProject);
-						fixBackofficeJars(monitor, javaProject);
-						fixAddons(monitor, javaProject);
-						fixMissingJavaRuntime(monitor, javaProject);
-					}
-				} catch (CoreException e) {
-					throw new IllegalStateException(e);
+			try {
+				if (FixProjectsUtils.isAHybrisExtension(project) && project.isOpen()
+						&& project.hasNature(JavaCore.NATURE_ID)) {
+					IJavaProject javaProject = JavaCore.create(project);
+					removeJarFilesThatDontExist(monitor, project, javaProject);
+					addJarFilesNotInClasspath(monitor, project, javaProject);
+					FixProjectsUtils.addSourceDirectoriesIfExisting(monitor, project, javaProject);
+					FixProjectsUtils.removeSourceDirectoriesIfNotExisting(monitor, project, javaProject);
+					FixProjectsUtils.setOutputDirectory(monitor, project, javaProject);
+					fixBackofficeJars(monitor, javaProject);
+					fixAddons(monitor, javaProject);
+					fixMissingJavaRuntime(monitor, javaProject);
 				}
+			} catch (CoreException e) {
+				throw new IllegalStateException(e);
 			}
 			projCnt++;
 			monitor.worked(projCnt);
 		}
 	}
 
-	private void fixSpringBeans(IProgressMonitor monitor, File platformHome) {
+	private void fixSpringBeans(IProgressMonitor monitor) {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IWorkspaceRoot root = workspace.getRoot();
 		IProject[] projects = root.getProjects();
@@ -393,15 +394,7 @@ public class Importer {
 
 			try {
 
-				if (!project.isOpen()) {
-					continue;
-				}
-
-				if (!FixProjectsUtils.isAHybrisExtension(project)) {
-					continue;
-				}
-
-				if (!project.hasNature(SPRING_NATURE_ID)) {
+				if (!project.isOpen() || (!FixProjectsUtils.isAHybrisExtension(project)) || (!project.hasNature(SPRING_NATURE_ID))) {
 					continue;
 				}
 
@@ -451,7 +444,9 @@ public class Importer {
 							"Error while fixing the compiler settings in " + springBeansFile.toString(), e);
 				}
 
-				springBeansFileNew.renameTo(springBeansFile);
+				if (!springBeansFileNew.renameTo(springBeansFile)) {
+					Activator.log(MessageFormat.format("Could not move file {0} -> {1}", springBeansFileNew.toString(), springBeansFile.toString()));
+				}
 
 			} catch (CoreException e) {
 				throw new IllegalStateException(e);
@@ -463,11 +458,8 @@ public class Importer {
 
 	private String[] getAllSpringXmlFiles(IProject project) {
 		String projectName = project.getName();
-		String[] allfiles = { //
-				"resources/" + projectName + "-spring.xml", //
-				"web/webroot/WEB-INF/" + projectName + "-web-spring.xml", //
-		};
-		return allfiles;
+		return new String[] { "resources/" + projectName + "-spring.xml",
+				"web/webroot/WEB-INF/" + projectName + "-web-spring.xml", };
 	}
 
 	/**
@@ -496,7 +488,7 @@ public class Importer {
 			if (!found) {
 				IClasspathEntry entry = JavaCore.newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER"),
 						false);
-				Set<IClasspathEntry> entries = new HashSet<IClasspathEntry>(Arrays.asList(classPathEntries));
+				Set<IClasspathEntry> entries = new HashSet<>(Arrays.asList(classPathEntries));
 				entries.add(entry);
 				FixProjectsUtils.setClasspath(entries.toArray(new IClasspathEntry[entries.size()]), javaProject,
 						monitor);
@@ -521,22 +513,20 @@ public class Importer {
 
 			IProject acceleratorstorefrontcommonsProject = ResourcesPlugin.getWorkspace().getRoot()
 					.getProject("acceleratorstorefrontcommons");
-			if (acceleratorstorefrontcommonsProject != null && acceleratorstorefrontcommonsProject.exists()) {
-				if (!javaProject.isOnClasspath(acceleratorstorefrontcommonsProject)) {
-					FixProjectsUtils.addToClassPath(acceleratorstorefrontcommonsProject, IClasspathEntry.CPE_PROJECT,
-							javaProject, monitor);
-				}
+			if (acceleratorstorefrontcommonsProject != null && acceleratorstorefrontcommonsProject.exists()
+					&& (!javaProject.isOnClasspath(acceleratorstorefrontcommonsProject))) {
+				FixProjectsUtils.addToClassPath(acceleratorstorefrontcommonsProject, IClasspathEntry.CPE_PROJECT,
+						javaProject, monitor);
 			}
 		}
 
 		if (projectName.equals("stocknotificationaddon")) {
 			IProject notificationfacadesProject = ResourcesPlugin.getWorkspace().getRoot()
 					.getProject("notificationfacades");
-			if (notificationfacadesProject != null && notificationfacadesProject.exists()) {
-				if (!javaProject.isOnClasspath(notificationfacadesProject)) {
-					FixProjectsUtils.addToClassPath(notificationfacadesProject, IClasspathEntry.CPE_PROJECT,
-							javaProject, monitor);
-				}
+			if (notificationfacadesProject != null && notificationfacadesProject.exists()
+					&& (!javaProject.isOnClasspath(notificationfacadesProject))) {
+				FixProjectsUtils.addToClassPath(notificationfacadesProject, IClasspathEntry.CPE_PROJECT, javaProject,
+						monitor);
 			}
 		}
 	}
@@ -550,13 +540,13 @@ public class Importer {
 	 */
 	private void fixBackofficeJars(IProgressMonitor monitor, IJavaProject javaProject) throws JavaModelException {
 		if (javaProject.getProject().getName().equalsIgnoreCase("backoffice")) {
-			List<IClasspathEntry> entries = new LinkedList<IClasspathEntry>();
+			List<IClasspathEntry> entries = new LinkedList<>();
 			IClasspathEntry[] classPathEntries = javaProject.getRawClasspath();
 			boolean change = false;
 			for (IClasspathEntry classpathEntry : classPathEntries) {
 				// fix jar files
 				if (classpathEntry.getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
-					if (classpathEntry.getPath().toString()
+					if ((classpathEntry.getPath().toString()
 							.contains("/backoffice/web/webroot/WEB-INF/lib/backoffice-core-")
 							|| classpathEntry.getPath().toString()
 									.contains("/backoffice/web/webroot/WEB-INF/lib/backoffice-widgets-")
@@ -573,16 +563,14 @@ public class Importer {
 							|| classpathEntry.getPath().toString().contains("/backoffice/web/webroot/WEB-INF/lib/zk")
 							|| classpathEntry.getPath().toString().contains("/backoffice/web/webroot/WEB-INF/lib/zul-")
 							|| classpathEntry.getPath().toString()
-									.contains("/backoffice/web/webroot/WEB-INF/lib/zcommon-")) {
-						if (!classpathEntry.isExported()) {
-							change = true;
-							IClasspathEntry clonedEntry = JavaCore.newLibraryEntry(classpathEntry.getPath(),
-									classpathEntry.getSourceAttachmentPath(),
-									classpathEntry.getSourceAttachmentRootPath(), classpathEntry.getAccessRules(),
-									classpathEntry.getExtraAttributes(), true);
-							entries.add(clonedEntry);
-							continue;
-						}
+									.contains("/backoffice/web/webroot/WEB-INF/lib/zcommon-"))
+							&& (!classpathEntry.isExported())) {
+						change = true;
+						IClasspathEntry clonedEntry = JavaCore.newLibraryEntry(classpathEntry.getPath(),
+								classpathEntry.getSourceAttachmentPath(), classpathEntry.getSourceAttachmentRootPath(),
+								classpathEntry.getAccessRules(), classpathEntry.getExtraAttributes(), true);
+						entries.add(clonedEntry);
+						continue;
 					}
 				}
 				entries.add(classpathEntry);
@@ -597,7 +585,7 @@ public class Importer {
 	private void removeJarFilesThatDontExist(IProgressMonitor monitor, IProject project, IJavaProject javaProject)
 			throws JavaModelException {
 		IClasspathEntry[] classPathEntries = javaProject.getRawClasspath();
-		List<IClasspathEntry> newClassPathEntries = new LinkedList<IClasspathEntry>();
+		List<IClasspathEntry> newClassPathEntries = new LinkedList<>();
 		boolean changedClassPath = false;
 		for (IClasspathEntry classpathEntry : classPathEntries) {
 			// fix jar files
@@ -642,7 +630,6 @@ public class Importer {
 			for (ExtensionHolder extHolder : extensions) {
 				if (extHolder.getName().equalsIgnoreCase(project.getName())) {
 					addMissingProjectDependencies(monitor, project, extHolder);
-					continue;
 				}
 			}
 		}
@@ -658,11 +645,9 @@ public class Importer {
 				boolean found = false;
 				for (IClasspathEntry classpathEntry : classPathEntries) {
 					// fix jar files
-					if (classpathEntry.getEntryKind() == IClasspathEntry.CPE_PROJECT) {
-						if (classpathEntry.getPath().toString().replaceFirst("/", "").equalsIgnoreCase(ext)) {
+					if ((classpathEntry.getEntryKind() == IClasspathEntry.CPE_PROJECT) && (classpathEntry.getPath().toString().replaceFirst("/", "").equalsIgnoreCase(ext))) {
 							found = true;
 							break;
-						}
 					}
 				}
 				if (!found) {
@@ -750,18 +735,14 @@ public class Importer {
 	}
 
 	private void addMembersOfFolderToClasspath(String path, IProgressMonitor monitor, IJavaProject javaProject)
-			throws CoreException, JavaModelException {
+			throws CoreException {
 		IFolder folder = javaProject.getProject().getFolder(path);
 		if (folder != null && folder.exists()) {
 			for (IResource res : folder.members()) {
-				if (res.getFileExtension() != null && res.getFileExtension().equals("jar") && res.exists()) {
-					// check if this Resource is on the classpath
-					if (!javaProject.isOnClasspath(res)) {
-						if (DEBUG)
-							Activator.log("Adding library [" + res.getFullPath() + "] to classpath for project ["
-									+ javaProject.getProject().getName() + "]");
-						FixProjectsUtils.addToClassPath(res, IClasspathEntry.CPE_LIBRARY, javaProject, monitor);
-					}
+				// check if this Resource is on the classpath
+				if ((res.getFileExtension() != null && res.getFileExtension().equals("jar") && res.exists())
+						&& (!javaProject.isOnClasspath(res))) {
+					FixProjectsUtils.addToClassPath(res, IClasspathEntry.CPE_LIBRARY, javaProject, monitor);
 				}
 			}
 		}
@@ -779,11 +760,9 @@ public class Importer {
 		if (classPathEntries != null) {
 			for (IClasspathEntry classpathEntry : classPathEntries) {
 				// fix jar files
-				if (classpathEntry.getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
-					if (classpathEntry.getPath().equals(jar.getFullPath())) {
-						return true;
-					}
-
+				if ((classpathEntry.getEntryKind() == IClasspathEntry.CPE_LIBRARY)
+						&& (classpathEntry.getPath().equals(jar.getFullPath()))) {
+					return true;
 				}
 			}
 
@@ -795,11 +774,21 @@ public class Importer {
 	 * Some extensions have modules that they don't need and can cause compilation
 	 * errors (e.g. hmc modules)
 	 */
-	private void fixModules(IProgressMonitor monitor, ExtensionHolder extension) throws JavaModelException {
-
+	private void fixModules(IProgressMonitor monitor, ExtensionHolder extension) {
 		if (extension.getName().equals("eventtrackingwsaddon")) {
 			extension.setHmcModule(false);
 			FixProjectsUtils.updateExtensionModules(extension, monitor);
+		}
+		// remove broken wst settings file
+		if (extension.getName().equals(BROKEN_WST_SETTINGS_FILE_EXT)) {
+			java.nio.file.Path brokenConfig = Paths.get(extension.getPath(), BROKEN_WST_SETTINGS_FILE);
+			if (Files.exists(brokenConfig)) {
+				try {
+					Files.delete(brokenConfig);
+				} catch (IOException e) {
+					Activator.logError("couldn't delete broken wst config file", e);
+				}
+			}
 		}
 	}
 

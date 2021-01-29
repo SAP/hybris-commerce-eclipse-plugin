@@ -34,10 +34,8 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.core.JavaModelException;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
@@ -52,6 +50,10 @@ import com.hybris.yps.hyeclipse.ExtensionHolder;
 import com.hybris.yps.hyeclipse.utils.FixProjectsUtils;
 
 public class ExtensionModuleTrimmer {
+	
+	private ExtensionModuleTrimmer() {
+	}
+	
 	public static void configureExtension(IProgressMonitor monitor, final ExtensionHolder extension) {
 		// Do actual work here
 		/*
@@ -134,15 +136,7 @@ public class ExtensionModuleTrimmer {
 					// Refresh local project
 					project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
 				}
-			} catch (ParserConfigurationException pce) {
-				Activator.logError("InvocationTargetException", pce);
-			} catch (TransformerException tfe) {
-				Activator.logError("InvocationTargetException", tfe);
-			} catch (IOException ioe) {
-				Activator.logError("InvocationTargetException", ioe);
-			} catch (SAXException sae) {
-				Activator.logError("InvocationTargetException", sae);
-			} catch (CoreException e) {
+			} catch (ParserConfigurationException | SAXException | IOException | CoreException | TransformerException e) {
 				Activator.logError("InvocationTargetException", e);
 			}
 
@@ -152,7 +146,7 @@ public class ExtensionModuleTrimmer {
 	}
 
 	private static void removeSourceFolder(IProgressMonitor monitor, IProject project, String folderName,
-			String classpathEntry) throws CoreException, JavaModelException {
+			String classpathEntry) throws CoreException {
 		IFolder webFolder = project.getFolder(folderName);
 		if (webFolder != null) {
 			webFolder.delete(true, false, monitor);
