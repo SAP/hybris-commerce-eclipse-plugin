@@ -39,7 +39,7 @@ import com.hybris.yps.hyeclipse.utils.FixProjectsUtils;
 public class ExtensionModuleConfigurer {
 
 	private Set<ExtensionHolder> allPlatformExtensions;
-	private Set<IExtensionListViewer> changeListeners = new HashSet<IExtensionListViewer>();
+	private Set<IExtensionListViewer> changeListeners = new HashSet<>();
 	private Shell shell;
 
 	public ExtensionModuleConfigurer(Composite composite) {
@@ -73,7 +73,7 @@ public class ExtensionModuleConfigurer {
 					if (platformHome != null) {
 						monitor.worked(1);
 						allPlatformExtensions = FixProjectsUtils
-								.getAllExtensionsForPlatform(platformHome.getAbsolutePath());
+								.getAllExtensionsForPlatform();
 						monitor.worked(9);
 					} else {
 						allPlatformExtensions = null;

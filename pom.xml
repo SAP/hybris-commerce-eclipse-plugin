@@ -5,11 +5,17 @@
 
 	<groupId>com.hybris.hyeclipse</groupId>
 	<artifactId>com.hybris.hyeclipse.parent</artifactId>
-	<version>1.5.3-SNAPSHOT</version>
+	<version>1.5.6-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>SAP Commerce Cloud - Eclipse plugin (parent)</name>
 
 	<developers>
+		<developer>
+			<email>pawel.wolanski@sap.com</email>
+			<name>Pawel Wolanski</name>
+			<organization>SAP SE</organization>
+			<timezone>CET</timezone>
+		</developer>
 	</developers>
 	<contributors>
 	</contributors>
@@ -19,7 +25,7 @@
 	</prerequisites>
 
 	<properties>
-		<tycho-version>1.4.0</tycho-version>
+		<tycho-version>2.2.0</tycho-version>
 
 		<!-- PROJECT SETTINGS -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -62,8 +68,8 @@
 	            <plugin>
 	                <groupId>org.sonarsource.scanner.maven</groupId>
 	                <artifactId>sonar-maven-plugin</artifactId>
-	                <version>3.4.0.905</version>
-	            </plugin>
+	                <version>3.8.0.2131</version>
+		        </plugin>
 	        </plugins>
 	    </pluginManagement>
 		<plugins>

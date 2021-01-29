@@ -19,8 +19,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
@@ -32,11 +30,13 @@ import java.nio.file.Paths;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
@@ -74,6 +74,8 @@ import de.hybris.bootstrap.typesystem.YTypeSystem;
  */
 public class Activator extends AbstractUIPlugin {
 
+	private static final String PLATFORM = "platform";
+
 	// The plug-in ID
 	public static final String PLUGIN_ID = "com.hybris.hyeclipse.ytypesystem"; //$NON-NLS-1$
 
@@ -90,24 +92,19 @@ public class Activator extends AbstractUIPlugin {
 	private Set<? extends YType> allTypes;
 	private List<String> allTypeNames;
 
-	/**
-	 * The constructor
-	 */
-	public Activator() {
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.
 	 * BundleContext)
 	 */
+	@Override
 	public void start(BundleContext bundleContext) throws Exception {
 		super.start(bundleContext);
-		plugin = this;
+		plugin = this; //NOSONAR
 
 		if (getPlatformHome() != null) {
-			loadBootstrapBundle(bundleContext);
+			loadBootstrapBundle();
 		}
 	}
 
@@ -117,8 +114,9 @@ public class Activator extends AbstractUIPlugin {
 	 * @see
 	 * org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
 	 */
+	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
-		plugin = null;
+		plugin = null; //NOSONAR
 		super.stop(bundleContext);
 	}
 
@@ -157,7 +155,7 @@ public class Activator extends AbstractUIPlugin {
 			Preferences preferences = InstanceScope.INSTANCE.getNode("com.hybris.hyeclipse.preferences");
 			String platformHomeStr = preferences.get("platform_home", null);
 			if (platformHomeStr == null) {
-				IProject platformProject = ResourcesPlugin.getWorkspace().getRoot().getProject("platform");
+				IProject platformProject = ResourcesPlugin.getWorkspace().getRoot().getProject(PLATFORM);
 				IPath platformProjectPath = platformProject.getLocation();
 				if (platformProjectPath != null) {
 					setPlatformHome(platformProjectPath.toFile());
@@ -184,7 +182,7 @@ public class Activator extends AbstractUIPlugin {
 		}
 	}
 
-	public void loadBootstrapBundle(BundleContext context) {
+	public void loadBootstrapBundle() {
 		
 		List<String> items = Arrays.asList("ybootstrap/log4j-1.2.17.jar", "ybootstrap/commons-collections-3.2.2.jar", "ybootstrap/META-INF");
 		
@@ -221,21 +219,24 @@ public class Activator extends AbstractUIPlugin {
 
 	private File entryToFile(String url) throws IOException, URISyntaxException {
 		Bundle bundle = getDefault().getBundle();
-		return Paths.get(FileLocator.toFileURL(bundle.getEntry(url)).toURI()).toFile();
+		URL bundleUrl = bundle.getEntry(url);
+		URL fileUrl = FileLocator.toFileURL(bundleUrl);
+		
+		return new File(new URI(fileUrl.getProtocol(), fileUrl.getPath(), null));
 	}
 
 	public SystemConfig getSystemConfig() {
 		if (systemConfig == null) {
 
-			Hashtable<String, String> props = null;
+			Map<String, String> props = null;
 			try {
 				props = loadProperties(getPlatformHome());
 				Field singletonField = SystemConfig.class.getDeclaredField("singleton");
-				singletonField.setAccessible(true);
-				singletonField.set(this, null);
+				singletonField.setAccessible(true); //NOSONAR
+				singletonField.set(this, null);     //NOSONAR
 				Field instanceField = PlatformConfig.class.getDeclaredField("instance");
-				instanceField.setAccessible(true);
-				instanceField.set(this, null);
+				instanceField.setAccessible(true);  //NOSONAR
+				instanceField.set(this, null);      //NOSONAR
 			} catch (NoSuchFieldException | SecurityException | IOException | IllegalArgumentException
 					| IllegalAccessException e) {
 				logError("(NoSuchField|IO|Security|IllegalArgument|IllegalAccess)Exception", e);
@@ -249,7 +250,7 @@ public class Activator extends AbstractUIPlugin {
 						status);
 			}
 
-			systemConfig = SystemConfig.getInstanceByProps(props);
+			systemConfig = SystemConfig.getInstanceByProps(new Hashtable<String, String>(props));
 		}
 		return systemConfig;
 	}
@@ -289,9 +290,9 @@ public class Activator extends AbstractUIPlugin {
 	}
 
 	public String getConfigDirectory() {
-		SystemConfig systemConfig = getPlatformConfig().getSystemConfig();
-		if (systemConfig != null) {
-			return systemConfig.getConfigDir().getAbsolutePath();
+		SystemConfig sysConfig = getPlatformConfig().getSystemConfig();
+		if (sysConfig != null) {
+			return sysConfig.getConfigDir().getAbsolutePath();
 		}
 		return null;
 	}
@@ -309,9 +310,9 @@ public class Activator extends AbstractUIPlugin {
 
 	public List<String> getAllTypeNames() {
 		if (allTypeNames == null) {
-			Set<? extends YType> allTypes = getAllTypes();
-			allTypeNames = new ArrayList<String>(allTypes.size());
-			for (YType type : allTypes) {
+			Set<? extends YType> types = getAllTypes();
+			allTypeNames = new ArrayList<>(types.size());
+			for (YType type : types) {
 				allTypeNames.add(type.getCode());
 			}
 		}
@@ -324,7 +325,7 @@ public class Activator extends AbstractUIPlugin {
 
 	public List<String> getAllAttributeNames(String typeName) {
 		Set<YAttributeDescriptor> typeAttributes = getTypeSystem().getAttributes(typeName);
-		List<String> allAttributeNames = new ArrayList<String>(typeAttributes.size());
+		List<String> allAttributeNames = new ArrayList<>(typeAttributes.size());
 		for (YAttributeDescriptor attribute : typeAttributes) {
 			allAttributeNames.add(attribute.getQualifier());
 		}
@@ -349,7 +350,7 @@ public class Activator extends AbstractUIPlugin {
 	}
 
 	public Set<ExtensionHolder> getAllExtensionsForPlatform() {
-		Set<ExtensionHolder> allExtensions = new HashSet<ExtensionHolder>();
+		Set<ExtensionHolder> allExtensions = new HashSet<>();
 		List<ExtensionInfo> allExtensionInfos = getPlatformConfig().getExtensionInfosInBuildOrder();
 		for (ExtensionInfo extension : allExtensionInfos) {
 			// sanity check, should never be null
@@ -399,20 +400,18 @@ public class Activator extends AbstractUIPlugin {
 
 			File libDir = new File(path, "lib");
 			if (libDir.exists() && libDir.isDirectory()) {
-				File[] files = libDir.listFiles(new FilenameFilter() {
-					public boolean accept(File dir, String name) {
-						return name.toLowerCase(Locale.ENGLISH).endsWith(".jar");
-					}
-				});
+				File[] files = libDir.listFiles((File dir, String name) -> 
+					name.toLowerCase(Locale.ENGLISH).endsWith(".jar")
+				);
 				for (File file : files) {
 					extHolder.getJarFiles().add(file.getName());
 				}
 			}
 
 			if (!extension.getAllRequiredExtensionNames().isEmpty()) {
-				List<String> extensions = new LinkedList(extension.getAllRequiredExtensionNames());
-				if (!extensions.contains("platform")) {
-					extensions.add("platform");
+				List<String> extensions = new LinkedList<>(extension.getAllRequiredExtensionNames());
+				if (!extensions.contains(PLATFORM)) {
+					extensions.add(PLATFORM);
 				}
 				extHolder.setDependentExtensions(extensions);
 			}
@@ -422,8 +421,8 @@ public class Activator extends AbstractUIPlugin {
 		return extHolder;
 	}
 
-	private static Hashtable<String, String> loadProperties(File platformHome)
-			throws FileNotFoundException, IOException {
+	private static Map<String, String> loadProperties(File platformHome)
+			throws IOException {
 
 		File file = new File(platformHome, "active-role-env.properties");
 		if (!file.exists()) {
@@ -435,7 +434,7 @@ public class Activator extends AbstractUIPlugin {
 			}
 		}
 
-		Hashtable<String, String> props = new Hashtable<String, String>();
+		Map<String, String> props = new HashMap<>();
 		props.put("platformhome", platformHome.getAbsolutePath());
 		Properties properties = new Properties();
 		try (InputStream in = new FileInputStream(file.getAbsolutePath())) {
@@ -469,9 +468,9 @@ public class Activator extends AbstractUIPlugin {
 	public void log(String msg, Exception e) {
 		Status status = null;
 		if (e != null) {
-			status = new Status(Status.ERROR, Activator.PLUGIN_ID, Status.ERROR, msg, e);
+			status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, IStatus.ERROR, msg, e);
 		} else {
-			status = new Status(Status.INFO, Activator.PLUGIN_ID, Status.OK, msg, e);
+			status = new Status(IStatus.INFO, Activator.PLUGIN_ID, IStatus.OK, msg, e);
 		}
 		getLog().log(status);
 	}

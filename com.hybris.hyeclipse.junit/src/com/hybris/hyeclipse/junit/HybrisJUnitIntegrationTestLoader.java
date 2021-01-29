@@ -111,8 +111,8 @@ public class HybrisJUnitIntegrationTestLoader implements ITestLoader {
 			int modifiers= setup.getModifiers();
 			if (setup.getReturnType() == Test.class && Modifier.isPublic(modifiers) && Modifier.isStatic(modifiers))
 				return true;
-		} catch (SecurityException e1) {
-		} catch (NoSuchMethodException e) {
+		} catch (SecurityException | NoSuchMethodException e1) {
+			;
 		}
 		return false;
 	}
