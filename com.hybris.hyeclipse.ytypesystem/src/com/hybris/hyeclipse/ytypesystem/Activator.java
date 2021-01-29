@@ -21,10 +21,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
@@ -231,14 +228,7 @@ public class Activator extends AbstractUIPlugin {
 			Map<String, String> props = null;
 			try {
 				props = loadProperties(getPlatformHome());
-				Field singletonField = SystemConfig.class.getDeclaredField("singleton");
-				singletonField.setAccessible(true); //NOSONAR
-				singletonField.set(this, null);     //NOSONAR
-				Field instanceField = PlatformConfig.class.getDeclaredField("instance");
-				instanceField.setAccessible(true);  //NOSONAR
-				instanceField.set(this, null);      //NOSONAR
-			} catch (NoSuchFieldException | SecurityException | IOException | IllegalArgumentException
-					| IllegalAccessException e) {
+			} catch (SecurityException | IOException | IllegalArgumentException e) {
 				logError("(NoSuchField|IO|Security|IllegalArgument|IllegalAccess)Exception", e);
 			} catch (java.lang.UnsupportedClassVersionError err) {
 				final Status status = new Status(IStatus.ERROR, Activator.PLUGIN_ID,

@@ -22,8 +22,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collection;
@@ -196,7 +194,7 @@ public class Importer {
 		IProjectDescription description = ResourcesPlugin.getWorkspace().loadProjectDescription(path);
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(description.getName());
 		project.create(description, progress.newChild(30));
-		fixProjectCompilerSettings(monitor, project, version);
+		fixProjectCompilerSettings(project, version);
 		project.open(progress.newChild(30));
 		FixProjectsUtils.removeBuildersFromProject(progress.newChild(30), project);
 		addHybrisNature(project, progress.newChild(30));
@@ -208,7 +206,7 @@ public class Importer {
 		IProjectDescription description = createDescription(path, name);
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(name);
 		project.create(description, progress.newChild(30));
-		fixProjectCompilerSettings(monitor, project, version);
+		fixProjectCompilerSettings(project, version);
 		project.open(progress.newChild(30));
 		FixProjectsUtils.removeBuildersFromProject(progress.newChild(30), project);
 		addHybrisNature(project, progress.newChild(30));
@@ -254,32 +252,51 @@ public class Importer {
 		return ret;
 	}
 
-	private void fixProjectCompilerSettings(IProgressMonitor monitor, IProject project, double platformVersion) {
+	private void fixProjectCompilerSettings(IProject project, double platformVersion) {
+		// don't fix project or custom extensions
 		List<String> compileProblems = Arrays.asList("org.eclipse.jdt.core.compiler.problem.autoboxing",
 				"org.eclipse.jdt.core.compiler.problem.emptyStatement",
 				"org.eclipse.jdt.core.compiler.problem.unusedLocal",
 				"org.eclipse.jdt.core.compiler.problem.unnecessaryTypeCheck",
 				"org.eclipse.jdt.core.compiler.problem.undocumentedEmptyBlock");
-		File settingsFile = project.getLocation().toFile().toPath().resolve(SETTINGS_FILE).toFile();
-		final StringBuilder strBuilder = new StringBuilder();
-		String s;
-		boolean fileHasBeenModified = false;
-		// don't fix project or custom extensions
-		if ((FixProjectsUtils.isAPlatformExtension(project) && !FixProjectsUtils.isATemplateExtension(project))
-				&& (settingsFile.exists())) {
-//				try(Stream<String> lines = Files.lines(settingsFilePath); PrintWriter out = new PrintWriter(outSettingsFilePath.toFile())) {
-//					lines.map(l -> compileProblems.stream().anyMatch(p -> l.startsWith(p))).forEachOrdered(out::println);
-//					lines.filter(l -> compileProblems.stream().anyMatch(p -> l.startsWith(p))).filter(l -> l.endsWith("error"));
-//				}
-			try (FileReader fr = new FileReader(settingsFile); BufferedReader br = new BufferedReader(fr);) {
-				while ((s = br.readLine()) != null) {
-					boolean thisLineChanged = false;
-					for (String compileProblem : compileProblems) {
-						if ((s.startsWith(compileProblem)) && (s.endsWith("error"))) {
-							fileHasBeenModified = true;
-							thisLineChanged = true;
-							strBuilder.append(s.replace("error", "warning")).append("\n");
-							break;
+		
+		if (FixProjectsUtils.isAPlatformExtension(project) && !FixProjectsUtils.isATemplateExtension(project)) {
+			
+			File settingsFile = project.getLocation().toFile().toPath().resolve(SETTINGS_FILE).toFile();
+			if (settingsFile.exists()) {
+
+				String s;
+				final StringBuilder strBuilder = new StringBuilder();
+				boolean fileHasBeenModified = false;
+				try (FileReader fr = new FileReader(settingsFile); BufferedReader br = new BufferedReader(fr);) {
+					while ((s = br.readLine()) != null) {
+						boolean thisLineChanged = false;
+						for (String compileProblem : compileProblems) {
+							if (s.startsWith(compileProblem)) {
+								if (s.endsWith("error")) {
+									fileHasBeenModified = true;
+									thisLineChanged = true;
+									strBuilder.append(s.replaceAll("error", "warning")).append("\n");
+									break;
+								}
+							}
+							// make sure all 1.7 settins are substitute for 1.8
+							// for versions 5.6 and higher
+							if (platformVersion >= JVM8_VERSION && s.indexOf("1.7") > 0) {
+								fileHasBeenModified = true;
+								thisLineChanged = true;
+								strBuilder.append(s.replaceAll("1\\.7", "1\\.8")).append("\n");
+								break;
+							}
+							if (platformVersion >= JVM11_VERSION) {
+								fileHasBeenModified = true;
+								thisLineChanged = true;
+								strBuilder.append(s.replaceAll("1\\.(7|8)", "11")).append("\n");
+								break;
+							}
+						}
+						if (!thisLineChanged) {
+							strBuilder.append(s).append("\n");
 						}
 					}
 					// make sure all 1.7 settings are substitute for 1.8
@@ -394,7 +411,9 @@ public class Importer {
 
 			try {
 
-				if (!project.isOpen() || (!FixProjectsUtils.isAHybrisExtension(project)) || (!project.hasNature(SPRING_NATURE_ID))) {
+				if (!project.isOpen() ||
+						!FixProjectsUtils.isAHybrisExtension(project) ||
+						!project.hasNature(SPRING_NATURE_ID)) {
 					continue;
 				}
 
@@ -458,8 +477,10 @@ public class Importer {
 
 	private String[] getAllSpringXmlFiles(IProject project) {
 		String projectName = project.getName();
-		return new String[] { "resources/" + projectName + "-spring.xml",
-				"web/webroot/WEB-INF/" + projectName + "-web-spring.xml", };
+		return new String[] { //
+				"resources/" + projectName + "-spring.xml", //
+				"web/webroot/WEB-INF/" + projectName + "-web-spring.xml", //
+		};
 	}
 
 	/**
@@ -477,11 +498,10 @@ public class Importer {
 			boolean found = false;
 			for (IClasspathEntry classpathEntry : classPathEntries) {
 				// fix missing runtime
-				if (classpathEntry.getEntryKind() == IClasspathEntry.CPE_CONTAINER) {
-					if (classpathEntry.getPath().toString().startsWith("org.eclipse.jdt.launching.JRE_CONTAINER")) {
-						found = true;
-						break;
-					}
+				if (classpathEntry.getEntryKind() == IClasspathEntry.CPE_CONTAINER && 
+					classpathEntry.getPath().toString().startsWith("org.eclipse.jdt.launching.JRE_CONTAINER")) {
+					found = true;
+					break;
 				}
 			}
 
@@ -513,8 +533,8 @@ public class Importer {
 
 			IProject acceleratorstorefrontcommonsProject = ResourcesPlugin.getWorkspace().getRoot()
 					.getProject("acceleratorstorefrontcommons");
-			if (acceleratorstorefrontcommonsProject != null && acceleratorstorefrontcommonsProject.exists()
-					&& (!javaProject.isOnClasspath(acceleratorstorefrontcommonsProject))) {
+			if (acceleratorstorefrontcommonsProject != null && acceleratorstorefrontcommonsProject.exists() && 
+				!javaProject.isOnClasspath(acceleratorstorefrontcommonsProject)) {
 				FixProjectsUtils.addToClassPath(acceleratorstorefrontcommonsProject, IClasspathEntry.CPE_PROJECT,
 						javaProject, monitor);
 			}
@@ -523,10 +543,10 @@ public class Importer {
 		if (projectName.equals("stocknotificationaddon")) {
 			IProject notificationfacadesProject = ResourcesPlugin.getWorkspace().getRoot()
 					.getProject("notificationfacades");
-			if (notificationfacadesProject != null && notificationfacadesProject.exists()
-					&& (!javaProject.isOnClasspath(notificationfacadesProject))) {
-				FixProjectsUtils.addToClassPath(notificationfacadesProject, IClasspathEntry.CPE_PROJECT, javaProject,
-						monitor);
+			if (notificationfacadesProject != null && notificationfacadesProject.exists() &&
+				!javaProject.isOnClasspath(notificationfacadesProject)) {
+				FixProjectsUtils.addToClassPath(notificationfacadesProject, IClasspathEntry.CPE_PROJECT,
+						javaProject, monitor);
 			}
 		}
 	}
