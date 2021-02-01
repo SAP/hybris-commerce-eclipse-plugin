@@ -3,5 +3,4 @@
 .classpath
 *.class
 */bin/*
-*/target/*
-
+*/target/**
