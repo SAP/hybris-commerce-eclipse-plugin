@@ -27,7 +27,7 @@ import com.hybris.impexformatter.Activator;
 
 public class Formatter {
 
-	public final static String HEADER_MODE = "(UPDATE|INSERT_UPDATE|UPDATE|INSERT|REMOVE|$START_USERRIGHTS).*";
+	public final static String HEADER_MODE = "(UPDATE|INSERT_UPDATE|INSERT|REMOVE|$START_USERRIGHTS).*";
 	public final static List<String> HEADER_MODE_PROPOSALS = Lists.newArrayList("INSERT_UPDATE","UPDATE", "INSERT", "REMOVE");
 	
 	public final static List<String> INSTRUCTION_CLASS_PROPOSALS = Lists.newArrayList("impex.", "if:", "endif:", "afterEach:", "afterEach:end", "beforeEach:", "beforeEach:end");
