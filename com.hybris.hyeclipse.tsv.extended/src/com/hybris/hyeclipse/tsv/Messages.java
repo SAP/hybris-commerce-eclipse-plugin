@@ -8,6 +8,8 @@ public class Messages extends NLS {
 	public static String RunTSVWizard_taskCreating;
 	public static String RunTSVWizard_taskOpening;
 	public static String RunTSVWizard_TSVTitle;
+	public static String TSVExtendedHandlerWrapper_classLoaderNullError;
+	public static String TSVExtendedHandlerWrapper_runError;
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
