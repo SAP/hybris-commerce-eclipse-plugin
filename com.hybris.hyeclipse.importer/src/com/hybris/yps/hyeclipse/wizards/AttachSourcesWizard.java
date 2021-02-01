@@ -23,6 +23,7 @@ import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.Wizard;
 
+import com.hybris.yps.hyeclipse.Activator;
 import com.hybris.yps.hyeclipse.utils.ProjectSourceUtil;
 
 /**
@@ -38,7 +39,7 @@ public class AttachSourcesWizard extends Wizard
 	@Override
 	public String getWindowTitle()
 	{
-		return "Attaching  Sources";
+		return Messages.AttachSourcesWizard_title;
 	}
 
 	@Override
@@ -62,8 +63,8 @@ public class AttachSourcesWizard extends Wizard
 			MessageDialog
 			.openError(
 					getShell(),
-					"Unreadable or non-existing file specified",
-					"Please make sure the archive you selected is readable to the current user and exists." );
+					Messages.AttachSourcesWizard_missingFile,
+					Messages.AttachSourcesWizard_missingFile_long );
 			// and ... abort
 			return false;
 		}
@@ -76,10 +77,11 @@ public class AttachSourcesWizard extends Wizard
 			new ProgressMonitorDialog( getContainer().getShell() ).run( true, false, runner );
 
 		}
-		catch( InvocationTargetException | InterruptedException e )
+		catch( InvocationTargetException | InterruptedException e ) // NOSONAR
 		{
-			Throwable t = (e instanceof InvocationTargetException) ? e.getCause() : e;
-			MessageDialog.openError( getShell(), "Error attaching sources", t.toString() );
+			Activator.logError(Messages.AttachSourcesWizard_errorMsg, e);
+			MessageDialog.openError( getShell(), Messages.AttachSourcesWizard_errorMsg_long, e.getMessage() );
+			return false;
 		}
 		
 		return true;

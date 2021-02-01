@@ -10,6 +10,11 @@
 		<version>1.5.6-SNAPSHOT</version>
 	</parent>
 	
+	<properties>
+		<!--  emf generated plugin -->
+		<sonar.skip>true</sonar.skip>
+	</properties>
+	
 	<artifactId>com.hybris.hyeclipse.emf.beans</artifactId>
 	<packaging>eclipse-plugin</packaging>
 	<name>SAP Commerce Cloud - Eclipse plugin beans model</name>
