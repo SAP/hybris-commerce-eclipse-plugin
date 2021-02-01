@@ -23,6 +23,7 @@ import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.Wizard;
 
+import com.hybris.yps.hyeclipse.Activator;
 import com.hybris.yps.hyeclipse.utils.WorkingSetsUtils;
 
 /**
@@ -34,7 +35,7 @@ public class CreateWorkingSetWizard extends Wizard {
 
 	@Override
 	public String getWindowTitle() {
-		return "Create Working Sets";
+		return Messages.CreateWorkingSetWizard_title;
 	}
 
 	@Override
@@ -51,7 +52,7 @@ public class CreateWorkingSetWizard extends Wizard {
 	@Override
 	public boolean performFinish() {
 		if (!page.validatePage()) {
-			MessageDialog.openError(getShell(), "Not option selected", "Select at least one option");
+			MessageDialog.openError(getShell(), Messages.CreateWorkingSetWizard_noOptionSelected, Messages.CreateWorkingSetWizard_noOptionSelected_long);
 			// and ... abort
 			return false;
 		}
@@ -73,9 +74,10 @@ public class CreateWorkingSetWizard extends Wizard {
 
 		try {
 			new ProgressMonitorDialog(getContainer().getShell()).run(true, false, importer);
-		} catch (InvocationTargetException | InterruptedException e) {
-			Throwable t = (e instanceof InvocationTargetException) ? e.getCause() : e;
-			MessageDialog.openError(this.page.getControl().getShell(), "Error", t.toString());
+		} catch (InvocationTargetException | InterruptedException e) {  // NOSONAR
+			Activator.logError(Messages.CreateWorkingSetWizard_importFailed, e);
+			MessageDialog.openError(this.page.getControl().getShell(), Messages.CreateWorkingSetWizard_importFailed, e.getMessage());
+			return false;
 		}
 		return true;
 	}

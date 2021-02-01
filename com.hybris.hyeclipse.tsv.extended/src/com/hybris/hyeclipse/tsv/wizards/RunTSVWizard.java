@@ -46,6 +46,8 @@ import org.eclipse.ui.ide.IDE;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.hybris.hyeclipse.tsv.Activator;
+import com.hybris.hyeclipse.tsv.Messages;
 import com.hybris.hyeclipse.tsv.editors.TSVResultsInput;
 import com.hybris.hyeclipse.tsv.editors.TSVResultsStorage;
 import com.hybris.ps.tsv.main.CmdLineOptions;
@@ -58,10 +60,10 @@ public class RunTSVWizard extends Wizard implements INewWizard {
 	private RunTSVWizardPage page;
 	private ISelection selection;
 	private String resultsString;
-	
-	private static final String TSV_SPRING_CONFIG = "tsv-spring-config.xml";
-    private static final String TSV_MAIN_BEAN = "tsvMain";
-    private static final String TSV_OPTIONS_BEAN = "cmdLineOptions";
+
+	private static final String TSV_SPRING_CONFIG = "tsv-spring-config.xml"; //$NON-NLS-1$
+	private static final String TSV_MAIN_BEAN = "tsvMain"; //$NON-NLS-1$
+	private static final String TSV_OPTIONS_BEAN = "cmdLineOptions"; //$NON-NLS-1$
 
 	public RunTSVWizard() {
 		super();
@@ -74,112 +76,106 @@ public class RunTSVWizard extends Wizard implements INewWizard {
 	}
 
 	public boolean performFinish() {
-		
+
 		final File scanDir = page.getScanDirectory();
 		IRunnableWithProgress op = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException {
 				try {
 					doFinish(scanDir, monitor);
-				}
-				catch (CoreException e) {
+				} catch (CoreException e) {
 					throw new InvocationTargetException(e);
-				}
-				finally {
+				} finally {
 					monitor.done();
 				}
 			}
 		};
-		
+
 		try {
 			getContainer().run(true, false, op);
-		}
-		catch (InterruptedException e) {
-			return false;
-		}
-		catch (InvocationTargetException e) {
-			Throwable realException = e.getTargetException();
-			MessageDialog.openError(getShell(), "Error", realException.getMessage());
+		} catch (InterruptedException | InvocationTargetException e) { // NOSONAR
+			Activator.logError(Messages.RunTSVWizard_error, e);
+			MessageDialog.openError(getShell(), Messages.RunTSVWizard_error, e.getMessage());
 			return false;
 		}
 		return true;
 	}
-	
+
 	/**
 	 * The worker method...
 	 */
 	private void doFinish(File scanDir, IProgressMonitor monitor) throws CoreException {
-		
-		monitor.beginTask("Creating analysis file", 3);
+
+		monitor.beginTask(Messages.RunTSVWizard_taskCreating, 3);
 		monitor.worked(1);
-		
+
 		try {
 			runTSVAnalysis(scanDir);
 			monitor.worked(1);
-			
-			monitor.setTaskName("Opening results file...");
+
+			monitor.setTaskName(Messages.RunTSVWizard_taskOpening);
 			getShell().getDisplay().asyncExec(new Runnable() {
 				public void run() {
-					
+
 					IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-					
+
 					try {
-						IStorage storage = new TSVResultsStorage(getResultsString(), new Path("garbage"));
-						IStorageEditorInput input = new TSVResultsInput(storage, "TSV Analysis");
-						IDE.openEditor(page, input, "com.hybris.hyeclipse.tsv.editors.TSVEditor", true);
-					}
-					catch (PartInitException e) {
+						IStorage storage = new TSVResultsStorage(getResultsString(), new Path("garbage")); //$NON-NLS-1$
+						IStorageEditorInput input = new TSVResultsInput(storage, Messages.RunTSVWizard_TSVTitle);
+						IDE.openEditor(page, input, "com.hybris.hyeclipse.tsv.editors.TSVEditor", true); //$NON-NLS-1$
+					} catch (PartInitException e) {
 						e.printStackTrace();
 					}
 				}
 			});
 			monitor.worked(1);
+		} catch (RuntimeException re) {
+			Activator.logError(Messages.RunTSVWizard_error, re); // $NON-NLS-1$
+			MessageDialog.openError(getShell(), Messages.RunTSVWizard_error, re.getMessage());
 		}
-		catch (RuntimeException re) {
-			System.out.println(re.getMessage());
-		}
-		
+
 	}
-	
+
 	private void runTSVAnalysis(File scanDir) {
-		
-		ApplicationContext appContext = new ClassPathXmlApplicationContext(new String[]{ TSV_SPRING_CONFIG });
+
+		ApplicationContext appContext = new ClassPathXmlApplicationContext(new String[] { TSV_SPRING_CONFIG });
 		TSVMain tsvMain = (TSVMain) appContext.getBean(TSV_MAIN_BEAN);
 		CmdLineOptions options = (CmdLineOptions) appContext.getBean(TSV_OPTIONS_BEAN);
 		options.setErrorsOnly(true);
-		
+
 		List<File> inputFiles = new ArrayList<File>();
 		inputFiles.add(scanDir);
 		try {
 			List<File> files = tsvMain.getFileService().locateFiles(inputFiles);
 			IRuleSet ruleSet = tsvMain.getRuleService().loadDefaultRules();
-			
+
 			for (File file : files) {
-				tsvMain.getTestExecutionService().execute(file,  ruleSet);
-	        }
-			
+				tsvMain.getTestExecutionService().execute(file, ruleSet);
+			}
+
 			List<IResult> results = tsvMain.getResultProvider().getResults();
-			
+
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			tsvMain.getOutputGenerator().generate(baos, OutputFormat.XML, results);
 			byte[] bytes = baos.toByteArray();
-	        ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-	        setResultsString(fromStream(bais));
+			ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+			setResultsString(fromStream(bais));
+		} catch (Exception e) {
+			Activator.logError(Messages.RunTSVWizard_error, e);
+			MessageDialog.openError(getShell(), Messages.RunTSVWizard_error, e.getMessage());
 		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-		
+
 	}
 
 	/**
-	 * We will accept the selection in the workbench to see if
-	 * we can initialize from it.
+	 * We will accept the selection in the workbench to see if we can initialize
+	 * from it.
+	 * 
 	 * @see IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
 	 */
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		this.selection = selection;
 	}
-	
+
 	public String getResultsString() {
 		return resultsString;
 	}
@@ -187,18 +183,17 @@ public class RunTSVWizard extends Wizard implements INewWizard {
 	public void setResultsString(String resultsString) {
 		this.resultsString = resultsString;
 	}
-    
-    public static String fromStream(InputStream in) throws IOException
-	{
-	    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-	    StringBuilder out = new StringBuilder();
-	    String newLine = System.getProperty("line.separator");
-	    String line;
-	    while ((line = reader.readLine()) != null) {
-	        out.append(line);
-	        out.append(newLine);
-	    }
-	    return out.toString();
+
+	public static String fromStream(InputStream in) throws IOException {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+		StringBuilder out = new StringBuilder();
+		String newLine = System.getProperty("line.separator"); //$NON-NLS-1$
+		String line;
+		while ((line = reader.readLine()) != null) {
+			out.append(line);
+			out.append(newLine);
+		}
+		return out.toString();
 	}
-	
+
 }

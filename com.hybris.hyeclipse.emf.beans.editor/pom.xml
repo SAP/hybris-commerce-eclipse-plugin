@@ -9,15 +9,14 @@
 		<artifactId>com.hybris.hyeclipse.parent</artifactId>
 		<version>1.5.6-SNAPSHOT</version>
 	</parent>
-	
+
+	<properties>
+		<!--  emf generated plugin -->
+		<sonar.skip>true</sonar.skip>
+	</properties>	
 	<artifactId>com.hybris.hyeclipse.emf.beans.editor</artifactId>
 	<packaging>eclipse-plugin</packaging>
 	<name>SAP Commerce Cloud - Eclipse plugin beans editor plugin</name>
 	<description>Beans Editor and Wizard Plugin</description>
-	<organization>
-		<url>https://wiki.hybris.com/display/hyps</url>
-		<name>SAP Expert Services</name>
-	</organization>
-	<url>https://wiki.hybris.com/display/hyps/SAP+Hybris+Commerce+development+tools+for+Eclipse</url>
 </project>
 

@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.hybris.hyeclipse.platform;
 
+import static org.eclipse.core.runtime.IStatus.ERROR;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -67,7 +69,7 @@ public class PlatformHolder {
 			currentPlatform = new Platform(platformJavaProject);
 		}
 		catch (CoreException e) {
-			log.log(new Status(Status.ERROR, log.getBundle().getSymbolicName(), "Failed to update platform", e));
+			log.log(new Status(ERROR, log.getBundle().getSymbolicName(), "Failed to update platform", e));
 		}
 	}
 	
@@ -99,7 +101,7 @@ public class PlatformHolder {
 	
 	void projectAdded(final IProject project) {
 		if (isPlatformAvailable() && Platform.isPlatformProject(project)) {
-			log.log(new Status(Status.ERROR, log.getBundle().getSymbolicName(), "Platform project added while platform already available. There can only be ONE."));
+			log.log(new Status(ERROR, log.getBundle().getSymbolicName(), "Platform project added while platform already available. There can only be ONE."));
 		}
 	}
 
@@ -125,7 +127,7 @@ public class PlatformHolder {
 				});
 			}
 		} catch (CoreException e) {
-			log.log(new Status(Status.ERROR, log.getBundle().getSymbolicName(), "Error when handling IResourceChangedEvent", e));
+			log.log(new Status(ERROR, log.getBundle().getSymbolicName(), "Error when handling IResourceChangedEvent", e));
 		}
 	}
 
