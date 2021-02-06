@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.hybris.yps.hyeclipse.utils;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
@@ -27,6 +26,7 @@ import java.nio.file.Paths;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,8 +34,8 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
-import org.eclipse.core.internal.resources.ProjectDescription;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -59,13 +59,13 @@ import com.hybris.yps.hyeclipse.ExtensionHolder;
 
 public class Importer {
 
+	private static final String WARNING_MSG = "warning";
 	private static final String CONFIG_FOLDER = "config";
 	private static Activator plugin = Activator.getDefault();
 	private static final boolean DEBUG = Activator.getDefault().isDebugging();
 
 	private static final String HYBRIS_NATURE_ID = "com.hybris.hyeclipse.tsv.hybris";
 	private static final String SPRING_NATURE_ID = "org.springframework.ide.eclipse.core.springnature";
-	private static final String SETTINGS_FILE = ".settings/org.eclipse.jdt.core.prefs";
 	private static final String BROKEN_WST_SETTINGS_FILE = ".settings/org.eclipse.wst.validation.prefs";
 	private static final String BROKEN_WST_SETTINGS_FILE_EXT = "promotionengineservices";
 	private static final String SPRINGBEANS_FILE = ".springBeans";
@@ -85,7 +85,7 @@ public class Importer {
 		closeProjectsThatAreNotReferenced(monitor, platformHome);
 
 		if (fixClasspath) {
-			fixMissingProjectDependencies(monitor, platformHome);
+			fixMissingProjectDependencies(monitor);
 			fixMissingProjectResources(monitor, platformHome);
 			fixProjectClasspaths(monitor);
 		}
@@ -154,77 +154,53 @@ public class Importer {
 	}
 
 	private void closeProjectsThatAreNotReferenced(IProgressMonitor monitor, File platformHome) {
-		if (DEBUG)
+		if (DEBUG) {
 			Activator.log("Retrieving projects not in localextensions using platformhome ["
 					+ platformHome.getAbsolutePath() + "]");
+		}
+		
 		Set<IProject> projectsToClose = FixProjectsUtils.getProjectsNotInLocalExtensionsFile();
+		
+		Set<String> referencingProjects = projectsToClose.stream().flatMap(p -> Arrays.stream(p.getReferencingProjects())).map(IProject::getName).collect(Collectors.toSet());
 
 		// close projects from the above set that are not referenced by a
 		// project that is not scheduled for closing
 		projectsToClose.stream().forEach(p -> {
-
-			// check if this project is a dependency of another project that
-			// is not scheduled to be closed
-			IProject[] referencingProjects = p.getReferencingProjects();
-			boolean abortClose = false;
-			if (referencingProjects != null) {
-				for (IProject proj : referencingProjects) {
-					if (!projectsToClose.contains(proj)) {
-						if (DEBUG)
-							Activator.log("Aborting close of project [" + p.getName()
-									+ "] because it is referenced by [" + proj.getName() + "]");
-						abortClose = true;
-					}
-				}
-			}
-
-			// close projects
-			if (!abortClose) {
-				if (DEBUG)
-					Activator.log("Closing project [" + p.getName() + "]");
+			
+			if (!referencingProjects.contains(p.getName())) {
 				try {
 					p.close(monitor);
 				} catch (CoreException e) {
 					Activator.logError(MessageFormat.format("could not close project [{0}]", p.getName()), e);
-				}
+				}				
 			}
 		});
 	}
 
 	private IProject importProject(IProgressMonitor monitor, IPath path, double version) throws CoreException {
-		final SubMonitor progress = SubMonitor.convert(monitor, 120);
+		final SubMonitor progress = SubMonitor.convert(monitor, 12);
 		IProjectDescription description = ResourcesPlugin.getWorkspace().loadProjectDescription(path);
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(description.getName());
-		project.create(description, progress.newChild(30));
-		fixProjectCompilerSettings(project, version);
-		project.open(progress.newChild(30));
-		FixProjectsUtils.removeBuildersFromProject(progress.newChild(30), project);
-		addHybrisNature(project, progress.newChild(30));
+		project.create(description, progress.newChild(3));
+		IJavaProject javaProject = JavaCore.create(project);
+		fixProjectCompilerSettings(project, javaProject, version);
+		project.open(progress.newChild(3));
+		FixProjectsUtils.removeBuildersFromProject(progress.newChild(3), project);
+		addHybrisNature(project, progress.newChild(3));
 		return project;
 	}
 	
 	private IProject createProject(IProgressMonitor monitor, IPath path, double version, String name) throws CoreException {
-		final SubMonitor progress = SubMonitor.convert(monitor, 120);
-		IProjectDescription description = createDescription(path, name);
+		final SubMonitor progress = SubMonitor.convert(monitor, 10);
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(name);
-		project.create(description, progress.newChild(30));
-		fixProjectCompilerSettings(project, version);
-		project.open(progress.newChild(30));
-		FixProjectsUtils.removeBuildersFromProject(progress.newChild(30), project);
-		addHybrisNature(project, progress.newChild(30));
+		IJavaProject javaProject = JavaCore.create(project);
+		fixProjectCompilerSettings(project, javaProject, version);
+		project.open(progress.newChild(3));
+		FixProjectsUtils.removeBuildersFromProject(progress.newChild(3), project);
+		addHybrisNature(project, progress.newChild(1));
 		return project;
 	}
 	
-
-	@SuppressWarnings("restriction")
-	private IProjectDescription createDescription(IPath path, String name) {
-		ProjectDescription d = new ProjectDescription();
-		d.setName(name);
-		d.setLocation(path);
-		d.setLocationURI(path.toFile().toURI());
-		
-		return d;
-	}
 
 	protected double getPlatformVersion(File platformHome) {
 		java.nio.file.Path buildNumberPath = platformHome.toPath().resolve("build.number");
@@ -254,83 +230,27 @@ public class Importer {
 		return ret;
 	}
 
-	private void fixProjectCompilerSettings(IProject project, double platformVersion) {
+	private void fixProjectCompilerSettings(IProject project, IJavaProject javaProject, double platformVersion) {
 		// don't fix project or custom extensions
-		List<String> compileProblems = Arrays.asList("org.eclipse.jdt.core.compiler.problem.autoboxing",
-				"org.eclipse.jdt.core.compiler.problem.emptyStatement",
-				"org.eclipse.jdt.core.compiler.problem.unusedLocal",
-				"org.eclipse.jdt.core.compiler.problem.unnecessaryTypeCheck",
-				"org.eclipse.jdt.core.compiler.problem.undocumentedEmptyBlock");
+		if (FixProjectsUtils.isAPlatformExtension(project) && !FixProjectsUtils.isATemplateExtension(project)) {			
+			lowerJavaNotificationLevels(javaProject, platformVersion);
 
-		if (FixProjectsUtils.isAPlatformExtension(project) && !FixProjectsUtils.isATemplateExtension(project)) {
+		}
+	}
 
-			File settingsFile = project.getLocation().toFile().toPath().resolve(SETTINGS_FILE).toFile();
-			if (settingsFile.exists()) {
-
-				String s;
-				final StringBuilder strBuilder = new StringBuilder();
-				boolean fileHasBeenModified = false;
-				try (FileReader fr = new FileReader(settingsFile); BufferedReader br = new BufferedReader(fr);) {
-					while ((s = br.readLine()) != null) {
-						boolean thisLineChanged = false;
-						for (String compileProblem : compileProblems) {
-							if (s.startsWith(compileProblem)) {
-								if (s.endsWith("error")) {
-									fileHasBeenModified = true;
-									thisLineChanged = true;
-									strBuilder.append(s.replaceAll("error", "warning")).append("\n");
-									break;
-								}
-							}
-							// make sure all 1.7 settins are substitute for 1.8
-							// for versions 5.6 and higher
-							if (platformVersion >= JVM8_VERSION && s.indexOf("1.7") > 0) {
-								fileHasBeenModified = true;
-								thisLineChanged = true;
-								strBuilder.append(s.replaceAll("1\\.7", "1\\.8")).append("\n");
-								break;
-							}
-							if (platformVersion >= JVM11_VERSION) {
-								fileHasBeenModified = true;
-								thisLineChanged = true;
-								strBuilder.append(s.replaceAll("1\\.(7|8)", "11")).append("\n");
-								break;
-							}
-						}
-						if (!thisLineChanged) {
-							strBuilder.append(s).append("\n");
-						}
-						// make sure all 1.7 settings are substitute for 1.8
-						// for versions 5.6 and higher
-						if (platformVersion >= JVM8_VERSION && s.contains("1.7")) {
-							fileHasBeenModified = true;
-							thisLineChanged = true;
-							strBuilder.append(s.replace("1.7", "1.8")).append("\n");
-							break;
-						}
-						if (platformVersion >= JVM11_VERSION) {
-							fileHasBeenModified = true;
-							thisLineChanged = true;
-							strBuilder.append(s.replaceAll("1\\.(7|8)", "11")).append("\n");
-							break;
-						}
-						if (!thisLineChanged) {
-							strBuilder.append(s).append("\n");
-						}
-					}
-
-					// write the settings if they have changed
-					if (fileHasBeenModified) {
-						try (FileWriter fw = new FileWriter(settingsFile)) {
-							fw.write(strBuilder.toString());
-						}
-					}
-				} catch (IOException e) {
-					throw new IllegalStateException(MessageFormat
-							.format("Error while fixing the compiler settings in {0}", settingsFile.toString()), e);
-				}
-
-			}
+	private void lowerJavaNotificationLevels(IJavaProject javaProject, double platformVersion) {
+		javaProject.setOption(JavaCore.COMPILER_PB_EMPTY_STATEMENT, WARNING_MSG );
+		javaProject.setOption(JavaCore.COMPILER_PB_AUTOBOXING, WARNING_MSG );
+		javaProject.setOption(JavaCore.COMPILER_PB_UNUSED_LOCAL, WARNING_MSG );
+		javaProject.setOption(JavaCore.COMPILER_PB_UNNECESSARY_TYPE_CHECK, WARNING_MSG );
+		javaProject.setOption(JavaCore.COMPILER_PB_UNDOCUMENTED_EMPTY_BLOCK, WARNING_MSG );
+		
+		// make sure all 1.7 settins are substitute for 1.8
+		// for versions 5.6 and higher
+		if (platformVersion >= JVM8_VERSION) {
+			JavaCore.setComplianceOptions("1.8", Collections.emptyMap());
+		} else if (platformVersion >= JVM11_VERSION) {
+			JavaCore.setComplianceOptions("11", Collections.emptyMap());
 		}
 	}
 
@@ -392,6 +312,16 @@ public class Importer {
 			monitor.worked(projCnt);
 		}
 	}
+	
+	private boolean isSpringProject(IProject project) {
+		boolean springProject = false;
+		try {
+			springProject = project.isOpen() && project.hasNature(SPRING_NATURE_ID);
+		} catch (CoreException e) {
+			Activator.log(MessageFormat.format("could not check project {0} if that is spring one", project.getName()));
+		}
+		return springProject;
+	}
 
 	private void fixSpringBeans(IProgressMonitor monitor) {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
@@ -404,70 +334,62 @@ public class Importer {
 		monitor.setTaskName("Fixing Spring Beans");
 		monitor.beginTask("Fixing Spring Beans", projects.length);
 		monitor.worked(0);
-		int projCnt = 0;
 		for (IProject project : projects) {
-			monitor.worked(projCnt++);
+			monitor.worked(1);
 
-			try {
+			if (!FixProjectsUtils.isAHybrisExtension(project) || isSpringProject(project)) {
+				continue;
+			}
 
-				if (!project.isOpen() ||
-						!FixProjectsUtils.isAHybrisExtension(project) ||
-						!project.hasNature(SPRING_NATURE_ID)) {
-					continue;
-				}
+			File location = project.getLocation().toFile();
 
-				IPath location = project.getLocation();
+			File springBeansFile = new File(location, SPRINGBEANS_FILE);
+			// rewriting the lines between : <configs> & </configs>
+			// It is very crude, but it works since the file should be
+			// formatted nicely.
+			File springBeansFileNew = new File(location, (SPRINGBEANS_FILE) + ".new");
 
-				File springBeansFile = new File(location + "/" + (SPRINGBEANS_FILE));
-				// rewriting the lines between : <configs> & </configs>
-				// It is very crude, but it works since the file should be
-				// formatted nicely.
-				File springBeansFileNew = new File(location + "/" + (SPRINGBEANS_FILE) + ".new");
+			// We don't care about the existing one. Just overwrite it
+			// bluntly
+			try (FileWriter fw = new FileWriter(springBeansFileNew);) {
+				fw.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+				fw.write("<beansProjectDescription>\n");
+				fw.write("\t<version>1</version>\n");
+				fw.write("\t<pluginVersion><![CDATA[3.1.0.201210040510-RELEASE]]></pluginVersion>\n");
+				fw.write("\t<configSuffixes>\n");
+				fw.write("\t\t<configSuffix><![CDATA[xml]]></configSuffix>\n");
+				fw.write("\t</configSuffixes>\n");
+				fw.write("\t<enableImports><![CDATA[true]]></enableImports>\n");
 
-				// We don't care about the existing one. Just overwrite it
-				// bluntly
-				try (FileWriter fw = new FileWriter(springBeansFileNew);) {
-					fw.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-					fw.write("<beansProjectDescription>\n");
-					fw.write("\t<version>1</version>\n");
-					fw.write("\t<pluginVersion><![CDATA[3.1.0.201210040510-RELEASE]]></pluginVersion>\n");
-					fw.write("\t<configSuffixes>\n");
-					fw.write("\t\t<configSuffix><![CDATA[xml]]></configSuffix>\n");
-					fw.write("\t</configSuffixes>\n");
-					fw.write("\t<enableImports><![CDATA[true]]></enableImports>\n");
+				// Recursively find *-spring.xml files
+				String[] beansFiles = getAllSpringXmlFiles(project);
 
-					// Recursively find *-spring.xml files
-					String[] beansFiles = getAllSpringXmlFiles(project);
-
-					fw.write("\t<configs>\n");
-					for (String beansFile : beansFiles) {
-						File beanFile = new File(location + "/" + beansFile);
-						if (!beanFile.exists()) {
-							continue;
-						}
-
-						fw.write("\t\t<config>");
-						fw.write(beansFile);
-						fw.write("</config>");
-						fw.write("\n");
+				fw.write("\t<configs>\n");
+				for (String beansFile : beansFiles) {
+					File beanFile = new File(location, beansFile);
+					if (!beanFile.exists()) {
+						continue;
 					}
-					fw.write("\t</configs>\n");
 
-					fw.write("\t<configSets>\n");
-					fw.write("\t</configSets>\n");
-					fw.write("</beansProjectDescription>\n");
-
-				} catch (IOException e) {
-					throw new IllegalStateException(
-							"Error while fixing the compiler settings in " + springBeansFile.toString(), e);
+					fw.write("\t\t<config>");
+					fw.write(beansFile);
+					fw.write("</config>");
+					fw.write("\n");
 				}
+				fw.write("\t</configs>\n");
 
-				if (!springBeansFileNew.renameTo(springBeansFile)) {
-					Activator.log(MessageFormat.format("Could not move file {0} -> {1}", springBeansFileNew.toString(), springBeansFile.toString()));
-				}
+				fw.write("\t<configSets>\n");
+				fw.write("\t</configSets>\n");
+				fw.write("</beansProjectDescription>\n");
 
-			} catch (CoreException e) {
-				throw new IllegalStateException(e);
+			} catch (IOException e) {
+				throw new IllegalStateException(
+						"Error while fixing the compiler settings in " + springBeansFile.toString(), e);
+			}
+
+			if (!springBeansFileNew.renameTo(springBeansFile)) {
+				Activator.log(
+						MessageFormat.format("Could not move file {0} -> {1}", springBeansFileNew, springBeansFile));
 			}
 
 		}
@@ -564,33 +486,29 @@ public class Importer {
 			boolean change = false;
 			for (IClasspathEntry classpathEntry : classPathEntries) {
 				// fix jar files
-				if (classpathEntry.getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
-					if ((classpathEntry.getPath().toString()
-							.contains("/backoffice/web/webroot/WEB-INF/lib/backoffice-core-")
-							|| classpathEntry.getPath().toString()
-									.contains("/backoffice/web/webroot/WEB-INF/lib/backoffice-widgets-")
-							|| classpathEntry.getPath().toString()
-									.contains("/backoffice/web/webroot/WEB-INF/lib/cockpitframework-")
-							|| classpathEntry.getPath().toString()
-									.contains("/backoffice/web/webroot/WEB-INF/lib/cockpitcore-")
-							|| classpathEntry.getPath().toString()
-									.contains("/backoffice/web/webroot/WEB-INF/lib/cockpittesting-")
-							|| classpathEntry.getPath().toString()
-									.contains("/backoffice/web/webroot/WEB-INF/lib/cockpitwidgets-")
-							|| classpathEntry.getPath().toString()
-									.contains("/backoffice/web/webroot/WEB-INF/lib/cockpit-")
-							|| classpathEntry.getPath().toString().contains("/backoffice/web/webroot/WEB-INF/lib/zk")
-							|| classpathEntry.getPath().toString().contains("/backoffice/web/webroot/WEB-INF/lib/zul-")
-							|| classpathEntry.getPath().toString()
-									.contains("/backoffice/web/webroot/WEB-INF/lib/zcommon-"))
-							&& (!classpathEntry.isExported())) {
-						change = true;
-						IClasspathEntry clonedEntry = JavaCore.newLibraryEntry(classpathEntry.getPath(),
-								classpathEntry.getSourceAttachmentPath(), classpathEntry.getSourceAttachmentRootPath(),
-								classpathEntry.getAccessRules(), classpathEntry.getExtraAttributes(), true);
-						entries.add(clonedEntry);
-						continue;
-					}
+				if ((classpathEntry.getEntryKind() == IClasspathEntry.CPE_LIBRARY) && ((classpathEntry.getPath()
+						.toString().contains("/backoffice/web/webroot/WEB-INF/lib/backoffice-core-")
+						|| classpathEntry.getPath().toString()
+								.contains("/backoffice/web/webroot/WEB-INF/lib/backoffice-widgets-")
+						|| classpathEntry.getPath().toString()
+								.contains("/backoffice/web/webroot/WEB-INF/lib/cockpitframework-")
+						|| classpathEntry.getPath().toString()
+								.contains("/backoffice/web/webroot/WEB-INF/lib/cockpitcore-")
+						|| classpathEntry.getPath().toString()
+								.contains("/backoffice/web/webroot/WEB-INF/lib/cockpittesting-")
+						|| classpathEntry.getPath().toString()
+								.contains("/backoffice/web/webroot/WEB-INF/lib/cockpitwidgets-")
+						|| classpathEntry.getPath().toString().contains("/backoffice/web/webroot/WEB-INF/lib/cockpit-")
+						|| classpathEntry.getPath().toString().contains("/backoffice/web/webroot/WEB-INF/lib/zk")
+						|| classpathEntry.getPath().toString().contains("/backoffice/web/webroot/WEB-INF/lib/zul-")
+						|| classpathEntry.getPath().toString().contains("/backoffice/web/webroot/WEB-INF/lib/zcommon-"))
+						&& (!classpathEntry.isExported()))) {
+					change = true;
+					IClasspathEntry clonedEntry = JavaCore.newLibraryEntry(classpathEntry.getPath(),
+							classpathEntry.getSourceAttachmentPath(), classpathEntry.getSourceAttachmentRootPath(),
+							classpathEntry.getAccessRules(), classpathEntry.getExtraAttributes(), true);
+					entries.add(clonedEntry);
+					continue;
 				}
 				entries.add(classpathEntry);
 			}
@@ -609,7 +527,6 @@ public class Importer {
 		for (IClasspathEntry classpathEntry : classPathEntries) {
 			// fix jar files
 			if (classpathEntry.getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
-				classpathEntry.getPath();
 				File classpathEntryFile = classpathEntry.getPath().toFile();
 
 				// remove JAR if it doesn't exist, only do this if the jar file is located in
@@ -642,7 +559,7 @@ public class Importer {
 		}
 	}
 
-	private void fixMissingProjectDependencies(IProgressMonitor monitor, File platformHome) throws JavaModelException {
+	private void fixMissingProjectDependencies(IProgressMonitor monitor) throws JavaModelException {
 		Set<ExtensionHolder> extensions = FixProjectsUtils.getAllExtensionsForPlatform();
 		Set<IProject> projects = FixProjectsUtils.getAllOpenHybrisProjects();
 		for (IProject project : projects) {
@@ -682,16 +599,9 @@ public class Importer {
 
 	private void fixMissingProjectResources(IProgressMonitor monitor, File platformHome) throws CoreException {
 		Set<IProject> projects = FixProjectsUtils.getAllHybrisProjects();
-		IProject config = null;
-		IProject platform = null;
-		for (IProject proj : projects) {
-			if (CONFIG_FOLDER.equals(proj.getName())) {
-				config = proj;
-			}
-			if ("platform".equals(proj.getName())) {
-				platform = proj;
-			}
-		}
+		IProject config = projects.stream().filter(p -> CONFIG_FOLDER.equals(p.getName())).findFirst().orElse(null);
+		IProject platform = projects.stream().filter(p -> "platform".equals(p.getName())).findFirst().orElse(null);
+		
 		if (config != null && platform != null) {
 			IFile activeRoleEnvPropertyFile = platform.getFile("active-role-env.properties");
 			IFile instancePropertiesLink = config.getFile("instance.properties");
@@ -738,12 +648,11 @@ public class Importer {
 		IFolder backofficeFolder = javaProject.getProject().getFolder("/resources/backoffice");
 		if (backofficeFolder != null && backofficeFolder.exists()) {
 			IResource backofficeJar = backofficeFolder.findMember(javaProject.getProject().getName() + "_bof.jar");
-			if (backofficeJar != null && backofficeJar.exists()) {
-				if (!isClasspathEntryForJar(javaProject, backofficeJar)) {
-					Activator.log("Adding library [" + backofficeJar.getFullPath() + "] to classpath for project ["
-							+ javaProject.getProject().getName() + "]");
-					FixProjectsUtils.addToClassPath(backofficeJar, IClasspathEntry.CPE_LIBRARY, javaProject, monitor);
-				}
+			if ((backofficeJar != null && backofficeJar.exists())
+					&& (!isClasspathEntryForJar(javaProject, backofficeJar))) {
+				Activator.log("Adding library [" + backofficeJar.getFullPath() + "] to classpath for project ["
+						+ javaProject.getProject().getName() + "]");
+				FixProjectsUtils.addToClassPath(backofficeJar, IClasspathEntry.CPE_LIBRARY, javaProject, monitor);
 			}
 		}
 
