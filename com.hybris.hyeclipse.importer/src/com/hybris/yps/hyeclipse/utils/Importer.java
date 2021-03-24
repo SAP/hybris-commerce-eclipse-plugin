@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
@@ -53,11 +54,16 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.ui.internal.wizards.datatransfer.SmartImportJob;
+import org.eclipse.ui.progress.IProgressConstants;
 
 import com.hybris.yps.hyeclipse.Activator;
 import com.hybris.yps.hyeclipse.ExtensionHolder;
 
 public class Importer {
+
+	public static final String HYBRIS_EXTENSION_FILE = "extensioninfo.xml";
+	public static final String LOCAL_EXTENSION_FILE = "localextensions.xml";
 
 	private static final String WARNING_MSG = "warning";
 	private static final String CONFIG_FOLDER = "config";
@@ -69,8 +75,6 @@ public class Importer {
 	private static final String BROKEN_WST_SETTINGS_FILE = ".settings/org.eclipse.wst.validation.prefs";
 	private static final String BROKEN_WST_SETTINGS_FILE_EXT = "promotionengineservices";
 	private static final String SPRINGBEANS_FILE = ".springBeans";
-	private static final String HYBRIS_EXTENSION_FILE = "extensioninfo.xml";
-	private static final String LOCAL_EXTENSION_FILE = "localextensions.xml";
 
 	private static final double JVM8_VERSION = 5.6d;
 	private static final double JVM11_VERSION = 1811d;
@@ -78,7 +82,7 @@ public class Importer {
 
 	public void resetProjectsFromLocalExtensions(File platformHome, IProgressMonitor monitor, boolean fixClasspath,
 			boolean removeHybrisGenerator, boolean createWorkingSets, boolean useMultiThread, boolean skipJarScanning)
-			throws CoreException {
+			throws CoreException, InterruptedException {
 		plugin.resetPlatform(platformHome.getAbsolutePath());
 
 		importExtensionsNotInWorkspace(monitor, platformHome);
@@ -109,7 +113,7 @@ public class Importer {
 		fixSpringBeans(monitor);
 	}
 
-	private void importExtensionsNotInWorkspace(IProgressMonitor monitor, File platformHome) throws CoreException {
+	private void importExtensionsNotInWorkspace(IProgressMonitor monitor, File platformHome) throws CoreException, InterruptedException {
 		Activator.log("Retrieving extensions not in workspace");
 
 		double version = getPlatformVersion(platformHome);
@@ -121,17 +125,17 @@ public class Importer {
 			monitor.beginTask("Importing extensions", extensions.size());
 			int progress = 0;
 			for (ExtensionHolder extensionHolder : extensions) {
-				Path extP = new Path(extensionHolder.getPath());
-				IPath projectFilepath = new Path(extensionHolder.getPath()).append("/.project");
+				IPath extP = Path.fromOSString(extensionHolder.getPath());
+				IPath projectFilepath = extP.append("/.project");
 				boolean projectFileExist = projectFilepath.toFile().exists();
 				if (projectFileExist) {
 					Activator.log("Importing Eclipse project [" + extensionHolder + "]");
-					importProject(monitor, projectFilepath, version);
+					importProject(monitor, version, extP);
 					// fix the modules (e.g. remove hmc module if not needed)
 				} else if (isHybrisExtension(extP)){
 					Activator.log(MessageFormat.format(
 							"Trying to create project [{0}] in IDE", extensionHolder));
-					createProject(monitor, extP, version, extensionHolder.getName());
+					importProject(monitor, version, extP);
 					
 				}
 				fixModules(monitor, extensionHolder);
@@ -177,12 +181,20 @@ public class Importer {
 		});
 	}
 
-	private IProject importProject(IProgressMonitor monitor, IPath path, double version) throws CoreException {
+	private IProject importProject(IProgressMonitor monitor, double version, IPath extensionFolder) throws CoreException, InterruptedException {
 		final SubMonitor progress = SubMonitor.convert(monitor, 12);
-		IProjectDescription description = ResourcesPlugin.getWorkspace().loadProjectDescription(path);
-		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(description.getName());
-		project.create(description, progress.newChild(3));
+		SmartImportJob importJob = new SmartImportJob(extensionFolder.toFile(), Collections.emptySet(), true, false );
+		importJob.setProperty(IProgressConstants.PROPERTY_IN_DIALOG, true);
+		importJob.schedule();
+		importJob.join();
+		String name = extensionFolder.lastSegment();
+					
+		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(name);
+		if (!project.exists()) {
+			project.create(null, progress.newChild(3));			
+		}
 		IJavaProject javaProject = JavaCore.create(project);
+		javaProject.open(monitor);
 		fixProjectCompilerSettings(project, javaProject, version);
 		project.open(progress.newChild(3));
 		FixProjectsUtils.removeBuildersFromProject(progress.newChild(3), project);
@@ -190,18 +202,6 @@ public class Importer {
 		return project;
 	}
 	
-	private IProject createProject(IProgressMonitor monitor, IPath path, double version, String name) throws CoreException {
-		final SubMonitor progress = SubMonitor.convert(monitor, 10);
-		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(name);
-		IJavaProject javaProject = JavaCore.create(project);
-		fixProjectCompilerSettings(project, javaProject, version);
-		project.open(progress.newChild(3));
-		FixProjectsUtils.removeBuildersFromProject(progress.newChild(3), project);
-		addHybrisNature(project, progress.newChild(1));
-		return project;
-	}
-	
-
 	protected double getPlatformVersion(File platformHome) {
 		java.nio.file.Path buildNumberPath = platformHome.toPath().resolve("build.number");
 		Double platformVersion = 6.3d;
@@ -247,10 +247,14 @@ public class Importer {
 		
 		// make sure all 1.7 settins are substitute for 1.8
 		// for versions 5.6 and higher
+		Hashtable<String, String> javaCompilerOptions= JavaCore.getOptions();
 		if (platformVersion >= JVM8_VERSION) {
-			JavaCore.setComplianceOptions("1.8", Collections.emptyMap());
+			JavaCore.setComplianceOptions("1.8", javaCompilerOptions);
 		} else if (platformVersion >= JVM11_VERSION) {
-			JavaCore.setComplianceOptions("11", Collections.emptyMap());
+			JavaCore.setComplianceOptions("11", javaCompilerOptions);
+		}
+		if (!javaCompilerOptions.isEmpty()) {
+			JavaCore.setOptions(javaCompilerOptions);
 		}
 	}
 

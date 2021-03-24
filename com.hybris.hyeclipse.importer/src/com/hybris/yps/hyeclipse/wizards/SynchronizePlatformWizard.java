@@ -139,7 +139,7 @@ public class SynchronizePlatformWizard extends Wizard implements IImportWizard {
 		try {
 			new Importer().resetProjectsFromLocalExtensions(platformDir, monitor, fixClasspath, removeHybrisGenerator,
 					createWorkingSets, useMultiThread, skipJarScanning);
-		} catch (CoreException e) {
+		} catch (CoreException | InterruptedException e) {
 			throw new InvocationTargetException(e);
 		}
 	}
