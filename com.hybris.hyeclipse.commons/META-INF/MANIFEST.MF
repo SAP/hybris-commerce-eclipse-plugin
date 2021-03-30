@@ -13,7 +13,9 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.console,
  org.eclipse.ui.editors,
  org.eclipse.e4.core.commands,
- org.eclipse.e4.core.contexts
+ org.eclipse.e4.core.contexts,
+ org.eclipse.jdt.annotation;resolution:=optional,
+ org.eclipse.jdt.core;resolution:=optional
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: com.hybris.hyeclipse.commons.handlers,

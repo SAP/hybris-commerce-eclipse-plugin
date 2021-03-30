@@ -293,7 +293,7 @@ public class ImportPlatformWizard extends Wizard implements IImportWizard
 		{
 			new Importer().resetProjectsFromLocalExtensions( platformDir, monitor, fixClasspath, removeHybrisGenerator, createWorkingSets, useMultiThread, skipJarScanning);
 		}
-		catch( CoreException e )
+		catch( CoreException | InterruptedException e )
 		{
 			Activator.logError(Messages.error_on_import,e);
 			throw new InvocationTargetException( e );

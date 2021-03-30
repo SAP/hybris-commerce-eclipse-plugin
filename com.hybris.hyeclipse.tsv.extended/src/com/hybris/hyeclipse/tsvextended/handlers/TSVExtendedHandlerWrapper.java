@@ -30,6 +30,7 @@ import org.eclipse.core.commands.ExecutionException;
 
 import com.hybris.hyeclipse.platform.Platform;
 import com.hybris.hyeclipse.tsv.Activator;
+import com.hybris.hyeclipse.tsv.Messages;
 
 public class TSVExtendedHandlerWrapper extends AbstractHandler {
 	
@@ -40,11 +41,14 @@ public class TSVExtendedHandlerWrapper extends AbstractHandler {
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		try {
 			final URLClassLoader classLoader = getCurrentPlatformDependentLoader();
+			if (classLoader == null) {
+				throw new IllegalAccessException(Messages.TSVExtendedHandlerWrapper_classLoaderNullError);
+			}
 			final ClassLoader oldTccl = Thread.currentThread().getContextClassLoader();
 			try {
 				Thread.currentThread().setContextClassLoader(classLoader);
 				((Runnable) classLoader
-						.loadClass("com.hybris.hyeclipse.tsvextended.platform.handlers.TSVExtendedHandler")
+						.loadClass("com.hybris.hyeclipse.tsvextended.platform.handlers.TSVExtendedHandler") //$NON-NLS-1$
 						.getConstructor(new Class[0]).newInstance()).run();
 				return null;
 			} finally {
@@ -52,9 +56,9 @@ public class TSVExtendedHandlerWrapper extends AbstractHandler {
 			}
 		} catch (IOException | InstantiationException | IllegalAccessException | NoSuchMethodException
 				| ClassNotFoundException e) {
-			throw new ExecutionException("Failed to run extended TSV analysis", e);
+			throw new ExecutionException(Messages.TSVExtendedHandlerWrapper_runError, e);
 		} catch (InvocationTargetException e) {
-			throw new ExecutionException("Failed to run extended TSV analysis", e.getTargetException());
+			throw new ExecutionException("Failed to run extended TSV analysis", e.getTargetException()); //$NON-NLS-1$
 		}
 	}
 	
@@ -78,12 +82,12 @@ public class TSVExtendedHandlerWrapper extends AbstractHandler {
 		
 		final List<URL> classPathUrls = new LinkedList<>();
 
-		classPathUrls.add(Activator.getDefault().getBundle().getEntry("/platform-dependent.jar"));
-		classPathUrls.add(Activator.getDefault().getBundle().getEntry("/lib/tsv-extended-0.0.1-SNAPSHOT.jar"));
+		classPathUrls.add(Activator.getDefault().getBundle().getEntry("/platform-dependent.jar")); //$NON-NLS-1$
+		classPathUrls.add(Activator.getDefault().getBundle().getEntry("/lib/tsv-extended-0.0.1-SNAPSHOT.jar")); //$NON-NLS-1$
 
 		for (final String cpEntry : currentPlatform.getPlatformClassPath()) {
 			//do not include conflicting libraries
-			if (!cpEntry.contains("groovy")) {
+			if (!cpEntry.contains("groovy")) { //$NON-NLS-1$
 				classPathUrls.add(new File(cpEntry).toURI().toURL());
 			}
 		}

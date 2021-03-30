@@ -39,7 +39,6 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.core.JavaModelException;
 import org.osgi.service.prefs.BackingStoreException;
 
 public class BuildUtils {
@@ -47,6 +46,10 @@ public class BuildUtils {
 	private static final String PLATFORM_BUILD_CONFIG = "yplatform_build";
 	private static final String PLATFORM_CLEAN_BUILD_CONFIG = "yplatform_clean_build";
 	private static final String PLATFORM_NAME = "platform";
+	
+	private BuildUtils() {
+		// inteded to be empty
+	}
 
 	/**
 	 * Runs a ant build for project according to specified configuration
@@ -137,7 +140,7 @@ public class BuildUtils {
 		return launchCfg;
 	}
 
-	private static void refreshWorkspaceAndBuild(IProgressMonitor monitor) throws JavaModelException, CoreException {
+	private static void refreshWorkspaceAndBuild(IProgressMonitor monitor) throws CoreException {
 		// clean build might have created new directories (e.g. gensrc
 		for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
 			if (FixProjectsUtils.isAHybrisExtension(project) && project.isOpen()) {

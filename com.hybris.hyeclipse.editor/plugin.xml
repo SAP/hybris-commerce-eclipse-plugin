@@ -1,33 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?eclipse version="3.0"?>
 <plugin>
-	<extension point="org.eclipse.jdt.ui.cleanUps">
-		<cleanUp id="com.hybris.hyeclipse.editor.copyright.cleanup"
-			class="com.hybris.hyeclipse.editor.copyright.CopyrightUpdaterCleanUp">
-		</cleanUp>
 
-		<cleanUpOptionsInitializer
-			class="com.hybris.hyeclipse.editor.copyright.CopyrightOnSaveOptionsInitializer"
-			cleanUpKind="saveAction">
-		</cleanUpOptionsInitializer>
+   <extension
+         point="org.eclipse.jdt.ui.cleanUps">
+      <cleanUp
+            id="com.hybris.hyeclipse.editor.copyright.cleanup"
+            class="com.hybris.hyeclipse.editor.copyright.CopyrightUpdaterCleanUp">
+      </cleanUp>
+      <cleanUpOptionsInitializer
+            class="com.hybris.hyeclipse.editor.copyright.CopyrightOnSaveOptionsInitializer"
+            cleanUpKind="saveAction">
+      </cleanUpOptionsInitializer>
+      <cleanUpConfigurationUI
+            class="com.hybris.hyeclipse.editor.copyright.page.CopyrightTabPage"
+            name="Actions"
+            cleanUpKind="saveAction">
+      </cleanUpConfigurationUI>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            id="com.hybris.hyeclipse.editor.preferences.CopyrightPreferencePage"
+            class="com.hybris.hyeclipse.editor.preferences.CopyrightPreferencePage"
+            category="com.hybris.yps.hyeclipse.preferences.HyEclipsePreferencePage"
+            name="Copyright Preferences">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="com.hybris.hyeclipse.editor.preferences.CopyrightPreferenceInitializer">
+      </initializer>
+   </extension>
+   <extension
+         id="com.hybris.hyeclipse.editor.fragment"
+         point="org.eclipse.e4.workbench.model">
+      <fragment
+            uri="fragment.e4xmi"
+            apply="always">
+      </fragment>
+   </extension>
 
-		<cleanUpConfigurationUI
-			class="com.hybris.hyeclipse.editor.copyright.page.CopyrightTabPage"
-			name="Actions" cleanUpKind="saveAction">
-		</cleanUpConfigurationUI>
-	</extension>
-
-	<extension point="org.eclipse.ui.preferencePages">
-		<page
-			id="com.hybris.hyeclipse.editor.preferences.CopyrightPreferencePage"
-			class="com.hybris.hyeclipse.editor.preferences.CopyrightPreferencePage"
-			category="com.hybris.yps.hyeclipse.preferences.HyEclipsePreferencePage"
-			name="Copyright Preferences">
-		</page>
-	</extension>
-
-	<extension point="org.eclipse.core.runtime.preferences">
-		<initializer
-			class="com.hybris.hyeclipse.editor.preferences.CopyrightPreferenceInitializer" />
-	</extension>
 </plugin>

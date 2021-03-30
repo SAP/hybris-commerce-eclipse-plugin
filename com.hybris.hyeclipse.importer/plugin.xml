@@ -306,6 +306,13 @@
             type="java.lang.Object">
       </propertyTester>
    </extension>
+    <extension
+          point="org.eclipse.ui.ide.projectConfigurators">
+       <projectConfigurator
+             class="com.hybris.yps.hyeclipse.SAPCommerceProjectConfigurator"
+             label="SAP Commerce Projects">
+       </projectConfigurator>
+    </extension>
 
 
 </plugin>
