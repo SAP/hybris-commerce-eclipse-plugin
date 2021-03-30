@@ -14,8 +14,7 @@ jobs:
       with:
         java-version: '11'
     - name: Build with Maven
-      run: mvn -B package sonar:sonar --file pom.xml -Dsonar.login=$SONAR_TOKEN
+      run: mvn -B package --file pom.xml
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
