@@ -1,0 +1,3 @@
+{	foldingStartMarker = '(^(?i:insert|insert_update|update|remove|START_USERRIGHTS)\b.*?$)';
+	foldingStopMarker = '(?x)(^\s*$)|(?i:END_USERRIGHTS\b)';
+}

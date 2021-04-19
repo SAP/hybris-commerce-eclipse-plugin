@@ -1,0 +1,119 @@
+{	patterns = (
+		{	include = '#comment'; },
+		{	include = '#impex_code'; },
+		{	include = '#string'; },
+		{	include = '#impex_header'; },
+		{	include = '#impex_content'; },
+		{	include = '#variables'; },
+	);
+	repository = {
+		comment = {
+			patterns = (
+				{	name = 'comment.line.number-sign';
+					comment = 'done';
+					begin = '#';
+					end = '\n';
+				},
+			);
+		};
+		impex_code = {
+			patterns = (
+				{	name = 'meta.impex.import';
+					begin = '^\"#%';
+					end = '\"$';
+					patterns = (
+						{	name = 'meta.impex.code';
+							match = '(impex)(\.)([a-zA-Z0-9]*)';
+							captures = {
+								1 = { name = 'entity.name.tag.impex'; };
+								2 = { name = 'punctuation.definition.tag.impex'; };
+								3 = { name = 'entity.name.tag.impex'; };
+							};
+						},
+						{	begin = '""';
+							end = '""';
+							patterns = ( { include = 'source.sql'; } );
+						},
+					);
+				},
+			);
+		};
+		impex_content = {
+			patterns = (
+				{	name = 'storage.type.impex';
+					begin = '^\s*([A-Z]+[a-zA-Z0-9]*)?\;';
+					end = '\n';
+					patterns = (
+						{	name = 'punctuation.definition.tag.impex';
+							match = ';';
+						},
+						{	name = 'variable.other';
+							match = '<ignore>';
+						},
+					);
+				},
+			);
+		};
+		impex_header = {
+			patterns = (
+				{	name = 'storage';
+					begin = '(?i)\b(INSERT_UPDATE|INSERT|UPDATE|REMOVE)\b';
+					end = '\n';
+					patterns = (
+						{	name = 'keyword.control.impex';
+							match = '(?i)\b(INSERT_UPDATE|INSERT|UPDATE|REMOVE)\b';
+							contentName = 'keyword.control';
+						},
+						{	name = 'constant.language.impex';
+							match = '(?i:true|false|append|remove)\b';
+						},
+						{	name = 'keyword.control';
+							match = '(alias|allownull|batchmode|case|cellDecorator|collection-delimiter|dateformat|default|filter|forceWrite|ignoreKeyCase|ignorenull|key2value-delimiter|lang|map-delimiter|mode|numberformat|path-delimiter|pos|translator|unique|virtual)\b';
+						},
+						{	name = 'entity.name';
+							match = '\s[A-Z]+[a-zA-Z0-9]+\;';
+						},
+						{	name = 'entity.other.inherited-class';
+							begin = '[';
+							end = ']';
+						},
+						{	name = 'variable.other';
+							match = '\&[a-zA-Z0-9]+';
+						},
+						{	name = 'entity.other.attribute-name';
+							begin = '(';
+							end = ')';
+						},
+						{	include = '#string'; },
+					);
+				},
+			);
+		};
+		string = {
+			patterns = (
+				{	name = 'string.quoted.double.untitled';
+					begin = '"';
+					end = '"';
+					patterns = (
+						{	name = 'constant.character.escape.untitled';
+							match = '""';
+						},
+						{	include = '#variables'; },
+					);
+				},
+				{	name = 'string.quoted.single.untitled';
+					begin = "'";
+					end = "'";
+					patterns = ( { include = '#variables'; } );
+				},
+			);
+		};
+		variables = {
+			patterns = (
+				{	name = 'variable.other';
+					match = '\$[a-zA-Z0-9]*';
+				},
+			);
+		};
+	};
+}

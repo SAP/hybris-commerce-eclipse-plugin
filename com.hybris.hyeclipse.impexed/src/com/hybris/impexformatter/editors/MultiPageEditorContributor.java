@@ -34,6 +34,7 @@ import org.eclipse.ui.texteditor.ITextEditorActionConstants;
  * actions to the active editor. Page contributor replaces the contributors for the individual editors in the page
  * editor.
  */
+@Deprecated
 public class MultiPageEditorContributor extends MultiPageEditorActionBarContributor {
 	private IEditorPart activeEditorPart;
 
