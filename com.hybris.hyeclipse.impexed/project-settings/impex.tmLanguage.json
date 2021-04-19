@@ -58,7 +58,14 @@
                                     "name": "entity.name.tag.impex"
                                 }
                             }
-                        }
+                        },
+                        {
+                            "begin": "\"\"",
+                            "end": "\"\"",
+                            "patterns": [
+                                 { "include": "source.sql" }
+                            ]
+			}
                     ]
                 }
             ]
@@ -86,7 +93,7 @@
             "patterns":[
                 {
                     "name": "storage",
-                    "begin": "(?i)\\b(INSERT_UPDATE|INSERT|UPDATE|REMOVE)\\b",
+                    "begin": "(?i)(INSERT_UPDATE|INSERT|UPDATE|REMOVE)\\b",
                     "end": "\\n",
                     "patterns": [
                         {
@@ -108,8 +115,8 @@
                         },
                         {
                             "name": "entity.other.inherited-class",
-                            "begin": "[",
-                            "end": "]"
+                            "begin": "\\[",
+                            "end": "\\]"
                         },
                         {
                             "name": "variable.other",
