@@ -1,0 +1,91 @@
+ {
+	"comments": {
+		"lineComment": "#"
+	},
+	"brackets": [
+		[
+			"(",
+			")"
+		],
+		[
+			"[",
+			"]"
+		]
+	],
+	"autoClosingPairs": [
+		{
+			"open": "{",
+			"close": "}"
+		},
+		{
+			"open": "[",
+			"close": "]"
+		},
+		{
+			"open": "(",
+			"close": ")"
+		},
+		{
+			"open": "'",
+			"close": "'"
+		},
+		{
+			"open": "\"",
+			"close": "\""
+		},
+		{
+			"open": "\"\"",
+			"close": "\"\""
+		},
+		{
+			"open": "`",
+			"close": "`",
+			"notIn": [
+				"string",
+				"comment"
+			]
+		},
+		{
+			"open": "START_USERRIGHTS",
+			"close": "END_USERRIGHTS"
+		}
+	],
+	"autoCloseBefore": "\n\t",
+	"surroundingPairs": [
+		[
+			"{",
+			"}"
+		],
+		[
+			"[",
+			"]"
+		],
+		[
+			"(",
+			")"
+		],
+		[
+			"'",
+			"'"
+		],
+		[
+			"\"",
+			"\""
+		],
+		[
+			"`",
+			"`"
+		],
+		[
+			"\"\"",
+			"\"\""
+		]
+	],
+	"folding": {
+		"markers": {
+			"start": "(?i)^(insert|insert_update|update|remove|START_USERRIGHTS)\\b.*?;",
+    		"end": "(?i)(^\\s*$)|(END_USERRIGHTS\\b)"
+		}
+	},
+	"wordPattern": "(-?\\d*\\.\\d\\w*)|([^\\`\\~\\!\\@\\#\\%\\^\\&\\*\\(\\)\\-\\=\\+\\[\\{\\]\\}\\\\\\|\\;\\:\\'\\\"\\,\\.\\<\\>\\/\\?\\s]+)"
+}

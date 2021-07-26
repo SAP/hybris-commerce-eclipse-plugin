@@ -1,0 +1,1 @@
+SELECT {PKR:pk} FROM {Product2KeywordRelation as PKR}, {ClassificationKeyword as CK}, {ClassificationSystemVersion as CSV}, {ClassificationSystem as CS} WHERE {PKR:source}={CK:PK} AND {CK:catalogversion}={CSV:PK} AND {CSV:catalog}={CS:PK} AND {CS:id}='$classificationsystem' AND {CSV:version}='$version'

@@ -42,7 +42,7 @@ public class ExtensionCleanBuildHandler extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		project = getSelectedExtension(HandlerUtil.getCurrentSelection(event));
-		Job job = new Job(" Build") {
+		Job job = new Job("Build") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				try {

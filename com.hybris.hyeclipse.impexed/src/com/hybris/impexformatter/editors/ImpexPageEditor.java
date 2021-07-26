@@ -49,6 +49,7 @@ import com.hybris.impexformatter.actions.Formatter;
  * <li>page 2 shows the words in page 0 in sorted order
  * </ul>
  */
+// TODO Old editor. Has to be moved to LSP
 @Deprecated
 public class ImpexPageEditor extends MultiPageEditorPart implements IResourceChangeListener {
 

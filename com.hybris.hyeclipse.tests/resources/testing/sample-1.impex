@@ -1,0 +1,306 @@
+INSERT_UPDATE category; code[unique=true]; supercategories(code,catalogVersion(catalog(id[default='clothescatalog']),version[default='Staged'])); catalogVersion(catalog(id[default='clothescatalog']),version[default='Staged'])[unique=true,default='clothescatalog:Staged'];;;;;;;;;
+Category; CL2000;       ; clothescatalog:Staged;shoes;
+; CL2100; CL2000; clothescatalog:Staged;
+
+insert_update Website;code[unique=true,allownull=true];rootNavigationElements(code,website(code));
+"#% impex.includeExternalDataMedia( ""Website.csv"" , ""UTF-8"", ';', 1, -1 );"
+    
+insert_update BannerNavigationElement;code[unique=true];parent(code,website(code));webSite(code)[unique=true,allownull=true]
+"#% impex.includeExternalDataMedia( ""BannerNavigationElement.csv"" , ""UTF-8"", ';', 1, -1 );"
+
+# IMPEX FILE that includes CVS:
+"#% impex.includeExternalData(SampleDataManager.class.getResourceAsStream(""/1.csv""), ""utf-8"", 0, 0 );";
+"#% impex.includeExternalData(SampleDataManager.class.getResourceAsStream(""/2.csv""), ""utf-8"", 0, 0 );";
+
+INSERT_UPDATE category;code[unique=true];name[lang=de];name[lang=en];$supercategories;$thumbnail;thing[default='abcd'];description[lang=de];order
+
+UPDATE User;uid[unique=true];name;customerID;
+;bbauer;Benedict Bauer;;
+
+UPDATE User;uid[unique=true];name;customerID;
+;ahertz;Anja Hertz;;
+;ahertz;;K2006-C0005;
+
+UPDATE User;uid[unique=true];name;customerID;
+;ahertz;Anja Hertz;K2006-C0005;
+
+UPDATE User;uid[unique=true];name;customerID;
+;ahertz;Anja Hertz;;
+;ahertz;Anja Hertz;K2006-C0005;
+
+
+UPDATE User;uid[unique=true];name;
+;ahertz;Anja Hertz;
+												
+REMOVE User;uid[unique=true];custmerID;
+;ahertz;K2006-C0005;
+
+INSERT User;uid[unique=true]
+Customer;SampleCustomer
+Employee;SampleEmployee
+
+INSERT Job;code[unique=true]
+ImpExImportJob;sampleJob
+ImpExImportJob;sampleJob2
+
+INSERT Product;code;unit
+;MyProduct;2821057095693456
+#2821057095693456 being the PK for the pieces unit
+
+INSERT Product;code;unit(code)
+;MyProduct;pieces
+
+INSERT Product;code;unit(code);catalogVersion(catalog(id),version)
+;testCode;pieces;clothescatalog:Staged
+
+INSERT Address;firstname;owner(Principal.uid)
+;Hans;admin
+
+INSERT myProduct;myAttribute;myAttribute2;;myAttribute4
+;myValue1;myValue2;myValue3;myValue4
+
+INSERT Language;code;;active
+;de;deutsch;true
+
+INSERT Product;code[unique=true];name[lang=en];name[lang=de]
+;myProduct1;myProduct1's localized name;lokalisierter Name von myProduct1
+;myProduct2;myProduct2's localized name;lokalisierter Name von myProduct2
+
+INSERT Product;code[unique=true];name[lang=en];name[lang=de]
+;myProduct1;myProduct1's localized name;lokalisierter Name von myProduct1
+;myProduct2;myProduct2's localized name;lokalisierter Name von myProduct2
+;value;<ignore>;<ignore>;value;value
+
+INSERT Customer;uid[unique=true];defaultPaymentAddress(&addrID);
+;andi;addr1;
+						
+INSERT Address;&addrid;owner(Customer.uid);
+;addr1;andi;
+
+INSERT_UPDATE Media;code[unique=true];@media[translator=de.hybris.platform.impex.jalo.media.MediaDataTranslator]
+;myMedia;file://c:/myMedia.txt
+
+INSERT Address[batchmode=true][cacheUnique=true][processor=de.hybris.platform.impex.jalo.imp.DefaultImportProcessor][impex.legacy.mode=true];firstname[alias=myAttribute][allownull=true][cellDecorator=de.hybris.platform.catalog.jalo.classification.eclass.EClassSuperCategoryDecorator];owner(Principal.uid|AbstractOrder.code)
+;Hans;admin
+;Klaus;O-K2006-C0000-001
+
+INSERT_UPDATE Product;collectionAttribute[collection-delimiter = #]
+;1#2#3#4;
+
+UPDATE Product;modifiedtime[dateformat=dd-MM-yyyy];
+;17-01-1972
+
+UPDATE myProduct;myAttribute[dateformat='yyyy-MM-dd''T''HH:mm:ss.SSSZ']
+;"2009-04-03T04:14:00.235-0700"
+
+INSERT_UPDATE Type;name[ignoreKeyCase=true]
+;bob
+
+INSERT_UPDATE myProduct;myAttribute[ignoreNull=true]
+;myValue;null;myValue2
+
+INSERT_UPDATE myProduct;myAttribute[key2value-delimiter=>>]
+;myKey>>myValue;
+
+
+INSERT_UPDATE myProduct;myAttribute[map-delimiter=|] 
+;myKey->myValue|myKey2->myValue2;
+
+$catalogVersion=catalogVersion(catalog(id),version)[unique=true];
+$supercategories=supercategories( code,catalogVersion(catalog(id),version)); 
+ 
+INSERT_UPDATE category;code[unique=true];name[lang=de];$supercategories[mode=append];$catalogVersion; 
+;myCategory;meine Kategorie;mySuperCategory;myCatalog:Staged 
+;myCategory;meine Kategorie;mySuperCategory2;myCatalog:Staged
+
+#% impex.setLocale( Locale.GERMAN );
+
+INSERT_UPDATE myProduct;myAttribute[numberformat=#.###,##] 
+;1.299,99 
+INSERT_UPDATE myProduct;myAttribute[numberformat=#,###.##] 
+;1,299.99;<ignore>
+
+INSERT_UPDATE myProduct;myAttribute(code,id)[path-delimiter=:] 
+;myCode:myID
+
+INSERT_UPDATE myProduct;myAttribute[unique=true]
+
+INSERT MyProduct;myAttribute1[virtual=true,default=myValue1];myAttribute2[unique=true] 
+;myValue2;
+
+INSERT_UPDATE Product;code[unique=true];varianttype(code);name[lang=en];&data
+;;;;;;;;;;;;;;;
+#;;;;;;;;;;;;;;;
+#BASEPRODUCTS JEANS;;;;;;;;;;;;;;;
+#;;;;;;;;;;;;;;;
+
+$catalog=catalog(id)
+$catalogVersion=catalogVersion($catalog,version)
+						
+INSERT Product;code;$catalogVersion
+
+INSERT Product;code;catalogVersion(catalog(id),version)
+
+impex.header.replacement.1 = 
+						C@(\\w+) ... 
+						@$1[ system='\\$systemName', version='\\$systemVersion',translator='de...ClassificationAttributeTranslator']
+
+
+$systemName=MySys
+$systemVersion=1.0
+						
+INSERT_UPDATE Product; code[unique=true]; C@attr1; C@attr2 ; ...
+
+"""
+/L12"ImpEx" CSS_LANG Nocase Line Comment = # Line Comment Valid Columns = [0-1] Escape Char = \ String Chars = ' File Extensions = csv impex
+/Delimiters = , : ;	( ) [ ] ' " = | @ $
+/Open Brace Strings =  "(" "["
+/Close Brace Strings = ")" "]"
+/C1"ImpEx Tags" STYLE_KEYWORD
+
+INSERT_UPDATE INSERT UPDATE REMOVE 
+
+START_USERRIGHTS 
+<ignore>
+END_USERRIGHTS
+
+/C2"modifiers" STYLE_ATTRIBUTE
+alias
+allownull
+batchmode 
+case
+cellDecorator
+collection-delimiter
+dateformat
+default
+filter
+forceWrite
+ignoreKeyCase
+ignorenull
+key2value-delimiter
+lang
+map-delimiter
+mode
+numberformat
+path-delimiter
+pos
+translator
+unique
+virtual
+
+/C3"values"
+append
+false
+remove
+true
+
+/C4"definitions"
+** $
+""""
+
+insert_update Website;code[unique=true,allownull=true];emailFrom;emailPassword;emailServer;emailUser;frontendJspRoot;frontendURL;welcomeAction;itemViewURL;cssURL
+"#% impex.exportItems( ""Website"" , false );"
+                
+insert_update Template;code[unique=true,allownull=true];webSite(code)[unique=true,allownull=true];status(itemtype(code),code[unique=true])[allownull=true];templateType(itemtype(code),code[unique=true])[allownull=true]
+"#% impex.exportItems( ""Template"" , false );"
+
+insert_update ParagraphContent;code[unique=true];webSite(code)[unique=true,allownull=true];template(code,website(code));title[lang=nl];status(itemtype(code),code[unique=true])[allownull=true];metaAuthor[lang=nl];metaDescription[lang=nl];metaKeywords[lang=nl];metaPublicationDate[lang=nl];metaTitle[lang=nl];
+"#% impex.exportItems( ""ParagraphContent"" , false );"
+
+insert_update NavigationElement;code[unique=true];content(code,website(code));contentURL;name[lang=nl];parent(code,website(code));sequenceNumber[allownull=true];status(itemtype(code),code[unique=true])[allownull=true];template(code,website(code));visible[allownull=true];webSite(code)[unique=true,allownull=true]
+"#% impex.exportItems( ""NavigationElement"" , false );"
+
+insert_update BannerNavigationElement;bannerHTMLSrc[lang=nl];bannerMedia(code,catalogVersion(version, catalog(id)))[lang=nl];bannerTargetURL[allownull=true,lang=nl];code[unique=true];content(code,website(code));contentURL;name[lang=nl];openInNewWindow[allownull=true];parent(code,website(code));sequenceNumber[allownull=true];status(itemtype(code),code[unique=true])[allownull=true];template(code,website(code));visible[allownull=true];webSite(code)[unique=true,allownull=true]
+"#% impex.exportItems( ""BannerNavigationElement"" , false );"
+
+insert_update TextParagraph;code[unique=true];paragraphText[lang=nl];status(itemtype(code),code[unique=true])[allownull=true];template(code,website(code));webSite(code)[unique=true,allownull=true]
+"#% impex.exportItems( ""TextParagraph"" , false );"
+
+insert_update ParagraphContent2ParagraphRelation;language(isocode)[unique=true];qualifier;source(code,website(code))[unique=true];target(code,website(code))[unique=true]
+"#% impex.exportItems( ""ParagraphContent2ParagraphRelation"" , false );"
+
+insert_update Store;name[lang=nl];code[allownull=true,unique=true];online[allownull=true];showNetPrices[allownull=true];urlPatterns;cssURL;hideClassificationSystemTree[allownull=true];matchingOrder[allownull=true];webSite(code)[unique=true,allownull=true];
+"#% impex.exportItems( ""Store"" , false );"
+
+insert_update Category; catalog(id); catalogVersion(catalog(id),version)[unique=true]; code[unique=true]; data_sheet(code,catalogVersion(catalog(id),version)); description[lang=de]; description[lang=en]; detail(code,catalogVersion(catalog(id),version)); logo(code,catalogVersion(catalog(id),version)); name[lang=de]; name[lang=en]; normal(code,catalogVersion(catalog(id),version)); order; others(code,catalogVersion(catalog(id),version)); picture(code,catalogVersion(catalog(id),version)); thumbnail(code,catalogVersion(catalog(id),version)); thumbnails(code,catalogVersion(catalog(id),version))
+"#% impex.exportItems(""SELECT {Cat:pk} FROM {Category as Cat}, {CatalogVersion as CV}, {Catalog as C} WHERE {Cat:catalogversion}={CV:PK} AND {CV:catalog}={C:PK} AND {C:id}='$catalog' AND {CV:version}='$version'"", Collections.EMPTY_MAP, Collections.singletonList( Item.class ), true, true, -1, -1  );"
+
+insert_update Media;catalogVersion(catalog(id),version)[unique=true];code[unique=true];@media[translator=de.hybris.platform.impex.jalo.media.MediaDataTranslator];alttext;catalog(id)[allownull=true];description;mime;realfilename;removable;url;url2
+"#% impex.exportItems(""SELECT {M:pk} FROM {Media as M}, {CatalogVersion as CV}, {Catalog as C} WHERE {M:catalogversion}={CV:PK} AND {CV:catalog}={C:PK} AND {C:id}='$catalog' AND {CV:version}='$version'"", Collections.EMPTY_MAP, Collections.singletonList( Item.class ), true, true, -1, -1  );"
+
+insert DiscountRow; catalogVersion(catalog(id),version); currency(isocode); dateRange; discount(code)[allownull=true]; endTime;pg(itemtype(code),code); product(code,catalogVersion(catalog(id),version)); startTime; ug(itemtype(code),code); user(uid); userMatchQualifier; value
+"#% impex.exportItems(""SELECT {DR:pk} FROM {DiscountRow as DR}, {Product as P}, {CatalogVersion as CV}, {Catalog as C} WHERE {DR:product}={P:PK} AND {P:catalogversion}={CV:PK} AND {CV:catalog}={C:PK} AND {C:id}='$catalog' AND {CV:version}='$version'"", Collections.EMPTY_MAP, Collections.singletonList( Item.class ), true, true, -1, -1  );"
+"#% impex.exportItems(""SELECT {DR:pk} FROM {DiscountRow as DR}, {CatalogVersion as CV}, {Catalog as C} WHERE {DR:product} IS NULL AND {DR:catalogversion}={CV:PK} AND {CV:catalog}={C:PK} AND {C:id}='$catalog' AND {CV:version}='$version'"", Collections.EMPTY_MAP, Collections.singletonList( Item.class ), true, true, -1, -1  );"
+
+insert PriceRow; catalogVersion(catalog(id),version); currency(isocode)[allownull=true]; dateRange; endTime; giveAwayPrice[allownull=true]; matchValue; minqtd[allownull=true]; net[allownull=true]; pg(itemtype(code),code); price[allownull=true]; product(code,catalogVersion(catalog(id),version)); startTime; ug(itemtype(code),code); unit(code)[allownull=true]; unitFactor[allownull=true]; user(uid); userMatchQualifier
+"#% impex.exportItems(""SELECT {PR:pk} FROM {PriceRow as PR}, {Product as P}, {CatalogVersion as CV}, {Catalog as C} WHERE {PR:product}={P:PK} AND {P:catalogversion}={CV:PK} AND {CV:catalog}={C:PK} AND {C:id}='$catalog' AND {CV:version}='$version'"", Collections.EMPTY_MAP, Collections.singletonList( Item.class ), true, true, -1, -1  );"
+"#% impex.exportItems(""SELECT {PR:pk} FROM {PriceRow as PR}, {CatalogVersion as CV}, {Catalog as C} WHERE {PR:product} IS NULL AND {PR:catalogversion}={CV:PK} AND {CV:catalog}={C:PK} AND {C:id}='$catalog' AND {CV:version}='$version'"", Collections.EMPTY_MAP, Collections.singletonList( Item.class ), true, true, -1, -1  );"
+
+insert TaxRow;catalogVersion(catalog(id),version);currency(isocode);dateRange;endTime;pg(itemtype(code),code);product(code,catalogVersion(catalog(id),version));startTime;tax(code)[allownull=true];ug(itemtype(code),code);user(uid);userMatchQualifier;value
+"#% impex.exportItems(""SELECT {TR:pk} FROM {TaxRow as TR}, {Product as P}, {CatalogVersion as CV}, {Catalog as C} WHERE {TR:product}={P:PK} AND {P:catalogversion}={CV:PK} AND {CV:catalog}={C:PK} AND {C:id}='$catalog' AND {CV:version}='$version'"", Collections.EMPTY_MAP, Collections.singletonList( Item.class ), true, true, -1, -1  );"
+"#% impex.exportItems(""SELECT {TR:pk} FROM {TaxRow as TR}, {CatalogVersion as CV}, {Catalog as C} WHERE {TR:product} IS NULL AND {TR:catalogversion}={CV:PK} AND {CV:catalog}={C:PK} AND {C:id}='$catalog' AND {CV:version}='$version'"", Collections.EMPTY_MAP, Collections.singletonList( Item.class ), true, true, -1, -1  );"
+
+"#% impex.setLocale( new Locale( ""en"" , """" ) );"
+
+$classificationsystem=SampleClassification
+$version=1.0
+
+insert_update ClassificationSystem;&Item;activeCatalogVersion(catalog(id),version);buyer(uid);defaultCatalog[allownull=true];id[unique=true,allownull=true];name[lang=de];name[lang=en];previewURLTemplate;supplier(uid);urlPatterns
+"#% impex.exportItems(""SELECT {CS:pk} FROM {ClassificationSystem as CS} WHERE {CS:id}='$classificationsystem'"", Collections.EMPTY_MAP, Collections.singletonList( Item.class ), true, true, -1, -1 );"
+
+insert_update ClassificationSystemVersion;&Item;active[allownull=true];catalog(id)[unique=true,forceWrite=true,allownull=true];categorySystemDescription[lang=de];categorySystemDescription[lang=en];categorySystemID;categorySystemName[lang=de];categorySystemName[lang=en];defaultCurrency(isocode);generationDate;generatorInfo;inclAssurance[allownull=true];inclDuty[allownull=true];inclFreight[allownull=true];inclPacking[allownull=true];languages(isocode);mimeRootDirectory;previousUpdateVersion;synchronizations(code);territories(isocode);version[unique=true,allownull=true]
+"#% impex.exportItems(""SELECT {CSV:pk} FROM {ClassificationSystemVersion as CSV},{ClassificationSystem as CS} WHERE {CSV:catalog}={CS:PK} AND {CS:id}='$classificationsystem' AND {CSV:version}='$version'"", Collections.EMPTY_MAP, Collections.singletonList( Item.class ), true, true, -1, -1 );"
+
+insert_update ClassificationClass;&Item;catalog(id)[allownull=true];catalogVersion(catalog(id),version)[unique=true,forceWrite=true,allownull=true];code[unique=true,allownull=true];data_sheet(catalogVersion(catalog(id),version),code);description[lang=de];description[lang=en];detail(catalogVersion(catalog(id),version),code);externalID;hmcXML;logo(catalogVersion(catalog(id),version),code);name[lang=de];name[lang=en];normal(catalogVersion(catalog(id),version),code);order;others(catalogVersion(catalog(id),version),code);picture(catalogVersion(catalog(id),version),code);revision;showEmptyAttributes[allownull=true];thumbnail(catalogVersion(catalog(id),version),code);thumbnails(catalogVersion(catalog(id),version),code)
+"#% impex.exportItems(""SELECT {CC:pk} FROM {ClassificationClass as CC}, {ClassificationSystemVersion as CSV}, {ClassificationSystem as CS} WHERE {CC:catalogversion}={CSV:PK} AND {CSV:catalog}={CS:PK} AND {CS:id}='$classificationsystem' AND {CSV:version}='$version'"", Collections.EMPTY_MAP, Collections.singletonList( Item.class ), true, true, -1, -1  );"
+
+insert_update ClassAttributeAssignment;&Item;attributeType(itemtype(code),code)[unique=true];classificationAttribute(code,systemVersion(catalog(id),version))[forceWrite=true,allownull=true,unique=true];classificationClass(catalogVersion(catalog(id),version),code)[forceWrite=true,allownull=true,unique=true];comparable[allownull=true];description[lang=de];description[lang=en];externalID;formatDefinition;listable[allownull=true];localized[allownull=true];mandatory[allownull=true];multiValued[allownull=true];position;range[allownull=true];searchable[allownull=true];systemVersion(catalog(id),version)[forceWrite=true,unique=true];unit(code,systemVersion(catalog(id),version),unitType)[unique=true];visibility(itemtype(code),code)
+"#% impex.exportItems(""SELECT {CAA:pk} FROM {ClassAttributeAssignment as CAA}, {ClassificationSystemVersion as CSV}, {ClassificationSystem as CS} WHERE {CAA:systemVersion}={CSV:PK} AND {CSV:catalog}={CS:PK} AND {CS:id}='$classificationsystem' AND {CSV:version}='$version'"", Collections.EMPTY_MAP, Collections.singletonList( Item.class ), true, true, -1, -1  );"
+
+insert_update AttributeValueAssignment;&Item;attribute(&Item);attributeAssignment(classificationAttribute(code,systemVersion(catalog(id),version)),systemVersion(catalog(id),version),classificationClass(catalogVersion(catalog(id),version),code))[forceWrite=true,unique=true];externalID;position;systemVersion(catalog(id),version);value(code,systemVersion(catalog(id),version))[forceWrite=true,allownull=true,unique=true]
+"#% impex.exportItems(""SELECT {AVA:pk} FROM {AttributeValueAssignment as AVA}, {ClassificationSystemVersion as CSV}, {ClassificationSystem as CS} WHERE {AVA:systemVersion}={CSV:PK} AND {CSV:catalog}={CS:PK} AND {CS:id}='$classificationsystem' AND {CSV:version}='$version'"", Collections.EMPTY_MAP, Collections.singletonList( Item.class ), true, true, -1, -1  );"
+
+insert_update ClassificationAttributeUnit;&Item;code[allownull=true,unique=true];conversionFactor;externalID;name[lang=de];name[lang=en];symbol[allownull=true];systemVersion(catalog(id),version)[forceWrite=true,allownull=true,unique=true];unitType[unique=true]
+"#% impex.exportItems (""SELECT {CAU:pk} FROM {ClassificationAttributeUnit as CAU}, {ClassificationSystemVersion as CSV}, {ClassificationSystem as CS} WHERE {CAU:systemVersion}={CSV:PK} AND {CSV:catalog}={CS:PK} AND {CS:id}='$classificationsystem' AND {CSV:version}='$version'"", Collections.EMPTY_MAP, Collections.singletonList( Item.class ), true, true, -1, -1  );"
+
+insert_update ClassificationAttribute;&Item;code[forceWrite=true,allownull=true,unique=true];externalID;name[lang=de];name[lang=en];systemVersion(catalog(id),version)[allownull=true,unique=true]
+"#% impex.exportItems(""SELECT {CA:pk} FROM {ClassificationAttribute as CA}, {ClassificationSystemVersion as CSV}, {ClassificationSystem as CS} WHERE {CA:systemVersion}={CSV:PK} AND {CSV:catalog}={CS:PK} AND {CS:id}='$classificationsystem' AND {CSV:version}='$version'"", Collections.EMPTY_MAP, Collections.singletonList( Item.class ), true, true, -1, -1  );"
+
+insert_update ClassificationAttributeValue;&Item;code[forceWrite=true,allownull=true,unique=true];externalID;name[lang=de];name[lang=en];systemVersion(catalog(id),version)[forceWrite=true,allownull=true,unique=true]
+"#% impex.exportItems(""SELECT {CAV:pk} FROM {ClassificationAttributeValue as CAV}, {ClassificationSystemVersion as CSV}, {ClassificationSystem as CS} WHERE {CAV:systemVersion}={CSV:PK} AND {CSV:catalog}={CS:PK} AND {CS:id}='$classificationsystem' AND {CSV:version}='$version'"", Collections.EMPTY_MAP, Collections.singletonList( Item.class ), true, true, -1, -1  );"
+
+insert_update ClassificationKeyword;&Item;catalog(id)[allownull=true,unique=true];catalogVersion(catalog(id),version)[allownull=true,unique=true];externalID;keyword[allownull=true,unique=true];language(isocode)[forceWrite=true,allownull=true,unique=true];
+"#% impex.exportItems(""SELECT {CK:pk} FROM {ClassificationKeyword as CK}, {ClassificationSystemVersion as CSV}, {ClassificationSystem as CS} WHERE {CK:catalogVersion}={CSV:PK} AND {CSV:catalog}={CS:PK} AND {CS:id}='$classificationsystem' AND {CSV:version}='$version'"", Collections.EMPTY_MAP, Collections.singletonList( Item.class ), true, true, -1, -1  );"
+
+insert_update ClassificationAttributeTypeEnum;code[unique=true];extensionName;name[lang=de];name[lang=en];sequenceNumber
+"#% impex.exportItems( ""ClassificationAttributeTypeEnum"" , false );"
+
+insert_update ClassificationAttributeVisibilityEnum;code[unique=true];extensionName;name[lang=de];name[lang=en];sequenceNumber
+"#% impex.exportItems( ""ClassificationAttributeVisibilityEnum"" , false );"
+
+insert_update Category2KeywordRelation;&Item;language(isocode)[unique=true];qualifier;source(catalogVersion(catalog(id),version),code)[unique=true];target(catalogVersion(catalog(id),version),keyword,language)[unique=true]
+"#% impex.exportItems(""SELECT {CKR:pk} FROM {Category2KeywordRelation as CKR}, {ClassificationKeyword as CK}, {CatalogVersion as CV}, {Catalog as C} WHERE {CKR:target}={CK:PK} AND {CK:catalogversion}={CV:PK} AND {CV:catalog}={C:PK} AND {C:id}='$catalog' AND {CV:version}='$version'"", Collections.EMPTY_MAP, Collections.singletonList( Item.class ), true, true, -1, -1  );"
+
+insert_update Product2KeywordRelation;&Item;language(isocode)[unique=true];qualifier;source(catalogVersion(catalog(id),version),keyword,language)[unique=true];target(catalogVersion(catalog(id),version),code)[unique=true]
+"#% impex.exportItems(""SELECT {PKR:pk} FROM {Product2KeywordRelation as PKR}, {ClassificationKeyword as CK}, {ClassificationSystemVersion as CSV}, {ClassificationSystem as CS} WHERE {PKR:source}={CK:PK} AND {CK:catalogversion}={CSV:PK} AND {CSV:catalog}={CS:PK} AND {CS:id}='$classificationsystem' AND {CSV:version}='$version'"", Collections.EMPTY_MAP, Collections.singletonList( Item.class ), true, true, -1, -1  );"
+
+insert_update CategoryProductRelation;source(code,catalogVersion(catalog(id),version))[unique=true];target(code,catalogVersion(catalog(id),version))[unique=true];language(isocode)[unique=true]
+"#% impex.exportItems(""SELECT {CPR:pk} FROM {CategoryProductRelation as CPR}, {ClassificationClass as CC}, {ClassificationSystemVersion as CSV}, {ClassificationSystem as CS} WHERE {CPR:source}={CC:PK} AND {CC:catalogversion}={CSV:PK} AND {CSV:catalog}={CS:PK} AND {CS:id}='$classificationsystem' AND {CSV:version}='$version'"", Collections.EMPTY_MAP, Collections.singletonList( Item.class ), true, true, -1, -1  );"
+
+insert_update CategoryCategoryRelation;source(code,catalogVersion(catalog(id),version))[unique=true];target(code,catalogVersion(catalog(id),version))[unique=true];language(isocode)[unique=true]
+"#% impex.exportItems(""SELECT {CCR:pk} FROM {CategoryCategoryRelation as CCR}, {ClassificationClass as CC}, {ClassificationSystemVersion as CSV}, {ClassificationSystem as CS} WHERE {CCR:target}={CC:PK} AND {CC:catalogversion}={CSV:PK} AND {CSV:catalog}={CS:PK} AND {CS:id}='$classificationsystem' AND {CSV:version}='$version'"", Collections.EMPTY_MAP, Collections.singletonList( Item.class ), true, true, -1, -1  );"
+
+insert_update Category2PrincipalRelation;source(code,catalogVersion(catalog(id),version))[unique=true];target(uid)[unique=true];language(isocode)[unique=true]
+"#% impex.exportItems(""SELECT {CPR:pk} FROM {Category2PrincipalRelation as CPR}, {ClassificationClass as CC}, {ClassificationSystemVersion as CSV}, {ClassificationSystem as CS} WHERE {CPR:source}={CC:PK} AND {CC:catalogversion}={CSV:PK} AND {CSV:catalog}={CS:PK} AND {CS:id}='$classificationsystem' AND {CSV:version}='$version'"", Collections.EMPTY_MAP, Collections.singletonList( Item.class ), true, true, -1, -1  );"
+	
+insert_update Principal2ReadableCatalogVersionRelation;source(uid)[unique=true];target(catalog(id),version)[unique=true];language(isocode)[unique=true]
+"#% impex.exportItems(""SELECT {PCR:pk} FROM {Principal2ReadableCatalogVersionRelation as PCR}, {ClassificationSystemVersion as CSV}, {ClassificationSystem as CS} WHERE {PCR:target}={CSV:PK} AND {CSV:catalog}={CS:PK} AND {CS:id}='$classificationsystem' AND {CSV:version}='$version'"", Collections.EMPTY_MAP, Collections.singletonList( Item.class ), true, true, -1, -1  );"
+
+insert_update Principal2WriteableCatalogVersionRelation;source(uid)[unique=true];target(catalog(id),version)[unique=true];language(isocode)[unique=true]
+"#% impex.exportItems(""SELECT {PCR:pk} FROM {Principal2WriteableCatalogVersionRelation as PCR}, {ClassificationSystemVersion as CSV}, {ClassificationSystem as CS} WHERE {PCR:target}={CSV:PK} AND {CSV:catalog}={CS:PK} AND {CS:id}='$classificationsystem' AND {CSV:version}='$version'"", Collections.EMPTY_MAP, Collections.singletonList( Item.class ), true, true, -1, -1  );"
+
+
+# ---- Extension: core ---- Type: User ----
+"#% impex.setTargetFile( ""User.csv"" );"
+insert_update User;pk;CN;DN;Europe1PriceFactory_UDG(code,itemtype(code));Europe1PriceFactory_UPG(code,itemtype(code));Europe1PriceFactory_UTG(code,itemtype(code));authorizedToUnlockPages[allownull=true];backOfficeLoginDisabled;creationtime[forceWrite=true,dateformat=dd.MM.yyyy hh:mm:ss];deactivationDate[dateformat=dd.MM.yyyy hh:mm:ss];defaultPaymentAddress(pk);defaultShipmentAddress(pk);description;domain;encodedPassword;europe1Discounts(pk);hmcLoginDisabled;lastLogin[dateformat=dd.MM.yyyy hh:mm:ss];ldapaccount[allownull=true];ldaplogin;ldapsearchbase;loginDisabled[allownull=true];modifiedtime[dateformat=dd.MM.yyyy hh:mm:ss];name;owner(pk)[allownull=true,forceWrite=true];password;passwordAnswer;passwordEncoding;passwordQuestion;profilePicture(catalogVersion(catalog(id),version),code);retentionState(code,itemtype(code));sessionCurrency(isocode);sessionLanguage(isocode);uid[unique=true,allownull=true];userprofile(pk)
+"#% impex.exportItems( ""User"" , false );"

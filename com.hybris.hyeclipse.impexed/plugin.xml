@@ -2,81 +2,10 @@
 <?eclipse version="3.4"?>
 <plugin>
 
-	<extension
-		point="org.eclipse.ui.editors">
-		<editor
-			name="Impex Editor"
-            extensions="impex"
-            icon="icon/hybris.ico"
-            contributorClass="com.hybris.impexformatter.editors.MultiPageEditorContributor"
-            class="com.hybris.impexformatter.editors.ImpexPageEditor"
-            id="com.hybris.impexformatter.editors.ImpexPageEditor">
-        </editor>
-       >
-	</extension>
 	
-	<extension
-		point="org.eclipse.ui.newWizards">
-		<category
-        id="sapHybris"
-        name="SAP">
-		</category>
-		<wizard
-			name="New impex file"
-            icon="icon/hybris.ico"
-            category="sapHybris"
-            class="com.hybris.impexformatter.wizards.NewImpexWizard"
-            id="com.hybris.impexformatter.wizards.NewImpexWizard">
-		</wizard>
-	</extension>
 	
-	<extension
-		point = "org.eclipse.ui.editorActions">
-		<editorContribution
-			id="org.eclipse.ui.examples.readmetool.ec1"
-			targetID="com.hybris.impexformatter.editors.ImpexPageEditor">
-			<action
-				id="impex.format.action"
-				label="format impex"
-				class="com.hybris.impexformatter.editors.ImpexFormatAction"
-				definitionId="impexFormatter"/>
-		</editorContribution>
-	</extension>
 	
-	<extension
-		point="org.eclipse.ui.commands">
-		<category
-			id="impexCategory"
-			name="Impex source"
-			description="Category for impex"/>
-		<command
-            id="impexFormatter"
-            name="Impex Format"
-            categoryId="impexCategory">
-		</command>
-		<command
-            id="com.hybris.impexformatter.wizards.NewImpexWizard"
-            defaultHandler="com.hybris.impexformatter.handlers.NewImpexWizardHandler"
-            name="Impex Wizard"
-            categoryId="impexCategory">
-		</command>
-	</extension>
 	
-	<extension
-		point="org.eclipse.ui.bindings">
-		<key
-			commandId="impexFormatter"
-            sequence="M1+Shift+F"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            contextId="org.eclipse.ui.textEditorScope">
-		</key>
-		<key
-			commandId="com.hybris.impexformatter.wizards.NewImpexWizard"
-            sequence="M1+Shift+Y"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            contextId="org.eclipse.ui.contexts.window">
-		</key>
-	</extension>
 	
 	<extension
 	      point="org.eclipse.ui.menus">
@@ -93,19 +22,68 @@
 	      </menuContribution>
 	</extension>
 	
-	<extension
-		point="org.eclipse.ui.preferencePages">
-		<page
-			class="com.hybris.impexformatter.preferences.ImpexPreferencePage"
-            id="com.hybris.impexformatter.preferences.ImpexPreferencePage"
-            category="com.hybris.yps.hyeclipse.preferences.HyEclipsePreferencePage"
-            name="Impex Editor Preferences">
-		</page>
-	</extension>
 	
-	<extension
-		point="org.eclipse.core.runtime.preferences">
-		<initializer
-			class="com.hybris.impexformatter.preferences.PreferenceInitializer"/>
-	</extension>
+ <extension
+       point="org.eclipse.core.contenttype.contentTypes">
+    <content-type
+          base-type="com.hybris.hyeclipse.parent"
+          default-charset="utf-8"
+          file-extensions="impex"
+          file-patterns="*.impex"
+          id="com.hybris.hyeclipse.impex"
+          name="Impex"
+          priority="high">
+    </content-type>
+    <content-type
+          base-type="com.hybris.hyeclipse.parent"
+          default-charset="utf-8"
+          file-extensions="sql,flex,flexiblesearch,fs"
+          id="com.hybris.hyeclipse.sql"
+          name="SQL"
+          priority="high">
+    </content-type>
+    <content-type
+          base-type="org.eclipse.core.runtime.text"
+          id="com.hybris.hyeclipse.parent"
+          name="SAP Commerce Editor"
+          priority="normal">
+    </content-type>
+ </extension>
+ <extension
+       point="org.eclipse.ui.editors">
+    <editorContentTypeBinding
+          contentTypeId="com.hybris.hyeclipse.parent"
+          editorId="org.eclipse.ui.genericeditor.GenericEditor">
+    </editorContentTypeBinding>
+ </extension>
+ <extension
+       point="org.eclipse.tm4e.registry.grammars">
+    <grammar
+          path="project-settings/netbeans.impex.tmLanguage.json"
+          scopeName="source.impex">
+    </grammar>
+    <scopeNameContentTypeBinding
+          contentTypeId="com.hybris.hyeclipse.impex"
+          scopeName="source.impex">
+    </scopeNameContentTypeBinding>
+    <grammar
+          path="project-settings/sql.tmLanguage.json"
+          scopeName="source.sql">
+    </grammar>
+    <scopeNameContentTypeBinding
+          contentTypeId="com.hybris.hyeclipse.sql"
+          scopeName="source.sql">
+    </scopeNameContentTypeBinding>
+ </extension>
+ <extension
+       point="org.eclipse.tm4e.languageconfiguration.languageConfigurations">
+    <languageConfiguration
+          contentTypeId="com.hybris.hyeclipse.impex"
+          path="project-settings/impex.language-configuration.json">
+    </languageConfiguration>
+    <languageConfiguration
+          contentTypeId="com.hybris.hyeclipse.sql"
+          path="project-settings/sql.language-configuration.json">
+    </languageConfiguration>
+ </extension>
 </plugin>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="RemoteRepositoriesConfiguration">
+    <remote-repository>
+      <option name="id" value="build-milestones-cx-commerce-maven" />
+      <option name="name" value="build-milestones-cx-commerce-maven" />
+      <option name="url" value="https://artifactory-prod.sapcdn.io:443/artifactory/build-milestones-cx-commerce-maven" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="central" />
+      <option name="name" value="Central Repository" />
+      <option name="url" value="https://repo.maven.apache.org/maven2" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="sap-cx-commerce-archive-hybris-public-release" />
+      <option name="name" value="sap-cx-commerce-archive-hybris-public-release" />
+      <option name="url" value="https://artifactory-prod.sapcdn.io:443/artifactory/sap-cx-commerce-archive-hybris-public-release" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="sap-cx-commerce-archive-hybris-release" />
+      <option name="name" value="sap-cx-commerce-archive-hybris-release" />
+      <option name="url" value="https://artifactory-prod.sapcdn.io:443/artifactory/sap-cx-commerce-archive-hybris-release" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="hybris-infrastructure" />
+      <option name="name" value="hybris-infrastructure" />
+      <option name="url" value="https://repository.hybris.com/infrastructure" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="central" />
+      <option name="name" value="Maven Central repository" />
+      <option name="url" value="https://repo1.maven.org/maven2" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="nexus-wdf-sap-corp-releases" />
+      <option name="name" value="nexus-wdf-sap-corp-releases" />
+      <option name="url" value="http://nexus.wdf.sap.corp:8081/nexus/content/repositories/build.releases" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="build-3rd-party-releases-cx-commerce-maven" />
+      <option name="name" value="build-3rd-party-releases-cx-commerce-maven" />
+      <option name="url" value="https://artifactory-prod.sapcdn.io:443/artifactory/sap-cx-commerce-archive-dranura-release" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="deploy-milestones-cx-commerce-maven" />
+      <option name="name" value="deploy-milestones-cx-commerce-maven" />
+      <option name="url" value="https://artifactory-prod.sapcdn.io:443/artifactory/deploy-milestones-cx-commerce-maven" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="jboss.community" />
+      <option name="name" value="JBoss Community repository" />
+      <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="deploy-3rd-party-cx-commerce-maven" />
+      <option name="name" value="deploy-3rd-party-cx-commerce-maven" />
+      <option name="url" value="https://artifactory-prod.sapcdn.io:443/artifactory/deploy-3rd-party-cx-commerce-maven" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="maintenance" />
+      <option name="name" value="maintenance" />
+      <option name="url" value="https://artifactory-prod.sapcdn.io:443/artifactory/maintenance" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="2020-09" />
+      <option name="name" value="2020-09" />
+      <option name="url" value="https://download.eclipse.org/releases/2020-09" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="commons-release" />
+      <option name="name" value="commons-release" />
+      <option name="url" value="https://repository.hybris.com/commons-release" />
+    </remote-repository>
+  </component>
+</project>

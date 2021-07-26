@@ -25,6 +25,8 @@ import org.eclipse.ui.IEditorPart;
  * @author SAP
  *
  */
+// TODO Old editor formatter. Has to be moved to LSP 
+@Deprecated
 public class ImpexFormatAction implements IEditorActionDelegate {
 
 	private IEditorPart editorPart = null;

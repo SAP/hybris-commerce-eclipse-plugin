@@ -58,13 +58,14 @@
 		<module>com.hybris.hyeclipse.junit</module>
 		<module>com.hybris.hyeclipse.editor</module>
 		<module>com.hybris.hyeclipse.tests</module>
+		<module>com.hybris.hyeclipse.lsp</module>
 	</modules>
 
 	<repositories>
 		<repository>
-			<id>oxygen</id>
+			<id>2020-12</id>
 			<layout>p2</layout>
-			<url>https://download.eclipse.org/releases/oxygen</url>
+			<url>https://download.eclipse.org/releases/2020-12</url>
 		</repository>
 		 
 	</repositories>
@@ -91,8 +92,8 @@
 				<artifactId>tycho-compiler-plugin</artifactId>
 				<version>${tycho-version}</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>11</source>
+					<target>11</target>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -104,17 +105,7 @@
 						<environment>
 							<os>linux</os>
 							<ws>gtk</ws>
-							<arch>x86</arch>
-						</environment>
-						<environment>
-							<os>linux</os>
-							<ws>gtk</ws>
 							<arch>x86_64</arch>
-						</environment>
-						<environment>
-							<os>win32</os>
-							<ws>win32</ws>
-							<arch>x86</arch>
 						</environment>
 						<environment>
 							<os>win32</os>

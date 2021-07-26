@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/com.hybris.hyeclipse.lsp.iml" filepath="$PROJECT_DIR$/com.hybris.hyeclipse.lsp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/impex-lsp/impex-lsp.iml" filepath="$PROJECT_DIR$/impex-lsp/impex-lsp.iml" />
+    </modules>
+  </component>
+</project>

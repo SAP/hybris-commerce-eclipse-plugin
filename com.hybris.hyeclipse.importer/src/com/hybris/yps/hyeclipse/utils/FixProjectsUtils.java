@@ -205,11 +205,18 @@ public class FixProjectsUtils {
 		}
 	}
 	
+	public static boolean isASystemExtension(IProject project)
+	{
+		String path = project.getLocation().toFile().getAbsolutePath();
+		String binDir = "bin" + File.separator;
+		return (path.indexOf(binDir + "ext-") >= 0 || isAPlatformExtension(project));
+	}
+	
 	public static boolean isAPlatformExtension(IProject project)
 	{
 		String path = project.getLocation().toFile().getAbsolutePath();
 		String binDir = "bin" + File.separator;
-		return (path.indexOf(binDir + "ext-") >= 0 || path.indexOf(binDir + PLATFORM_DIR) >= 0);
+		return (path.indexOf(binDir + PLATFORM_DIR) >= 0);
 	}
 	
 	public static boolean isATemplateExtension(IProject project)
@@ -219,7 +226,7 @@ public class FixProjectsUtils {
 	
 	public static boolean isACustomerExtension(IProject project)
 	{
-		return !isAPlatformExtension(project) && !project.getName().equals(CONFIG_DIR);
+		return !isASystemExtension(project) && !project.getName().equals(CONFIG_DIR);
 	}
 	
 	public static Set<IProject> getAllPlatformProjects()
@@ -228,7 +235,7 @@ public class FixProjectsUtils {
 		final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
 		for (IProject project : projects)
 		{
-			if (isAHybrisExtension(project) && isAPlatformExtension(project))
+			if (isAHybrisExtension(project) && isASystemExtension(project))
 			{
 				filteredProjects.add(project);
 			}

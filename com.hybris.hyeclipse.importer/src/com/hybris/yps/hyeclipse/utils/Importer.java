@@ -247,7 +247,7 @@ public class Importer {
 	private void fixProjectCompilerSettings(final IProject project, final IJavaProject javaProject,
 			final double platformVersion) {
 		// don't fix project or custom extensions
-		if (FixProjectsUtils.isAPlatformExtension(project) && !FixProjectsUtils.isATemplateExtension(project)) {
+		if (FixProjectsUtils.isASystemExtension(project) && !FixProjectsUtils.isATemplateExtension(project)) {
 			lowerJavaNotificationLevels(javaProject, platformVersion);
 
 		}
