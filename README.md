@@ -1,11 +1,11 @@
 # Eclipse Plugin for SAP Commerce
 
-What is it?
+Description
 -----------
 This Eclipse plugin makes developers more efficient by taking care of some of the common issues of developing with the SAP Commerce Suite. For example, with this plugin it's possible to have a new project workspace quickly configured with all project extensions compiling in minutes rather than hours.
 
 [![Build Status - Master](https://travis-ci.com/mikolayek/hybris-commerce-eclipse-plugin.svg?branch=master)](https://travis-ci.com/mikolayek/hybris-commerce-eclipse-plugin) [![Join the chat at https://gitter.im/SAP/commerce-eclipse-plugin](https://badges.gitter.im/SAP/commerce-eclipse-plugin.svg)](https://gitter.im/SAP/commerce-eclipse-plugin?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![REUSE status](https://api.reuse.software/badge/github.com/SAP/hybris-commerce-eclipse-plugin)](https://api.reuse.software/info/github.com/SAP/hybris-commerce-eclipse-plugin)
-    
+
 Features
 -----------
 * [Import platform into workspace](docs/importer/importer.md)
@@ -20,17 +20,21 @@ Features
 * [Commerce Bean & Enums Generation Wizard](docs/beangen/beangen.md)
 * Type System Validation
 
-User Guide
-----------
-This GitHub repository is for managing the source code of the plugin.
+Requirements
+------------
+It is required to install latest Eclipse IDE for plugin. Plugin is backward compatible with IDE at least 6 months old since plugin version release date.
 
-To install the plugin visit the [Eclipse Marketplace](https://marketplace.eclipse.org/content/sap-hybris-commerce-development-tools-eclipse) and for up to date documentation, the Application Lifecycle Framework for Commerce: [SAP Commerce development tools for Eclipse](https://wiki.hybris.com/display/hybrisALF/SAP+Hybris+Commerce+development+tools+for+Eclipse).
-
-Development
+Contributing & Code of Conduct
 --------------
 
 Plugin is released as a open-source project. If you want to contribute to it, can find more information about setup in [Development](docs/dev/development.md) section and in [Code of Conduct](CODE_OF_CONDUCT.md)
 
+
+Download & Installation
+----------
+This GitHub repository is for managing the source code of the plugin.
+
+To install the plugin visit the [Eclipse Marketplace](https://marketplace.eclipse.org/content/sap-hybris-commerce-development-tools-eclipse) and for up to date documentation, the Application Lifecycle Framework for Commerce: [SAP Commerce development tools for Eclipse](https://wiki.hybris.com/display/hybrisALF/SAP+Hybris+Commerce+development+tools+for+Eclipse).
 
 Compile and Install From Source
 -------------------------------
