@@ -4,9 +4,8 @@ What is it?
 -----------
 This Eclipse plugin makes developers more efficient by taking care of some of the common issues of developing with the SAP Commerce Suite. For example, with this plugin it's possible to have a new project workspace quickly configured with all project extensions compiling in minutes rather than hours.
 
-[![Build Status - Master](https://travis-ci.com/mikolayek/hybris-commerce-eclipse-plugin.svg?branch=master)](https://travis-ci.com/mikolayek/hybris-commerce-eclipse-plugin) [![Join the chat at https://gitter.im/SAP/commerce-eclipse-plugin](https://badges.gitter.im/SAP/commerce-eclipse-plugin.svg)](https://gitter.im/SAP/commerce-eclipse-plugin?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
-
+[![Build Status - Master](https://travis-ci.com/mikolayek/hybris-commerce-eclipse-plugin.svg?branch=master)](https://travis-ci.com/mikolayek/hybris-commerce-eclipse-plugin) [![Join the chat at https://gitter.im/SAP/commerce-eclipse-plugin](https://badges.gitter.im/SAP/commerce-eclipse-plugin.svg)](https://gitter.im/SAP/commerce-eclipse-plugin?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![REUSE status](https://api.reuse.software/badge/github.com/SAP/hybris-commerce-eclipse-plugin)](https://api.reuse.software/info/github.com/SAP/hybris-commerce-eclipse-plugin)
+    
 Features
 -----------
 * [Import platform into workspace](docs/importer/importer.md)
@@ -41,3 +40,8 @@ Knowledge Database
 --------------
 
 Please find [Knowledge Database](docs/kb/info.md)  which describe solutions for known issues.
+
+Licensing
+--------------
+
+Please see our [LICENSE](LICENSE) for copyright and license information. Detailed information including third-party components and their licensing/copyright information is available via the [REUSE tool](https://api.reuse.software/info/github.com/SAP/hybris-commerce-eclipse-plugin).
