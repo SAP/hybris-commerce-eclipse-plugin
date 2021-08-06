@@ -275,7 +275,7 @@ public class TSVExtendedAnalyser {
 			}
 			catch (InterruptedException e) {
 				Activator.logError("interrupted thread", e);
-				Thread.interrupted();
+				Thread.currentThread().interrupted();
 			}
 			
 		}
