@@ -26,13 +26,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPath;
@@ -55,7 +58,6 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
-import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IStreamMonitor;
 import org.w3c.dom.Attr;
@@ -66,7 +68,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
-
+import com.hybris.hyeclipse.commons.utils.XmlScannerUtils;
 import com.hybris.yps.hyeclipse.Activator;
 import com.hybris.yps.hyeclipse.ExtensionHolder;
 import com.hybris.yps.hyeclipse.extensionmods.ExtensionModuleTrimmer;
@@ -77,11 +79,16 @@ import com.hybris.yps.hyeclipse.utils.WorkingSetsUtils;
  * Utility class around extensions handling.
  */
 public class ExtensionUtils {
+	private static final String EXT_NAME = "extension";
 	private static final String TEMPLATE_KEY = "input.template";
 	private static final String NAME_KEY = "input.name";
 	private static final String PACKAGE_KEY = "input.package";
 	private static final String CFG_NAME = "yplatform_extgen";
-
+	
+	private ExtensionUtils() {
+		throw new IllegalStateException("utility class");
+	}
+	
 	/**
 	 * Moves extension directory to the given directory
 	 * 
@@ -159,16 +166,13 @@ public class ExtensionUtils {
 			ILaunch launch = launchCfg.launch(ILaunchManager.RUN_MODE, monitor);
 			final boolean[] buildWasSuccessful = new boolean[] { true };
 			for (IProcess proc : launch.getProcesses()) {
-				proc.getStreamsProxy().getErrorStreamMonitor().addListener(new IStreamListener() {
-					@Override
-					public void streamAppended(String text, IStreamMonitor monitor) {
-						if (text.contains("BUILD FAILED")) {
-							buildWasSuccessful[0] = false;
-						}
+				proc.getStreamsProxy().getErrorStreamMonitor().addListener((String text, IStreamMonitor m) -> {
+					if (text.contains("BUILD FAILED")) {
+						buildWasSuccessful[0] = false;
 					}
 				});
 			}
-			if (Boolean.FALSE == buildWasSuccessful[0]) {
+			if (!buildWasSuccessful[0]) {
 				throw new CoreException(new Status(IStatus.ERROR, "com.hybris.hyeclipse.extgen", "Ant build failed"));
 			}
 
@@ -191,15 +195,14 @@ public class ExtensionUtils {
 	public static void addToLocalExtension(File source, String workingSetName, String extensionName)
 			throws SAXException, IOException, ParserConfigurationException, TransformerException {
 		File xmlFile = new File(PathUtils.getLocalExtensionsPath());
-		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+		DocumentBuilder dBuilder = XmlScannerUtils.newDocumentBuilder();
 		Document doc = dBuilder.parse(xmlFile);
 		doc.getDocumentElement().normalize();
 
 		Node extensions = doc.getElementsByTagName("extensions").item(0);
 		Attr dirAttr = doc.createAttribute("dir");
 		dirAttr.setValue(source + File.separator + extensionName);
-		Element extension = doc.createElement("extension");
+		Element extension = doc.createElement(EXT_NAME);
 		extension.setAttributeNode(dirAttr);
 		if (!workingSetName.isEmpty()) {
 			if (getWorkingSets().contains(workingSetName)) {
@@ -214,8 +217,7 @@ public class ExtensionUtils {
 		} else {
 			extensions.insertBefore(extension, getFirstExtensionNode(extensions));
 		}
-		TransformerFactory transformerFactory = TransformerFactory.newInstance();
-		Transformer transformer = transformerFactory.newTransformer();
+		Transformer transformer = XmlScannerUtils.newTransformer();
 		transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 		transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
@@ -233,7 +235,7 @@ public class ExtensionUtils {
 	 *            name of working set
 	 */
 	private static Node getFirstExtensionNodeFromWorkingSet(Node extensionsNode, String workingSetName) {
-		final String extensionTag = "extension";
+		final String extensionTag = EXT_NAME;
 		final String commentTag = "#comment";
 		Node child;
 		NodeList nodes = extensionsNode.getChildNodes();
@@ -256,7 +258,7 @@ public class ExtensionUtils {
 	 *            extension node
 	 */
 	private static Node getFirstExtensionNode(Node extensionsNode) {
-		final String extensionTag = "extension";
+		final String extensionTag = EXT_NAME;
 		NodeList nodes = extensionsNode.getChildNodes();
 		for (int i = 0; i < nodes.getLength(); i++) {
 			Node child = nodes.item(i);
@@ -287,10 +289,9 @@ public class ExtensionUtils {
 	private static boolean isTemplate(IProject extensionProject) {
 		String path = extensionProject.getLocation().toOSString();
 		File extInfo = new File(path, "extensioninfo.xml");
-		if (extInfo != null && extInfo.exists()) {
-			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+		if (extInfo.exists()) {
 			try {
-				DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+				DocumentBuilder dBuilder = XmlScannerUtils.newDocumentBuilder();
 				Document doc = dBuilder.parse(extInfo);
 				Node metaNode = doc.getElementsByTagName("meta").item(0);
 				if (metaNode != null) {
@@ -313,11 +314,11 @@ public class ExtensionUtils {
 	 */
 	public static List<String> getTemplates() {
 		File templatesDir = new File(PathUtils.getExtensionsTemplatePath());
-		List<String> templates = Arrays.stream(templatesDir.listFiles(File::isDirectory)).map(file -> file.getName())
+		List<String> templates = Arrays.stream(templatesDir.listFiles(File::isDirectory)).map(File::getName)
 				.collect(Collectors.toList());
 		IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-		List<String> customTemplates = Arrays.stream(projects).filter(project -> isTemplate(project))
-				.map(project -> project.getName()).collect(Collectors.toList());
+		List<String> customTemplates = Arrays.stream(projects).filter(ExtensionUtils::isTemplate)
+				.map(IProject::getName).collect(Collectors.toList());
 		templates.addAll(customTemplates);
 		return templates;
 	}
@@ -328,9 +329,8 @@ public class ExtensionUtils {
 	public static Set<String> getWorkingSets() {
 		Set<String> workingSets = new HashSet<>();
 		File localExtensions = new File(PathUtils.getLocalExtensionsPath());
-		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		try {
-			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			DocumentBuilder dBuilder = XmlScannerUtils.newDocumentBuilder();
 			Document doc = dBuilder.parse(localExtensions);
 			XPath xPath = XPathFactory.newInstance().newXPath();
 			String path = "//comment()[following-sibling::*[1][self::extension]]";

@@ -91,32 +91,20 @@ public class Activator extends AbstractUIPlugin {
 	private Set<? extends YType> allTypes;
 	private List<String> allTypeNames;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.
-	 * BundleContext)
-	 */
+	public Activator() {
+		super();
+		if (plugin == null) {
+			plugin = this; //NOSONAR			
+		}
+	}
+	
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
 		super.start(bundleContext);
-		plugin = this; //NOSONAR
 
 		if (getPlatformHome() != null) {
 			loadBootstrapBundle();
 		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
-	 */
-	@Override
-	public void stop(BundleContext bundleContext) throws Exception {
-		plugin = null; //NOSONAR
-		super.stop(bundleContext);
 	}
 
 	/**
@@ -289,11 +277,12 @@ public class Activator extends AbstractUIPlugin {
 		return null;
 	}
 
-	public Set<? extends YType> getAllTypes() {
+	@SuppressWarnings("unchecked")
+	public Set<YType> getAllTypes() {
 		if (allTypes == null) {
 			allTypes = getTypeSystem().getTypes();
 		}
-		return allTypes;
+		return (Set<YType>) allTypes;
 	}
 
 	public void nullifyAllTypes() {
@@ -359,55 +348,56 @@ public class Activator extends AbstractUIPlugin {
 	private ExtensionHolder createExtensionHolderFromExtensionInfo(ExtensionInfo extension) {
 
 		ExtensionHolder extHolder = null;
-		if (!extension.isCoreExtension()) {
+		
+		if (extension.isCoreExtension()) {
+			return extHolder;
+		}
 
-			// some extensions appear to not have a directory so we skip them
-			if (extension.getExtensionDirectory() == null) {
-				log("extension [" + extension.getName() + "] doesn't have an extension directory, skipping");
-				return null;
-			}
-			String path = extension.getExtensionDirectory().getAbsolutePath();
-			extHolder = new ExtensionHolder(path, extension.getName());
-			if (extension.getCoreModule() != null) {
-				extHolder.setCoreModule(true);
-			}
-			if (extension.getWebModule() != null) {
-				extHolder.setWebModule(true);
-			}
-			if (extension.getHMCModule() != null && getPlatformConfig().getExtensionInfo("hmc") != null) {
-				extHolder.setHmcModule(true);
-			}
+		// some extensions appear to not have a directory so we skip them
+		if (extension.getExtensionDirectory() == null) {
+			log("extension [" + extension.getName() + "] doesn't have an extension directory, skipping");
+			return null;
+		}
+		String path = extension.getExtensionDirectory().getAbsolutePath();
+		extHolder = new ExtensionHolder(path, extension.getName());
+		if (extension.getCoreModule() != null) {
+			extHolder.setCoreModule(true);
+		}
+		if (extension.getWebModule() != null) {
+			extHolder.setWebModule(true);
+		}
+		if (extension.getHMCModule() != null && getPlatformConfig().getExtensionInfo("hmc") != null) {
+			extHolder.setHmcModule(true);
+		}
 
-			extHolder.setBackofficeModule(false);
-			String backOfficeMeta = extension.getMeta("backoffice-module");
-			if (backOfficeMeta != null && backOfficeMeta.equalsIgnoreCase("true")) {
-				extHolder.setBackofficeModule(true);
-			}
+		extHolder.setBackofficeModule(false);
+		String backOfficeMeta = extension.getMeta("backoffice-module");
+		if (backOfficeMeta != null && backOfficeMeta.equalsIgnoreCase("true")) {
+			extHolder.setBackofficeModule(true);
+		}
 
-			extHolder.setAddOnModule(false);
-			File addonDir = new File(path, "acceleratoraddon");
-			if (addonDir.exists() && addonDir.isDirectory()) {
-				extHolder.setAddOnModule(true);
-			}
+		extHolder.setAddOnModule(false);
+		File addonDir = new File(path, "acceleratoraddon");
+		if (addonDir.exists() && addonDir.isDirectory()) {
+			extHolder.setAddOnModule(true);
+		}
 
-			File libDir = new File(path, "lib");
-			if (libDir.exists() && libDir.isDirectory()) {
-				File[] files = libDir.listFiles((File dir, String name) -> 
-					name.toLowerCase(Locale.ENGLISH).endsWith(".jar")
-				);
-				for (File file : files) {
-					extHolder.getJarFiles().add(file.getName());
-				}
+		File libDir = new File(path, "lib");
+		if (libDir.exists() && libDir.isDirectory()) {
+			File[] files = libDir.listFiles((File dir, String name) -> 
+				name.toLowerCase(Locale.ENGLISH).endsWith(".jar")
+			);
+			for (File file : files) {
+				extHolder.getJarFiles().add(file.getName());
 			}
+		}
 
-			if (!extension.getAllRequiredExtensionNames().isEmpty()) {
-				List<String> extensions = new LinkedList<>(extension.getAllRequiredExtensionNames());
-				if (!extensions.contains(PLATFORM)) {
-					extensions.add(PLATFORM);
-				}
-				extHolder.setDependentExtensions(extensions);
+		if (!extension.getAllRequiredExtensionNames().isEmpty()) {
+			List<String> extensions = new LinkedList<>(extension.getAllRequiredExtensionNames());
+			if (!extensions.contains(PLATFORM)) {
+				extensions.add(PLATFORM);
 			}
-
+			extHolder.setDependentExtensions(extensions);
 		}
 
 		return extHolder;

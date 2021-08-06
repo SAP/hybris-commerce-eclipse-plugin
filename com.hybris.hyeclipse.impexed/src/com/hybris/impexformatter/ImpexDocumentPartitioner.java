@@ -35,7 +35,9 @@ public class ImpexDocumentPartitioner implements IDocumentPartitioner {
 	public static final String IMPEX_HEADER = "__y_impex_header";
 	private IDocument fDocument;
 	
-	public ImpexDocumentPartitioner() {}
+	public ImpexDocumentPartitioner() {
+		// intended to be empty
+	}
 	
 	@Override
 	public void connect(IDocument document) {
@@ -63,7 +65,7 @@ public class ImpexDocumentPartitioner implements IDocumentPartitioner {
 				return ImpexDocumentPartitioner.IMPEX_DATA;
 			}
 			if (line.startsWith("$")) {
-				//TODO - handle macros, user rights $START_USERRIGHTS
+				// need to handle macros, user rights $START_USERRIGHTS
 				return null;
 			}
 		}

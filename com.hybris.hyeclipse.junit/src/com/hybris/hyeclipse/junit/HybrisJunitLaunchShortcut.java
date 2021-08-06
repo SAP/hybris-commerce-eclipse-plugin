@@ -25,9 +25,9 @@ import org.eclipse.jdt.junit.launcher.JUnitLaunchShortcut;
 public class HybrisJunitLaunchShortcut extends JUnitLaunchShortcut
 {
 	   @Override
-	   protected ILaunchConfigurationWorkingCopy createLaunchConfiguration(IJavaElement p_element) throws CoreException
+	   protected ILaunchConfigurationWorkingCopy createLaunchConfiguration(IJavaElement pElement) throws CoreException
 	   {
-	      ILaunchConfigurationWorkingCopy config = super.createLaunchConfiguration(p_element);
+	      ILaunchConfigurationWorkingCopy config = super.createLaunchConfiguration(pElement);
 	      config.setAttribute(JUnitLaunchConfigurationConstants.ATTR_TEST_RUNNER_KIND, "com.hybris.junit.kind");
 	      return config;
 	   }

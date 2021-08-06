@@ -44,6 +44,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
 import com.hybris.hyeclipse.platform.Platform;
+import com.hybris.hyeclipse.tsv.Activator;
 import com.hybris.hyeclipse.tsvextended.utils.ExtensionHolder;
 import com.hybris.ps.tsv.extended.service.PlatformService;
 import com.hybris.ps.tsv.extended.utils.ClassPathUtils;
@@ -270,10 +271,11 @@ public class TSVExtendedAnalyser {
 				new ProgressMonitorDialog(this.shell).run(true, false, op);
 			}
 			catch (InvocationTargetException e) {
-				e.printStackTrace();
+				Activator.logError("thrown exception", e);
 			}
 			catch (InterruptedException e) {
-				e.printStackTrace();
+				Activator.logError("interrupted thread", e);
+				Thread.currentThread().interrupt();
 			}
 			
 		}
