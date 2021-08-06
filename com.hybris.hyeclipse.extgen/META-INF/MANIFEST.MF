@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Extgen
 Bundle-SymbolicName: com.hybris.hyeclipse.extgen;singleton:=true
-Bundle-Version: 1.5.6.qualifier
+Bundle-Version: 1.5.6.RELEASE
 Bundle-Activator: com.hybris.hyeclipse.extgen.Activator
 Bundle-Vendor: SAP
 Require-Bundle: org.eclipse.ui,
