@@ -15,16 +15,10 @@
  ******************************************************************************/
 package com.hybris.hyeclipse.extgen;
 
-import java.io.File;
-
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.osgi.framework.BundleContext;
-import org.osgi.service.prefs.Preferences;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -32,41 +26,15 @@ import org.osgi.service.prefs.Preferences;
 public class Activator extends AbstractUIPlugin {
 
 	public static final String PLUGIN_ID = "com.hybris.hyeclipse.extgen"; //$NON-NLS-1$
-	private File platformHome;
 
 	// The shared instance
 	private static Activator plugin;
-
-	/**
-	 * The constructor
-	 */
+	
 	public Activator() {
-	}
-
-	public void start(BundleContext context) throws Exception {
-		super.start(context);
-		plugin = this;
-		String platformHomeStr = null;
-		if (platformHome == null) {
-
-			Preferences preferences = InstanceScope.INSTANCE.getNode("com.hybris.hyeclipse.preferences");
-			platformHomeStr = preferences.get("platform_home", null);
-			if (platformHomeStr == null) {
-				IProject platformProject = ResourcesPlugin.getWorkspace().getRoot().getProject("platform");
-				IPath platformProjectPath = platformProject.getLocation();
-				if (platformProjectPath != null) {
-					platformHome = platformProjectPath.toFile();
-					platformHomeStr = platformHome.getAbsolutePath();
-				}
-			} else {
-				platformHome = new File(platformHomeStr);
-			}
+		super();
+		if (plugin == null) {
+			plugin = this; //NOSONAR			
 		}
-	}
-
-	public void stop(BundleContext context) throws Exception {
-		plugin = null;
-		super.stop(context);
 	}
 
 	/**
@@ -91,7 +59,7 @@ public class Activator extends AbstractUIPlugin {
 	}
 
 	public static void logError(String msg, Exception e) {
-		Activator.logError(msg, e);
+		getDefault().getLog().log(new Status(IStatus.ERROR, PLUGIN_ID, msg, e));
 	}
 
 }

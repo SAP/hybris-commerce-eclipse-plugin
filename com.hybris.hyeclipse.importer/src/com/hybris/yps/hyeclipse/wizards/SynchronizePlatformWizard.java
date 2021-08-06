@@ -96,20 +96,19 @@ public class SynchronizePlatformWizard extends Wizard implements IImportWizard {
 			throw new IllegalStateException(Messages.SynchronizePlatformWizard_missingPlatformDirectoryError);
 		}
 
-		IRunnableWithProgress importer = new IRunnableWithProgress() {
-			public void run(IProgressMonitor monitor) throws InvocationTargetException {
-				List<IProject> projects = Arrays.asList(ResourcesPlugin.getWorkspace().getRoot().getProjects());
-				synchronizePlatform(monitor, projects, new File(platformDir), fixClasspath, removeHybrisBuilder,
+		IRunnableWithProgress importer = monitor -> 
+				synchronizePlatform(monitor, new File(platformDir), fixClasspath, removeHybrisBuilder,
 						createWorkingSets, useMultiThread, skipJarScanning);
-			}
-		};
 		try {
 			new ProgressMonitorDialog(getContainer().getShell()).run(true, false, importer);
-		} catch (InvocationTargetException | InterruptedException e) // NOSONAR
+		} catch (InvocationTargetException | InterruptedException e)
 		{
 			Activator.logError(Messages.SynchronizePlatformWizard_synchronizeError, e);
 			MessageDialog.openError(this.page1.getControl().getShell(),
 					Messages.SynchronizePlatformWizard_synchronizeError, e.getMessage()); // $NON-NLS-1$
+			if (e instanceof InterruptedException) {
+				Thread.currentThread().interrupt();
+			}
 		}
 		enableAutoBuild(autobuildEnabled);
 	}
@@ -133,14 +132,18 @@ public class SynchronizePlatformWizard extends Wizard implements IImportWizard {
 		}
 	}
 
-	protected void synchronizePlatform(IProgressMonitor monitor, List<IProject> projects, File platformDir,
+	protected void synchronizePlatform(IProgressMonitor monitor, File platformDir,
 			boolean fixClasspath, boolean removeHybrisGenerator, boolean createWorkingSets, boolean useMultiThread,
 			boolean skipJarScanning) throws InvocationTargetException {
 		try {
 			new Importer().resetProjectsFromLocalExtensions(platformDir, monitor, fixClasspath, removeHybrisGenerator,
 					createWorkingSets, useMultiThread, skipJarScanning);
-		} catch (CoreException | InterruptedException e) {
+		} catch (CoreException e) {
+			Activator.logError("could not synchronize platform", e);
 			throw new InvocationTargetException(e);
+		} catch (InterruptedException e) {
+			Activator.logError("could not synchronize platform", e);
+			Thread.currentThread().interrupt();
 		}
 	}
 }

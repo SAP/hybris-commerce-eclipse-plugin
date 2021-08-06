@@ -20,7 +20,7 @@ import org.osgi.framework.BundleContext;
 
 public class Plugin extends AbstractUIPlugin {
 	
-	private static volatile Plugin plugin;
+	private static Plugin plugin;
 	
 	/**
 	 * Returns the shared instance
@@ -35,12 +35,12 @@ public class Plugin extends AbstractUIPlugin {
 	public void start(final BundleContext context) throws Exception {
 		super.start(context);
 		
-		plugin = this;
+		Plugin.plugin = this;
 	}
 	
 	@Override
 	public void stop(final BundleContext context) throws Exception {
-		plugin = null;
+		Plugin.plugin = null;
 		super.stop(context);
 	}
 

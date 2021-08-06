@@ -15,34 +15,27 @@
  ******************************************************************************/
 package com.hybris.hyeclipse.tsv;
 
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.osgi.framework.BundleContext;
 import org.springframework.context.ApplicationContext;
 
 public class Activator extends AbstractUIPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "com.hybris.hyeclipse.tsv"; //$NON-NLS-1$
+	private ApplicationContext applicationContext = null;
 
 	// The shared instance
 	private static Activator plugin;
 	
-	private ApplicationContext applicationContext = null;
-	
-	@Override
-	public void start(BundleContext context) throws Exception {
-		super.start(context);
-		plugin = this;
+	public Activator() {
+		super();
+		if (plugin == null) {
+			plugin = this; //NOSONAR			
+		}
 	}
-
-	@Override
-	public void stop(BundleContext context) throws Exception {
-		plugin = null;
-		super.stop(context);
-	}
-
 	/**
 	 * Returns the shared instance
 	 *
@@ -78,10 +71,10 @@ public class Activator extends AbstractUIPlugin {
 	public void log(String msg, Exception e) {
 		Status status = null;
 		if (e != null) {
-			status = new Status(Status.ERROR, Activator.PLUGIN_ID, Status.ERROR, msg, e);
+			status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, IStatus.ERROR, msg, e);
 		}
 		else {
-			status = new Status(Status.INFO, Activator.PLUGIN_ID, Status.OK, msg, e);
+			status = new Status(IStatus.INFO, Activator.PLUGIN_ID, IStatus.OK, msg, e);
 		}
 		getLog().log(status);
 	}

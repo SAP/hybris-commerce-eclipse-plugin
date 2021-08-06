@@ -38,7 +38,7 @@ public class PlatformHolder {
 	private final ClasspathChagedListener classpathChagedListener = new ClasspathChagedListener(this);
 	private final WorkspaceChangedListener workspaceChangeListener = new WorkspaceChangedListener(this);
 	
-	private volatile Platform currentPlatform;
+	private Platform currentPlatform;
 	
 	PlatformHolder(ILog log) {
 		this.log = log;

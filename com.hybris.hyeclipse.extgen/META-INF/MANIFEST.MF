@@ -14,7 +14,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.debug.core,
  org.apache.commons.io,
  com.hybris.hyeclipse.ytypesystem;bundle-version="[1.0.0,2.0.0)",
- com.hybris.hyeclipse.importer;bundle-version="[1.0.0,2.0.0)"
+ com.hybris.hyeclipse.importer;bundle-version="[1.0.0,2.0.0)",
+ com.hybris.hyeclipse.commons
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.core.resources

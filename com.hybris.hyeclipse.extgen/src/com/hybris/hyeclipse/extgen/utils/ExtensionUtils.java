@@ -58,7 +58,6 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
-import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IStreamMonitor;
 import org.w3c.dom.Attr;
@@ -69,7 +68,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
-
+import com.hybris.hyeclipse.commons.utils.XmlScannerUtils;
 import com.hybris.yps.hyeclipse.Activator;
 import com.hybris.yps.hyeclipse.ExtensionHolder;
 import com.hybris.yps.hyeclipse.extensionmods.ExtensionModuleTrimmer;
@@ -196,7 +195,7 @@ public class ExtensionUtils {
 	public static void addToLocalExtension(File source, String workingSetName, String extensionName)
 			throws SAXException, IOException, ParserConfigurationException, TransformerException {
 		File xmlFile = new File(PathUtils.getLocalExtensionsPath());
-		DocumentBuilder dBuilder = newDocumentBuilder();
+		DocumentBuilder dBuilder = XmlScannerUtils.newDocumentBuilder();
 		Document doc = dBuilder.parse(xmlFile);
 		doc.getDocumentElement().normalize();
 
@@ -218,45 +217,13 @@ public class ExtensionUtils {
 		} else {
 			extensions.insertBefore(extension, getFirstExtensionNode(extensions));
 		}
-		Transformer transformer = newTransformer();
+		Transformer transformer = XmlScannerUtils.newTransformer();
 		transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 		transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
 		DOMSource domSource = new DOMSource(doc);
 		StreamResult result = new StreamResult(xmlFile);
 		transformer.transform(domSource, result);
-	}
-
-	/**
-	 * @return
-	 * @throws TransformerFactoryConfigurationError
-	 * @throws TransformerConfigurationException
-	 */
-	private static Transformer newTransformer()
-			throws TransformerFactoryConfigurationError, TransformerConfigurationException {
-		TransformerFactory transformerFactory = TransformerFactory.newInstance();
-//		to be compliant prohibit the use of all protocols by external entities:
-		transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-		transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
-		return transformerFactory.newTransformer();
-		
-	}
-
-	/**
-	 * @return
-	 * @throws ParserConfigurationException
-	 */
-	private static DocumentBuilder newDocumentBuilder() throws ParserConfigurationException {
-		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-		// to be compliant, completely disable DOCTYPE declaration:
-		dbFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-		// or completely disable external entities declarations:
-		dbFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
-		dbFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-		// or prohibit the use of all protocols by external entities:
-		dbFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-		dbFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
-		return dbFactory.newDocumentBuilder();
 	}
 
 	/**
@@ -324,7 +291,7 @@ public class ExtensionUtils {
 		File extInfo = new File(path, "extensioninfo.xml");
 		if (extInfo.exists()) {
 			try {
-				DocumentBuilder dBuilder = newDocumentBuilder();
+				DocumentBuilder dBuilder = XmlScannerUtils.newDocumentBuilder();
 				Document doc = dBuilder.parse(extInfo);
 				Node metaNode = doc.getElementsByTagName("meta").item(0);
 				if (metaNode != null) {
@@ -363,7 +330,7 @@ public class ExtensionUtils {
 		Set<String> workingSets = new HashSet<>();
 		File localExtensions = new File(PathUtils.getLocalExtensionsPath());
 		try {
-			DocumentBuilder dBuilder = newDocumentBuilder();
+			DocumentBuilder dBuilder = XmlScannerUtils.newDocumentBuilder();
 			Document doc = dBuilder.parse(localExtensions);
 			XPath xPath = XPathFactory.newInstance().newXPath();
 			String path = "//comment()[following-sibling::*[1][self::extension]]";

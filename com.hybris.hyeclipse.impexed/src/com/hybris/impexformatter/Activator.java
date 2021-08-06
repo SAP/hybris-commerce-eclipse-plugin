@@ -15,62 +15,35 @@
  ******************************************************************************/
 package com.hybris.impexformatter;
 
-import java.io.File;
 import java.util.List;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.osgi.framework.BundleContext;
-import org.osgi.service.prefs.Preferences;
 
 public class Activator extends AbstractUIPlugin {
 	
 	// The plug-in ID
 	public static final String PLUGIN_ID = "com.hybris.hyeclipse.impexed"; //$NON-NLS-1$
+	private com.hybris.hyeclipse.ytypesystem.Activator typeSystemExporter;
+	
+	public static final String IMPEX_PARTITIONING = "__impex_partitioning";
 	
 	// The shared instance
 	private static Activator plugin;
-	
-	private File platformHome;
-	private com.hybris.hyeclipse.ytypesystem.Activator typeSystemExporter;
-	
-	public final static String IMPEX_PARTITIONING = "__impex_partitioning";
-	
-	public Activator() {}
-		
-	@Override
-	public void start(BundleContext context) throws Exception {
-		super.start(context);
-		plugin = this;
-		String platformHomeStr = null;
-		if (platformHome == null) {
-			
-			Preferences preferences = InstanceScope.INSTANCE.getNode("com.hybris.hyeclipse.preferences");
-			platformHomeStr = preferences.get("platform_home", null);
-			if (platformHomeStr == null) {
-				IProject platformProject = ResourcesPlugin.getWorkspace().getRoot().getProject("platform");
-				IPath platformProjectPath = platformProject.getLocation();
-				if (platformProjectPath != null) {
-					platformHome = platformProjectPath.toFile();
-					platformHomeStr = platformHome.getAbsolutePath();
-				}
-			}
-			else {
-				platformHome = new File(platformHomeStr);
-			}
+
+	public Activator() {
+		super();
+		if (plugin == null) {
+			plugin = this; // NOSONAR
 		}
 	}
-	
-	@Override
-	public void stop(BundleContext context) throws Exception {
-		plugin = null;
-		super.stop(context);
-	}
-	
+
+	/**
+	 * Returns the shared instance
+	 *
+	 * @return the shared instance
+	 */
 	public static Activator getDefault() {
 		return plugin;
 	}
@@ -111,10 +84,10 @@ public class Activator extends AbstractUIPlugin {
 	public void log(String msg, Exception e) {
 		Status status = null;
 		if (e != null) {
-			status = new Status(Status.ERROR, Activator.PLUGIN_ID, Status.ERROR, msg, e);
+			status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, IStatus.ERROR, msg, e);
 		}
 		else {
-			status = new Status(Status.INFO, Activator.PLUGIN_ID, Status.OK, msg, e);
+			status = new Status(IStatus.INFO, Activator.PLUGIN_ID, IStatus.OK, msg, e);
 		}
 		getLog().log(status);
 	}
