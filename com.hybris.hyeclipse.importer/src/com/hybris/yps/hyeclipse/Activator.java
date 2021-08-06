@@ -49,17 +49,21 @@ public class Activator extends AbstractUIPlugin {
 	private static final String ORG_ECLIPSE_EPP_MPC_UI_PREFS = "org.eclipse.epp.mpc.ui";
 	
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
+	/**
+	 * The constructor
 	 */
+	public Activator() {
+		super();
+		if (plugin == null) {
+			plugin = this; //NOSONAR			
+		}
+	}
+
+	
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-		plugin = this; //NOSONAR
-		
 		resetPlatformBootstrapBundle();
-		
 		disableProjectNatureSolutionLookup();
 		log("Disabled automatic project nature solution lookup");
 	}
@@ -81,16 +85,6 @@ public class Activator extends AbstractUIPlugin {
 				platformHome = new File(platformHomeStr);
 			}
 		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
-	 */
-	@Override
-	public void stop(BundleContext context) throws Exception {
-		plugin = null; //NOSONAR
-		super.stop(context);
 	}
 
 	/**

@@ -36,6 +36,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.hybris.hyeclipse.commons.utils.XmlScannerUtils;
 import com.hybris.yps.hyeclipse.utils.UseMultiThreadUtils;
 
 public class UseMultiThreadUtilsTest {
@@ -43,13 +44,11 @@ public class UseMultiThreadUtilsTest {
 	private static final String RESOURCES_BIN_PLATFORM = "resources/bin/platform";
 	private static final String SERVER_XML_PATH = "resources/config/tomcat/conf/server.xml";
 	
-	UseMultiThreadUtils testObj;
 	Path copyxml = null;
 	
 	
 	@Before
 	public void before() throws IOException {
-		testObj = new UseMultiThreadUtils();
 		Path cp = java.nio.file.Paths.get("").toAbsolutePath();
 		Path serverxml = cp.resolve(SERVER_XML_PATH);
 		UUID value = UUID.randomUUID();
@@ -67,10 +66,7 @@ public class UseMultiThreadUtilsTest {
 		Path serverxml = cp.resolve(SERVER_XML_PATH);
 		
 		UseMultiThreadUtils.useMultiThread(yplatform.toFile());
-		
-		
-		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder db = dbFactory.newDocumentBuilder();
+		DocumentBuilder db = XmlScannerUtils.newDocumentBuilder();
 		Document doc = db.parse(serverxml.toFile());
 		
 		NodeList nodes = doc.getElementsByTagName(UseMultiThreadUtils.FIND_TAG_NODE);
@@ -92,8 +88,7 @@ public class UseMultiThreadUtilsTest {
 		Path cp = java.nio.file.Paths.get("").toAbsolutePath();
 		Path serverxml = cp.resolve(SERVER_XML_PATH);
 		Files.copy(copyxml, serverxml, StandardCopyOption.REPLACE_EXISTING);
-		Assert.assertTrue(Files.readAllLines(copyxml)
-			      .equals(Files.readAllLines(serverxml)));
+		Assert.assertEquals(Files.readAllLines(copyxml), Files.readAllLines(serverxml));
 		Files.delete(copyxml);
 	}
 
