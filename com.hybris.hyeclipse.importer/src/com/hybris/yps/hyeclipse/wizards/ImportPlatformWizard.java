@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -42,8 +43,6 @@ import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IImportWizard;
@@ -57,7 +56,7 @@ import com.hybris.yps.hyeclipse.Activator;
 import com.hybris.yps.hyeclipse.CommandState;
 import com.hybris.yps.hyeclipse.utils.FixProjectsUtils;
 import com.hybris.yps.hyeclipse.utils.Importer;
-import com.hybris.yps.hyeclipse.utils.ProjectSourceUtil;
+import com.hybris.yps.hyeclipse.utils.ProjectSourceJob;
 
 /**
  * Wizard to walk the user through importing all projects from a given platform
@@ -70,6 +69,133 @@ import com.hybris.yps.hyeclipse.utils.ProjectSourceUtil;
 public class ImportPlatformWizard extends Wizard implements IImportWizard {
 	private ImportPlatformPage page1;
 	private AttachSourcesPage page2;
+
+	class ImportJob extends Job {
+
+		private boolean removeExistingProjects;
+		private boolean fixClasspath;
+		private boolean removeHybrisBuilder;
+		private boolean createWorkingSet;
+		private boolean useMultiThread;
+		private boolean skipJarScanning;
+		private File platformDir;
+
+		public ImportJob() {
+			super("Importing Commerce Project");
+			removeExistingProjects = page1.isRemoveExistingProjects();
+			fixClasspath = page1.isFixClasspath();
+			removeHybrisBuilder = page1.isRemoveHybrisGenerator();
+			createWorkingSet = page1.isCreateWorkingSets();
+			useMultiThread = page1.isUseMultiThread();
+			skipJarScanning = page1.isSkipJarScanning();
+			platformDir = page1.getPlatformDirectory();
+		}
+
+		public IStatus run(IProgressMonitor monitor) {
+
+			List<IProject> projects = Arrays.asList(ResourcesPlugin.getWorkspace().getRoot().getProjects());
+			if (removeExistingProjects && projects != null && (!projects.isEmpty())) {
+				monitor.setTaskName(Messages.ImportWizard_removing_extension);
+				monitor.beginTask(Messages.ImportWizard_removing_extension, projects.size()); // $NON-NLS-1$
+				int step = 0;
+				enableAutoBuild(false);
+				for (IProject project : projects) {
+					try {
+						if (FixProjectsUtils.isAHybrisExtension(project)) {
+							project.delete(false, true, monitor);
+						}
+					} catch (CoreException e) {
+						ErrorDialog.openError(page1.getControl().getShell(), Messages.error_on_import,
+								Messages.error_on_import_info, createErrorStatus(e));
+						Thread.currentThread().interrupt();
+					}
+					step++;
+					monitor.worked(step);
+				}
+			}
+			try {
+				importPlatform(monitor, platformDir, fixClasspath, removeHybrisBuilder, createWorkingSet,
+						useMultiThread, skipJarScanning);
+			} catch (InvocationTargetException | InterruptedException e) {
+				Activator.logError(Messages.ImportWizard_error_on_import, e);
+				Throwable cause = e.getCause();
+
+				ErrorDialog.openError(page1.getControl().getShell(), Messages.error_on_import,
+						Messages.error_on_import_info, createErrorStatus(cause));
+				Thread.currentThread().interrupt();
+			}
+			fixRuntimeEnvironment();
+
+			// Enable the menu options now we have a platform_home
+			ISourceProviderService sourceProvicerSerivce = PlatformUI.getWorkbench()
+					.getService(ISourceProviderService.class);
+
+			CommandState commandStateService = (CommandState) sourceProvicerSerivce.getSourceProvider(CommandState.ID);
+			commandStateService.setEnabled();
+			enableAutoBuild(isAutoBuildEnabled());
+			return Status.OK_STATUS;
+		}
+
+		protected void enableAutoBuild(boolean enable) {
+			String qualifier = ResourcesPlugin.getPlugin().getBundle().getSymbolicName();
+			IEclipsePreferences node = InstanceScope.INSTANCE.getNode(qualifier);
+			node.putBoolean("description.autobuilding", enable); //$NON-NLS-1$
+			try {
+				node.flush();
+			} catch (BackingStoreException e) {
+				throw new IllegalStateException(e);
+			}
+		}
+
+		private IStatus createErrorStatus(Throwable e) {
+			List<Status> childStatuses = new ArrayList<>();
+			StackTraceElement[] stackTraces = e.getStackTrace();
+			for (StackTraceElement stackTraceElement : stackTraces) {
+				Status status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, stackTraceElement.toString());
+				childStatuses.add(status);
+			}
+			return new MultiStatus(Activator.PLUGIN_ID, IStatus.ERROR, childStatuses.toArray(new Status[] {}),
+					e.toString(), e);
+		}
+		
+		private boolean isAutoBuildEnabled() {
+			IPreferencesService service = Platform.getPreferencesService();
+			String qualifier = ResourcesPlugin.getPlugin().getBundle().getSymbolicName();
+			String key = "description.autobuilding"; //$NON-NLS-1$
+			IScopeContext[] contexts = { InstanceScope.INSTANCE, ConfigurationScope.INSTANCE };
+			return service.getBoolean(qualifier, key, false, contexts);
+		}
+		
+		protected void fixRuntimeEnvironment() {
+			IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("platform"); //$NON-NLS-1$
+			IJavaProject javaProject = JavaCore.create(project);
+			IVMInstall javaInstall = null;
+			try {
+				if (javaProject.isOpen()) {
+					javaInstall = JavaRuntime.getVMInstall(javaProject);
+				}
+			} catch (CoreException e) {
+				throw new IllegalStateException(e);
+			}
+			if (javaInstall != null) {
+				setHeapSize(javaInstall);
+			}
+		}
+
+		/**
+		 * To be able to run JUnit tests and stand-alone applications the heap sizes
+		 * need to be increased
+		 * 
+		 * @param javaInstall
+		 */
+		private void setHeapSize(IVMInstall javaInstall) {
+			String[] javaVmParams = javaInstall.getVMArguments();
+			if (javaVmParams == null || javaVmParams.length == 0) {
+				AbstractVMInstall abstractVMInstall = (AbstractVMInstall) javaInstall;
+				abstractVMInstall.setVMArgs("-Xmx1500M -XX:MaxPermSize=300M"); //$NON-NLS-1$
+			}
+		}
+	}
 
 	public ImportPlatformWizard() {
 		this.page1 = new ImportPlatformPage();
@@ -95,7 +221,6 @@ public class ImportPlatformWizard extends Wizard implements IImportWizard {
 
 	@Override
 	public boolean performFinish() {
-		// MHE: this lazy validation business is a bit sketchy IMHO
 		if (!page1.validatePage()) {
 			// ensure the current page is visible
 			getContainer().showPage(page1);
@@ -106,8 +231,6 @@ public class ImportPlatformWizard extends Wizard implements IImportWizard {
 		}
 
 		if (!page2.validatePage()) {
-			// ensure page 2 is visible so we can hone in on the source of the validation
-			// error.
 			getContainer().showPage(page2);
 			MessageDialog.openError(getShell(), Messages.ImportWizard_wrong_src_zip,
 					Messages.ImportWizard_wrong_src_zip_info);
@@ -126,35 +249,15 @@ public class ImportPlatformWizard extends Wizard implements IImportWizard {
 	private void attachSources() {
 		final File sourceArchive = page2.getSourceFile();
 
-		if (sourceArchive == null) {
-			return; // nothing to do
+		if (sourceArchive != null) {
+			new ProjectSourceJob(sourceArchive, true).schedule();
 		}
-
-		IRunnableWithProgress runner = ProjectSourceUtil.getRunner(sourceArchive);
-
-		try {
-			new ProgressMonitorDialog(getContainer().getShell()).run(true, false, runner);
-
-		} catch (InvocationTargetException | InterruptedException e) {
-			MessageDialog.openError(getShell(), Messages.ImportWizard_error_attaching_srcs, e.toString());
-			Thread.currentThread().interrupt();
-		}
-
 	}
 
 	/**
 	 * Workhorse to do the actual import of the projects into this workspace.
 	 */
 	private void importPlatform() {
-		boolean autobuildEnabled = isAutoBuildEnabled();
-		enableAutoBuild(false);
-		final boolean removeExistingProjects = page1.isRemoveExistingProjects();
-		final boolean fixClasspath = page1.isFixClasspath();
-		final boolean removeHybrisBuilder = page1.isRemoveHybrisGenerator();
-		final boolean createWorkingSet = page1.isCreateWorkingSets();
-		final boolean useMultiThread = page1.isUseMultiThread();
-		final boolean skipJarScanning = page1.isSkipJarScanning();
-
 		final File platformDir = page1.getPlatformDirectory();
 
 		// Set platform home as workspace preference
@@ -163,83 +266,9 @@ public class ImportPlatformWizard extends Wizard implements IImportWizard {
 			Preferences preferences = InstanceScope.INSTANCE.getNode("com.hybris.hyeclipse.preferences"); //$NON-NLS-1$
 			preferences.put("platform_home", platformDirStr); //$NON-NLS-1$
 			preferences.flush();
+			new ImportJob().schedule();
 		} catch (IOException | BackingStoreException ioe) {
 			throw new IllegalStateException(ioe);
-		}
-		
-		try {
-			IRunnableWithProgress importer = monitor -> {
-				List<IProject> projects = Arrays.asList(ResourcesPlugin.getWorkspace().getRoot().getProjects());
-				if (removeExistingProjects && projects != null && (!projects.isEmpty())) {
-					monitor.setTaskName(Messages.ImportWizard_removing_extension);
-					monitor.beginTask(Messages.ImportWizard_removing_extension, projects.size()); // $NON-NLS-1$
-					int progress = 0;
-					for (IProject project : projects) {
-						try {
-							if (FixProjectsUtils.isAHybrisExtension(project)) {
-								project.delete(false, true, monitor);
-							}
-						} catch (CoreException e) {
-							throw new InvocationTargetException(e);
-						}
-						progress++;
-						monitor.worked(progress);
-					}
-				}
-				importPlatform(monitor, platformDir, fixClasspath, removeHybrisBuilder, createWorkingSet,
-						useMultiThread, skipJarScanning);
-				// fix JRE settings to make it easier to run tests
-				fixRuntimeEnvironment();
-
-				// Enable the menu options now we have a platform_home
-				ISourceProviderService sourceProvicerSerivce = PlatformUI.getWorkbench()
-						.getService(ISourceProviderService.class);
-
-				CommandState commandStateService = (CommandState) sourceProvicerSerivce
-						.getSourceProvider(CommandState.ID);
-				commandStateService.setEnabled();
-			};
-			
-			new ProgressMonitorDialog(getContainer().getShell()).run(true, false, importer);
-		} catch (InvocationTargetException | InterruptedException | RuntimeException e) {
-			Activator.logError(Messages.ImportWizard_error_on_import, e);
-			Throwable cause = e.getCause();
-
-			ErrorDialog.openError(this.page1.getControl().getShell(), Messages.error_on_import,
-					Messages.error_on_import_info, createErrorStatus(cause));
-			enableAutoBuild(autobuildEnabled);
-			Thread.currentThread().interrupt();
-		}
-		enableAutoBuild(autobuildEnabled);
-	}
-
-	private IStatus createErrorStatus(Throwable e) {
-		List<Status> childStatuses = new ArrayList<>();
-		StackTraceElement[] stackTraces = e.getStackTrace();
-		for (StackTraceElement stackTraceElement : stackTraces) {
-			Status status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, stackTraceElement.toString());
-			childStatuses.add(status);
-		}
-		return new MultiStatus(Activator.PLUGIN_ID, IStatus.ERROR, childStatuses.toArray(new Status[] {}), e.toString(),
-				e);
-	}
-
-	protected boolean isAutoBuildEnabled() {
-		IPreferencesService service = Platform.getPreferencesService();
-		String qualifier = ResourcesPlugin.getPlugin().getBundle().getSymbolicName();
-		String key = "description.autobuilding"; //$NON-NLS-1$
-		IScopeContext[] contexts = { InstanceScope.INSTANCE, ConfigurationScope.INSTANCE };
-		return service.getBoolean(qualifier, key, false, contexts);
-	}
-
-	protected void enableAutoBuild(boolean enable) {
-		String qualifier = ResourcesPlugin.getPlugin().getBundle().getSymbolicName();
-		IEclipsePreferences node = InstanceScope.INSTANCE.getNode(qualifier);
-		node.putBoolean("description.autobuilding", enable); //$NON-NLS-1$
-		try {
-			node.flush();
-		} catch (BackingStoreException e) {
-			throw new IllegalStateException(e);
 		}
 	}
 
@@ -252,39 +281,9 @@ public class ImportPlatformWizard extends Wizard implements IImportWizard {
 		} catch (CoreException e) {
 			Activator.logError(Messages.error_on_import, e);
 			throw new InvocationTargetException(e);
-		} catch(InterruptedException e) {
+		} catch (InterruptedException e) {
 			Activator.logError(Messages.error_on_import, e);
 			throw e;
-		}
-	}
-
-	protected void fixRuntimeEnvironment() {
-		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("platform"); //$NON-NLS-1$
-		IJavaProject javaProject = JavaCore.create(project);
-		IVMInstall javaInstall = null;
-		try {
-			if (javaProject.isOpen()) {
-				javaInstall = JavaRuntime.getVMInstall(javaProject);
-			}
-		} catch (CoreException e) {
-			throw new IllegalStateException(e);
-		}
-		if (javaInstall != null) {
-			setHeapSize(javaInstall);
-		}
-	}
-
-	/**
-	 * To be able to run JUnit tests and stand-alone applications the heap sizes
-	 * need to be increased
-	 * 
-	 * @param javaInstall
-	 */
-	private void setHeapSize(IVMInstall javaInstall) {
-		String[] javaVmParams = javaInstall.getVMArguments();
-		if (javaVmParams == null || javaVmParams.length == 0) {
-			AbstractVMInstall abstractVMInstall = (AbstractVMInstall) javaInstall;
-			abstractVMInstall.setVMArgs("-Xmx1500M -XX:MaxPermSize=300M"); //$NON-NLS-1$
 		}
 	}
 }

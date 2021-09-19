@@ -16,7 +16,6 @@
 package com.hybris.yps.hyeclipse.utils;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,12 +23,15 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 
 import com.hybris.yps.hyeclipse.Activator;
 
@@ -37,10 +39,13 @@ import com.hybris.yps.hyeclipse.Activator;
  * Utility class around source attachment.
  * 
  * @author mheuer
+ * @author pawel wolanski
  *
  */
-public class ProjectSourceUtil
+public class ProjectSourceJob extends Job
 {
+	private final File sourceArchive;
+	private final boolean isAttach;
 	
 	/**
 	 * Factory method to return a runner for performing the attachment work.
@@ -48,51 +53,11 @@ public class ProjectSourceUtil
 	 * @param sourceArchive - archive to use when attaching, optional for removal
 	 * @return runner
 	 */
-	public static IRunnableWithProgress getRunner(final File sourceArchive) 
-	{
-		return getRunnerInternal( sourceArchive, true );		
-	}
-
-	/**
-	 * Factory method to return a runner for performing the detachment work.
-	 * 
-	 * @return runner
-	 */
-	public static IRunnableWithProgress getRunner() 
-	{
-		return getRunnerInternal( null, false );		
-	}
-	
-	
-	/**
-	 * Return an attachment or detachment runner.
-	 * 
-	 * @param sourceArchive
-	 * @param isAttach
-	 * @return runner
-	 */
-	private static IRunnableWithProgress getRunnerInternal( final File sourceArchive, final boolean isAttach )
-	{
-		IRunnableWithProgress runner = new IRunnableWithProgress()
-		{
-			@Override
-			public void run( IProgressMonitor monitor ) throws InvocationTargetException
-			{
-				List<IProject> projects = Arrays.asList( ResourcesPlugin.getWorkspace().getRoot().getProjects() );
-				int progress = 0;
-				for( IProject project: projects )
-				{
-					if( FixProjectsUtils.isAHybrisExtension( project ) )
-					{
-						processProject( monitor, isAttach, project, sourceArchive );
-					}
-					progress++;
-					monitor.worked( progress );
-				}
-			}
-		};
-		
-		return runner;
+	public ProjectSourceJob(@NonNull final File sourceArchive, final boolean isAttach) 
+	{		
+		super("project-source-" + sourceArchive.getName());
+		this.sourceArchive = sourceArchive;
+		this.isAttach = isAttach;
 	}
 
 	/**
@@ -103,7 +68,7 @@ public class ProjectSourceUtil
 	 * @param attach 
 	 * @param sourceArchive
 	 */
-	private static void processProject(IProgressMonitor monitor, boolean attach, IProject genProject, File sourceArchive) 
+	private void processProject(IProgressMonitor monitor, boolean attach, IProject genProject, File sourceArchive) 
 	{
 		if (!isJavaProject(genProject)) {
 			Activator.log("Skipping non-java project: " + genProject.getName());
@@ -119,14 +84,6 @@ public class ProjectSourceUtil
 			for (int i=0; i < classpathEntries.length; i++) 
 			{
 				IClasspathEntry entry = classpathEntries[i];
-				//Activator.log("Processing: "+entry.getPath()+", kind="+entry.getEntryKind()+", src=" + entry.getSourceAttachmentPath());
-				// XML example:
-		      //  <classpathentry exported="true" kind="lib" path="bin/commerceservicesserver.jar" >
-            //  <attributes>
-            //          <attribute name="javadoc_location" value="https://download.hybris.com/api/5.5.1"/>
-            //  </attributes>
-				//  </classpathentry>
-				
 				// Logic:
 				// (1) Filter for kind=lib: entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY
 				// (2) Filter for path ending in server.jar
@@ -174,7 +131,7 @@ public class ProjectSourceUtil
 	 * @param project
 	 * @return true if it has a Java nature
 	 */
-	private static boolean isJavaProject( IProject project ) 
+	private boolean isJavaProject( IProject project ) 
 	{
 		try
 		{
@@ -186,5 +143,21 @@ public class ProjectSourceUtil
 			Activator.logError("CoreException", e);
 		}
 		return false;
+	}
+
+	@Override
+	protected IStatus run(IProgressMonitor monitor) {
+		List<IProject> projects = Arrays.asList( ResourcesPlugin.getWorkspace().getRoot().getProjects() );
+		int progress = 0;
+		for( IProject project: projects )
+		{
+			if( FixProjectsUtils.isAHybrisExtension( project ) )
+			{
+				processProject( monitor, isAttach, project, sourceArchive );
+			}
+			progress++;
+			monitor.worked( progress );
+		}
+		return Status.OK_STATUS;
 	}
 }

@@ -7,6 +7,7 @@ import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.PathMatcher;
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -22,9 +23,12 @@ import javax.xml.xpath.XPathExpressionException;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.ui.wizards.datatransfer.ProjectConfigurator;
 import org.xml.sax.SAXException;
 
@@ -96,7 +100,19 @@ public class SAPCommerceProjectConfigurator implements ProjectConfigurator {
 
 	@Override
 	public void configure(IProject project, Set<IPath> ignoredPaths, IProgressMonitor monitor) {
-		// Do nothing because there is no need to additionally configure a project
+		IProjectDescription description;
+		try {
+			description = project.getDescription();
+			final Set<String> natSet = new HashSet<>(Arrays.asList(description.getNatureIds()));
+			natSet.add(JavaCore.NATURE_ID);
+			final String[] newNatures = natSet.toArray(new String[natSet.size()]);
+			description.setNatureIds(newNatures);
+			project.setDescription(description, monitor);
+			// Do nothing because there is no need to additionally configure a project
+		} catch (CoreException e) {
+			Activator.logError(String.format("could not access project description for %s. Skipping", project.getName()), e);
+		}
+
 	}
 
 }
