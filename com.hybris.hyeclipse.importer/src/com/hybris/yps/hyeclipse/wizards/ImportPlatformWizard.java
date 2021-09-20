@@ -23,18 +23,15 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.core.runtime.preferences.ConfigurationScope;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
-import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
@@ -92,13 +89,13 @@ public class ImportPlatformWizard extends Wizard implements IImportWizard {
 		}
 
 		public IStatus run(IProgressMonitor monitor) {
+			enableAutoBuild(false);
 
 			List<IProject> projects = Arrays.asList(ResourcesPlugin.getWorkspace().getRoot().getProjects());
 			if (removeExistingProjects && projects != null && (!projects.isEmpty())) {
 				monitor.setTaskName(Messages.ImportWizard_removing_extension);
 				monitor.beginTask(Messages.ImportWizard_removing_extension, projects.size()); // $NON-NLS-1$
 				int step = 0;
-				enableAutoBuild(false);
 				for (IProject project : projects) {
 					try {
 						if (FixProjectsUtils.isAHybrisExtension(project)) {
@@ -132,18 +129,21 @@ public class ImportPlatformWizard extends Wizard implements IImportWizard {
 
 			CommandState commandStateService = (CommandState) sourceProvicerSerivce.getSourceProvider(CommandState.ID);
 			commandStateService.setEnabled();
+			enableAutoBuild(true);
 			enableAutoBuild(isAutoBuildEnabled());
 			return Status.OK_STATUS;
 		}
 
 		protected void enableAutoBuild(boolean enable) {
-			String qualifier = ResourcesPlugin.getPlugin().getBundle().getSymbolicName();
-			IEclipsePreferences node = InstanceScope.INSTANCE.getNode(qualifier);
-			node.putBoolean("description.autobuilding", enable); //$NON-NLS-1$
+
+			IWorkspace workspace = ResourcesPlugin.getWorkspace();
+			IWorkspaceDescription desc = workspace.getDescription();
+			desc.setAutoBuilding(enable);
 			try {
-				node.flush();
-			} catch (BackingStoreException e) {
-				throw new IllegalStateException(e);
+				workspace.setDescription(desc);
+			} catch (CoreException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 
@@ -154,46 +154,45 @@ public class ImportPlatformWizard extends Wizard implements IImportWizard {
 				Status status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, stackTraceElement.toString());
 				childStatuses.add(status);
 			}
-			return new MultiStatus(Activator.PLUGIN_ID, IStatus.ERROR, childStatuses.toArray(new Status[] {}),
-					e.toString(), e);
+			return new MultiStatus(Activator.PLUGIN_ID, IStatus.ERROR, childStatuses.toArray(new Status[] {}), e.toString(),
+					e);
 		}
 		
 		private boolean isAutoBuildEnabled() {
-			IPreferencesService service = Platform.getPreferencesService();
-			String qualifier = ResourcesPlugin.getPlugin().getBundle().getSymbolicName();
-			String key = "description.autobuilding"; //$NON-NLS-1$
-			IScopeContext[] contexts = { InstanceScope.INSTANCE, ConfigurationScope.INSTANCE };
-			return service.getBoolean(qualifier, key, false, contexts);
+			IWorkspace workspace = ResourcesPlugin.getWorkspace();
+			IWorkspaceDescription desc = workspace.getDescription();
+			return desc.isAutoBuilding();
 		}
-		
-		protected void fixRuntimeEnvironment() {
-			IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("platform"); //$NON-NLS-1$
-			IJavaProject javaProject = JavaCore.create(project);
-			IVMInstall javaInstall = null;
-			try {
-				if (javaProject.isOpen()) {
-					javaInstall = JavaRuntime.getVMInstall(javaProject);
-				}
-			} catch (CoreException e) {
-				throw new IllegalStateException(e);
-			}
-			if (javaInstall != null) {
-				setHeapSize(javaInstall);
-			}
-		}
+	}
 
-		/**
-		 * To be able to run JUnit tests and stand-alone applications the heap sizes
-		 * need to be increased
-		 * 
-		 * @param javaInstall
-		 */
-		private void setHeapSize(IVMInstall javaInstall) {
-			String[] javaVmParams = javaInstall.getVMArguments();
-			if (javaVmParams == null || javaVmParams.length == 0) {
-				AbstractVMInstall abstractVMInstall = (AbstractVMInstall) javaInstall;
-				abstractVMInstall.setVMArgs("-Xmx1500M -XX:MaxPermSize=300M"); //$NON-NLS-1$
+
+	protected void fixRuntimeEnvironment() {
+		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("platform"); //$NON-NLS-1$
+		IJavaProject javaProject = JavaCore.create(project);
+		IVMInstall javaInstall = null;
+		try {
+			if (javaProject.isOpen()) {
+				javaInstall = JavaRuntime.getVMInstall(javaProject);
 			}
+		} catch (CoreException e) {
+			throw new IllegalStateException(e);
+		}
+		if (javaInstall != null) {
+			setHeapSize(javaInstall);
+		}
+	}
+
+	/**
+	 * To be able to run JUnit tests and stand-alone applications the heap sizes
+	 * need to be increased
+	 * 
+	 * @param javaInstall
+	 */
+	private void setHeapSize(IVMInstall javaInstall) {
+		String[] javaVmParams = javaInstall.getVMArguments();
+		if (javaVmParams == null || javaVmParams.length == 0) {
+			AbstractVMInstall abstractVMInstall = (AbstractVMInstall) javaInstall;
+			abstractVMInstall.setVMArgs("-Xmx1500M -XX:MaxPermSize=300M"); //$NON-NLS-1$
 		}
 	}
 
