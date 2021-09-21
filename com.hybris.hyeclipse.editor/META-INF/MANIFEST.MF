@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Editor
 Bundle-SymbolicName: com.hybris.hyeclipse.editor;singleton:=true
-Bundle-Version: 1.5.7.qualifier
+Bundle-Version: 1.5.8.qualifier
 Bundle-Activator: com.hybris.hyeclipse.editor.Activator
 Bundle-Vendor: SAP
 Export-Package: com.hybris.hyeclipse.editor,
@@ -21,8 +21,9 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jdt.core.manipulation,
  org.eclipse.text,
  com.hybris.hyeclipse.hac,
- org.eclipse.e4.ui.model.workbench
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+ org.eclipse.e4.ui.model.workbench,
+ org.eclipse.wst.validation
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ActivationPolicy: lazy
 Import-Package: com.hybris.hyeclipse.commons.utils
 Automatic-Module-Name: com.hybris.hyeclipse.editor

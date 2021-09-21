@@ -2,13 +2,13 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: YTypeSystem
 Bundle-SymbolicName: com.hybris.hyeclipse.ytypesystem;singleton:=true
-Bundle-Version: 1.5.7.qualifier
+Bundle-Version: 1.5.8.qualifier
 Bundle-Activator: com.hybris.hyeclipse.ytypesystem.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.core.resources,
  org.apache.commons.lang
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
 DynamicImport-Package: *

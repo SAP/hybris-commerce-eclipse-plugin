@@ -15,6 +15,8 @@ public class Messages extends NLS {
 	public static String CreateWorkingSetWizard_title;
 	public static String error_on_import;
 	public static String error_on_import_info;
+	public static String ImportPlatformWizard_autobuild_error;
+	public static String ImportPlatformWizard_import_job_title;
 	public static String ImportWizard_error_attaching_srcs;
 	public static String ImportWizard_error_on_import;
 	public static String ImportWizard_invalid_platform_dir;
@@ -22,6 +24,7 @@ public class Messages extends NLS {
 	public static String ImportWizard_removing_extension;
 	public static String ImportWizard_wrong_src_zip;
 	public static String ImportWizard_wrong_src_zip_info;
+	public static String ProjectSourceJob_classpath_fetch_error;
 	public static String SynchronizePlatformWizard_5;
 	public static String SynchronizePlatformWizard_6;
 	public static String SynchronizePlatformWizard_missingPlatformDirectoryError;

@@ -5,7 +5,7 @@
 
 	<groupId>com.hybris.hyeclipse</groupId>
 	<artifactId>com.hybris.hyeclipse.parent</artifactId>
-	<version>1.5.7-SNAPSHOT</version>
+	<version>1.5.8-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>SAP Commerce Cloud - Eclipse plugin (parent)</name>
 
@@ -32,8 +32,8 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
 		<!-- sonar properties -->
-		<sonar.projectKey>mikolayek_hybris-commerce-eclipse-plugin</sonar.projectKey>
-		<sonar.organization>mikolayek</sonar.organization>
+		<sonar.projectKey>hybris-commerce-eclipse-plugin</sonar.projectKey>
+		<sonar.organization>sap-1</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
 		<sonar.java.source>11</sonar.java.source>
@@ -58,14 +58,13 @@
 		<module>com.hybris.hyeclipse.junit</module>
 		<module>com.hybris.hyeclipse.editor</module>
 		<module>com.hybris.hyeclipse.tests</module>
-		<module>com.hybris.hyeclipse.lsp</module>
 	</modules>
 
 	<repositories>
 		<repository>
-			<id>2020-12</id>
+			<id>2021-06</id>
 			<layout>p2</layout>
-			<url>https://download.eclipse.org/releases/2020-12</url>
+			<url>https://download.eclipse.org/releases/2021-06</url>
 		</repository>
 		 
 	</repositories>
@@ -105,7 +104,17 @@
 						<environment>
 							<os>linux</os>
 							<ws>gtk</ws>
+							<arch>x86</arch>
+						</environment>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
 							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86</arch>
 						</environment>
 						<environment>
 							<os>win32</os>

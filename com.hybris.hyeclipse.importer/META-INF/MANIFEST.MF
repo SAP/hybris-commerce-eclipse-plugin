@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ProjectImporter
 Bundle-SymbolicName: com.hybris.hyeclipse.importer;singleton:=true
-Bundle-Version: 1.5.7.qualifier
+Bundle-Version: 1.5.8.qualifier
 Bundle-Activator: com.hybris.yps.hyeclipse.Activator
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -30,3 +30,4 @@ Export-Package: com.hybris.yps.hyeclipse,
  com.hybris.yps.hyeclipse.utils,
  com.hybris.yps.hyeclipse.wizards
 Automatic-Module-Name: com.hybris.hyeclipse.importer
+Import-Package: org.eclipse.jdt.annotation

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Utils
 Bundle-SymbolicName: com.hybris.hyeclipse.commons;singleton:=true
-Bundle-Version: 1.5.7.qualifier
+Bundle-Version: 1.5.8.qualifier
 Bundle-Activator: com.hybris.hyeclipse.commons.Activator
 Bundle-Vendor: SAP
 Require-Bundle: org.eclipse.ui,
@@ -16,7 +16,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.e4.core.contexts,
  org.eclipse.jdt.annotation;resolution:=optional,
  org.eclipse.jdt.core;resolution:=optional
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ActivationPolicy: lazy
 Export-Package: com.hybris.hyeclipse.commons.handlers,
  com.hybris.hyeclipse.commons.testers,

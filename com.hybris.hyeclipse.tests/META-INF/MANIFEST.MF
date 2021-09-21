@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Tests
 Bundle-SymbolicName: com.hybris.hyeclipse.tests;singleton:=true
-Bundle-Version: 1.5.7.qualifier
+Bundle-Version: 1.5.8.qualifier
 Bundle-Vendor: SAP
 Fragment-Host: com.hybris.hyeclipse.importer
 Automatic-Module-Name: com.hybris.hyeclipse.tests
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.junit

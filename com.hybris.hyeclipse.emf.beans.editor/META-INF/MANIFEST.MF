@@ -2,12 +2,12 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: com.hybris.hyeclipse.emf.beans.editor;singleton:=true
-Bundle-Version: 1.5.7.qualifier
+Bundle-Version: 1.5.8.qualifier
 Bundle-ClassPath: .
 Bundle-Activator: com.hybris.hyeclipse.emf.beans.presentation.internal.BeansEditorPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: com.hybris.hyeclipse.emf.beans.presentation,
  com.hybris.hyeclipse.emf.beans.presentation.internal;x-internal:=true,
  com.hybris.hyeclipse.emf.beans.presentation.platformdependent
