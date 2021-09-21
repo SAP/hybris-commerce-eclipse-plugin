@@ -48,16 +48,26 @@ public class ProjectSourceJob extends Job
 	private final boolean isAttach;
 	
 	/**
-	 * Factory method to return a runner for performing the attachment work.
+	 * Instantiate Job with required reference to source archive and flag if that should be attached or not
 	 * 
 	 * @param sourceArchive - archive to use when attaching, optional for removal
-	 * @return runner
 	 */
-	public ProjectSourceJob(@NonNull final File sourceArchive, final boolean isAttach) 
+	public ProjectSourceJob(@NonNull final File sourceArchive) 
 	{		
 		super("project-source-" + sourceArchive.getName());
 		this.sourceArchive = sourceArchive;
-		this.isAttach = isAttach;
+		this.isAttach = true;
+	}
+	
+	/**
+	 * Instantiate Job with empty source archive and flag to remove links to any source archive.
+	 * 
+	 */
+	public ProjectSourceJob() 
+	{		
+		super("project-source-code-unlink");
+		this.sourceArchive = null;
+		this.isAttach = false;
 	}
 
 	/**
@@ -98,6 +108,9 @@ public class ProjectSourceJob extends Job
 					IClasspathEntry newEntry = null;
 					if (attach) 
 					{
+						if (sourceArchive==null) {
+							throw new IllegalArgumentException("source archive is null");
+						}
 						Activator.log( "Attaching source: " + sourceArchive + " in: " + genProject.getName() );
 						newEntry = JavaCore.newLibraryEntry( entry.getPath(), Path.fromOSString( sourceArchive.getAbsolutePath() ),
 							entry.getSourceAttachmentRootPath(), entry.getAccessRules(), entry.getExtraAttributes(), entry.isExported() );

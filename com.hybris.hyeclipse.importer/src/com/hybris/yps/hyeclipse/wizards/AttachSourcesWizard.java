@@ -16,15 +16,11 @@
 package com.hybris.yps.hyeclipse.wizards;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.Wizard;
 
-import com.hybris.yps.hyeclipse.Activator;
-import com.hybris.yps.hyeclipse.utils.ProjectSourceUtil;
+import com.hybris.yps.hyeclipse.utils.ProjectSourceJob;
 
 /**
  * Wizard to walk the user through attaching the sources to the projects in the workspace.
@@ -70,20 +66,7 @@ public class AttachSourcesWizard extends Wizard
 		}
 		
 		File sourceArchive = page.getSourceFile();
-		IRunnableWithProgress runner = ProjectSourceUtil.getRunner(sourceArchive);
-
-		try
-		{
-			new ProgressMonitorDialog( getContainer().getShell() ).run( true, false, runner );
-
-		}
-		catch( InvocationTargetException | InterruptedException e ) // NOSONAR
-		{
-			Activator.logError(Messages.AttachSourcesWizard_errorMsg, e);
-			MessageDialog.openError( getShell(), Messages.AttachSourcesWizard_errorMsg_long, e.getMessage() );
-			return false;
-		}
-		
+		new ProjectSourceJob(sourceArchive).schedule();
 		return true;
 	}
 }

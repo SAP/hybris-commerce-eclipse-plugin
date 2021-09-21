@@ -249,7 +249,7 @@ public class ImportPlatformWizard extends Wizard implements IImportWizard {
 		final File sourceArchive = page2.getSourceFile();
 
 		if (sourceArchive != null) {
-			new ProjectSourceJob(sourceArchive, true).schedule();
+			new ProjectSourceJob(sourceArchive).schedule();
 		}
 	}
 
