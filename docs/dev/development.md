@@ -52,10 +52,10 @@ git flow release finish
 gren release -T <github-token> --tags v1.5.0 v<last-one>
 ## go to github.com and update release notes by adding zip file which is found in
 ## com.hybris.hyeclipse.site/target/com.hybris.hyeclipse.site-1.5.0.RELEASE.zip
-gren changelot -T <github-token> -G --tags=all --override
+gren changelog -T <github-token> -G --tags=all --override
 # create pull request on github.com from your private repository
 mvn org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=1.5.1-SNAPSHOT
-git add . */*/MANIFEST.MF */pom.xml */feature.xml pom.xml
+git add */*/MANIFEST.MF */pom.xml */feature.xml pom.xml CHANGELOG.md
 
 
 ```
