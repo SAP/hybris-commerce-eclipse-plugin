@@ -32,8 +32,8 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
 		<!-- sonar properties -->
-		<sonar.projectKey>mikolayek_hybris-commerce-eclipse-plugin</sonar.projectKey>
-		<sonar.organization>mikolayek</sonar.organization>
+		<sonar.projectKey>hybris-commerce-eclipse-plugin</sonar.projectKey>
+		<sonar.organization>sap-1</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
 		<sonar.java.source>11</sonar.java.source>
