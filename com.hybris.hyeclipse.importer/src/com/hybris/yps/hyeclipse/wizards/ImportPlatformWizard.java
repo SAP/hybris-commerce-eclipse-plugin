@@ -78,7 +78,7 @@ public class ImportPlatformWizard extends Wizard implements IImportWizard {
 		private File platformDir;
 
 		public ImportJob() {
-			super("Importing Commerce Project");
+			super(Messages.ImportPlatformWizard_import_job_title);
 			removeExistingProjects = page1.isRemoveExistingProjects();
 			fixClasspath = page1.isFixClasspath();
 			removeHybrisBuilder = page1.isRemoveHybrisGenerator();
@@ -142,8 +142,7 @@ public class ImportPlatformWizard extends Wizard implements IImportWizard {
 			try {
 				workspace.setDescription(desc);
 			} catch (CoreException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Activator.logError(Messages.ImportPlatformWizard_autobuild_error + enable, e);
 			}
 		}
 
