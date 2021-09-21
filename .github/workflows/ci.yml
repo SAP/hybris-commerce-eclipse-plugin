@@ -1,5 +1,5 @@
 name: Build
-on: [push, pull_request]
+on: [pull_request]
 
 jobs:
   build:
@@ -21,7 +21,3 @@ jobs:
       run: mvn --batch-mode --update-snapshots package
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        SONAR_KEY: ${{ secrets.SONAR_KEY }}
-        SONAR_ORG: ${{ secrets.SONAR_ORG }}
-
