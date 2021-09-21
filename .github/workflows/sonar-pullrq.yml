@@ -1,14 +1,8 @@
-name: Java CI
-on:
-  push:
-    branches:
-      - "master"
-  pull_request:
-    types: [opened, synchronize, reopened]
+name: SonarCloud-Pull-Req
+on: [pull_request]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -29,11 +23,17 @@ jobs:
         path: ~/.m2
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2
-    - name: Build with Maven
-      run: mvn -B package sonar:sonar --file pom.xml -Dsonar.login=$SONAR_TOKEN -Dsonar.projectKey=$SONAR_KEY -Dsonar.organization=$SONAR_ORG
+    - name: Environment
+      run: |
+        org="$(cut -d/ -f1 <<< "$GITHUB_REPOSITORY")"
+        repo="$(cut -d/ -f2 <<< "$GITHUB_REPOSITORY")"
+        echo "SONAR_ORGANIZATION=$org" >> "$GITHUB_ENV"
+        echo "SONAR_PROJECT_KEY=${org}_${repo}" >> "$GITHUB_ENV"
+        # When running in the sonar container the workspace is remapped
+        echo "WORKSPACE=/github/workspace" >> "$GITHUB_ENV"
+    - name: SonarCloud Scan
+      id: sonar
+      uses: sonarsource/sonarcloud-github-action@master
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        SONAR_KEY: ${{ secrets.SONAR_KEY }}
-        SONAR_ORG: ${{ secrets.SONAR_ORG }}
-
