@@ -30,3 +30,4 @@ Export-Package: com.hybris.yps.hyeclipse,
  com.hybris.yps.hyeclipse.utils,
  com.hybris.yps.hyeclipse.wizards
 Automatic-Module-Name: com.hybris.hyeclipse.importer
+Import-Package: org.eclipse.jdt.annotation

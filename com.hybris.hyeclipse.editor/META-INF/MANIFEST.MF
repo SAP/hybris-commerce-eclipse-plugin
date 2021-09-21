@@ -21,7 +21,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jdt.core.manipulation,
  org.eclipse.text,
  com.hybris.hyeclipse.hac,
- org.eclipse.e4.ui.model.workbench
+ org.eclipse.e4.ui.model.workbench,
+ org.eclipse.wst.validation
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Import-Package: com.hybris.hyeclipse.commons.utils

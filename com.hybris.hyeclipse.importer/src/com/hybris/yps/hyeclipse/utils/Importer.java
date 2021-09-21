@@ -54,6 +54,7 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.internal.core.JavaProject;
 import org.eclipse.ui.internal.wizards.datatransfer.SmartImportJob;
 import org.eclipse.ui.progress.IProgressConstants;
 
@@ -198,7 +199,7 @@ public class Importer {
 				false);
 		importJob.setProperty(IProgressConstants.PROPERTY_IN_DIALOG, true);
 		importJob.schedule();
-		importJob.join();
+		importJob.join(10_000L, monitor);
 		final String name = extensionFolder.lastSegment();
 
 		final IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(name);
@@ -206,7 +207,10 @@ public class Importer {
 			project.create(null, progress.newChild(3));
 		}
 		final IJavaProject javaProject = JavaCore.create(project);
-		javaProject.open(monitor);
+		javaProject.save(monitor, DEBUG);
+		if (JavaProject.hasJavaNature(project)) {
+			javaProject.open(monitor);			
+		}
 		fixProjectCompilerSettings(project, javaProject, version);
 		project.open(progress.newChild(3));
 		FixProjectsUtils.removeBuildersFromProject(progress.newChild(3), project);
