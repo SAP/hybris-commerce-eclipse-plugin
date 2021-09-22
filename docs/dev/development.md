@@ -49,6 +49,8 @@ git commit -m "bumping version to 1.5.0"
 # git add <changed files>
 git push origin master
 git flow release finish
+# update versioning
+git flow feature start bumping
 gren release -T <github-token> --tags v1.5.0 v<last-one>
 ## go to github.com and update release notes by adding zip file which is found in
 ## com.hybris.hyeclipse.site/target/com.hybris.hyeclipse.site-1.5.0.RELEASE.zip
@@ -56,6 +58,8 @@ gren changelog -T <github-token> -G --tags=all --override
 # create pull request on github.com from your private repository
 mvn org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=1.5.1-SNAPSHOT
 git add */*/MANIFEST.MF */pom.xml */feature.xml pom.xml CHANGELOG.md
+
+git flow feature finish bumping
 
 
 ```
