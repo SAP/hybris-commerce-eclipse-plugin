@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HAC
 Bundle-SymbolicName: com.hybris.hyeclipse.hac;singleton:=true
-Bundle-Version: 1.5.7.RELEASE
+Bundle-Version: 1.5.8.qualifier
 Bundle-Activator: com.hybris.hyeclipse.hac.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
