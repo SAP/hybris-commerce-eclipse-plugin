@@ -23,7 +23,7 @@ public class HyEclipsePreferencePage extends FieldEditorPreferencePage implement
 
 	public HyEclipsePreferencePage() {
 		super(GRID);
-		setDescription("SAP Commerce, development tools for Eclipse is a suite of Eclipse plugins for SAP Commerce projects that improves developer productivity.\n\nSee https://wiki.hybris.com/display/hyps/SAP+Hybris+Commerce+development+tools+for+Eclipse for details.");
+		setDescription("SAP Commerce, development tools for Eclipse is a suite of Eclipse plugins for SAP Commerce projects that improves developer productivity.\n\nSee https://github.com/SAP/hybris-commerce-eclipse-plugin for details.");
 	}
 	
 	@Override

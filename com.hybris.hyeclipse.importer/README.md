@@ -8,5 +8,5 @@ configuration (using localextensions.xml and extension classpaths)
 - ImpEx Editor with code assist
 - Type System (*-items.xml) validator
 
-See https://wiki.hybris.com/display/hyps/SAP+Hybris+Commerce+development+tools+for+Eclipse
+See https://github.com/SAP/hybris-commerce-eclipse-plugin
 for more information

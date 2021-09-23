@@ -15,9 +15,45 @@
 	<name>SAP Commerce Cloud - Eclipse plugin Java editor</name>
 	<description>Copyrights Save Action</description>
 	<organization>
-		<url>https://wiki.hybris.com/display/hyps</url>
-		<name>SAP Expert Services</name>
+		<url>https://github.com/SAP/hybris-commerce-eclipse-plugin</url>
+		<name>SAP CX</name>
 	</organization>
-	<url>https://wiki.hybris.com/display/hyps/SAP+Hybris+Commerce+development+tools+for+Eclipse</url>
+	<url>https://github.com/SAP/hybris-commerce-eclipse-plugin</url>
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.eclipse.tycho
+										</groupId>
+										<artifactId>
+											target-platform-configuration
+										</artifactId>
+										<versionRange>
+											[2.4.0,)
+										</versionRange>
+										<goals>
+											<goal>target-platform</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
 </project>
 
