@@ -100,6 +100,6 @@ Files: updatesite/*
 Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors 
 License: Apache-2.0
 
-Files: docs/* .github/* com.hybris.hyeclipse.site/* .gitignore .project .settings/* .travis CHANGELOG.md CODE_OF_CONDUCT.md README.md docs.code-workspace pom.xml
+Files: docs/* .github/* com.hybris.hyeclipse.site/* .gitignore .project .settings/* .travis CHANGELOG.md CODE_OF_CONDUCT.md README.md docs.code-workspace pom.xml CONTRIBUTING.md
 Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors 
 License: Apache-2.0
