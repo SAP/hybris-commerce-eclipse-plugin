@@ -15,12 +15,12 @@
  ******************************************************************************/
 package com.hybris.yps.hyeclipse.handlers.help;
 
-public class OpenALFHandler extends AbstractOpenInExternalBrowserHandler {
+public class OpenCXWorksHandler extends AbstractOpenInExternalBrowserHandler {
 
 	
 	@Override
 	protected String getURL() {
-		return "https://wiki.hybris.com/display/hybrisALF/SAP+Hybris+Application+Lifecycle+Framework+for+Commerce";
+		return "https://www.sap.com/cxworks/";
 	}
 
 }

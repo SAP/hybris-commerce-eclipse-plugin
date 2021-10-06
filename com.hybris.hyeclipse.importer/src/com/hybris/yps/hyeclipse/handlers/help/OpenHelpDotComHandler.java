@@ -20,7 +20,7 @@ public class OpenHelpDotComHandler extends AbstractOpenInExternalBrowserHandler 
 	
 	@Override
 	protected String getURL() {
-		return "https://help.hybris.com";
+		return "https://help.sap.com/viewer/product/SAP_COMMERCE_CLOUD/SHIP/en-US";
 	}
 
 }

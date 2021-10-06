@@ -176,27 +176,9 @@
          point="org.eclipse.ui.commands">
       <command
             categoryId="org.eclipse.ui.category.help"
-            defaultHandler="com.hybris.yps.hyeclipse.handlers.help.OpenALFHandler"
-            id="com.hybris.yps.hyeclipse.handlers.help.OpenALFHandler"
-            name="openALFHandler">
-      </command>
-      <command
-            categoryId="org.eclipse.ui.category.help"
-            defaultHandler="com.hybris.yps.hyeclipse.handlers.help.OpenArchitecturePracticesHandler"
-            id="com.hybris.yps.hyeclipse.handlers.help.OpenArchitecturePracticesHandler"
-            name="openArchHandler">
-      </command>
-      <command
-            categoryId="org.eclipse.ui.category.help"
-            defaultHandler="com.hybris.yps.hyeclipse.handlers.help.OpenDevelopmentPracticesHandler"
-            id="com.hybris.yps.hyeclipse.handlers.help.OpenDevelopmentPracticesHandler"
-            name="openDevHandler">
-      </command>
-      <command
-            categoryId="org.eclipse.ui.category.help"
-            defaultHandler="com.hybris.yps.hyeclipse.handlers.help.OpenExpertServicesHandler"
-            id="com.hybris.yps.hyeclipse.handlers.help.OpenExpertServicesHandler"
-            name="openExpertServicesHandler">
+            defaultHandler="com.hybris.yps.hyeclipse.handlers.help.OpenCXWorksHandler"
+            id="com.hybris.yps.hyeclipse.handlers.help.OpenCXWorksHandler"
+            name="openCXWorksHandler">
       </command>
       <command
             categoryId="org.eclipse.ui.category.help"
@@ -223,48 +205,33 @@
       <menuContribution
             allPopups="false"
             locationURI="menu:help?after=additions">
-         <separator name="sapHybrisHelp" visible="true"/>
-          <command
-               commandId="com.hybris.yps.hyeclipse.handlers.help.OpenHelpDotComHandler"
-               label="SAP Commerce Help"
-               style="push" icon="icon/hybris.ico">
-         </command>
-         <menu label="SAP Application Lifecycle Framework (ALF)"
-               id="com.hybris.yps.hyeclipse.menu.alf" icon="icon/hybris.ico">
-         <command
-               commandId="com.hybris.yps.hyeclipse.handlers.help.OpenALFHandler"
-               label="Home"
-               style="push">
-         </command>
-         <command
-               commandId="com.hybris.yps.hyeclipse.handlers.help.OpenDevelopmentPracticesHandler"
-               label="Development Recommended Practices"
-               style="push"
-               >
-         </command>
-         <command
-               commandId="com.hybris.yps.hyeclipse.handlers.help.OpenArchitecturePracticesHandler"
-               label="Architecture Recommended Practices"
-               style="push"
-               >
-         </command>
-         <command
-               commandId="com.hybris.yps.hyeclipse.handlers.help.OpenExpertServicesHandler"
-               label="SAP Expert Services"
-               style="push"
-               >
-         </command>
+         <menu
+               icon="icon/hybris.ico"
+               id="com.hybris.yps.hyeclipse.menu.commerce"
+               label="SAP Commerce Cloud"
+               mnemonic="C">
+            <command
+                  commandId="com.hybris.yps.hyeclipse.handlers.help.OpenHelpDotComHandler"
+                  label="SAP Help - Commerce"
+                  style="push">
+            </command>
+            <command
+                  commandId="com.hybris.yps.hyeclipse.handlers.help.OpenCXWorksHandler"
+                  label="SAP CX Works"
+                  style="push">
+               sh">
+            </command>
+            <command
+                  commandId="com.hybris.yps.hyeclipse.handlers.help.OpenExpertsForumHandler"
+                  label="SAP Experts Forum"
+                  style="push">
+            </command>
+            <command
+                  commandId="com.hybris.yps.hyeclipse.handlers.help.OpenSAPDownloadCenterHandler"
+                  label="SAP Download Center"
+                  style="push">
+            </command>
          </menu>
-          <command
-               commandId="com.hybris.yps.hyeclipse.handlers.help.OpenExpertsForumHandler"
-               label="SAP Experts Forum"
-               style="push" icon="icon/hybris.ico">
-         </command>
-          <command
-               commandId="com.hybris.yps.hyeclipse.handlers.help.OpenSAPDownloadCenterHandler"
-               label="SAP Download Center"
-               style="push" icon="icon/hybris.ico">
-         </command>
       </menuContribution>
    </extension>
    
