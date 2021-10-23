@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: junit
 Bundle-SymbolicName: com.hybris.hyeclipse.junit;singleton:=true
-Bundle-Version: 1.5.8.qualifier
+Bundle-Version: 21.10.0.RELEASE
 Bundle-Activator: com.hybris.hyeclipse.junit.Activator
 Bundle-Vendor: SAP
 Require-Bundle: org.eclipse.ui,
@@ -14,8 +14,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.debug.core,
  org.eclipse.debug.ui,
  org.apache.commons.io,
- com.hybris.hyeclipse.ytypesystem;bundle-version="[1.0.0,2.0.0)",
- com.hybris.hyeclipse.importer;bundle-version="[1.0.0,2.0.0)",
+ com.hybris.hyeclipse.ytypesystem;bundle-version="[1.0.0,21.10.1)",
+ com.hybris.hyeclipse.importer;bundle-version="[1.0.0,21.10.1)",
  org.eclipse.jdt.junit.runtime,
  org.eclipse.jdt.junit4.runtime,
  org.junit,
