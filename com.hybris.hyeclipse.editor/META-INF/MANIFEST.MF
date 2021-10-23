@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Editor
 Bundle-SymbolicName: com.hybris.hyeclipse.editor;singleton:=true
-Bundle-Version: 1.5.8.qualifier
+Bundle-Version: 21.10.0.RELEASE
 Bundle-Activator: com.hybris.hyeclipse.editor.Activator
 Bundle-Vendor: SAP
 Export-Package: com.hybris.hyeclipse.editor,
