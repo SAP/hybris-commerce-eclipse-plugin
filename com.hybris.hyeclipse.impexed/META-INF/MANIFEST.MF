@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ImpexFormatter
 Bundle-SymbolicName: com.hybris.hyeclipse.impexed;singleton:=true
-Bundle-Version: 1.5.8.qualifier
+Bundle-Version: 21.10.0.RELEASE
 Require-Bundle: org.eclipse.jface.text,
  org.eclipse.core.resources,
  org.eclipse.ui,
@@ -12,7 +12,7 @@ Require-Bundle: org.eclipse.jface.text,
  com.google.guava,
  org.apache.commons.lang,
  org.junit;bundle-version="4.0.0",
- com.hybris.hyeclipse.ytypesystem;bundle-version="[1.0.0,2.0.0]"
+ com.hybris.hyeclipse.ytypesystem;bundle-version="[1.0.0,21.10.1)"
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: org.eclipse.jdt.core,
  org.eclipse.jdt.internal.ui.text

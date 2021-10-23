@@ -6,7 +6,7 @@
 
 	<groupId>com.hybris.hyeclipse</groupId>
 	<artifactId>com.hybris.hyeclipse.parent</artifactId>
-	<version>1.5.8-SNAPSHOT</version>
+	<version>21.10.0.RELEASE</version>
 	<packaging>pom</packaging>
 	<name>SAP Commerce Cloud - Eclipse plugin (parent)</name>
 
