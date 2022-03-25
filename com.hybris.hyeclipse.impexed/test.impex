@@ -205,3 +205,52 @@ INSERT_UPDATE ClassAttributeAssignment;$class;$attribute;attributeType(code);$at
 ;Sortimentsartikel;LILA_501_0003;string;;
 ;Sortimentsartikel;LILA_501_0004;date;;
 
+"#% impex.setTargetFile( ""language.csv"", true, 1, -1 );"
+insert_update Language;active;fallbackLanguages(isocode);isocode[unique=true];name[lang=de];name[lang=en]
+"#% impex.exportItems( ""Language"" , true );"
+
+
+#% import de.hybris.foo.bar.MyClass;
+INSERT_UPDATE Title;code[unique=true]
+#% beforeEach: MyClass.callStaticMethod();
+;foo
+
+
+$START_USERRIGHTS
+Type;UID;MemberOfGroups;Password;Target;read;change;create;delete;change_perm
+UserGroup;impexgroup;employeegroup;
+;;;;Product;+;+;+;+;-
+Customer;impex-demo;impexgroup;1234;
+$END_USERRIGHTS
+
+# Removing all data (all records) from the itemtype
+$item=TestItem
+REMOVE $item[batchmode=true];itemtype(code)[unique=true]
+;$item
+
+$var=value
+
+INSERT_UPDATE TestItem;string[unique=true];integer
+"#% if: ""$var"".equals(""value"")"
+"key";5
+#% endif:
+
+
+#% if: !"responsive".equalsIgnoreCase(Config.getParameter("commerceservices.default.desktop.ui.experience"));
+# code
+#% endif:
+
+"#%
+import  de.hybris.platform.servicelayer.search.FlexibleSearchQuery;
+flexibleSearchService = Registry.getApplicationContext().getBean(""flexibleSearchService"");"
+
+"#%  
+query = ""SELECT...."";
+flexibleSearchQuery = new FlexibleSearchQuery(query);
+resultIterator = flexibleSearchService.search(flexibleSearchQuery).getResult().iterator();"
+
+#% impex.enableCodeExecution( true );
+#% impex.setRelaxedMode( true );
+INSERT_UPDATE Product; code[unique=true]; name
+#% impex.includeSQLData("jdbc:mysql://localhost/mydb?user=rauf&password=raufpassword", "com.mysql.jdbc.Driver", "Select code,name from SomeTable");
+

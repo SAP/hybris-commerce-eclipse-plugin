@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project 
-	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  
-  <parent>
-	<groupId>com.hybris.hyeclipse</groupId>
-	<artifactId>com.hybris.hyeclipse.parent</artifactId>
-	<version>21.10.0.RELEASE</version>
-  </parent>
-  
-  <artifactId>com.hybris.hyeclipse.ytypesystem</artifactId>
-  <packaging>eclipse-plugin</packaging>
-  <name>SAP Commerce Cloud - Eclipse plugin ytypesystem </name>
-  <description>Access to platform YTypeSystem</description>
-  
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.hybris.hyeclipse</groupId>
+		<artifactId>com.hybris.hyeclipse.parent</artifactId>
+		<version>21.10.0.RELEASE</version>
+	</parent>
+
+	<dependencies>
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.6</version>
+		</dependency>
+	</dependencies>
+
+	<artifactId>com.hybris.hyeclipse.ytypesystem</artifactId>
+	<packaging>eclipse-plugin</packaging>
+	<name>SAP Commerce Cloud - Eclipse plugin ytypesystem </name>
+	<description>Access to platform YTypeSystem</description>
+
 </project>

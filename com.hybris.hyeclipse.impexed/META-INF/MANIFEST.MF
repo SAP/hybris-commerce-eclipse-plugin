@@ -10,12 +10,9 @@ Require-Bundle: org.eclipse.jface.text,
  org.eclipse.ui.ide,
  org.eclipse.core.runtime,
  com.google.guava,
- org.apache.commons.lang,
- org.junit;bundle-version="4.0.0",
- com.hybris.hyeclipse.ytypesystem;bundle-version="[1.0.0,21.10.1)"
+ com.hybris.hyeclipse.ytypesystem
 Bundle-RequiredExecutionEnvironment: JavaSE-11
-Import-Package: org.eclipse.jdt.core,
- org.eclipse.jdt.internal.ui.text
+Import-Package: org.eclipse.jdt.core
 Bundle-Activator: com.hybris.impexformatter.Activator
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .

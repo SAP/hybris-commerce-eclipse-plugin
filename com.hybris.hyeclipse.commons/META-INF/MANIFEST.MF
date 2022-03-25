@@ -18,9 +18,16 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jdt.core;resolution:=optional
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ActivationPolicy: lazy
-Export-Package: com.hybris.hyeclipse.commons.handlers,
- com.hybris.hyeclipse.commons.testers,
- com.hybris.hyeclipse.commons.utils,
+Export-Package: com.hybris.hyeclipse.commons.handlers;uses:="org.eclipse.jface.text,org.eclipse.core.commands",
+ com.hybris.hyeclipse.commons.testers;uses:="org.eclipse.core.expressions",
+ com.hybris.hyeclipse.commons.utils;
+  uses:="org.eclipse.ui,
+   org.eclipse.ui.console,
+   org.eclipse.jface.preference,
+   org.eclipse.core.resources,
+   javax.xml.parsers,
+   org.eclipse.jface.viewers,
+   javax.xml.transform",
  org.apache.commons.io,
  org.apache.commons.io.comparator,
  org.apache.commons.io.filefilter,
@@ -41,7 +48,10 @@ Export-Package: com.hybris.hyeclipse.commons.handlers,
  org.apache.commons.lang3.text.translate,
  org.apache.commons.lang3.time,
  org.apache.commons.lang3.tuple
-Bundle-ClassPath: lib/commons-io-2.5.jar,
- .,
- lib/commons-lang3-3.6.jar
+Bundle-ClassPath: .,
+ target/dependency/commons-io-2.11.0.jar,
+ target/dependency/commons-lang3-3.12.0.jar,
+ target/dependency/jaxb-api-2.3.0.jar,
+ target/dependency/jaxb-core-2.3.0.jar,
+ target/dependency/jaxb-impl-2.3.0.jar
 Automatic-Module-Name: com.hybris.hyeclipse.commons

@@ -6,11 +6,11 @@ Bundle-Version: 21.10.0.RELEASE
 Bundle-Activator: com.hybris.hyeclipse.ytypesystem.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.eclipse.core.resources,
- org.apache.commons.lang
+ org.eclipse.core.resources
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ActivationPolicy: lazy
-Bundle-ClassPath: .
+Bundle-ClassPath: .,
+ target/dependency/commons-lang-2.6.jar
 DynamicImport-Package: *
 Export-Package: com.hybris.hyeclipse.ytypesystem,
  com.hybris.yps.hyeclipse

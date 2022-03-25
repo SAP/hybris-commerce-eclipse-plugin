@@ -17,7 +17,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore.xmi;visibility:=reexport,
  org.eclipse.emf.edit.ui;visibility:=reexport,
  org.eclipse.ui.ide;visibility:=reexport,
- com.hybris.hyeclipse.ytypesystem;bundle-version="[1.0.0,21.10.1)"
+ com.hybris.hyeclipse.ytypesystem
 Bundle-ActivationPolicy: lazy
 DynamicImport-Package: de.hybris.bootstrap.typesystem, de.hybris.bootstrap.config
 Automatic-Module-Name: com.hybris.hyeclipse.emf.beans.editor

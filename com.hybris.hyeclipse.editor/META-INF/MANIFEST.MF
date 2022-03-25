@@ -5,14 +5,22 @@ Bundle-SymbolicName: com.hybris.hyeclipse.editor;singleton:=true
 Bundle-Version: 21.10.0.RELEASE
 Bundle-Activator: com.hybris.hyeclipse.editor.Activator
 Bundle-Vendor: SAP
-Export-Package: com.hybris.hyeclipse.editor,
- com.hybris.hyeclipse.editor.copyright,
+Export-Package: com.hybris.hyeclipse.editor;uses:="org.eclipse.ui.plugin",
+ com.hybris.hyeclipse.editor.copyright;
+  uses:="org.eclipse.core.runtime,
+   org.eclipse.jdt.core,
+   org.eclipse.ltk.core.refactoring,
+   org.eclipse.jdt.ui.cleanup",
  com.hybris.hyeclipse.editor.copyright.constant,
- com.hybris.hyeclipse.editor.copyright.fix,
- com.hybris.hyeclipse.editor.copyright.manager,
- com.hybris.hyeclipse.editor.copyright.page,
- com.hybris.hyeclipse.editor.preferences,
- com.hybris.hyeclipse.editor.ui
+ com.hybris.hyeclipse.editor.copyright.fix;
+  uses:="org.eclipse.core.runtime,
+   org.eclipse.jdt.core.dom,
+   org.eclipse.jdt.core.refactoring,
+   org.eclipse.jdt.ui.cleanup",
+ com.hybris.hyeclipse.editor.copyright.manager;uses:="org.eclipse.jdt.core.dom,org.eclipse.jdt.core.refactoring",
+ com.hybris.hyeclipse.editor.copyright.page;uses:="org.eclipse.jdt.ui.cleanup,org.eclipse.swt.widgets",
+ com.hybris.hyeclipse.editor.preferences;uses:="org.eclipse.ui,org.eclipse.jface.preference,org.eclipse.core.runtime.preferences",
+ com.hybris.hyeclipse.editor.ui;uses:="org.eclipse.swt.widgets,org.eclipse.jface.preference"
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.jdt.ui,
@@ -20,10 +28,9 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ltk.core.refactoring,
  org.eclipse.jdt.core.manipulation,
  org.eclipse.text,
- com.hybris.hyeclipse.hac,
- org.eclipse.e4.ui.model.workbench,
- org.eclipse.wst.validation
+ com.hybris.hyeclipse.commons
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ActivationPolicy: lazy
 Import-Package: com.hybris.hyeclipse.commons.utils
 Automatic-Module-Name: com.hybris.hyeclipse.editor
+Bundle-ClassPath: .
