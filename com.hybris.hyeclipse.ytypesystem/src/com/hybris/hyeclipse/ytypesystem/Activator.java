@@ -30,17 +30,12 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.FileLocator;
@@ -48,25 +43,19 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.eclipse.ui.statushandlers.StatusManager;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.service.prefs.Preferences;
 
-import com.hybris.yps.hyeclipse.ExtensionHolder;
-
-import de.hybris.bootstrap.config.ExtensionInfo;
-import de.hybris.bootstrap.config.PlatformConfig;
-import de.hybris.bootstrap.config.SystemConfig;
-import de.hybris.bootstrap.typesystem.YAttributeDescriptor;
-import de.hybris.bootstrap.typesystem.YType;
-import de.hybris.bootstrap.typesystem.YTypeSystem;
+//import de.hybris.bootstrap.config.ExtensionInfo;
+//import de.hybris.bootstrap.config.PlatformConfig;
+//import de.hybris.bootstrap.config.SystemConfig;
+//import de.hybris.bootstrap.typesystem.YAttributeDescriptor;
+//import de.hybris.bootstrap.typesystem.YType;
+//import de.hybris.bootstrap.typesystem.YTypeSystem;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -85,10 +74,10 @@ public class Activator extends AbstractUIPlugin {
 
 	private Bundle ybootstrapBundle;
 	private File platformHome;
-	private SystemConfig systemConfig;
-	private PlatformConfig platformConfig;
-	private YTypeSystem typeSystem;
-	private Set<? extends YType> allTypes;
+//	private SystemConfig systemConfig;
+//	private PlatformConfig platformConfig;
+//	private YTypeSystem typeSystem;
+//	private Set<? extends YType> allTypes;
 	private List<String> allTypeNames;
 
 	public Activator() {
@@ -212,196 +201,196 @@ public class Activator extends AbstractUIPlugin {
 		return new File(new URI(fileUrl.getProtocol(), fileUrl.getPath(), null));
 	}
 
-	public SystemConfig getSystemConfig() {
-		if (systemConfig == null) {
+//	public SystemConfig getSystemConfig() {
+//		if (systemConfig == null) {
+//
+//			Map<String, String> props = null;
+//			try {
+//				props = loadProperties(getPlatformHome());
+//			} catch (SecurityException | IOException | IllegalArgumentException e) {
+//				logError("(NoSuchField|IO|Security|IllegalArgument|IllegalAccess)Exception", e);
+//			} catch (java.lang.UnsupportedClassVersionError err) {
+//				final Status status = new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+//						"Incompatible JVM for IDE and SAP Commerce version", err);
+//				StatusManager.getManager().handle(status);
+//
+//				printError("Incompatible JVM for IDE and SAP Commerce version",
+//						"eclipse IDE has to run on java version equal or greater than supported by SAP Commerce. More information how to change VM for IDE is available here: https://wiki.eclipse.org/Eclipse.ini",
+//						status);
+//			}
+//
+//			systemConfig = SystemConfig.getInstanceByProps(new Hashtable<String, String>(props));
+//		}
+//		return systemConfig;
+//	}
 
-			Map<String, String> props = null;
-			try {
-				props = loadProperties(getPlatformHome());
-			} catch (SecurityException | IOException | IllegalArgumentException e) {
-				logError("(NoSuchField|IO|Security|IllegalArgument|IllegalAccess)Exception", e);
-			} catch (java.lang.UnsupportedClassVersionError err) {
-				final Status status = new Status(IStatus.ERROR, Activator.PLUGIN_ID,
-						"Incompatible JVM for IDE and SAP Commerce version", err);
-				StatusManager.getManager().handle(status);
+//	private void printError(String title, String description, Status status) {
+//		PlatformUI.getWorkbench().getDisplay().syncExec(() -> {
+//
+//			Shell parent = PlatformUI.getWorkbench().getDisplay().getActiveShell(); // get shell.
+//			ErrorDialog.openError(parent, title, description, status);
+//		});
+//	}
 
-				printError("Incompatible JVM for IDE and SAP Commerce version",
-						"eclipse IDE has to run on java version equal or greater than supported by SAP Commerce. More information how to change VM for IDE is available here: https://wiki.eclipse.org/Eclipse.ini",
-						status);
-			}
+//	public void nullifySystemConfig() {
+//		systemConfig = null;
+//	}
 
-			systemConfig = SystemConfig.getInstanceByProps(new Hashtable<String, String>(props));
-		}
-		return systemConfig;
-	}
+//	public PlatformConfig getPlatformConfig() {
+//		if (platformConfig == null) {
+//			platformConfig = PlatformConfig.getInstance(getSystemConfig());
+//		}
+//		return platformConfig;
+//	}
 
-	private void printError(String title, String description, Status status) {
-		PlatformUI.getWorkbench().getDisplay().syncExec(() -> {
+//	public void nullifyPlatformConfig() {
+//		platformConfig = null;
+//	}
 
-			Shell parent = PlatformUI.getWorkbench().getDisplay().getActiveShell(); // get shell.
-			ErrorDialog.openError(parent, title, description, status);
-		});
-	}
+//	public YTypeSystem getTypeSystem() {
+//		if (typeSystem == null) {
+//			typeSystem = YTypeSystemBuilder.buildTypeSystem();
+//		}
+//		return typeSystem;
+//	}
 
-	public void nullifySystemConfig() {
-		systemConfig = null;
-	}
+//	public void nullifyTypeSystem() {
+//		typeSystem = null;
+//	}
 
-	public PlatformConfig getPlatformConfig() {
-		if (platformConfig == null) {
-			platformConfig = PlatformConfig.getInstance(getSystemConfig());
-		}
-		return platformConfig;
-	}
+//	public String getConfigDirectory() {
+//		SystemConfig sysConfig = getPlatformConfig().getSystemConfig();
+//		if (sysConfig != null) {
+//			return sysConfig.getConfigDir().getAbsolutePath();
+//		}
+//		return null;
+//	}
 
-	public void nullifyPlatformConfig() {
-		platformConfig = null;
-	}
+//	@SuppressWarnings("unchecked")
+//	public Set<YType> getAllTypes() {
+//		if (allTypes == null) {
+//			allTypes = getTypeSystem().getTypes();
+//		}
+//		return (Set<YType>) allTypes;
+//	}
 
-	public YTypeSystem getTypeSystem() {
-		if (typeSystem == null) {
-			typeSystem = YTypeSystemBuilder.buildTypeSystem();
-		}
-		return typeSystem;
-	}
+//	public void nullifyAllTypes() {
+//		allTypes = null;
+//	}
 
-	public void nullifyTypeSystem() {
-		typeSystem = null;
-	}
-
-	public String getConfigDirectory() {
-		SystemConfig sysConfig = getPlatformConfig().getSystemConfig();
-		if (sysConfig != null) {
-			return sysConfig.getConfigDir().getAbsolutePath();
-		}
-		return null;
-	}
-
-	@SuppressWarnings("unchecked")
-	public Set<YType> getAllTypes() {
-		if (allTypes == null) {
-			allTypes = getTypeSystem().getTypes();
-		}
-		return (Set<YType>) allTypes;
-	}
-
-	public void nullifyAllTypes() {
-		allTypes = null;
-	}
-
-	public List<String> getAllTypeNames() {
-		if (allTypeNames == null) {
-			Set<? extends YType> types = getAllTypes();
-			allTypeNames = new ArrayList<>(types.size());
-			for (YType type : types) {
-				allTypeNames.add(type.getCode());
-			}
-		}
-		return allTypeNames;
-	}
+//	public List<String> getAllTypeNames() {
+//		if (allTypeNames == null) {
+//			Set<? extends YType> types = getAllTypes();
+//			allTypeNames = new ArrayList<>(types.size());
+//			for (YType type : types) {
+//				allTypeNames.add(type.getCode());
+//			}
+//		}
+//		return allTypeNames;
+//	}
 
 	public void nullifyAllTypeNames() {
 		allTypeNames = null;
 	}
 
-	public List<String> getAllAttributeNames(String typeName) {
-		Set<YAttributeDescriptor> typeAttributes = getTypeSystem().getAttributes(typeName);
-		List<String> allAttributeNames = new ArrayList<>(typeAttributes.size());
-		for (YAttributeDescriptor attribute : typeAttributes) {
-			allAttributeNames.add(attribute.getQualifier());
-		}
-		return allAttributeNames;
-	}
+//	public List<String> getAllAttributeNames(String typeName) {
+//		Set<YAttributeDescriptor> typeAttributes = getTypeSystem().getAttributes(typeName);
+//		List<String> allAttributeNames = new ArrayList<>(typeAttributes.size());
+//		for (YAttributeDescriptor attribute : typeAttributes) {
+//			allAttributeNames.add(attribute.getQualifier());
+//		}
+//		return allAttributeNames;
+//	}
 
-	public String getAttributeName(String typeName, String potentialAttributeName) {
-		YType type = getTypeSystem().getType(typeName);
-		YAttributeDescriptor attribute = getTypeSystem().getAttribute(type.getCode(), potentialAttributeName);
-		if (attribute != null) {
-			return attribute.getQualifier();
-		}
-		return null;
-	}
+//	public String getAttributeName(String typeName, String potentialAttributeName) {
+//		YType type = getTypeSystem().getType(typeName);
+//		YAttributeDescriptor attribute = getTypeSystem().getAttribute(type.getCode(), potentialAttributeName);
+//		if (attribute != null) {
+//			return attribute.getQualifier();
+//		}
+//		return null;
+//	}
 
-	public String getTypeLoaderInfo(String typeName) {
-		YType type = getTypeSystem().getType(typeName);
-		if (type != null) {
-			return type.getLoaderInfo();// core-items.xml:2793(ItemTypeTagListener)
-		}
-		return "";
-	}
+//	public String getTypeLoaderInfo(String typeName) {
+//		YType type = getTypeSystem().getType(typeName);
+//		if (type != null) {
+//			return type.getLoaderInfo();// core-items.xml:2793(ItemTypeTagListener)
+//		}
+//		return "";
+//	}
 
-	public Set<ExtensionHolder> getAllExtensionsForPlatform() {
-		Set<ExtensionHolder> allExtensions = new HashSet<>();
-		List<ExtensionInfo> allExtensionInfos = getPlatformConfig().getExtensionInfosInBuildOrder();
-		for (ExtensionInfo extension : allExtensionInfos) {
-			// sanity check, should never be null
-			if (extension != null) {
-				ExtensionHolder extHolder = createExtensionHolderFromExtensionInfo(extension);
-				if (extHolder != null) {
-					allExtensions.add(extHolder);
-				}
-			}
-		}
-		return allExtensions;
-	}
+//	public Set<ExtensionHolder> getAllExtensionsForPlatform() {
+//		Set<ExtensionHolder> allExtensions = new HashSet<>();
+//		List<ExtensionInfo> allExtensionInfos = getPlatformConfig().getExtensionInfosInBuildOrder();
+//		for (ExtensionInfo extension : allExtensionInfos) {
+//			// sanity check, should never be null
+//			if (extension != null) {
+//				ExtensionHolder extHolder = createExtensionHolderFromExtensionInfo(extension);
+//				if (extHolder != null) {
+//					allExtensions.add(extHolder);
+//				}
+//			}
+//		}
+//		return allExtensions;
+//	}
 
-	private ExtensionHolder createExtensionHolderFromExtensionInfo(ExtensionInfo extension) {
-
-		ExtensionHolder extHolder = null;
-		
-		if (extension.isCoreExtension()) {
-			return extHolder;
-		}
-
-		// some extensions appear to not have a directory so we skip them
-		if (extension.getExtensionDirectory() == null) {
-			log("extension [" + extension.getName() + "] doesn't have an extension directory, skipping");
-			return null;
-		}
-		String path = extension.getExtensionDirectory().getAbsolutePath();
-		extHolder = new ExtensionHolder(path, extension.getName());
-		if (extension.getCoreModule() != null) {
-			extHolder.setCoreModule(true);
-		}
-		if (extension.getWebModule() != null) {
-			extHolder.setWebModule(true);
-		}
-		if (extension.getHMCModule() != null && getPlatformConfig().getExtensionInfo("hmc") != null) {
-			extHolder.setHmcModule(true);
-		}
-
-		extHolder.setBackofficeModule(false);
-		String backOfficeMeta = extension.getMeta("backoffice-module");
-		if (backOfficeMeta != null && backOfficeMeta.equalsIgnoreCase("true")) {
-			extHolder.setBackofficeModule(true);
-		}
-
-		extHolder.setAddOnModule(false);
-		File addonDir = new File(path, "acceleratoraddon");
-		if (addonDir.exists() && addonDir.isDirectory()) {
-			extHolder.setAddOnModule(true);
-		}
-
-		File libDir = new File(path, "lib");
-		if (libDir.exists() && libDir.isDirectory()) {
-			File[] files = libDir.listFiles((File dir, String name) -> 
-				name.toLowerCase(Locale.ENGLISH).endsWith(".jar")
-			);
-			for (File file : files) {
-				extHolder.getJarFiles().add(file.getName());
-			}
-		}
-
-		if (!extension.getAllRequiredExtensionNames().isEmpty()) {
-			List<String> extensions = new LinkedList<>(extension.getAllRequiredExtensionNames());
-			if (!extensions.contains(PLATFORM)) {
-				extensions.add(PLATFORM);
-			}
-			extHolder.setDependentExtensions(extensions);
-		}
-
-		return extHolder;
-	}
+//	private ExtensionHolder createExtensionHolderFromExtensionInfo(ExtensionInfo extension) {
+//
+//		ExtensionHolder extHolder = null;
+//		
+//		if (extension.isCoreExtension()) {
+//			return extHolder;
+//		}
+//
+//		// some extensions appear to not have a directory so we skip them
+//		if (extension.getExtensionDirectory() == null) {
+//			log("extension [" + extension.getName() + "] doesn't have an extension directory, skipping");
+//			return null;
+//		}
+//		String path = extension.getExtensionDirectory().getAbsolutePath();
+//		extHolder = new ExtensionHolder(path, extension.getName());
+//		if (extension.getCoreModule() != null) {
+//			extHolder.setCoreModule(true);
+//		}
+//		if (extension.getWebModule() != null) {
+//			extHolder.setWebModule(true);
+//		}
+//		if (extension.getHMCModule() != null && getPlatformConfig().getExtensionInfo("hmc") != null) {
+//			extHolder.setHmcModule(true);
+//		}
+//
+//		extHolder.setBackofficeModule(false);
+//		String backOfficeMeta = extension.getMeta("backoffice-module");
+//		if (backOfficeMeta != null && backOfficeMeta.equalsIgnoreCase("true")) {
+//			extHolder.setBackofficeModule(true);
+//		}
+//
+//		extHolder.setAddOnModule(false);
+//		File addonDir = new File(path, "acceleratoraddon");
+//		if (addonDir.exists() && addonDir.isDirectory()) {
+//			extHolder.setAddOnModule(true);
+//		}
+//
+//		File libDir = new File(path, "lib");
+//		if (libDir.exists() && libDir.isDirectory()) {
+//			File[] files = libDir.listFiles((File dir, String name) -> 
+//				name.toLowerCase(Locale.ENGLISH).endsWith(".jar")
+//			);
+//			for (File file : files) {
+//				extHolder.getJarFiles().add(file.getName());
+//			}
+//		}
+//
+//		if (!extension.getAllRequiredExtensionNames().isEmpty()) {
+//			List<String> extensions = new LinkedList<>(extension.getAllRequiredExtensionNames());
+//			if (!extensions.contains(PLATFORM)) {
+//				extensions.add(PLATFORM);
+//			}
+//			extHolder.setDependentExtensions(extensions);
+//		}
+//
+//		return extHolder;
+//	}
 
 	private static Map<String, String> loadProperties(File platformHome)
 			throws IOException {

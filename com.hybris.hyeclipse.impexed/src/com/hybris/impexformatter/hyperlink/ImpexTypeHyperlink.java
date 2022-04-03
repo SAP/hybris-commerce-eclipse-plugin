@@ -62,8 +62,9 @@ public class ImpexTypeHyperlink implements IHyperlink {
 	@Override
 	public void open() {
 		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-		
-		String typeLocation = Activator.getDefault().getTypeLoaderInfo(location);
+// TODO get type info
+//		String typeLocation = Activator.getDefault().getTypeLoaderInfo(location);
+		String typeLocation = "";
 		String fileName = typeLocation.substring(0, typeLocation.indexOf(":"));
 		String extensionName = fileName.replaceAll("-items.xml", "");
 		String lineNumberStr = typeLocation.substring(typeLocation.indexOf(":") + 1, typeLocation.indexOf("("));

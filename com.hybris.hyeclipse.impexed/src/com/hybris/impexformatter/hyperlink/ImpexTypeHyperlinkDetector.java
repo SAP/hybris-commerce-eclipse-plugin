@@ -54,7 +54,8 @@ public class ImpexTypeHyperlinkDetector extends AbstractHyperlinkDetector implem
 		if (upperCandidate.startsWith("INSERT") || upperCandidate.startsWith("REMOVE") || upperCandidate.startsWith("UPDATE")) {
 			// look for keyword
 			if (allTypeNames == null) {
-				allTypeNames = Activator.getDefault().getAllTypeNames();
+//				allTypeNames = Activator.getDefault().getAllTypeNames();
+//				TODO get all type names				
 			}
 		
 			String headerPlusType = candidate.substring(0, candidate.indexOf(";"));

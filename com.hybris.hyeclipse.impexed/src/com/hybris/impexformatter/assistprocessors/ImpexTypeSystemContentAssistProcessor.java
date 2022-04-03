@@ -20,8 +20,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
@@ -34,7 +33,6 @@ import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 
 import com.google.common.collect.Lists;
-
 import com.hybris.impexformatter.Activator;
 import com.hybris.impexformatter.actions.Formatter;
 
@@ -125,7 +123,9 @@ public class ImpexTypeSystemContentAssistProcessor implements IContentAssistProc
 			List<String> autoSuggests = null;
 			
 			if (showTypes) {
-				List<String> allTypeNames = plugin.getAllTypeNames();
+				// TODO get all types
+//				List<String> allTypeNames = plugin.getAllTypeNames();
+				List<String> allTypeNames = List.of();
 				if (currentPart.isEmpty()) {
 					//return all Types
 					autoSuggests = new ArrayList<>(allTypeNames.size());
@@ -144,7 +144,9 @@ public class ImpexTypeSystemContentAssistProcessor implements IContentAssistProc
 			
 			if (showAttributes) {
 				String typeName = headerParts[0];
-				List<String> attributeNames = plugin.getAllAttributeNames(typeName);
+				// TODO get all type attributes 
+//				List<String> attributeNames = plugin.getAllAttributeNames(typeName);
+				List<String> attributeNames = List.of();
 				if (currentPart.isEmpty() || currentPart.endsWith(";") || currentPart.endsWith("(")) {
 					//return all Attributes not already used
 					autoSuggests = new ArrayList<>(attributeNames.size());

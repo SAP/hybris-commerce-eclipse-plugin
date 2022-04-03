@@ -30,7 +30,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.hybris.yps.hyeclipse.Activator;
-import com.hybris.yps.hyeclipse.ExtensionHolder;
+//import com.hybris.yps.hyeclipse.ExtensionHolder;
 
 /**
  * Created by Qiang Zeng on 26/06/2017.
@@ -77,11 +77,11 @@ public class SkipJarScanningUtils {
 			throw new IllegalStateException(String.format("file %s doesn't exist.", catalinaPropPath));
 		}
 		try {
-			Set<ExtensionHolder> exts = plugin.getAllExtensionsForPlatform();
-			for (ExtensionHolder ext : exts) {
-				File extDir = new File(ext.getPath());
-				skipJarsByExtension(jarNameList, extDir);
-			}
+//			Set<ExtensionHolder> exts = plugin.getAllExtensionsForPlatform();
+//			for (ExtensionHolder ext : exts) {
+//				File extDir = new File(ext.getPath());
+//				skipJarsByExtension(jarNameList, extDir);
+//			}
 
 			Collections.sort(jarNameList);
 

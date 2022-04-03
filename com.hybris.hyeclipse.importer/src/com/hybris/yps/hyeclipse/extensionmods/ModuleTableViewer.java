@@ -39,7 +39,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
-import com.hybris.yps.hyeclipse.ExtensionHolder;
+//import com.hybris.yps.hyeclipse.ExtensionHolder;
 
 public class ModuleTableViewer {
 	
@@ -133,11 +133,11 @@ public class ModuleTableViewer {
 		tableViewer.setLabelProvider(new ExtensionLabelProvider());
 		
 		// The input for the table viewer is the instance of ExtensionModuleConfigurer
-		emc = new ExtensionModuleConfigurer(composite);
-		if (emc.getAllPlatformExtensions() != null) {
-			tableViewer.setInput(emc);
-			setPlatformFound(true);
-		}
+//		emc = new ExtensionModuleConfigurer(composite);
+//		if (emc.getAllPlatformExtensions() != null) {
+//			tableViewer.setInput(emc);
+//			setPlatformFound(true);
+//		}
 		// Add the buttons
 		createButtons(composite);
 	}
@@ -292,26 +292,32 @@ public class ModuleTableViewer {
 		}
 
 		@Override
-		public void updateExtension(ExtensionHolder extension) {
-			tableViewer.update(extension, null);
-		}
-
-		@Override
-		public Object[] getElements(Object parent) {
-			Set<ExtensionHolder> allExtensions = emc.getAllPlatformExtensions();
-			if (allExtensions != null) {
-				TreeSet<ExtensionHolder> sortedExtensions = new TreeSet<ExtensionHolder>(new Comparator<ExtensionHolder>() {
-					@Override
-					public int compare(final ExtensionHolder object1, final ExtensionHolder object2) {
-						return object1.getName().compareTo(object2.getName());
-					}
-				});
-				sortedExtensions.addAll(allExtensions);
-				
-				return sortedExtensions.toArray();
-			}
+		public Object[] getElements(Object inputElement) {
+			// TODO Auto-generated method stub
 			return null;
 		}
+
+//		@Override
+//		public void updateExtension(ExtensionHolder extension) {
+//			tableViewer.update(extension, null);
+//		}
+
+//		@Override
+//		public Object[] getElements(Object parent) {
+//			Set<ExtensionHolder> allExtensions = emc.getAllPlatformExtensions();
+//			if (allExtensions != null) {
+//				TreeSet<ExtensionHolder> sortedExtensions = new TreeSet<ExtensionHolder>(new Comparator<ExtensionHolder>() {
+//					@Override
+//					public int compare(final ExtensionHolder object1, final ExtensionHolder object2) {
+//						return object1.getName().compareTo(object2.getName());
+//					}
+//				});
+//				sortedExtensions.addAll(allExtensions);
+//				
+//				return sortedExtensions.toArray();
+//			}
+//			return null;
+//		}
 
 	}
 

@@ -20,8 +20,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
@@ -34,7 +33,6 @@ import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 
 import com.google.common.collect.Lists;
-
 import com.hybris.impexformatter.Activator;
 import com.hybris.impexformatter.actions.Formatter;
 
@@ -122,7 +120,9 @@ public class ImpexTypeAttributeContentAssistProcessor implements IContentAssistP
 			List<String> autoSuggests = null;
 			
 			if (showTypes) {
-				List<String> allTypeNames = plugin.getAllTypeNames();
+				List<String> allTypeNames = List.of();
+//				List<String> allTypeNames = plugin.getAllTypeNames();
+// TODO get all types 				
 				if (thisAttrib.trim().isEmpty()) {
 					//If currWord is empty, return all Types
 					autoSuggests = new ArrayList<>(allTypeNames.size());
@@ -143,12 +143,15 @@ public class ImpexTypeAttributeContentAssistProcessor implements IContentAssistP
 			if (showAttributes) {
 				String typeName = headerParts[0];
 				
-				String lastAttribute = plugin.getAttributeName(typeName, currentPart);
+//				String lastAttribute = plugin.getAttributeName(typeName, currentPart);
+// TODO get type attribute				
+				String lastAttribute = "";
 				if (lastAttribute != null) {
 					endingSemiColon = false;
 				}
-				
-				List<String> attributeNames = plugin.getAllAttributeNames(typeName);
+// TODO get all type attributes				
+//				List<String> attributeNames = plugin.getAllAttributeNames(typeName);
+				List<String> attributeNames = List.of();
 				
 				if (currentPart.trim().isEmpty() || thisAttrib.endsWith(";") || thisAttrib.endsWith("(") || !endingSemiColon) {
 					//If currentPart is empty, return all Attributes not already used

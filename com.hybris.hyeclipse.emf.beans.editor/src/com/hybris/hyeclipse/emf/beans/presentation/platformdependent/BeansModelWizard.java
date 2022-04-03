@@ -37,7 +37,6 @@ import org.eclipse.emf.common.CommonPlugin;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -65,10 +64,6 @@ import com.hybris.hyeclipse.emf.beans.BeansFactory;
 import com.hybris.hyeclipse.emf.beans.BeansPackage;
 import com.hybris.hyeclipse.emf.beans.presentation.BeansEditorPlugin;
 import com.hybris.hyeclipse.emf.beans.util.BeansResourceFactoryImpl;
-import com.hybris.hyeclipse.ytypesystem.Activator;
-
-import de.hybris.bootstrap.config.ExtensionInfo;
-import de.hybris.bootstrap.config.PlatformConfig;
 
 
 /**
@@ -194,12 +189,12 @@ public class BeansModelWizard extends Wizard implements INewWizard {
 	 * <!-- end-user-doc -->
 	 * @generated NOT
 	 */
-	protected EObject createInitialModel(final IProgressMonitor monitor) {
-		final PlatformConfig platformConfig = Activator.getDefault().getPlatformConfig();
-		final BeansGenerator beansGenerator = new BeansGenerator(platformConfig, typeSelectionPage.getSelectedTypes());
-		beansGenerator.run(monitor);
-		return beansGenerator.documentRoot;
-	}
+//	protected EObject createInitialModel(final IProgressMonitor monitor) {
+//		final PlatformConfig platformConfig = Activator.getDefault().getPlatformConfig();
+//		final BeansGenerator beansGenerator = new BeansGenerator(platformConfig, typeSelectionPage.getSelectedTypes());
+//		beansGenerator.run(monitor);
+//		return beansGenerator.documentRoot;
+//	}
 
 	/**
 	 * Do the work after everything is specified.
@@ -236,10 +231,10 @@ public class BeansModelWizard extends Wizard implements INewWizard {
 
 							// Add the initial model object to the contents.
 							//
-							EObject rootObject = createInitialModel(progressMonitor);
-							if (rootObject != null) {
-								resource.getContents().add(rootObject);
-							}
+//							EObject rootObject = createInitialModel(progressMonitor);
+//							if (rootObject != null) {
+//								resource.getContents().add(rootObject);
+//							}
 
 							// Save the contents of the resource to the file system.
 							//
@@ -343,9 +338,9 @@ public class BeansModelWizard extends Wizard implements INewWizard {
 			return getModelFile().getProject();
 		}
 		
-		public ExtensionInfo getModelFileExtensionInfo() {
-			return Activator.getDefault().getPlatformConfig().getExtensionInfo(getModelProject().getName());
-		}
+//		public ExtensionInfo getModelFileExtensionInfo() {
+//			return Activator.getDefault().getPlatformConfig().getExtensionInfo(getModelProject().getName());
+//		}
 	}
 
 	/**

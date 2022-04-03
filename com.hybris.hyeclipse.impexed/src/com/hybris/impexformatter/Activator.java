@@ -15,8 +15,6 @@
  ******************************************************************************/
 package com.hybris.impexformatter;
 
-import java.util.List;
-
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -25,7 +23,6 @@ public class Activator extends AbstractUIPlugin {
 	
 	// The plug-in ID
 	public static final String PLUGIN_ID = "com.hybris.hyeclipse.impexed"; //$NON-NLS-1$
-	private com.hybris.hyeclipse.ytypesystem.Activator typeSystemExporter;
 	
 	public static final String IMPEX_PARTITIONING = "__impex_partitioning";
 	
@@ -47,31 +44,7 @@ public class Activator extends AbstractUIPlugin {
 	public static Activator getDefault() {
 		return plugin;
 	}
-	
-	public com.hybris.hyeclipse.ytypesystem.Activator getTypeSystemExporter() {
-		if (typeSystemExporter == null) {
-			typeSystemExporter = com.hybris.hyeclipse.ytypesystem.Activator.getDefault();
-		}
-		return typeSystemExporter;
-	}
-	
-	public List<String> getAllTypeNames() {
-		
-		return getTypeSystemExporter().getAllTypeNames();
-	}
-	
-	public String getTypeLoaderInfo(String typeName) {
-		
-		return getTypeSystemExporter().getTypeLoaderInfo(typeName);
-	}
-	
-	public List<String> getAllAttributeNames(String typeName) {
-		return getTypeSystemExporter().getAllAttributeNames(typeName);
-	}
-	
-	public String getAttributeName(String typeName, String blah) {
-		return getTypeSystemExporter().getAttributeName(typeName, blah);
-	}
+
 	
 	public static void log(String msg) {
 		getDefault().log(msg, null);

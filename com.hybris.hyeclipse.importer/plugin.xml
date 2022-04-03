@@ -278,6 +278,11 @@
        <projectConfigurator
              class="com.hybris.yps.hyeclipse.SAPCommerceProjectConfigurator"
              label="SAP Commerce Projects">
+          <activeWhen>
+             <hasFile
+                   path="hybrisserver.sh">
+             </hasFile>
+          </activeWhen>
        </projectConfigurator>
     </extension>
 

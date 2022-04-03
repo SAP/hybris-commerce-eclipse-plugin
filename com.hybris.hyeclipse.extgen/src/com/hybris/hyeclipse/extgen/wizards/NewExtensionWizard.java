@@ -18,38 +18,21 @@ package com.hybris.hyeclipse.extgen.wizards;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkingSet;
-import org.eclipse.ui.PlatformUI;
-import org.xml.sax.SAXException;
 
 import com.hybris.hyeclipse.extgen.Activator;
-import com.hybris.hyeclipse.extgen.utils.ExtensionUtils;
 import com.hybris.hyeclipse.extgen.utils.PathUtils;
-import com.hybris.yps.hyeclipse.ExtensionHolder;
-import com.hybris.yps.hyeclipse.utils.BuildUtils;
 
 public class NewExtensionWizard extends Wizard implements INewWizard {
 
@@ -57,7 +40,7 @@ public class NewExtensionWizard extends Wizard implements INewWizard {
 	private NewExtensionWizardPage wizardPage;
 	private ISelection currentSelection;
 	private boolean autoImport;
-	private ExtensionHolder extension;
+//	private ExtensionHolder extension;
 	private File saveLocation;
 	private String templateName;
 	private String packageName;
@@ -82,27 +65,27 @@ public class NewExtensionWizard extends Wizard implements INewWizard {
 	@Override
 	public boolean performFinish() {
 		getWizardPageConfig();
-		IRunnableWithProgress runnable = new IRunnableWithProgress() {
-			public void run(IProgressMonitor monitor) throws InvocationTargetException {
-				try {
-					generateExtension(monitor, extension.getName(), saveLocation);
-				} catch (CoreException ce) {
-					throw new InvocationTargetException(ce);
-				} finally {
-					monitor.done();
-				}
-			}
-		};
-		try {
-			getContainer().run(true, false, runnable);
-		} catch (InterruptedException ie) {
-			Thread.currentThread().interrupt();
-			return false;
-		} catch (InvocationTargetException ite) {
-			Throwable realException = ite.getTargetException();
-			MessageDialog.openError(getShell(), "Error", realException.getMessage());
-			return false;
-		}
+//		IRunnableWithProgress runnable = new IRunnableWithProgress() {
+//			public void run(IProgressMonitor monitor) throws InvocationTargetException {
+//				try {
+//					generateExtension(monitor, extension.getName(), saveLocation);
+//				} catch (CoreException ce) {
+//					throw new InvocationTargetException(ce);
+//				} finally {
+//					monitor.done();
+//				}
+//			}
+//		};
+//		try {
+//			getContainer().run(true, false, runnable);
+//		} catch (InterruptedException ie) {
+//			Thread.currentThread().interrupt();
+//			return false;
+//		} catch (InvocationTargetException ite) {
+//			Throwable realException = ite.getTargetException();
+//			MessageDialog.openError(getShell(), "Error", realException.getMessage());
+//			return false;
+//		}
 		return true;
 	}
 
@@ -115,9 +98,9 @@ public class NewExtensionWizard extends Wizard implements INewWizard {
 		this.templateName = wizardPage.getTemplateName();
 		this.saveLocation = wizardPage.getExtensionDirectory();
 		String path = PathUtils.getCustomExtensionPath(saveLocation, wizardPage.getExtensionName());
-		this.extension = new ExtensionHolder(path, wizardPage.getExtensionName());
-		this.extension.setCoreModule(wizardPage.getCoreModuleCheckboxSelection());
-		this.extension.setWebModule(wizardPage.getWebModuleCheckboxSelection());
+//		this.extension = new ExtensionHolder(path, wizardPage.getExtensionName());
+//		this.extension.setCoreModule(wizardPage.getCoreModuleCheckboxSelection());
+//		this.extension.setWebModule(wizardPage.getWebModuleCheckboxSelection());
 		this.workingSet = wizardPage.getWorkingSet();
 		wizardPage.setDefaultExtensionLocation(saveLocation.getAbsolutePath());
 	}
@@ -171,16 +154,16 @@ public class NewExtensionWizard extends Wizard implements INewWizard {
 	 *            the progress monitor
 	 */
 	private void buildPlatform(IProgressMonitor monitor) {
-		Display.getDefault().syncExec(new Runnable() {
-			public void run() {
-				try {
-					BuildUtils.refreshAndBuild(monitor, BUILD_CFG,
-							ResourcesPlugin.getWorkspace().getRoot().getProject(extension.getName()));
-				} catch (InvocationTargetException e) {
-					throw new IllegalStateException("Failed to build platform", e);
-				}
-			}
-		});
+//		Display.getDefault().syncExec(new Runnable() {
+//			public void run() {
+//				try {
+//					BuildUtils.refreshAndBuild(monitor, BUILD_CFG,
+//							ResourcesPlugin.getWorkspace().getRoot().getProject(extension.getName()));
+//				} catch (InvocationTargetException e) {
+//					throw new IllegalStateException("Failed to build platform", e);
+//				}
+//			}
+//		});
 	}
 
 	/**
@@ -190,56 +173,56 @@ public class NewExtensionWizard extends Wizard implements INewWizard {
 	 *            the progress monitor
 	 */
 	private void configureExtensionModules(IProgressMonitor monitor) {
-		Display.getDefault().syncExec(new Runnable() {
-			public void run() {
-				ExtensionUtils.configureModules(monitor, extension);
-			}
-		});
+//		Display.getDefault().syncExec(new Runnable() {
+//			public void run() {
+//				ExtensionUtils.configureModules(monitor, extension);
+//			}
+//		});
 	}
 
 	/**
 	 * Imports extension to workspace
 	 */
 	private void importExtension(IProgressMonitor monitor) {
-		Display.getDefault().syncExec(new Runnable() {
-			public void run() {
-				try {
-					ExtensionUtils.importExtension(monitor, saveLocation, extension.getName());
-				} catch (CoreException e) {
-					throw new IllegalStateException("Failed to import platform extension", e);
-				}
-			}
-		});
+//		Display.getDefault().syncExec(new Runnable() {
+//			public void run() {
+//				try {
+//					ExtensionUtils.importExtension(monitor, saveLocation, extension.getName());
+//				} catch (CoreException e) {
+//					throw new IllegalStateException("Failed to import platform extension", e);
+//				}
+//			}
+//		});
 	}
 
 	/**
 	 * Moves extension to given directory
 	 */
 	private void moveExtension() throws IOException {
-		Display.getDefault().syncExec(new Runnable() {
-			public void run() {
-				try {
-					ExtensionUtils.moveExtension(saveLocation, extension.getName());
-				} catch (IOException e) {
-					throw new IllegalStateException("Failed to move extension to " + saveLocation.getAbsolutePath(), e);
-				}
-			}
-		});
+//		Display.getDefault().syncExec(new Runnable() {
+//			public void run() {
+//				try {
+//					ExtensionUtils.moveExtension(saveLocation, extension.getName());
+//				} catch (IOException e) {
+//					throw new IllegalStateException("Failed to move extension to " + saveLocation.getAbsolutePath(), e);
+//				}
+//			}
+//		});
 	}
 
 	/**
 	 * Adds extension to localextensions.xml
 	 */
 	private void addToLocalExtensions() throws IOException {
-		Display.getDefault().syncExec(new Runnable() {
-			public void run() {
-				try {
-					ExtensionUtils.addToLocalExtension(saveLocation, workingSet, extension.getName());
-				} catch (IOException | SAXException | ParserConfigurationException | TransformerException e) {
-					throw new IllegalStateException("Failed to move extension to " + saveLocation.getAbsolutePath(), e);
-				}
-			}
-		});
+//		Display.getDefault().syncExec(new Runnable() {
+//			public void run() {
+//				try {
+//					ExtensionUtils.addToLocalExtension(saveLocation, workingSet, extension.getName());
+//				} catch (IOException | SAXException | ParserConfigurationException | TransformerException e) {
+//					throw new IllegalStateException("Failed to move extension to " + saveLocation.getAbsolutePath(), e);
+//				}
+//			}
+//		});
 	}
 
 	/**
@@ -250,37 +233,37 @@ public class NewExtensionWizard extends Wizard implements INewWizard {
 	 * @throws InvocationTargetException
 	 */
 	private void runExtgen(IProgressMonitor monitor) throws InvocationTargetException {
-		Display.getDefault().syncExec(new Runnable() {
-			public void run() {
-				try {
-					ExtensionUtils.runExtgen(monitor, extension.getName(), packageName, templateName);
-				} catch (InvocationTargetException e) {
-					Activator.logError("Failed to generate extension", e);
-					throw new IllegalStateException("Failed to generate extension. Check the console output.", e);
-				}
-			}
-		});
+//		Display.getDefault().syncExec(new Runnable() {
+//			public void run() {
+//				try {
+//					ExtensionUtils.runExtgen(monitor, extension.getName(), packageName, templateName);
+//				} catch (InvocationTargetException e) {
+//					Activator.logError("Failed to generate extension", e);
+//					throw new IllegalStateException("Failed to generate extension. Check the console output.", e);
+//				}
+//			}
+//		});
 	}
 
 	private void addExtensionToWorkingSet(IProgressMonitor monitor) {
-		Display.getDefault().syncExec(new Runnable() {
-			public void run() {
-				if (workingSet != null && !workingSet.equals(""))
-				{
-					IProject proj = ResourcesPlugin.getWorkspace().getRoot().getProject(extension.getName());
-					IWorkingSet ws = PlatformUI.getWorkbench().getWorkingSetManager().getWorkingSet(workingSet);
-					if (ws == null)
-					{
-						ws = PlatformUI.getWorkbench().getWorkingSetManager().createWorkingSet(workingSet, new IProject[]{proj});
-					}
-					else
-					{	Set<IProject> projs = new HashSet(Arrays.asList(ws.getElements()));
-						projs.add(proj);
-						ws.setElements(projs.toArray(new IProject[projs.size()]));
-					}
-				}
-			}
-		});
+//		Display.getDefault().syncExec(new Runnable() {
+//			public void run() {
+//				if (workingSet != null && !workingSet.equals(""))
+//				{
+//					IProject proj = ResourcesPlugin.getWorkspace().getRoot().getProject(extension.getName());
+//					IWorkingSet ws = PlatformUI.getWorkbench().getWorkingSetManager().getWorkingSet(workingSet);
+//					if (ws == null)
+//					{
+//						ws = PlatformUI.getWorkbench().getWorkingSetManager().createWorkingSet(workingSet, new IProject[]{proj});
+//					}
+//					else
+//					{	Set<IProject> projs = new HashSet(Arrays.asList(ws.getElements()));
+//						projs.add(proj);
+//						ws.setElements(projs.toArray(new IProject[projs.size()]));
+//					}
+//				}
+//			}
+//		});
 	}
 
 	private void throwCoreException(String message) throws CoreException {

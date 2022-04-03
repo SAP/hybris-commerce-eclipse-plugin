@@ -59,7 +59,7 @@ import org.eclipse.ui.internal.wizards.datatransfer.SmartImportJob;
 import org.eclipse.ui.progress.IProgressConstants;
 
 import com.hybris.yps.hyeclipse.Activator;
-import com.hybris.yps.hyeclipse.ExtensionHolder;
+//import com.hybris.yps.hyeclipse.ExtensionHolder;
 
 public class Importer {
 
@@ -120,30 +120,30 @@ public class Importer {
 
 		final double version = getPlatformVersion(platformHome);
 
-		final Collection<ExtensionHolder> extensions = FixProjectsUtils
-				.getExtensionsNotInWorkspace(platformHome.getAbsolutePath());
-		if (!extensions.isEmpty()) {
-			monitor.setTaskName("Importing extensions");
-			monitor.beginTask("Importing extensions", extensions.size());
-			int progress = 0;
-			for (final ExtensionHolder extensionHolder : extensions) {
-				final IPath extP = Path.fromOSString(extensionHolder.getPath());
-				final IPath projectFilepath = extP.append("/.project");
-				final boolean projectFileExist = projectFilepath.toFile().exists();
-				if (projectFileExist) {
-					Activator.log("Importing Eclipse project [" + extensionHolder + "]");
-					importProject(monitor, version, extP);
-					// fix the modules (e.g. remove hmc module if not needed)
-				} else if (isHybrisExtension(extP)) {
-					Activator.log(MessageFormat.format("Trying to create project [{0}] in IDE", extensionHolder));
-					importProject(monitor, version, extP);
-
-				}
-				fixModules(monitor, extensionHolder);
-				progress++;
-				monitor.worked(progress);
-			}
-		}
+//		final Collection<ExtensionHolder> extensions = FixProjectsUtils
+//				.getExtensionsNotInWorkspace(platformHome.getAbsolutePath());
+//		if (!extensions.isEmpty()) {
+//			monitor.setTaskName("Importing extensions");
+//			monitor.beginTask("Importing extensions", extensions.size());
+//			int progress = 0;
+//			for (final ExtensionHolder extensionHolder : extensions) {
+//				final IPath extP = Path.fromOSString(extensionHolder.getPath());
+//				final IPath projectFilepath = extP.append("/.project");
+//				final boolean projectFileExist = projectFilepath.toFile().exists();
+//				if (projectFileExist) {
+//					Activator.log("Importing Eclipse project [" + extensionHolder + "]");
+//					importProject(monitor, version, extP);
+//					// fix the modules (e.g. remove hmc module if not needed)
+//				} else if (isHybrisExtension(extP)) {
+//					Activator.log(MessageFormat.format("Trying to create project [{0}] in IDE", extensionHolder));
+//					importProject(monitor, version, extP);
+//
+//				}
+//				fixModules(monitor, extensionHolder);
+//				progress++;
+//				monitor.worked(progress);
+//			}
+//		}
 	}
 
 	/**
@@ -586,43 +586,43 @@ public class Importer {
 	}
 
 	private void fixMissingProjectDependencies(final IProgressMonitor monitor) throws JavaModelException {
-		final Set<ExtensionHolder> extensions = FixProjectsUtils.getAllExtensionsForPlatform();
-		final Set<IProject> projects = FixProjectsUtils.getAllOpenHybrisProjects();
-		for (final IProject project : projects) {
-			for (final ExtensionHolder extHolder : extensions) {
-				if (extHolder.getName().equalsIgnoreCase(project.getName())) {
-					addMissingProjectDependencies(monitor, project, extHolder);
-				}
-			}
-		}
+//		final Set<ExtensionHolder> extensions = FixProjectsUtils.getAllExtensionsForPlatform();
+//		final Set<IProject> projects = FixProjectsUtils.getAllOpenHybrisProjects();
+//		for (final IProject project : projects) {
+//			for (final ExtensionHolder extHolder : extensions) {
+//				if (extHolder.getName().equalsIgnoreCase(project.getName())) {
+//					addMissingProjectDependencies(monitor, project, extHolder);
+//				}
+//			}
+//		}
 	}
 
-	private void addMissingProjectDependencies(final IProgressMonitor monitor, final IProject project,
-			final ExtensionHolder extHolder) throws JavaModelException {
-		final IJavaProject javaProject = JavaCore.create(project);
-
-		final IClasspathEntry[] classPathEntries = javaProject.getRawClasspath();
-		if (!extHolder.getDependentExtensions().isEmpty()) {
-			for (final String ext : extHolder.getDependentExtensions()) {
-				boolean found = false;
-				for (final IClasspathEntry classpathEntry : classPathEntries) {
-					// fix jar files
-					if (classpathEntry.getEntryKind() == IClasspathEntry.CPE_PROJECT
-							&& classpathEntry.getPath().toString().replaceFirst("/", "").equalsIgnoreCase(ext)) {
-						found = true;
-						break;
-					}
-				}
-				if (!found) {
-					final IProject dependentProject = ResourcesPlugin.getWorkspace().getRoot().getProject(ext);
-					if (dependentProject.exists() && dependentProject.isOpen()) {
-						FixProjectsUtils.addToClassPath(dependentProject, IClasspathEntry.CPE_PROJECT, javaProject,
-								monitor);
-					}
-				}
-			}
-		}
-	}
+//	private void addMissingProjectDependencies(final IProgressMonitor monitor, final IProject project,
+//			final ExtensionHolder extHolder) throws JavaModelException {
+//		final IJavaProject javaProject = JavaCore.create(project);
+//
+//		final IClasspathEntry[] classPathEntries = javaProject.getRawClasspath();
+//		if (!extHolder.getDependentExtensions().isEmpty()) {
+//			for (final String ext : extHolder.getDependentExtensions()) {
+//				boolean found = false;
+//				for (final IClasspathEntry classpathEntry : classPathEntries) {
+//					// fix jar files
+//					if (classpathEntry.getEntryKind() == IClasspathEntry.CPE_PROJECT
+//							&& classpathEntry.getPath().toString().replaceFirst("/", "").equalsIgnoreCase(ext)) {
+//						found = true;
+//						break;
+//					}
+//				}
+//				if (!found) {
+//					final IProject dependentProject = ResourcesPlugin.getWorkspace().getRoot().getProject(ext);
+//					if (dependentProject.exists() && dependentProject.isOpen()) {
+//						FixProjectsUtils.addToClassPath(dependentProject, IClasspathEntry.CPE_PROJECT, javaProject,
+//								monitor);
+//					}
+//				}
+//			}
+//		}
+//	}
 
 	private void fixMissingProjectResources(final IProgressMonitor monitor, final File platformHome)
 			throws CoreException {
@@ -736,22 +736,22 @@ public class Importer {
 	 * Some extensions have modules that they don't need and can cause compilation
 	 * errors (e.g. hmc modules)
 	 */
-	private void fixModules(final IProgressMonitor monitor, final ExtensionHolder extension) {
-		if ("eventtrackingwsaddon".equals(extension.getName())) {
-			extension.setHmcModule(false);
-			FixProjectsUtils.updateExtensionModules(extension, monitor);
-		}
-		// remove broken wst settings file
-		if (BROKEN_WST_SETTINGS_FILE_EXT.equals(extension.getName())) {
-			final java.nio.file.Path brokenConfig = Paths.get(extension.getPath(), BROKEN_WST_SETTINGS_FILE);
-			if (Files.exists(brokenConfig)) {
-				try {
-					Files.delete(brokenConfig);
-				} catch (final IOException e) {
-					Activator.logError("couldn't delete broken wst config file", e);
-				}
-			}
-		}
-	}
+//	private void fixModules(final IProgressMonitor monitor, final ExtensionHolder extension) {
+//		if ("eventtrackingwsaddon".equals(extension.getName())) {
+//			extension.setHmcModule(false);
+//			FixProjectsUtils.updateExtensionModules(extension, monitor);
+//		}
+//		// remove broken wst settings file
+//		if (BROKEN_WST_SETTINGS_FILE_EXT.equals(extension.getName())) {
+//			final java.nio.file.Path brokenConfig = Paths.get(extension.getPath(), BROKEN_WST_SETTINGS_FILE);
+//			if (Files.exists(brokenConfig)) {
+//				try {
+//					Files.delete(brokenConfig);
+//				} catch (final IOException e) {
+//					Activator.logError("couldn't delete broken wst config file", e);
+//				}
+//			}
+//		}
+//	}
 
 }

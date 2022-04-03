@@ -16,7 +16,6 @@
 package com.hybris.yps.hyeclipse;
 
 import java.io.File;
-import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -41,7 +40,7 @@ public class Activator extends AbstractUIPlugin {
 	// The shared instance
 	private static Activator plugin;
 	
-	private com.hybris.hyeclipse.ytypesystem.Activator typeSystemExporter;
+//	private com.hybris.hyeclipse.ytypesystem.Activator typeSystemExporter;
 	private File platformHome;
 	
 	// used to disable the nature lookup during importing
@@ -96,12 +95,12 @@ public class Activator extends AbstractUIPlugin {
 		return plugin;
 	}
 	
-	public com.hybris.hyeclipse.ytypesystem.Activator getTypeSystemExporter() {
-		if (typeSystemExporter == null) {
-			typeSystemExporter = com.hybris.hyeclipse.ytypesystem.Activator.getDefault();
-		}
-		return typeSystemExporter;
-	}
+//	public com.hybris.hyeclipse.ytypesystem.Activator getTypeSystemExporter() {
+//		if (typeSystemExporter == null) {
+//			typeSystemExporter = com.hybris.hyeclipse.ytypesystem.Activator.getDefault();
+//		}
+//		return typeSystemExporter;
+//	}
 	
 	public void resetPlatform(String platformHome) {
 		resetPlatformBootstrapBundle();
@@ -115,22 +114,24 @@ public class Activator extends AbstractUIPlugin {
 			logError("Failed to persist platform_home", e);
 		}
 		
-		getTypeSystemExporter().setPlatformHome(null);
-		getTypeSystemExporter().nullifySystemConfig();
-		getTypeSystemExporter().nullifyPlatformConfig();
-		getTypeSystemExporter().nullifyTypeSystem();
-		getTypeSystemExporter().nullifyAllTypes();
-		getTypeSystemExporter().nullifyAllTypeNames();
+//		getTypeSystemExporter().setPlatformHome(null);
+//		getTypeSystemExporter().nullifySystemConfig();
+//		getTypeSystemExporter().nullifyPlatformConfig();
+//		getTypeSystemExporter().nullifyTypeSystem();
+//		getTypeSystemExporter().nullifyAllTypes();
+//		getTypeSystemExporter().nullifyAllTypeNames();
 	}
 	
-	public Set<ExtensionHolder> getAllExtensionsForPlatform() {
+//	public Set<ExtensionHolder> getAllExtensionsForPlatform() {
 		
-		return getTypeSystemExporter().getAllExtensionsForPlatform();
-	}
+//		return getTypeSystemExporter().getAllExtensionsForPlatform();
+//		return Set.of();
+//	}
 
 	public String getConfigDirectory() {
 		
-		return getTypeSystemExporter().getConfigDirectory();
+//		return getTypeSystemExporter().getConfigDirectory();
+		return "";
 	}
 
 	public static void log(String msg) {

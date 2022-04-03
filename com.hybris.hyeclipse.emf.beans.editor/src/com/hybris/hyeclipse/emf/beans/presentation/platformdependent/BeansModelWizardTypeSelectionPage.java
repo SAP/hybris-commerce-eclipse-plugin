@@ -36,7 +36,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
-import com.hybris.hyeclipse.ytypesystem.Activator;
+//import com.hybris.hyeclipse.ytypesystem.Activator;
 
 import de.hybris.bootstrap.typesystem.YComposedType;
 import de.hybris.bootstrap.typesystem.YType;
@@ -87,8 +87,8 @@ class BeansModelWizardTypeSelectionPage extends WizardPage {
 		tableViewer.getTable().setLayoutData(new GridData(GridData.FILL_BOTH));
 		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
 		tableViewer.setLabelProvider(new YTypeLabelProvider());
-		final Collection<? extends YType> allTypes = Activator.getDefault().getTypeSystem().getComposedTypes();
-		tableViewer.setInput(allTypes);
+//		final Collection<? extends YType> allTypes = Activator.getDefault().getTypeSystem().getComposedTypes();
+//		tableViewer.setInput(allTypes);
 		
 		final Button selectAllButton = new Button(composite, SWT.CHECK);
 		selectAllButton.setText("Select All");
@@ -106,14 +106,14 @@ class BeansModelWizardTypeSelectionPage extends WizardPage {
 				else {
 					selectedTypes.remove(event.getElement());
 				}
-				if (selectedTypes.size() == allTypes.size()) {
-					selectAllButton.setSelection(true);
-					selectAllButton.setText("Clear All");
-				}
-				else {
-					selectAllButton.setSelection(false);
-					selectAllButton.setText("Select All");
-				}
+//				if (selectedTypes.size() == allTypes.size()) {
+//					selectAllButton.setSelection(true);
+//					selectAllButton.setText("Clear All");
+//				}
+//				else {
+//					selectAllButton.setSelection(false);
+//					selectAllButton.setText("Select All");
+//				}
 			}
 		});
 		filterText.addModifyListener(new ModifyListener() {
@@ -130,7 +130,7 @@ class BeansModelWizardTypeSelectionPage extends WizardPage {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				if (selectAllButton.getSelection()) {
-					selectedTypes.addAll(allTypes);
+//					selectedTypes.addAll(allTypes);
 					selectAllButton.setText("Clear All");
 				}
 				else {

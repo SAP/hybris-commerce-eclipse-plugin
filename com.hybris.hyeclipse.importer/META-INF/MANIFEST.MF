@@ -9,17 +9,15 @@ Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.ui.ide,
- org.eclipse.core.resources,
  org.eclipse.jdt.core,
- org.eclipse.ant.core,
  org.eclipse.jdt.launching,
- org.eclipse.debug.core,
- org.eclipse.ant.launching,
- org.apache.ant,
  org.eclipse.debug.ui,
  com.hybris.hyeclipse.ytypesystem,
  org.eclipse.core.expressions,
- com.hybris.hyeclipse.commons
+ com.hybris.hyeclipse.commons,
+ org.eclipse.ant.core,
+ org.eclipse.pde,
+ org.eclipse.pde.core
 Bundle-ClassPath: .
 Bundle-Vendor: SAP
 Export-Package: com.hybris.yps.hyeclipse,

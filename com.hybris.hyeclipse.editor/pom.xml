@@ -8,6 +8,13 @@
 		<version>21.10.0.RELEASE</version>
 	</parent>
 
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+		</dependency>
+	</dependencies>
+
 	<artifactId>com.hybris.hyeclipse.editor</artifactId>
 	<packaging>eclipse-plugin</packaging>
 	<name>SAP Commerce Cloud - Eclipse plugin Java editor</name>

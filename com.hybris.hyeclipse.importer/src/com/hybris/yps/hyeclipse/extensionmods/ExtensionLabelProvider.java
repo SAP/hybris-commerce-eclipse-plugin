@@ -27,7 +27,7 @@ import org.eclipse.swt.graphics.Image;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
-import com.hybris.yps.hyeclipse.ExtensionHolder;
+//import com.hybris.yps.hyeclipse.ExtensionHolder;
 
 /**
  * Label provider for the ModuleTableViewer
@@ -66,34 +66,46 @@ public class ExtensionLabelProvider extends LabelProvider implements ITableLabel
 
 	@Override
 	public Image getColumnImage(Object element, int columnIndex) {
-		ExtensionHolder extension = (ExtensionHolder) element;
-		switch (columnIndex) {
-			case 0:  // NAME_COLUMN
-				return null;
-			case 1 :
-				return getImage(extension.isCoreModule());
-			case 2 :
-				return getImage(extension.isWebModule());
-			case 3 :
-				return getImage(extension.isHmcModule());
-			default :
-				return null; 	
-		}
-	
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
 	public String getColumnText(Object element, int columnIndex) {
-		String result = "";
-		ExtensionHolder extension = (ExtensionHolder) element;
-		switch (columnIndex) {
-			case 0:  // NAME_COLUMN
-				result = extension.getName();
-				break;
-			default :
-				break; 	
-		}
-		return result;
+		// TODO Auto-generated method stub
+		return null;
 	}
+
+//	@Override
+//	public Image getColumnImage(Object element, int columnIndex) {
+//		ExtensionHolder extension = (ExtensionHolder) element;
+//		switch (columnIndex) {
+//			case 0:  // NAME_COLUMN
+//				return null;
+//			case 1 :
+//				return getImage(extension.isCoreModule());
+//			case 2 :
+//				return getImage(extension.isWebModule());
+//			case 3 :
+//				return getImage(extension.isHmcModule());
+//			default :
+//				return null; 	
+//		}
+//	
+//	}
+
+//	@Override
+//	public String getColumnText(Object element, int columnIndex) {
+//		String result = "";
+//		ExtensionHolder extension = (ExtensionHolder) element;
+//		switch (columnIndex) {
+//			case 0:  // NAME_COLUMN
+//				result = extension.getName();
+//				break;
+//			default :
+//				break; 	
+//		}
+//		return result;
+//	}
 	
 }

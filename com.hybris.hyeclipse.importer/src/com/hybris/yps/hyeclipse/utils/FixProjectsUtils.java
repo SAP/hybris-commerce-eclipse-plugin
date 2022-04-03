@@ -60,7 +60,7 @@ import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import com.hybris.yps.hyeclipse.Activator;
-import com.hybris.yps.hyeclipse.ExtensionHolder;
+//import com.hybris.yps.hyeclipse.ExtensionHolder;
 
 public class FixProjectsUtils {
 	
@@ -74,9 +74,9 @@ public class FixProjectsUtils {
 		// hiding implicit constructor
 	}
 	
-	public static Set<ExtensionHolder> getAllExtensionsForPlatform() {
-		return plugin.getAllExtensionsForPlatform();
-	}
+//	public static Set<ExtensionHolder> getAllExtensionsForPlatform() {
+//		return plugin.getAllExtensionsForPlatform();
+//	}
 	
 	public static String getConfigDirectory()
 	{
@@ -84,26 +84,26 @@ public class FixProjectsUtils {
 	}
 	
 	public static Set<IProject> getProjectsNotInLocalExtensionsFile() {
-		Set<ExtensionHolder> exts = getAllExtensionsForPlatform();
+//		Set<ExtensionHolder> exts = getAllExtensionsForPlatform();
 		Set<IProject> allHybrisProjects = getAllHybrisProjects();
 
 		Set<IProject> projectsNotInLocalExts = new HashSet<>();
 		for (IProject project : allHybrisProjects) {
 			boolean found = false;
-			for (ExtensionHolder ext : exts) {
-
-				Path projectLocation = Paths.get(project.getLocation().toFile().getAbsolutePath());
-				Path extLocation = Paths.get(ext.getPath());
-				try {
-					if (Files.isSameFile(projectLocation, extLocation)
-							|| (project.getName().equals(PLATFORM_DIR) || (project.getName().equals(CONFIG_DIR)))) {
-						found = true;
-						break;
-					}
-				} catch (IOException e) {
-					throw new IllegalStateException(e);
-				}
-			}
+//			for (ExtensionHolder ext : exts) {
+//
+//				Path projectLocation = Paths.get(project.getLocation().toFile().getAbsolutePath());
+//				Path extLocation = Paths.get(ext.getPath());
+//				try {
+//					if (Files.isSameFile(projectLocation, extLocation)
+//							|| (project.getName().equals(PLATFORM_DIR) || (project.getName().equals(CONFIG_DIR)))) {
+//						found = true;
+//						break;
+//					}
+//				} catch (IOException e) {
+//					throw new IllegalStateException(e);
+//				}
+//			}
 			// if we get here there is no path
 			if (!found && (!project.getName().equals(PLATFORM_DIR) && !project.getName().equals(CONFIG_DIR))) {
 				projectsNotInLocalExts.add(project);
@@ -112,46 +112,46 @@ public class FixProjectsUtils {
 		return projectsNotInLocalExts;
 	}
 		
-	public static Set<ExtensionHolder> getExtensionsNotInWorkspace(String platformHome) {
-
-		Set<ExtensionHolder> exts = getAllExtensionsForPlatform();
-
-		// add platform and config to the list of extensions
-		ExtensionHolder platformHolder = new ExtensionHolder(platformHome, PLATFORM_DIR);
-		exts.add(platformHolder);
-		ExtensionHolder configHolder = new ExtensionHolder(getConfigDirectory(), CONFIG_DIR);
-		exts.add(configHolder);
-
-		Set<IProject> allHybrisProjects = getAllHybrisProjects();
-
-		Set<ExtensionHolder> extensionsNotInWorkspace = new HashSet<>();
-		for (ExtensionHolder ext : exts) {
-
-			boolean found = false;
-			for (IProject project : allHybrisProjects) {
-				Path projectLocation = Paths.get(project.getLocation().toFile().getAbsolutePath());
-				Path extLocation = Paths.get(ext.getPath());
-				try {
-					if (Files.isSameFile(projectLocation, extLocation)) {
-						// Match in workspace and localextensions.xml: between extension & project
-						found = true;
-						break;
-					}
-				} catch (IOException e) {
-					throw new IllegalStateException(e);
-				}
-			}
-			// if we get here there is no match
-			if (!found) {
-				if (DEBUG)
-					Activator.log(
-							"No match in workspace for extension [" + ext.getName() + "] path [" + ext.getPath() + "]");
-				extensionsNotInWorkspace.add(ext);
-			}
-		}
-
-		return extensionsNotInWorkspace;
-	}
+//	public static Set<ExtensionHolder> getExtensionsNotInWorkspace(String platformHome) {
+//
+//		Set<ExtensionHolder> exts = getAllExtensionsForPlatform();
+//
+//		// add platform and config to the list of extensions
+//		ExtensionHolder platformHolder = new ExtensionHolder(platformHome, PLATFORM_DIR);
+//		exts.add(platformHolder);
+//		ExtensionHolder configHolder = new ExtensionHolder(getConfigDirectory(), CONFIG_DIR);
+//		exts.add(configHolder);
+//
+//		Set<IProject> allHybrisProjects = getAllHybrisProjects();
+//
+//		Set<ExtensionHolder> extensionsNotInWorkspace = new HashSet<>();
+//		for (ExtensionHolder ext : exts) {
+//
+//			boolean found = false;
+//			for (IProject project : allHybrisProjects) {
+//				Path projectLocation = Paths.get(project.getLocation().toFile().getAbsolutePath());
+//				Path extLocation = Paths.get(ext.getPath());
+//				try {
+//					if (Files.isSameFile(projectLocation, extLocation)) {
+//						// Match in workspace and localextensions.xml: between extension & project
+//						found = true;
+//						break;
+//					}
+//				} catch (IOException e) {
+//					throw new IllegalStateException(e);
+//				}
+//			}
+//			// if we get here there is no match
+//			if (!found) {
+//				if (DEBUG)
+//					Activator.log(
+//							"No match in workspace for extension [" + ext.getName() + "] path [" + ext.getPath() + "]");
+//				extensionsNotInWorkspace.add(ext);
+//			}
+//		}
+//
+//		return extensionsNotInWorkspace;
+//	}
 	
 	/**
 	 * We don't want to touch any projects that are not hybris extensions so we do some filtering
@@ -390,118 +390,118 @@ public class FixProjectsUtils {
 		}	
 	}
 
-	public static void updateExtensionModules(final ExtensionHolder extension, IProgressMonitor monitor)
-			throws TransformerFactoryConfigurationError {
-		monitor.beginTask("Removing module info", 10);
-		String extensionPath = extension.getPath();
-		
-		File extInfo = new File(extensionPath, EXTENSIONINFO_XML);
-		if (extInfo.exists()) {
-			try {
-				IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(extension.getName());
-				DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-				docFactory.setValidating(true);
-				docFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-				docFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-				DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-				docBuilder.setErrorHandler(new org.xml.sax.helpers.DefaultHandler());
-				
-				Document doc = docBuilder.parse(extInfo);
-				boolean updateProject = false;
-				if (!extension.isCoreModule()) {
-					String moduleName = "coremodule";
-					removeAndAddComment(doc, moduleName);
-					
-					//Remove 'src' directory
-					removeSourceFolder(monitor, project, "src", "src");
-					//Remove 'gensrc' directory
-					removeSourceFolder(monitor, project, "gensrc", "gensrc");
-					//Remove 'testsrc' directory
-					removeSourceFolder(monitor, project, "testsrc", "testsrc");
-					
-					//Remove *-items.xml, *-spring.xml
-					project.getFile("resources/" + extension.getName() + "-spring.xml").delete(true, false, monitor);
-					project.getFile("resources/" + extension.getName() + "-items.xml").delete(true, false, monitor);
-					
-					updateProject = true;
-				}
-				if (!extension.isWebModule()) {
-					String moduleName = "webmodule";
-					removeAndAddComment(doc, moduleName);
-					
-					//Remove 'web' directory
-					removeSourceFolder(monitor, project, "web", "web/src");
-					removeSourceFolder(monitor, project, "web", "web/testsrc");
-
-					updateProject = true;
-				}
-				if (!extension.isHmcModule()) {
-					String moduleName = "hmcmodule";
-					removeAndAddComment(doc, moduleName);
-					
-					//Remove 'hmc' directory
-					removeSourceFolder(monitor, project, "hmc", "hmc/src");
-					
-					updateProject = true;
-				}
-				if (updateProject) {
-					// write the content into xml file
-					TransformerFactory transformerFactory = TransformerFactory.newInstance();
-					transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-					transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-					transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
-					Transformer transformer = transformerFactory.newTransformer();
-					DOMSource source = new DOMSource(doc);
-					StreamResult result = new StreamResult(new File(extensionPath, EXTENSIONINFO_XML));
-					transformer.transform(source, result);
-					monitor.worked(5);
-					
-					//Refresh local project
-					project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
-				}
-			}
-			catch (ParserConfigurationException| TransformerException | IOException |SAXException| CoreException pce) {
-				Activator.logError("InvocationTargetException", pce);
-			}
-			
-		}
-		monitor.worked(5);
-		monitor.done();
-	}
+//	public static void updateExtensionModules(final ExtensionHolder extension, IProgressMonitor monitor)
+//			throws TransformerFactoryConfigurationError {
+//		monitor.beginTask("Removing module info", 10);
+//		String extensionPath = extension.getPath();
+//		
+//		File extInfo = new File(extensionPath, EXTENSIONINFO_XML);
+//		if (extInfo.exists()) {
+//			try {
+//				IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(extension.getName());
+//				DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+//				docFactory.setValidating(true);
+//				docFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+//				docFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+//				DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+//				docBuilder.setErrorHandler(new org.xml.sax.helpers.DefaultHandler());
+//				
+//				Document doc = docBuilder.parse(extInfo);
+//				boolean updateProject = false;
+//				if (!extension.isCoreModule()) {
+//					String moduleName = "coremodule";
+//					removeAndAddComment(doc, moduleName);
+//					
+//					//Remove 'src' directory
+//					removeSourceFolder(monitor, project, "src", "src");
+//					//Remove 'gensrc' directory
+//					removeSourceFolder(monitor, project, "gensrc", "gensrc");
+//					//Remove 'testsrc' directory
+//					removeSourceFolder(monitor, project, "testsrc", "testsrc");
+//					
+//					//Remove *-items.xml, *-spring.xml
+//					project.getFile("resources/" + extension.getName() + "-spring.xml").delete(true, false, monitor);
+//					project.getFile("resources/" + extension.getName() + "-items.xml").delete(true, false, monitor);
+//					
+//					updateProject = true;
+//				}
+//				if (!extension.isWebModule()) {
+//					String moduleName = "webmodule";
+//					removeAndAddComment(doc, moduleName);
+//					
+//					//Remove 'web' directory
+//					removeSourceFolder(monitor, project, "web", "web/src");
+//					removeSourceFolder(monitor, project, "web", "web/testsrc");
+//
+//					updateProject = true;
+//				}
+//				if (!extension.isHmcModule()) {
+//					String moduleName = "hmcmodule";
+//					removeAndAddComment(doc, moduleName);
+//					
+//					//Remove 'hmc' directory
+//					removeSourceFolder(monitor, project, "hmc", "hmc/src");
+//					
+//					updateProject = true;
+//				}
+//				if (updateProject) {
+//					// write the content into xml file
+//					TransformerFactory transformerFactory = TransformerFactory.newInstance();
+//					transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+//					transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+//					transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+//					Transformer transformer = transformerFactory.newTransformer();
+//					DOMSource source = new DOMSource(doc);
+//					StreamResult result = new StreamResult(new File(extensionPath, EXTENSIONINFO_XML));
+//					transformer.transform(source, result);
+//					monitor.worked(5);
+//					
+//					//Refresh local project
+//					project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
+//				}
+//			}
+//			catch (ParserConfigurationException| TransformerException | IOException |SAXException| CoreException pce) {
+//				Activator.logError("InvocationTargetException", pce);
+//			}
+//			
+//		}
+//		monitor.worked(5);
+//		monitor.done();
+//	}
 	
-	private static void removeSourceFolder(IProgressMonitor monitor, IProject project, String folderName, String classpathEntry)
-			throws CoreException {
-		IFolder webFolder = project.getFolder(folderName);
-		if(webFolder != null){
-			webFolder.delete(true, false, monitor);
-		}
-		//Project is missing required source folder: 'web/src'
-		IJavaProject javaProject = JavaCore.create(project);
-		if (javaProject.isOnClasspath(project.getFolder(classpathEntry)))
-		{
-			FixProjectsUtils.removeFromClassPath(project.getFolder(classpathEntry), javaProject, monitor);
-		}
-	}
+//	private static void removeSourceFolder(IProgressMonitor monitor, IProject project, String folderName, String classpathEntry)
+//			throws CoreException {
+//		IFolder webFolder = project.getFolder(folderName);
+//		if(webFolder != null){
+//			webFolder.delete(true, false, monitor);
+//		}
+//		//Project is missing required source folder: 'web/src'
+//		IJavaProject javaProject = JavaCore.create(project);
+//		if (javaProject.isOnClasspath(project.getFolder(classpathEntry)))
+//		{
+//			FixProjectsUtils.removeFromClassPath(project.getFolder(classpathEntry), javaProject, monitor);
+//		}
+//	}
 
-	private static void removeAndAddComment(Document doc, String moduleName) {
-		Node extensionNode;
-		Node moduleNode;
-		moduleNode = doc.getElementsByTagName(moduleName).item(0);
-		if (moduleNode != null) {
-			extensionNode = moduleNode.getParentNode();
-			NamedNodeMap attrs = moduleNode.getAttributes();
-			StringBuilder sb = new StringBuilder("<");
-			sb.append(moduleName);
-			for (int i = 0 ; i<attrs.getLength() ; i++) {
-		        Attr attribute = (Attr)attrs.item(i);     
-		        sb.append(" " + attribute.getName() + "=\"" + attribute.getValue() + "\"");
-		    }
-			sb.append("/>");
-			
-			appendXmlFragment(extensionNode, sb.toString());
-			extensionNode.removeChild(moduleNode);
-		}
-	}
+//	private static void removeAndAddComment(Document doc, String moduleName) {
+//		Node extensionNode;
+//		Node moduleNode;
+//		moduleNode = doc.getElementsByTagName(moduleName).item(0);
+//		if (moduleNode != null) {
+//			extensionNode = moduleNode.getParentNode();
+//			NamedNodeMap attrs = moduleNode.getAttributes();
+//			StringBuilder sb = new StringBuilder("<");
+//			sb.append(moduleName);
+//			for (int i = 0 ; i<attrs.getLength() ; i++) {
+//		        Attr attribute = (Attr)attrs.item(i);     
+//		        sb.append(" " + attribute.getName() + "=\"" + attribute.getValue() + "\"");
+//		    }
+//			sb.append("/>");
+//			
+//			appendXmlFragment(extensionNode, sb.toString());
+//			extensionNode.removeChild(moduleNode);
+//		}
+//	}
 	
 	private static void appendXmlFragment(Node parent, String fragment){
 		Document doc = parent.getOwnerDocument();

@@ -33,12 +33,12 @@ import org.eclipse.swt.widgets.Shell;
 import org.osgi.service.prefs.Preferences;
 
 import com.hybris.yps.hyeclipse.Activator;
-import com.hybris.yps.hyeclipse.ExtensionHolder;
+//import com.hybris.yps.hyeclipse.ExtensionHolder;
 import com.hybris.yps.hyeclipse.utils.FixProjectsUtils;
 
 public class ExtensionModuleConfigurer {
 
-	private Set<ExtensionHolder> allPlatformExtensions;
+//	private Set<ExtensionHolder> allPlatformExtensions;
 	private Set<IExtensionListViewer> changeListeners = new HashSet<>();
 	private Shell shell;
 
@@ -72,11 +72,11 @@ public class ExtensionModuleConfigurer {
 
 					if (platformHome != null) {
 						monitor.worked(1);
-						allPlatformExtensions = FixProjectsUtils
-								.getAllExtensionsForPlatform();
+//						allPlatformExtensions = FixProjectsUtils
+//								.getAllExtensionsForPlatform();
 						monitor.worked(9);
 					} else {
-						allPlatformExtensions = null;
+//						allPlatformExtensions = null;
 						monitor.worked(10);
 					}
 				} finally {
@@ -99,33 +99,33 @@ public class ExtensionModuleConfigurer {
 	/**
 	 * Return the collection of extensions
 	 */
-	public Set<ExtensionHolder> getAllPlatformExtensions() {
-		return allPlatformExtensions;
-	}
+//	public Set<ExtensionHolder> getAllPlatformExtensions() {
+//		return allPlatformExtensions;
+//	}
 
-	public void extensionChanged(final ExtensionHolder extension) {
-
-		Iterator<IExtensionListViewer> iterator = changeListeners.iterator();
-		while (iterator.hasNext())
-			((IExtensionListViewer) iterator.next()).updateExtension(extension);
-
-		IRunnableWithProgress op = new IRunnableWithProgress() {
-
-			@Override
-			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-				ExtensionModuleTrimmer.configureExtension(monitor, extension);
-			}
-		};
-		try {
-			new ProgressMonitorDialog(this.shell).run(true, false, op);
-		} catch (InvocationTargetException e) {
-			Activator.logError("InvocationTargetException", e);
-		} catch (InterruptedException e) {
-			Activator.logError("InterruptedException", e);
-			Thread.currentThread().interrupt();
-		}
-
-	}
+//	public void extensionChanged(final ExtensionHolder extension) {
+//
+//		Iterator<IExtensionListViewer> iterator = changeListeners.iterator();
+//		while (iterator.hasNext())
+//			((IExtensionListViewer) iterator.next()).updateExtension(extension);
+//
+//		IRunnableWithProgress op = new IRunnableWithProgress() {
+//
+//			@Override
+//			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+//				ExtensionModuleTrimmer.configureExtension(monitor, extension);
+//			}
+//		};
+//		try {
+//			new ProgressMonitorDialog(this.shell).run(true, false, op);
+//		} catch (InvocationTargetException e) {
+//			Activator.logError("InvocationTargetException", e);
+//		} catch (InterruptedException e) {
+//			Activator.logError("InterruptedException", e);
+//			Thread.currentThread().interrupt();
+//		}
+//
+//	}
 
 	public void removeChangeListener(IExtensionListViewer viewer) {
 		changeListeners.remove(viewer);

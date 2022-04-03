@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableItem;
 
-import com.hybris.yps.hyeclipse.ExtensionHolder;
+//import com.hybris.yps.hyeclipse.ExtensionHolder;
 
 /**
  * This class implements an ICellModifier
@@ -39,19 +39,19 @@ public class ExtensionCellModifier implements ICellModifier {
 
 	@Override
 	public boolean canModify(Object element, String property) {
-		ExtensionHolder extension = (ExtensionHolder)element;
-		if (property.equalsIgnoreCase("name")) {
-			return false;
-		}
-		if (property.equalsIgnoreCase("coreModule") && !(extension.isCoreModule())) {
-			return false;
-		}
-		if (property.equalsIgnoreCase("webModule") && !(extension.isWebModule())) {
-			return false;
-		}
-		if (property.equalsIgnoreCase("hmcModule") && !(extension.isHmcModule())) {
-			return false;
-		}
+//		ExtensionHolder extension = (ExtensionHolder)element;
+//		if (property.equalsIgnoreCase("name")) {
+//			return false;
+//		}
+//		if (property.equalsIgnoreCase("coreModule") && !(extension.isCoreModule())) {
+//			return false;
+//		}
+//		if (property.equalsIgnoreCase("webModule") && !(extension.isWebModule())) {
+//			return false;
+//		}
+//		if (property.equalsIgnoreCase("hmcModule") && !(extension.isHmcModule())) {
+//			return false;
+//		}
 		return true;
 	}
 
@@ -60,24 +60,24 @@ public class ExtensionCellModifier implements ICellModifier {
 		// Find the index of the column
 		int columnIndex = moduleTableViewer.getColumnNames().indexOf(property);
 		Object result = null;
-		ExtensionHolder extension = (ExtensionHolder)element;
-		
-		switch (columnIndex) {
-			case 0 : // NAME_COLUMN 
-				result = extension.getName();
-				break;
-			case 1 : // CORE_COLUMN 
-				result = new Boolean(extension.isCoreModule());
-				break;
-			case 2 : // WEB_COLUMN 
-				result = new Boolean(extension.isWebModule());					
-				break;
-			case 3 : // HMC_COLUMN 
-				result = new Boolean(extension.isHmcModule());
-				break;
-			default :
-				result = "";
-		}
+//		ExtensionHolder extension = (ExtensionHolder)element;
+//		
+//		switch (columnIndex) {
+//			case 0 : // NAME_COLUMN 
+//				result = extension.getName();
+//				break;
+//			case 1 : // CORE_COLUMN 
+//				result = new Boolean(extension.isCoreModule());
+//				break;
+//			case 2 : // WEB_COLUMN 
+//				result = new Boolean(extension.isWebModule());					
+//				break;
+//			case 3 : // HMC_COLUMN 
+//				result = new Boolean(extension.isHmcModule());
+//				break;
+//			default :
+//				result = "";
+//		}
 		return result;
 	}
 
@@ -94,26 +94,26 @@ public class ExtensionCellModifier implements ICellModifier {
 			// Find the index of the column
 			int columnIndex = moduleTableViewer.getColumnNames().indexOf(property);
 			TableItem item = (TableItem) element;
-			ExtensionHolder extension = (ExtensionHolder)item.getData();
-			
-			switch (columnIndex) {
-				case 0 : // NAME_COLUMN
-					//String valueString = ((String) value).trim();
-					//extension.setName(valueString);
-					break;
-				case 1 : // CORE_COLUMN 
-					extension.setCoreModule(((Boolean) value).booleanValue());
-					break;
-				case 2 : // WEB_COLUMN 
-					extension.setWebModule(((Boolean) value).booleanValue());
-					break;
-				case 3 : // HMC_COLUMN
-					extension.setHmcModule(((Boolean) value).booleanValue());
-					break;
-				default :
-			}
-			
-			moduleTableViewer.getEmc().extensionChanged(extension);
+//			ExtensionHolder extension = (ExtensionHolder)item.getData();
+//			
+//			switch (columnIndex) {
+//				case 0 : // NAME_COLUMN
+//					//String valueString = ((String) value).trim();
+//					//extension.setName(valueString);
+//					break;
+//				case 1 : // CORE_COLUMN 
+//					extension.setCoreModule(((Boolean) value).booleanValue());
+//					break;
+//				case 2 : // WEB_COLUMN 
+//					extension.setWebModule(((Boolean) value).booleanValue());
+//					break;
+//				case 3 : // HMC_COLUMN
+//					extension.setHmcModule(((Boolean) value).booleanValue());
+//					break;
+//				default :
+//			}
+//			
+//			moduleTableViewer.getEmc().extensionChanged(extension);
 		}
 		
 	}

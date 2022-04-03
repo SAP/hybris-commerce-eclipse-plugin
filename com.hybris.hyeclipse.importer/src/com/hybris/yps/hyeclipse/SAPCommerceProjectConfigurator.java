@@ -2,13 +2,14 @@ package com.hybris.yps.hyeclipse;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.PathMatcher;
 import java.text.MessageFormat;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,10 @@ import java.util.stream.Stream;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 
+import org.eclipse.ant.core.AntCorePlugin;
+import org.eclipse.ant.core.AntCorePreferences;
+import org.eclipse.ant.core.AntRunner;
+import org.eclipse.ant.core.IAntClasspathEntry;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -39,38 +44,70 @@ public class SAPCommerceProjectConfigurator implements ProjectConfigurator {
 	
 	@Override
 	public Set<File> findConfigurableLocations(File root, IProgressMonitor monitor) {
-		PathMatcher extensionMatcher = FileSystems.getDefault().getPathMatcher("glob:/**/" + Importer.HYBRIS_EXTENSION_FILE);
-		PathMatcher configMatcher = FileSystems.getDefault().getPathMatcher("glob:/**/" + Importer.LOCAL_EXTENSION_FILE);
-		Set<String> configuredExtensions = Collections.emptySet();
-		final Set<java.nio.file.Path> projectFiles = new HashSet<>();
-		try (Stream<java.nio.file.Path> stream = Files.walk(root.getParentFile().toPath(), 6, FileVisitOption.FOLLOW_LINKS)) {
-			projectFiles.addAll(stream.filter(extensionMatcher::matches).collect(Collectors.toSet()));
-		} catch (IOException e) {
-			Activator.logError("could not access file", e);
-			// swallow exception
-		}
-		try (Stream<java.nio.file.Path> stream = Files.walk(root.getParentFile().getParentFile().toPath(), 3, FileVisitOption.FOLLOW_LINKS)) {
-			Optional<java.nio.file.Path> configFolder = stream.filter(configMatcher::matches).findFirst();
-			configFolder.ifPresent(a -> {
-				try {
-					projectFiles.add(a);
-					configuredExtensions.addAll(XmlScannerUtils.getLocalExtensions(a));
-				} catch (XPathExpressionException | ParserConfigurationException | SAXException | IOException e) {
-					Activator.logError(MessageFormat.format("could not parse XML file {0}", a), e);
-				}
-			});
-			
-		} catch (IOException e) {
-			Activator.logError("could not access file", e);
-		}
-		Set<File> res = new HashSet<>();
-		for (java.nio.file.Path projectFile : projectFiles) {
-			File pf = projectFile.toFile().getParentFile();
-			if (configuredExtensions.contains(pf.getName().toLowerCase())) {
-				res.add(pf);
+		AntRunner runner = new AntRunner();
+		java.nio.file.Path buildPath = root.toPath().resolve("build.xml").normalize();
+		runner.setBuildFileLocation(buildPath.toString());
+		runner.setAntHome(root.getAbsolutePath());
+		runner.setArguments("-Dmessage=Building -verbose");
+		runner.addBuildListener("org.eclipse.pde.internal.core.ant.ExportBuildListener"); //$NON-NLS-1$
+        AntCorePreferences preferences = AntCorePlugin.getPlugin().getPreferences();
+        IAntClasspathEntry entry = preferences.getToolsJarEntry();
+        if (entry != null) {
+            IAntClasspathEntry[] classpath = preferences.getAntHomeClasspathEntries();
+            URL[] urls = new URL[classpath.length + 2];
+            for (int i = 0; i < classpath.length; i++) {
+                urls[i] = classpath[i].getEntryURL();
+            }
+            IPath path = new Path(entry.getEntryURL().toString()).removeLastSegments(2);
+            path = path.append("bin"); //$NON-NLS-1$
+            try {
+                urls[classpath.length] = new URL(path.toString());
+            } catch (MalformedURLException e) {
+                urls[classpath.length] = entry.getEntryURL();
+            } finally {
+                urls[classpath.length + 1] = entry.getEntryURL();
+            }
+            runner.setCustomClasspath(urls);
+			try {
+				runner.run(monitor);
+			} catch (CoreException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-		}
-		return res;
+        }
+		return Set.of();
+//		PathMatcher extensionMatcher = FileSystems.getDefault().getPathMatcher("glob:/**/" + Importer.HYBRIS_EXTENSION_FILE);
+//		PathMatcher configMatcher = FileSystems.getDefault().getPathMatcher("glob:/**/" + Importer.LOCAL_EXTENSION_FILE);
+//		Set<String> configuredExtensions = new HashSet<>();
+//		final Set<java.nio.file.Path> projectFiles = new HashSet<>();
+//		try (Stream<java.nio.file.Path> stream = Files.walk(root.getParentFile().toPath(), 6, FileVisitOption.FOLLOW_LINKS)) {
+//			projectFiles.addAll(stream.filter(extensionMatcher::matches).collect(Collectors.toSet()));
+//		} catch (IOException e) {
+//			Activator.logError("could not access file", e);
+//			// swallow exception
+//		}
+//		try (Stream<java.nio.file.Path> stream = Files.walk(root.getParentFile().getParentFile().toPath(), 3, FileVisitOption.FOLLOW_LINKS)) {
+//			Optional<java.nio.file.Path> configFolder = stream.filter(configMatcher::matches).findFirst();
+//			configFolder.ifPresent(a -> {
+//				try {
+//					projectFiles.add(a);
+//					configuredExtensions.addAll(XmlScannerUtils.getLocalExtensions(a));
+//				} catch (XPathExpressionException | ParserConfigurationException | SAXException | IOException e) {
+//					Activator.logError(MessageFormat.format("could not parse XML file {0}", a), e);
+//				}
+//			});
+//			
+//		} catch (IOException e) {
+//			Activator.logError("could not access file", e);
+//		}
+//		Set<File> res = new HashSet<>();
+//		for (java.nio.file.Path projectFile : projectFiles) {
+//			File pf = projectFile.toFile().getParentFile();
+//			if (configuredExtensions.contains(pf.getName().toLowerCase())) {
+//				res.add(pf);
+//			}
+//		}
+//		return res;
 	}
 
 	@Override

@@ -70,7 +70,7 @@ import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 import com.hybris.hyeclipse.commons.utils.XmlScannerUtils;
 import com.hybris.yps.hyeclipse.Activator;
-import com.hybris.yps.hyeclipse.ExtensionHolder;
+//import com.hybris.yps.hyeclipse.ExtensionHolder;
 import com.hybris.yps.hyeclipse.extensionmods.ExtensionModuleTrimmer;
 import com.hybris.yps.hyeclipse.utils.FixProjectsUtils;
 import com.hybris.yps.hyeclipse.utils.WorkingSetsUtils;
@@ -276,9 +276,9 @@ public class ExtensionUtils {
 	 * @param extension
 	 *            extension to be configured
 	 */
-	public static void configureModules(IProgressMonitor monitor, ExtensionHolder extension) {
-		ExtensionModuleTrimmer.configureExtension(monitor, extension);
-	}
+//	public static void configureModules(IProgressMonitor monitor, ExtensionHolder extension) {
+//		ExtensionModuleTrimmer.configureExtension(monitor, extension);
+//	}
 
 	/**
 	 * Checks whether the {@link IProject} is a extension template
