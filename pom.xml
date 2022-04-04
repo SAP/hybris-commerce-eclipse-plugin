@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.hybris.hyeclipse</groupId>
@@ -18,8 +16,6 @@
 			<timezone>CET</timezone>
 		</developer>
 	</developers>
-	<contributors>
-	</contributors>
 
 	<properties>
 		<tycho-version>2.7.0</tycho-version>
@@ -35,6 +31,26 @@
 		<sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
 		<sonar.java.source>11</sonar.java.source>
 	</properties>
+
+	<prerequisites>
+		<maven>3.0</maven>
+	</prerequisites>
+
+	<scm>
+		<connection>https://github.com/SAP/hybris-commerce-eclipse-plugin.git</connection>
+		<tag>HEAD</tag>
+		<url>https://github.com/SAP/hybris-commerce-eclipse-plugin</url>
+	</scm>
+	
+	<issueManagement>
+		<url>https://github.com/SAP/hybris-commerce-eclipse-plugin/issues</url>
+		<system>GitHub</system>
+	</issueManagement>
+	
+	<ciManagement>
+		<url>https://app.travis-ci.com/github/SAP/hybris-commerce-eclipse-plugin/</url>
+		<system>Travis-CI</system>
+	</ciManagement>
 
 
 	<modules>
