@@ -18,7 +18,6 @@ package com.hybris.yps.hyeclipse.extensionmods;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
@@ -28,18 +27,16 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.osgi.service.prefs.Preferences;
 
 import com.hybris.yps.hyeclipse.Activator;
-//import com.hybris.yps.hyeclipse.ExtensionHolder;
-import com.hybris.yps.hyeclipse.utils.FixProjectsUtils;
 
 public class ExtensionModuleConfigurer {
 
-//	private Set<ExtensionHolder> allPlatformExtensions;
-	private Set<IExtensionListViewer> changeListeners = new HashSet<>();
+	private Set<IStructuredContentProvider> changeListeners = new HashSet<>();
 	private Shell shell;
 
 	public ExtensionModuleConfigurer(Composite composite) {
@@ -127,11 +124,11 @@ public class ExtensionModuleConfigurer {
 //
 //	}
 
-	public void removeChangeListener(IExtensionListViewer viewer) {
+	public void removeChangeListener(IStructuredContentProvider viewer) {
 		changeListeners.remove(viewer);
 	}
 
-	public void addChangeListener(IExtensionListViewer viewer) {
+	public void addChangeListener(IStructuredContentProvider viewer) {
 		changeListeners.add(viewer);
 	}	
 

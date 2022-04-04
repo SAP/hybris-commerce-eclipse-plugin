@@ -274,7 +274,7 @@ public class ModuleTableViewer {
 	 * interface since it must register changeListeners with the 
 	 * ExtensionModuleConfigurer
 	 */
-	class ExtensionContentProvider implements IStructuredContentProvider, IExtensionListViewer {
+	class ExtensionContentProvider implements IStructuredContentProvider {
 
 		@Override
 		public void dispose() {

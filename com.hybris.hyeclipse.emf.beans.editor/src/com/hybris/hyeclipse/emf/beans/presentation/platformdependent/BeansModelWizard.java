@@ -137,13 +137,7 @@ public class BeansModelWizard extends Wizard implements INewWizard {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected List<String> initialObjectNames;
-
-	/**
-	 * @generated NOT
-	 */
-	private BeansModelWizardTypeSelectionPage typeSelectionPage;
-	
+	protected List<String> initialObjectNames;	
 
 	/**
 	 * This just records the information.
@@ -392,10 +386,6 @@ public class BeansModelWizard extends Wizard implements INewWizard {
 				}
 			}
 		}
-		typeSelectionPage = new BeansModelWizardTypeSelectionPage("TypeSelection");
-		typeSelectionPage.setTitle(BeansEditorPlugin.INSTANCE.getString("_UI_BeansModelWizard_label"));
-		typeSelectionPage.setDescription(BeansEditorPlugin.INSTANCE.getString("_UI_Wizard_type_selection_description"));
-		addPage(typeSelectionPage);
 	}
 
 	/**

@@ -2,7 +2,7 @@
 <feature
       id="com.hybris.hyeclipse.feature"
       label="SAP Commerce Cloud - development tools for Eclipse"
-      version="21.10.0.RELEASE"
+      version="22.5.0.qualifier"
       provider-name="SAP">
 
    <description url="https://wiki.hybris.com/display/hyps/SAP+Hybris+Commerce+development+tools+for+Eclipse">
@@ -147,42 +147,7 @@ All rights reserved.
          unpack="false"/>
 
    <plugin
-         id="com.hybris.hyeclipse.emf.beans"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.hybris.hyeclipse.emf.beans.edit"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.hybris.hyeclipse.emf.beans.editor"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.hybris.hyeclipse.extgen"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="com.hybris.hyeclipse.hac"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.hybris.hyeclipse.junit"
          download-size="0"
          install-size="0"
          version="0.0.0"

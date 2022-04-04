@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ImpexFormatter
 Bundle-SymbolicName: com.hybris.hyeclipse.impexed;singleton:=true
-Bundle-Version: 21.10.0.RELEASE
+Bundle-Version: 22.5.0.qualifier
 Require-Bundle: org.eclipse.jface.text,
  org.eclipse.core.resources,
  org.eclipse.ui,
