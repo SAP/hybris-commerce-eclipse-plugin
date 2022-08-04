@@ -41,7 +41,7 @@ public class SAPCommerceProjectConfigurator implements ProjectConfigurator {
 	public Set<File> findConfigurableLocations(File root, IProgressMonitor monitor) {
 		PathMatcher extensionMatcher = FileSystems.getDefault().getPathMatcher("glob:/**/" + Importer.HYBRIS_EXTENSION_FILE);
 		PathMatcher configMatcher = FileSystems.getDefault().getPathMatcher("glob:/**/" + Importer.LOCAL_EXTENSION_FILE);
-		Set<String> configuredExtensions = Collections.emptySet();
+		Set<String> configuredExtensions = new HashSet<>();
 		final Set<java.nio.file.Path> projectFiles = new HashSet<>();
 		try (Stream<java.nio.file.Path> stream = Files.walk(root.getParentFile().toPath(), 6, FileVisitOption.FOLLOW_LINKS)) {
 			projectFiles.addAll(stream.filter(extensionMatcher::matches).collect(Collectors.toSet()));

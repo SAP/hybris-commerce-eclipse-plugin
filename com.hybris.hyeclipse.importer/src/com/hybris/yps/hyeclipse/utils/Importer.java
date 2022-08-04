@@ -37,11 +37,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.eclipse.core.internal.resources.ResourceException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceStatus;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -192,6 +194,7 @@ public class Importer {
 		});
 	}
 
+	@SuppressWarnings("restriction")
 	private IProject importProject(final IProgressMonitor monitor, final double version, final IPath extensionFolder)
 			throws CoreException, InterruptedException {
 		final SubMonitor progress = SubMonitor.convert(monitor, 12);
@@ -204,7 +207,15 @@ public class Importer {
 
 		final IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(name);
 		if (!project.exists()) {
-			project.create(null, progress.newChild(3));
+			try {
+				project.create(null, progress.newChild(3));				
+			} catch (ResourceException e) {
+				if (e.getStatus().getCode() == IResourceStatus.RESOURCE_EXISTS) {
+					project.open(monitor);
+				} else {
+					Activator.logError(MessageFormat.format("could not open project [{0}]", project.getName()), e);
+				}
+			}
 		}
 		final IJavaProject javaProject = JavaCore.create(project);
 		javaProject.save(monitor, DEBUG);
