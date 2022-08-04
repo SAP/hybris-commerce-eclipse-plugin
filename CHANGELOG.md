@@ -1,5 +1,23 @@
 # Changelog
 
+## v22.08 Improvements in Project Import (5/8/2022)
+
+- [**closed**] Issue Raised on project Import [#111](https://github.com/SAP/hybris-commerce-eclipse-plugin/issues/111)
+
+## What's Changed
+* Bump sonar-maven-plugin from 3.9.0.2155 to 3.9.1.2184 by @dependabot in https://github.com/SAP/hybris-commerce-eclipse-plugin/pull/98
+* Bump tycho-version from 2.5.0 to 2.7.0 by @dependabot in https://github.com/SAP/hybris-commerce-eclipse-plugin/pull/101
+* update the dep5 file by @ajinkyapatil8190 in https://github.com/SAP/hybris-commerce-eclipse-plugin/pull/105
+* reuse compliance by @ajinkyapatil8190 in https://github.com/SAP/hybris-commerce-eclipse-plugin/pull/104
+* Bump tycho-version from 2.7.0 to 2.7.3 by @dependabot in https://github.com/SAP/hybris-commerce-eclipse-plugin/pull/107
+* Bump maven-enforcer-plugin from 3.0.0 to 3.1.0 by @dependabot in https://github.com/SAP/hybris-commerce-eclipse-plugin/pull/109
+* fixing issues with importing commerce projects locally by @mikolayek in https://github.com/SAP/hybris-commerce-eclipse-plugin/pull/113
+
+## New Contributors
+* @ajinkyapatil8190 made their first contribution in https://github.com/SAP/hybris-commerce-eclipse-plugin/pull/105
+
+**Full Changelog**: https://github.com/SAP/hybris-commerce-eclipse-plugin/compare/v2110...22.08
+
 
 ## v21.10.0 (23/10/2021)
 ## What's Changed
