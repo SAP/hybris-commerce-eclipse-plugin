@@ -33,7 +33,6 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.model.InitializationError;
 
@@ -95,7 +94,7 @@ public class DynamicClasspathHybrisJUnit4ClassRunner extends HybrisJUnit4ClassRu
 		final String extPath = ext.getExtensionDirectory().getAbsolutePath();
 		// only add core extensions and the ones that are not already on
 		// the class path
-		if (!ext.isCoreExtension() && !StringUtils.contains(extPath, "/solrserver"))
+		if (!ext.isCoreExtension() && !extPath.contains("/solrserver"))
 		{
 			// add the server jar e.g. catalog/bin/catalogserver.jar
 			addURLtoClasspath(extPath + "/bin/" + ext.getName() + "server.jar");
@@ -218,7 +217,9 @@ public class DynamicClasspathHybrisJUnit4ClassRunner extends HybrisJUnit4ClassRu
 			final String a = prop.getKey().toString();
 			final String b = prop.getValue().toString();
 			final String c = platformHome.getAbsolutePath();
-			props.put(a, StringUtils.replace(b, "${platformhome}", c));
+			props.put(a, b.replace("${platformhome}", c));
+			
+			
 		}
 		// hybris 5.7 additional properties
 		props.put("HYBRIS_ROLES_DIR", platformHome.getAbsolutePath() + "/../../roles");
