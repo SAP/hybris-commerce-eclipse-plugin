@@ -10,7 +10,6 @@ Require-Bundle: org.eclipse.jface.text,
  org.eclipse.ui.ide,
  org.eclipse.core.runtime,
  com.google.guava,
- org.apache.commons.lang,
  org.junit;bundle-version="4.0.0",
  com.hybris.hyeclipse.ytypesystem;bundle-version="[1.0.0,22.9.1)"
 Bundle-RequiredExecutionEnvironment: JavaSE-11
