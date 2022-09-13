@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.hybris.impexformatter.assistprocessors;
 
+import static com.hybris.impexformatter.utils.StringHelper.findMatches;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -31,10 +33,8 @@ import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
-import static com.hybris.impexformatter.utils.StringHelper.findMatches;
 
 import com.google.common.collect.Lists;
-
 import com.hybris.impexformatter.Activator;
 import com.hybris.impexformatter.actions.Formatter;
 

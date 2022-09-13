@@ -45,6 +45,8 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+import com.hybris.hyeclipse.commons.Constants;
+import com.hybris.hyeclipse.commons.HybrisUtil;
 import com.hybris.yps.hyeclipse.Activator;
 import com.hybris.yps.hyeclipse.ExtensionHolder;
 import com.hybris.yps.hyeclipse.utils.FixProjectsUtils;
@@ -62,9 +64,8 @@ public class ExtensionModuleTrimmer {
 		 */
 		monitor.beginTask("Removing module info", 10);
 		String extensionPath = extension.getPath();
-
-		File extInfo = new File(extensionPath, "extensioninfo.xml");
-		if (extInfo.exists()) {
+		
+		if (HybrisUtil.isHybrisModuleRoot(new File(extensionPath))) {
 			try {
 				IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(extension.getName());
 				DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -86,6 +87,7 @@ public class ExtensionModuleTrimmer {
 					}
 				});
 
+				File extInfo = new File(extensionPath, Constants.EXTENSION_INFO_XML);
 				Document doc = docBuilder.parse(extInfo);
 				boolean updateProject = false;
 				if (!extension.isCoreModule()) {
@@ -129,7 +131,7 @@ public class ExtensionModuleTrimmer {
 					transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
 					Transformer transformer = transformerFactory.newTransformer();
 					DOMSource source = new DOMSource(doc);
-					StreamResult result = new StreamResult(new File(extensionPath, "extensioninfo.xml"));
+					StreamResult result = new StreamResult(new File(extensionPath, Constants.EXTENSION_INFO_XML));
 					transformer.transform(source, result);
 					monitor.worked(5);
 

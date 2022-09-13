@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.osgi.service.prefs.Preferences;
 
+import com.hybris.hyeclipse.commons.Constants;
 import com.hybris.yps.hyeclipse.Activator;
 import com.hybris.yps.hyeclipse.ExtensionHolder;
 import com.hybris.yps.hyeclipse.utils.FixProjectsUtils;
@@ -60,7 +61,7 @@ public class ExtensionModuleConfigurer {
 					String platformHomeStr = preferences.get("platform_home", null);
 					File platformHome = null;
 					if (platformHomeStr == null) {
-						IProject platformProject = ResourcesPlugin.getWorkspace().getRoot().getProject("platform");
+						IProject platformProject = ResourcesPlugin.getWorkspace().getRoot().getProject(Constants.PLATFROM);
 						IPath platformProjectPath = platformProject.getLocation();
 						if (platformProjectPath != null) {
 							platformHome = platformProjectPath.toFile();

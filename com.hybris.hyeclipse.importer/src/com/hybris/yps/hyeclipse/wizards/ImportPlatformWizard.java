@@ -49,6 +49,7 @@ import org.eclipse.ui.services.ISourceProviderService;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
+import com.hybris.hyeclipse.commons.Constants;
 import com.hybris.yps.hyeclipse.Activator;
 import com.hybris.yps.hyeclipse.CommandState;
 import com.hybris.yps.hyeclipse.utils.FixProjectsUtils;
@@ -166,7 +167,7 @@ public class ImportPlatformWizard extends Wizard implements IImportWizard {
 
 
 	protected void fixRuntimeEnvironment() {
-		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("platform"); //$NON-NLS-1$
+		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(Constants.PLATFROM); //$NON-NLS-1$
 		IJavaProject javaProject = JavaCore.create(project);
 		IVMInstall javaInstall = null;
 		try {

@@ -30,6 +30,8 @@ import org.osgi.framework.BundleContext;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
+import com.hybris.hyeclipse.commons.Constants;
+
 /**
  * The activator class controls the plug-in life cycle
  */
@@ -75,7 +77,7 @@ public class Activator extends AbstractUIPlugin {
 			Preferences preferences = InstanceScope.INSTANCE.getNode("com.hybris.hyeclipse.preferences");
 			platformHomeStr = preferences.get("platform_home", null);
 			if (platformHomeStr == null) {
-				IProject platformProject = ResourcesPlugin.getWorkspace().getRoot().getProject("platform");
+				IProject platformProject = ResourcesPlugin.getWorkspace().getRoot().getProject(Constants.PLATFROM);
 				IPath platformProjectPath = platformProject.getLocation();
 				if (platformProjectPath != null) {
 					platformHome = platformProjectPath.toFile();

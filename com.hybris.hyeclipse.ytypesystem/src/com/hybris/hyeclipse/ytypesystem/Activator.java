@@ -58,6 +58,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.service.prefs.Preferences;
 
+import com.hybris.hyeclipse.commons.Constants;
 import com.hybris.yps.hyeclipse.ExtensionHolder;
 
 import de.hybris.bootstrap.config.ExtensionInfo;
@@ -71,8 +72,6 @@ import de.hybris.bootstrap.typesystem.YTypeSystem;
  * The activator class controls the plug-in life cycle
  */
 public class Activator extends AbstractUIPlugin {
-
-	private static final String PLATFORM = "platform";
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "com.hybris.hyeclipse.ytypesystem"; //$NON-NLS-1$
@@ -141,7 +140,7 @@ public class Activator extends AbstractUIPlugin {
 			Preferences preferences = InstanceScope.INSTANCE.getNode("com.hybris.hyeclipse.preferences");
 			String platformHomeStr = preferences.get("platform_home", null);
 			if (platformHomeStr == null) {
-				IProject platformProject = ResourcesPlugin.getWorkspace().getRoot().getProject(PLATFORM);
+				IProject platformProject = ResourcesPlugin.getWorkspace().getRoot().getProject(Constants.PLATFROM);
 				IPath platformProjectPath = platformProject.getLocation();
 				if (platformProjectPath != null) {
 					setPlatformHome(platformProjectPath.toFile());
@@ -393,8 +392,8 @@ public class Activator extends AbstractUIPlugin {
 
 		if (!extension.getAllRequiredExtensionNames().isEmpty()) {
 			List<String> extensions = new LinkedList<>(extension.getAllRequiredExtensionNames());
-			if (!extensions.contains(PLATFORM)) {
-				extensions.add(PLATFORM);
+			if (!extensions.contains(Constants.PLATFROM)) {
+				extensions.add(Constants.PLATFROM);
 			}
 			extHolder.setDependentExtensions(extensions);
 		}
