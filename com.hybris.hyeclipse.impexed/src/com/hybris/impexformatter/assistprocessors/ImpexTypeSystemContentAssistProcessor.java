@@ -20,8 +20,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
@@ -34,9 +32,9 @@ import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 
 import com.google.common.collect.Lists;
-
 import com.hybris.impexformatter.Activator;
 import com.hybris.impexformatter.actions.Formatter;
+import com.hybris.impexformatter.utils.StringHelper;
 
 public class ImpexTypeSystemContentAssistProcessor implements IContentAssistProcessor {
 	
@@ -72,7 +70,7 @@ public class ImpexTypeSystemContentAssistProcessor implements IContentAssistProc
 			//before cursor: lineWithoutCommandUpToCursor
 			//after cursor: lineAfterCursor
 			String tempString = new StringBuilder(lineWithoutCommandUpToCursor).append(";").append(lineAfterCursor).toString();
-			String[] headerParts = StringUtils.split(tempString, ";");
+			String[] headerParts = tempString.split(";");
 			
 			boolean showTypes = false;
 			boolean showAttributes = false;
@@ -135,7 +133,7 @@ public class ImpexTypeSystemContentAssistProcessor implements IContentAssistProc
 					//If not empty, filter based on currentPart
 					autoSuggests = new ArrayList<>();
 					for (String typeCode : allTypeNames) {
-						if (StringUtils.upperCase(typeCode).startsWith(StringUtils.upperCase(currentPart)) && currentPart.length() < typeCode.length()) {
+						if (StringHelper.findMatches(typeCode, currentPart)) {
 							autoSuggests.add(typeCode);
 						}
 					}
@@ -168,7 +166,8 @@ public class ImpexTypeSystemContentAssistProcessor implements IContentAssistProc
 						}
 						//If its inside brackets, include all attributes
 						//Otherwise, exclude those already used
-						if (StringUtils.upperCase(attributeQualifier).startsWith(StringUtils.upperCase(tempCurrentPart)) && tempCurrentPart.length() < attributeQualifier.length()) {
+						
+						if (StringHelper.findMatches(attributeQualifier, tempCurrentPart)) {
 							if (insideBrackets) {
 								autoSuggests.add(attributeQualifier);
 							}
@@ -231,7 +230,7 @@ public class ImpexTypeSystemContentAssistProcessor implements IContentAssistProc
 					//If not empty, filter based on currentPart
 					autoSuggests = new ArrayList<>();
 					for (String keyword : Formatter.IMPEX_KEYWORDS_ATTRIBUTES) {
-						if (StringUtils.upperCase(keyword).startsWith(StringUtils.upperCase(currentPart)) && currentPart.length() < keyword.length()) {
+						if (StringHelper.findMatches(keyword, currentPart)) {
 							autoSuggests.add(keyword);
 						}
 					}
