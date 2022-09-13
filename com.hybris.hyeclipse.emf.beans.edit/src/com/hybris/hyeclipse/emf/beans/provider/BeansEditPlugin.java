@@ -18,7 +18,6 @@
 package com.hybris.hyeclipse.emf.beans.provider;
 
 import org.eclipse.emf.common.EMFPlugin;
-
 import org.eclipse.emf.common.util.ResourceLocator;
 
 /**

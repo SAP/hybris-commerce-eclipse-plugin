@@ -18,19 +18,17 @@
  */
 package com.hybris.hyeclipse.emf.beans.util;
 
+import org.eclipse.emf.common.notify.Adapter;
+import org.eclipse.emf.common.notify.Notifier;
+import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
+import org.eclipse.emf.ecore.EObject;
+
 import com.hybris.hyeclipse.emf.beans.AbstractPojo;
 import com.hybris.hyeclipse.emf.beans.AbstractPojos;
 import com.hybris.hyeclipse.emf.beans.Bean;
 import com.hybris.hyeclipse.emf.beans.BeansPackage;
 import com.hybris.hyeclipse.emf.beans.DocumentRoot;
 import com.hybris.hyeclipse.emf.beans.Property;
-
-import org.eclipse.emf.common.notify.Adapter;
-import org.eclipse.emf.common.notify.Notifier;
-
-import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
-
-import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc -->

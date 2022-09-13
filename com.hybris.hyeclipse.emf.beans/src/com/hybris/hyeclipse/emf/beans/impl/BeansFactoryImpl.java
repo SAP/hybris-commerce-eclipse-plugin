@@ -18,20 +18,18 @@
  */
 package com.hybris.hyeclipse.emf.beans.impl;
 
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.impl.EFactoryImpl;
+import org.eclipse.emf.ecore.plugin.EcorePlugin;
+
 import com.hybris.hyeclipse.emf.beans.AbstractPojos;
 import com.hybris.hyeclipse.emf.beans.Bean;
 import com.hybris.hyeclipse.emf.beans.BeansFactory;
 import com.hybris.hyeclipse.emf.beans.BeansPackage;
 import com.hybris.hyeclipse.emf.beans.DocumentRoot;
 import com.hybris.hyeclipse.emf.beans.Property;
-
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EPackage;
-
-import org.eclipse.emf.ecore.impl.EFactoryImpl;
-
-import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
 /**
  * <!-- begin-user-doc -->

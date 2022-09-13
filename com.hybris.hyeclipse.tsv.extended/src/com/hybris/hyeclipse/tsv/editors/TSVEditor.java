@@ -49,16 +49,19 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
-import org.eclipse.ui.*;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IStorageEditorInput;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.editors.text.TextEditor;
+import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.wst.sse.ui.StructuredTextEditor;
 
 import com.hybris.hyeclipse.tsv.Activator;
 import com.hybris.hyeclipse.tsv.model.TSVResult;
 import com.hybris.hyeclipse.tsv.model.TSVResults;
-
-import org.eclipse.ui.ide.IDE;
 
 /**
  * This multi-page editor has 2 pages:

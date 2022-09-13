@@ -18,6 +18,13 @@
  */
 package com.hybris.hyeclipse.emf.beans.impl;
 
+import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.impl.EPackageImpl;
+import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
+
 import com.hybris.hyeclipse.emf.beans.AbstractPojo;
 import com.hybris.hyeclipse.emf.beans.AbstractPojos;
 import com.hybris.hyeclipse.emf.beans.Bean;
@@ -25,15 +32,6 @@ import com.hybris.hyeclipse.emf.beans.BeansFactory;
 import com.hybris.hyeclipse.emf.beans.BeansPackage;
 import com.hybris.hyeclipse.emf.beans.DocumentRoot;
 import com.hybris.hyeclipse.emf.beans.Property;
-
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.EReference;
-
-import org.eclipse.emf.ecore.impl.EPackageImpl;
-
-import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
 
 /**
  * <!-- begin-user-doc -->
