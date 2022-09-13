@@ -66,8 +66,6 @@ import com.hybris.yps.hyeclipse.ExtensionHolder;
 
 public class Importer {
 
-	public static final String LOCAL_EXTENSION_FILE = "localextensions.xml";
-
 	private static final String WARNING_MSG = "warning";
 	private static final String CONFIG_FOLDER = "config";
 	private static Activator plugin = Activator.getDefault();
@@ -165,7 +163,7 @@ public class Importer {
 	 */
 	protected boolean isHybrisExtension(final IPath path) {
 		return path.append(Constants.EXTENSION_INFO_XML).toFile().exists()
-				|| path.append(LOCAL_EXTENSION_FILE).toFile().exists();
+				|| path.append(Constants.LOCAL_EXTENSIONS_XML).toFile().exists();
 	}
 
 	private void closeProjectsThatAreNotReferenced(final IProgressMonitor monitor, final File platformHome) {

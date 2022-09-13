@@ -31,6 +31,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.ui.wizards.datatransfer.ProjectConfigurator;
 import org.xml.sax.SAXException;
 
+import com.hybris.hyeclipse.commons.Constants;
 import com.hybris.hyeclipse.commons.utils.XmlScannerUtils;
 import com.hybris.yps.hyeclipse.utils.Importer;
 
@@ -38,8 +39,8 @@ public class SAPCommerceProjectConfigurator implements ProjectConfigurator {
 	
 	@Override
 	public Set<File> findConfigurableLocations(File root, IProgressMonitor monitor) {
-		PathMatcher extensionMatcher = FileSystems.getDefault().getPathMatcher("glob:/**/" + Importer.HYBRIS_EXTENSION_FILE);
-		PathMatcher configMatcher = FileSystems.getDefault().getPathMatcher("glob:/**/" + Importer.LOCAL_EXTENSION_FILE);
+		PathMatcher extensionMatcher = FileSystems.getDefault().getPathMatcher("glob:/**/" + Constants.EXTENSION_INFO_XML);
+		PathMatcher configMatcher = FileSystems.getDefault().getPathMatcher("glob:/**/" + Constants.LOCAL_EXTENSIONS_XML);
 		Set<String> configuredExtensions = new HashSet<>();
 		final Set<java.nio.file.Path> projectFiles = new HashSet<>();
 		try (Stream<java.nio.file.Path> stream = Files.walk(root.getParentFile().toPath(), 6, FileVisitOption.FOLLOW_LINKS)) {
@@ -74,7 +75,7 @@ public class SAPCommerceProjectConfigurator implements ProjectConfigurator {
 
 	@Override
 	public boolean shouldBeAnEclipseProject(IContainer container, IProgressMonitor monitor) {
-		return container.getFile(new Path(Importer.HYBRIS_EXTENSION_FILE)).exists() || container.getFile(new Path(Importer.LOCAL_EXTENSION_FILE)).exists();
+		return container.getFile(new Path(Constants.EXTENSION_INFO_XML)).exists() || container.getFile(new Path(Constants.LOCAL_EXTENSIONS_XML)).exists();
 	}
 
 	@Override
