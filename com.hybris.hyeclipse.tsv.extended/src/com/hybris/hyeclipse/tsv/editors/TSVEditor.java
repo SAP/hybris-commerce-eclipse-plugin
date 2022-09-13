@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
@@ -172,7 +173,7 @@ public class TSVEditor extends MultiPageEditorPart implements IResourceChangeLis
 				try {
 					Unmarshaller jaxbUnmarshaller = getJaxbContext().createUnmarshaller();
 					TSVResults results = (TSVResults) jaxbUnmarshaller.unmarshal(file);
-					parseResults(results);
+					resultMap.putAll(parseResults(results, resultMap));
 					return resultMap;
 				}
 				catch (JAXBException e) {
@@ -189,17 +190,18 @@ public class TSVEditor extends MultiPageEditorPart implements IResourceChangeLis
 				
 				Unmarshaller jaxbUnmarshaller = getJaxbContext().createUnmarshaller();
 				TSVResults results = (TSVResults) jaxbUnmarshaller.unmarshal(resultsStream);
-				parseResults(results);
+				resultMap.putAll(parseResults(results, resultMap));
 				return resultMap;
 			}
 			catch (CoreException|JAXBException e) {
+				Activator.getDefault().getLog().log(new Status(IStatus.WARNING, Activator.PLUGIN_ID, "error while reading XML content", e));
 				e.printStackTrace();
 			}
 		}
 		return null;
 	}
 
-	private void parseResults(TSVResults results) {
+	private Map<String,List<TSVResult>> parseResults(TSVResults results, Map<String,List<TSVResult>> resultMap) {
 		if (results != null) {
 			Set<TSVResult> resultSet = results.getResults();
 			if (resultSet != null && resultSet.isEmpty() == false) {
@@ -217,6 +219,7 @@ public class TSVEditor extends MultiPageEditorPart implements IResourceChangeLis
 				}
 			}
 		}
+		return resultMap;
 	}
 
 	protected void createPages() {
