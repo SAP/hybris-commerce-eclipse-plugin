@@ -40,7 +40,6 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.FileLocator;
@@ -429,7 +428,7 @@ public class Activator extends AbstractUIPlugin {
 			String b = prop.getValue().toString();
 			String c = platformHome.getAbsolutePath();
 
-			props.put(a, StringUtils.replace(b, "${platformhome}", c));
+			props.put(a, b.replace("${platformhome}", c));
 		}
 
 		// hybris 5.7 additional properties

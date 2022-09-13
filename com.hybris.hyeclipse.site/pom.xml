@@ -14,5 +14,5 @@
 	<packaging>eclipse-repository</packaging>
 	<name>SAP Commerce Cloud - Eclipse plugin (site)</name>
 	<description>SAP Commerce Cloud - Eclipse plugin (site)</description>
-	<url>https://wiki.hybris.com/display/hyps/SAP+Hybris+Commerce+development+tools+for+Eclipse</url>
+	<url>https://github.com/SAP/hybris-commerce-eclipse-plugin</url>
 </project>
