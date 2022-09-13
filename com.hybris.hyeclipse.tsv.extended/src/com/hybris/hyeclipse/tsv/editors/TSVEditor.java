@@ -35,6 +35,8 @@ import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -51,6 +53,7 @@ import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.wst.sse.ui.StructuredTextEditor;
 
+import com.hybris.hyeclipse.tsv.Activator;
 import com.hybris.hyeclipse.tsv.model.TSVResult;
 import com.hybris.hyeclipse.tsv.model.TSVResults;
 
@@ -173,6 +176,7 @@ public class TSVEditor extends MultiPageEditorPart implements IResourceChangeLis
 					return resultMap;
 				}
 				catch (JAXBException e) {
+					Activator.getDefault().getLog().log(new Status(IStatus.WARNING, Activator.PLUGIN_ID, "error while reading XML file: " + reportFile, e));
 					e.printStackTrace();
 				}
 			}
@@ -188,10 +192,7 @@ public class TSVEditor extends MultiPageEditorPart implements IResourceChangeLis
 				parseResults(results);
 				return resultMap;
 			}
-			catch (CoreException e) {
-				e.printStackTrace();
-			}
-			catch (JAXBException e) {
+			catch (CoreException|JAXBException e) {
 				e.printStackTrace();
 			}
 		}
