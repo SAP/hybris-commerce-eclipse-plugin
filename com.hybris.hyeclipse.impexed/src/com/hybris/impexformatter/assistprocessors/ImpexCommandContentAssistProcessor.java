@@ -149,7 +149,7 @@ public class ImpexCommandContentAssistProcessor implements IContentAssistProcess
 
 	/**
 	 * Null-safe open-bracket character finder
-	 * @param word - master string which is used for search
+	 * @param word - main string which is used for search
 	 * @return return {@code true} when contains open bracket in text.
 	 */
 	private boolean containsOpenBracket(String word) {

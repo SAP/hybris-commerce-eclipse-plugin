@@ -4,9 +4,9 @@ public class StringHelper {
 	
 	/**
 	 * checks if in <pre>typecode</pre> is possible to find <pre>prefix</pre>. Case insensitive.
-	 * @param typeCode that is master string
+	 * @param typeCode that is main string
 	 * @param prefix check if given prefix exists
-	 * @return true if there is a match case insensitive and is less than master string.
+	 * @return true if there is a match case insensitive and is less than main string.
 	 */
 	public static boolean findMatches(String typeCode, String prefix) {
 		String tcUp = typeCode.toUpperCase();
