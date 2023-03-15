@@ -33,7 +33,6 @@ import org.xml.sax.SAXException;
 
 import com.hybris.hyeclipse.commons.Constants;
 import com.hybris.hyeclipse.commons.utils.XmlScannerUtils;
-import com.hybris.yps.hyeclipse.utils.Importer;
 
 public class SAPCommerceProjectConfigurator implements ProjectConfigurator {
 	
@@ -73,9 +72,14 @@ public class SAPCommerceProjectConfigurator implements ProjectConfigurator {
 		return res;
 	}
 
+	/**
+	 * Method checks if given folder contains <pre>extensioninfo.xml</pre> for extensions,
+	 * <pre>localextensions.xml</pre> for config folder,
+	 * <pre>extensions.xml</pre> for <pre>platform</pre> extension.
+	 */
 	@Override
 	public boolean shouldBeAnEclipseProject(IContainer container, IProgressMonitor monitor) {
-		return container.getFile(new Path(Constants.EXTENSION_INFO_XML)).exists() || container.getFile(new Path(Constants.LOCAL_EXTENSIONS_XML)).exists();
+		return container.getFile(new Path(Constants.EXTENSION_INFO_XML)).exists() || container.getFile(new Path(Constants.LOCAL_EXTENSIONS_XML)).exists() || container.getFile(new Path(Constants.EXTENSIONS_XML)).exists();
 	}
 
 	@Override
@@ -108,7 +112,7 @@ public class SAPCommerceProjectConfigurator implements ProjectConfigurator {
 			final String[] newNatures = natSet.toArray(new String[natSet.size()]);
 			description.setNatureIds(newNatures);
 			project.setDescription(description, monitor);
-			// Do nothing because there is no need to additionally configure a project
+			project.refreshLocal(2, monitor);
 		} catch (CoreException e) {
 			Activator.logError(String.format("could not access project description for %s. Skipping", project.getName()), e);
 		}

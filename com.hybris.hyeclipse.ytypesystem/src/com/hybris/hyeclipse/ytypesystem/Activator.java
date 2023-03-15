@@ -40,13 +40,9 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Shell;
@@ -56,7 +52,6 @@ import org.eclipse.ui.statushandlers.StatusManager;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
-import org.osgi.service.prefs.Preferences;
 
 import com.hybris.hyeclipse.commons.Constants;
 import com.hybris.yps.hyeclipse.ExtensionHolder;
@@ -135,19 +130,9 @@ public class Activator extends AbstractUIPlugin {
 
 	public File getPlatformHome() {
 		if (platformHome == null) {
-
 			// Get platform home from workspace preferences
-			Preferences preferences = InstanceScope.INSTANCE.getNode("com.hybris.hyeclipse.preferences");
-			String platformHomeStr = preferences.get("platform_home", null);
-			if (platformHomeStr == null) {
-				IProject platformProject = ResourcesPlugin.getWorkspace().getRoot().getProject(Constants.PLATFROM);
-				IPath platformProjectPath = platformProject.getLocation();
-				if (platformProjectPath != null) {
-					setPlatformHome(platformProjectPath.toFile());
-				}
-			} else {
-				setPlatformHome(new File(platformHomeStr));
-			}
+			File platformFile = com.hybris.hyeclipse.commons.Activator.resetPlatformBootstrapBundle();
+			setPlatformHome(platformFile);
 		}
 		return platformHome;
 	}

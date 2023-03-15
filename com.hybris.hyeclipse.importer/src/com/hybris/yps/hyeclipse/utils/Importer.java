@@ -84,6 +84,7 @@ public class Importer {
 	public void resetProjectsFromLocalExtensions(final File platformHome, final IProgressMonitor monitor,
 			final boolean fixClasspath, final boolean removeHybrisGenerator, final boolean createWorkingSets,
 			final boolean useMultiThread, final boolean skipJarScanning) throws CoreException, InterruptedException {
+		com.hybris.hyeclipse.commons.Activator.disableProjectNatureSolutionLookup();
 		plugin.resetPlatform(platformHome.getAbsolutePath());
 
 		importExtensionsNotInWorkspace(monitor, platformHome);
@@ -112,6 +113,7 @@ public class Importer {
 		}
 
 		fixSpringBeans(monitor);
+		com.hybris.hyeclipse.commons.Activator.restoreProjectNatureSolutionLookup();
 	}
 
 	private void importExtensionsNotInWorkspace(final IProgressMonitor monitor, final File platformHome)
