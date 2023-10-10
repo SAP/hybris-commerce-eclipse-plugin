@@ -176,9 +176,9 @@
          point="org.eclipse.ui.commands">
       <command
             categoryId="org.eclipse.ui.category.help"
-            defaultHandler="com.hybris.yps.hyeclipse.handlers.help.OpenCXWorksHandler"
-            id="com.hybris.yps.hyeclipse.handlers.help.OpenCXWorksHandler"
-            name="openCXWorksHandler">
+            defaultHandler="com.hybris.yps.hyeclipse.handlers.help.OpenESAHandler"
+            id="com.hybris.yps.hyeclipse.handlers.help.OpenESAHandler"
+            name="openESAHandler">
       </command>
       <command
             categoryId="org.eclipse.ui.category.help"
@@ -216,8 +216,8 @@
                   style="push">
             </command>
             <command
-                  commandId="com.hybris.yps.hyeclipse.handlers.help.OpenCXWorksHandler"
-                  label="SAP CX Works"
+                  commandId="com.hybris.yps.hyeclipse.handlers.help.OpenESAHandler"
+                  label="SAP Enterprise Support Academy"
                   style="push">
                sh">
             </command>
