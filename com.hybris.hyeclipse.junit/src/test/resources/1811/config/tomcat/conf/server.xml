@@ -4,43 +4,6 @@
   <Listener className="de.hybris.tomcat.HybrisGlobalResourcesLifecycleListener" />
   <Listener className="org.apache.catalina.mbeans.JmxRemoteLifecycleListener" rmiRegistryPortPlatform="${tomcat.jmx.port}" rmiServerPortPlatform="${tomcat.jmx.server.port}" />
 
-
-  <GlobalNamingResources>
-
-		<!-- If you want to use the jndi database resource please set db.pool.fromJNDI property and uncomment following block.
-			 Furthermore you have to copy the related jdbc library from platform/lib/dbdriver to the tomcat/lib folder -->
-		<!-- <Resource 	name="hybrisDS"
- 						auth="Container"
- 						type="javax.sql.DataSource"
-              		maxTotal="${db.pool.maxActive}"
-              		maxIdle="${db.pool.maxIdle}"
-              		maxWaitMillis="${db.pool.maxWait}"
-              		testWhileIdle="${db.pool.testWhileIdle}"
-						timeBetweenEvictionRunsMillis="${db.pool.timeBetweenEvictionRunsMillis}"
-						minEvictableIdleTimeMillis="${db.pool.minEvictableIdleTimeMillis}"
-						numTestsPerEvictionRun="${db.pool.numTestsPerEvictionRun}"
-						testOnBorrow="${db.pool.testOnBorrow}"
-						testOnReturn="${db.pool.testOnReturn}"
-              		username="${db.username}"
-             		password="${db.password.XMLENCODED}"
-              		driverClassName="${db.driver}"
-			url="${db.url.XMLENCODED}"
-			useStatementFacade="${db.statement.facade}"/>
-        -->
-
-		<!-- If you want to use a mail JNDI resource please set mail.fromJNDI property and uncomment following block.
-		     Furthermore you have to copy the mail library from ext/core/lib to tomcat/lib -->
-		<!-- <Resource 	name="mail/Session" auth="Container"
-		        		type="javax.mail.Session"
-		        		mail.transport.protocol="smtp"
-		        		mail.smtp.host="${mail.smtp.server}"
-		        		mail.smtp.from="${mail.from}"
-		        		description="Global E-Mail Resource"
-		    		/>-->
-
-  </GlobalNamingResources>
-
-
   <Service name="Catalina" >
 
 	<Executor     name="hybrisExecutor"

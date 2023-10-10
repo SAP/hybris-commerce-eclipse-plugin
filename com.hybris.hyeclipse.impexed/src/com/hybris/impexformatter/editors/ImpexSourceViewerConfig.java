@@ -33,8 +33,8 @@ import org.eclipse.jface.text.rules.RuleBasedScanner;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 
-import com.hybris.impexformatter.ImpexDocumentPartitioner;
 import com.hybris.impexformatter.Activator;
+import com.hybris.impexformatter.ImpexDocumentPartitioner;
 import com.hybris.impexformatter.assistprocessors.ImpexCommandContentAssistProcessor;
 import com.hybris.impexformatter.assistprocessors.ImpexCommentContentAssistProcessor;
 import com.hybris.impexformatter.assistprocessors.ImpexDataContentAssistProcessor;

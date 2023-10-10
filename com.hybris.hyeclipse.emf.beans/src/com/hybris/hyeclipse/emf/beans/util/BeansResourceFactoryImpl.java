@@ -18,22 +18,16 @@
  */
 package com.hybris.hyeclipse.emf.beans.util;
 
-import com.hybris.hyeclipse.emf.beans.BeansPackage;
-
 import org.eclipse.emf.common.util.URI;
-
 import org.eclipse.emf.ecore.EPackage;
-
 import org.eclipse.emf.ecore.impl.EPackageRegistryImpl;
-
 import org.eclipse.emf.ecore.resource.Resource;
-
 import org.eclipse.emf.ecore.resource.impl.ResourceFactoryImpl;
-
 import org.eclipse.emf.ecore.util.BasicExtendedMetaData;
 import org.eclipse.emf.ecore.util.ExtendedMetaData;
-
 import org.eclipse.emf.ecore.xmi.XMLResource;
+
+import com.hybris.hyeclipse.emf.beans.BeansPackage;
 
 /**
  * <!-- begin-user-doc -->

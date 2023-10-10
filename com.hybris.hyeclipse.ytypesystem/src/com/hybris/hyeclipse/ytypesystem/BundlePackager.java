@@ -15,9 +15,14 @@
  ******************************************************************************/
 package com.hybris.hyeclipse.ytypesystem;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.List;
-import java.util.zip.*;
+import java.util.zip.Deflater;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 public class BundlePackager {
 	

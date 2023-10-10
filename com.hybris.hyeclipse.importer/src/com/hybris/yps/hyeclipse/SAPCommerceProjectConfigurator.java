@@ -8,7 +8,6 @@ import java.nio.file.Files;
 import java.nio.file.PathMatcher;
 import java.text.MessageFormat;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -32,15 +31,15 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.ui.wizards.datatransfer.ProjectConfigurator;
 import org.xml.sax.SAXException;
 
+import com.hybris.hyeclipse.commons.Constants;
 import com.hybris.hyeclipse.commons.utils.XmlScannerUtils;
-import com.hybris.yps.hyeclipse.utils.Importer;
 
 public class SAPCommerceProjectConfigurator implements ProjectConfigurator {
 	
 	@Override
 	public Set<File> findConfigurableLocations(File root, IProgressMonitor monitor) {
-		PathMatcher extensionMatcher = FileSystems.getDefault().getPathMatcher("glob:/**/" + Importer.HYBRIS_EXTENSION_FILE);
-		PathMatcher configMatcher = FileSystems.getDefault().getPathMatcher("glob:/**/" + Importer.LOCAL_EXTENSION_FILE);
+		PathMatcher extensionMatcher = FileSystems.getDefault().getPathMatcher("glob:/**/" + Constants.EXTENSION_INFO_XML);
+		PathMatcher configMatcher = FileSystems.getDefault().getPathMatcher("glob:/**/" + Constants.LOCAL_EXTENSIONS_XML);
 		Set<String> configuredExtensions = new HashSet<>();
 		final Set<java.nio.file.Path> projectFiles = new HashSet<>();
 		try (Stream<java.nio.file.Path> stream = Files.walk(root.getParentFile().toPath(), 6, FileVisitOption.FOLLOW_LINKS)) {
@@ -73,9 +72,14 @@ public class SAPCommerceProjectConfigurator implements ProjectConfigurator {
 		return res;
 	}
 
+	/**
+	 * Method checks if given folder contains <pre>extensioninfo.xml</pre> for extensions,
+	 * <pre>localextensions.xml</pre> for config folder,
+	 * <pre>extensions.xml</pre> for <pre>platform</pre> extension.
+	 */
 	@Override
 	public boolean shouldBeAnEclipseProject(IContainer container, IProgressMonitor monitor) {
-		return container.getFile(new Path(Importer.HYBRIS_EXTENSION_FILE)).exists() || container.getFile(new Path(Importer.LOCAL_EXTENSION_FILE)).exists();
+		return container.getFile(new Path(Constants.EXTENSION_INFO_XML)).exists() || container.getFile(new Path(Constants.LOCAL_EXTENSIONS_XML)).exists() || container.getFile(new Path(Constants.EXTENSIONS_XML)).exists();
 	}
 
 	@Override
@@ -108,7 +112,7 @@ public class SAPCommerceProjectConfigurator implements ProjectConfigurator {
 			final String[] newNatures = natSet.toArray(new String[natSet.size()]);
 			description.setNatureIds(newNatures);
 			project.setDescription(description, monitor);
-			// Do nothing because there is no need to additionally configure a project
+			project.refreshLocal(2, monitor);
 		} catch (CoreException e) {
 			Activator.logError(String.format("could not access project description for %s. Skipping", project.getName()), e);
 		}

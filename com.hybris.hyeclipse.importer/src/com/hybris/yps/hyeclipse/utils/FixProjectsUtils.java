@@ -59,14 +59,13 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
+import com.hybris.hyeclipse.commons.Constants;
+import com.hybris.hyeclipse.commons.HybrisUtil;
 import com.hybris.yps.hyeclipse.Activator;
 import com.hybris.yps.hyeclipse.ExtensionHolder;
 
 public class FixProjectsUtils {
-	
-	private static final String EXTENSIONINFO_XML = "extensioninfo.xml";
 	private static final String CONFIG_DIR = "config";
-	public static final String PLATFORM_DIR = "platform";
 	private static Activator plugin = Activator.getDefault();
 	private static final boolean DEBUG = plugin.isDebugging();
 	
@@ -96,7 +95,7 @@ public class FixProjectsUtils {
 				Path extLocation = Paths.get(ext.getPath());
 				try {
 					if (Files.isSameFile(projectLocation, extLocation)
-							|| (project.getName().equals(PLATFORM_DIR) || (project.getName().equals(CONFIG_DIR)))) {
+							|| (project.getName().equals(Constants.PLATFROM) || (project.getName().equals(CONFIG_DIR)))) {
 						found = true;
 						break;
 					}
@@ -105,7 +104,7 @@ public class FixProjectsUtils {
 				}
 			}
 			// if we get here there is no path
-			if (!found && (!project.getName().equals(PLATFORM_DIR) && !project.getName().equals(CONFIG_DIR))) {
+			if (!found && (!project.getName().equals(Constants.PLATFROM) && !project.getName().equals(CONFIG_DIR))) {
 				projectsNotInLocalExts.add(project);
 			}
 		}
@@ -117,7 +116,7 @@ public class FixProjectsUtils {
 		Set<ExtensionHolder> exts = getAllExtensionsForPlatform();
 
 		// add platform and config to the list of extensions
-		ExtensionHolder platformHolder = new ExtensionHolder(platformHome, PLATFORM_DIR);
+		ExtensionHolder platformHolder = new ExtensionHolder(platformHome, Constants.PLATFROM);
 		exts.add(platformHolder);
 		ExtensionHolder configHolder = new ExtensionHolder(getConfigDirectory(), CONFIG_DIR);
 		exts.add(configHolder);
@@ -196,12 +195,11 @@ public class FixProjectsUtils {
 	 */
 	public static boolean isAHybrisExtension(IProject project) {
 		// handle the 2 special cases
-		if (project.getName().equals(PLATFORM_DIR) || project.getName().equals(CONFIG_DIR)) {
+		if (project.getName().equals(Constants.PLATFROM) || project.getName().equals(CONFIG_DIR)) {
 			return true;
 		}
 		else {
-			String extensionInfoPath = project.getLocation().toFile().getAbsolutePath() + "/extensioninfo.xml";
-			return new File(extensionInfoPath).exists();
+			return Files.exists(Paths.get(project.getLocation().toFile().getAbsolutePath(), Constants.EXTENSION_INFO_XML));
 		}
 	}
 	
@@ -209,7 +207,7 @@ public class FixProjectsUtils {
 	{
 		String path = project.getLocation().toFile().getAbsolutePath();
 		String binDir = "bin" + File.separator;
-		return (path.indexOf(binDir + "ext-") >= 0 || path.indexOf(binDir + PLATFORM_DIR) >= 0);
+		return (path.indexOf(binDir + "ext-") >= 0 || path.indexOf(binDir + Constants.PLATFROM) >= 0);
 	}
 	
 	public static boolean isATemplateExtension(IProject project)
@@ -395,8 +393,7 @@ public class FixProjectsUtils {
 		monitor.beginTask("Removing module info", 10);
 		String extensionPath = extension.getPath();
 		
-		File extInfo = new File(extensionPath, EXTENSIONINFO_XML);
-		if (extInfo.exists()) {
+		if (HybrisUtil.isHybrisModuleRoot(new File(extensionPath))) {
 			try {
 				IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(extension.getName());
 				DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -406,6 +403,7 @@ public class FixProjectsUtils {
 				DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 				docBuilder.setErrorHandler(new org.xml.sax.helpers.DefaultHandler());
 				
+				File extInfo = new File(extensionPath, Constants.EXTENSION_INFO_XML);
 				Document doc = docBuilder.parse(extInfo);
 				boolean updateProject = false;
 				if (!extension.isCoreModule()) {
@@ -452,7 +450,7 @@ public class FixProjectsUtils {
 					transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
 					Transformer transformer = transformerFactory.newTransformer();
 					DOMSource source = new DOMSource(doc);
-					StreamResult result = new StreamResult(new File(extensionPath, EXTENSIONINFO_XML));
+					StreamResult result = new StreamResult(new File(extensionPath, Constants.EXTENSION_INFO_XML));
 					transformer.transform(source, result);
 					monitor.worked(5);
 					

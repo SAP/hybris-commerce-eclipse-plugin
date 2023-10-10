@@ -26,6 +26,8 @@ import org.eclipse.ui.AbstractSourceProvider;
 import org.eclipse.ui.ISources;
 import org.osgi.service.prefs.Preferences;
 
+import com.hybris.hyeclipse.commons.Constants;
+
 public class CommandState extends AbstractSourceProvider {
 
 	public final static String ID = "com.hybris.hyeclipse.properties.platformHome";
@@ -43,7 +45,7 @@ public class CommandState extends AbstractSourceProvider {
 		Preferences preferences = InstanceScope.INSTANCE.getNode("com.hybris.hyeclipse.preferences");
 		String platformHomeStr = preferences.get("platform_home", null);
 		if (platformHomeStr == null) {
-			IProject platformProject = ResourcesPlugin.getWorkspace().getRoot().getProject("platform");
+			IProject platformProject = ResourcesPlugin.getWorkspace().getRoot().getProject(Constants.PLATFROM);
 			IPath platformProjectPath = platformProject.getLocation();
 			if (platformProjectPath != null) {
 				enableOption = true;

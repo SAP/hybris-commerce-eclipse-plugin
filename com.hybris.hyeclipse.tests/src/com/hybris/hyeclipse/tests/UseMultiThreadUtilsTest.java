@@ -23,7 +23,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.junit.After;

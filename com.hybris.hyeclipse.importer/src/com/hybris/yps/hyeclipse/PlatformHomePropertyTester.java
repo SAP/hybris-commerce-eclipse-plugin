@@ -22,6 +22,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.osgi.service.prefs.Preferences;
 
+import com.hybris.hyeclipse.commons.Constants;
+
 public class PlatformHomePropertyTester extends PropertyTester {
 	
 	public PlatformHomePropertyTester() {}
@@ -33,7 +35,7 @@ public class PlatformHomePropertyTester extends PropertyTester {
 		Preferences preferences = InstanceScope.INSTANCE.getNode("com.hybris.hyeclipse.preferences");
 		String platformHomeStr = preferences.get("platform_home", null);
 		if (platformHomeStr == null) {
-			IProject platformProject = ResourcesPlugin.getWorkspace().getRoot().getProject("platform");
+			IProject platformProject = ResourcesPlugin.getWorkspace().getRoot().getProject(Constants.PLATFROM);
 			IPath platformProjectPath = platformProject.getLocation();
 			if (platformProjectPath != null) {
 				enableOption = true;

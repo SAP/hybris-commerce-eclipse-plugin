@@ -145,7 +145,7 @@ public abstract class AbstractHACCommunicationManager {
 	private HttpClientContext context;
 	private final HttpClient httpClient;
 
-	public AbstractHACCommunicationManager() {
+	protected AbstractHACCommunicationManager() {
 		httpClient = getSSLAcceptingClient();
 		context = HttpClientContext.create();
 		context.setCookieStore(new BasicCookieStore());

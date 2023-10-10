@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.resources.IBuildConfiguration;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
@@ -39,8 +40,6 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.hybris.yps.hyeclipse.Activator;
-
-import org.eclipse.core.resources.IBuildConfiguration;
 
 public class EclipseRefreshAndBuildHandler extends AbstractHandler{
 

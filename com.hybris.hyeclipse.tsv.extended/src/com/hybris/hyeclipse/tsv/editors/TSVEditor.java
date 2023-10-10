@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
@@ -35,6 +36,8 @@ import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -46,15 +49,19 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
-import org.eclipse.ui.*;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IStorageEditorInput;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.editors.text.TextEditor;
+import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.wst.sse.ui.StructuredTextEditor;
 
+import com.hybris.hyeclipse.tsv.Activator;
 import com.hybris.hyeclipse.tsv.model.TSVResult;
 import com.hybris.hyeclipse.tsv.model.TSVResults;
-
-import org.eclipse.ui.ide.IDE;
 
 /**
  * This multi-page editor has 2 pages:
@@ -169,10 +176,11 @@ public class TSVEditor extends MultiPageEditorPart implements IResourceChangeLis
 				try {
 					Unmarshaller jaxbUnmarshaller = getJaxbContext().createUnmarshaller();
 					TSVResults results = (TSVResults) jaxbUnmarshaller.unmarshal(file);
-					parseResults(results);
+					resultMap.putAll(parseResults(results, resultMap));
 					return resultMap;
 				}
 				catch (JAXBException e) {
+					Activator.getDefault().getLog().log(new Status(IStatus.WARNING, Activator.PLUGIN_ID, "error while reading XML file: " + reportFile, e));
 					e.printStackTrace();
 				}
 			}
@@ -185,20 +193,18 @@ public class TSVEditor extends MultiPageEditorPart implements IResourceChangeLis
 				
 				Unmarshaller jaxbUnmarshaller = getJaxbContext().createUnmarshaller();
 				TSVResults results = (TSVResults) jaxbUnmarshaller.unmarshal(resultsStream);
-				parseResults(results);
+				resultMap.putAll(parseResults(results, resultMap));
 				return resultMap;
 			}
-			catch (CoreException e) {
-				e.printStackTrace();
-			}
-			catch (JAXBException e) {
+			catch (CoreException|JAXBException e) {
+				Activator.getDefault().getLog().log(new Status(IStatus.WARNING, Activator.PLUGIN_ID, "error while reading XML content", e));
 				e.printStackTrace();
 			}
 		}
 		return null;
 	}
 
-	private void parseResults(TSVResults results) {
+	private Map<String,List<TSVResult>> parseResults(TSVResults results, Map<String,List<TSVResult>> resultMap) {
 		if (results != null) {
 			Set<TSVResult> resultSet = results.getResults();
 			if (resultSet != null && resultSet.isEmpty() == false) {
@@ -216,6 +222,7 @@ public class TSVEditor extends MultiPageEditorPart implements IResourceChangeLis
 				}
 			}
 		}
+		return resultMap;
 	}
 
 	protected void createPages() {

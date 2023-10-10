@@ -27,6 +27,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.launching.JavaRuntime;
 
+import com.hybris.hyeclipse.commons.Constants;
 import com.hybris.hyeclipse.platform.internal.Plugin;
 
 public class Platform {
@@ -38,7 +39,7 @@ public class Platform {
 
 	static boolean isPlatformProject(final IProject project) {
 		try {
-			return project.exists() && project.hasNature(JavaCore.NATURE_ID) && project.getName().equals("platform");
+			return project.exists() && project.hasNature(JavaCore.NATURE_ID) && project.getName().equals(Constants.PLATFROM);
 		} catch (CoreException e) {
 			return false;
 		}

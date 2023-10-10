@@ -18,19 +18,15 @@
  */
 package com.hybris.hyeclipse.emf.beans.impl;
 
-import com.hybris.hyeclipse.emf.beans.BeansPackage;
-
 import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-
 import org.eclipse.emf.ecore.util.EDataTypeEList;
+
+import com.hybris.hyeclipse.emf.beans.BeansPackage;
 
 /**
  * <!-- begin-user-doc -->

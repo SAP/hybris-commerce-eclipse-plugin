@@ -15,12 +15,12 @@
  ******************************************************************************/
 package com.hybris.yps.hyeclipse.handlers.help;
 
-public class OpenCXWorksHandler extends AbstractOpenInExternalBrowserHandler {
+public class OpenESAHandler extends AbstractOpenInExternalBrowserHandler {
 
 	
 	@Override
 	protected String getURL() {
-		return "https://www.sap.com/cxworks/";
+		return "https://support.sap.com/en/offerings-programs/enterprise-support/enterprise-support-academy.html?anchorId=section_1490173645_c";
 	}
 
 }

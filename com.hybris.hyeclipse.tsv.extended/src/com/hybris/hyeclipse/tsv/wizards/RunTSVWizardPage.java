@@ -17,6 +17,7 @@ package com.hybris.hyeclipse.tsv.wizards;
 
 import java.io.File;
 
+import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;

@@ -15,15 +15,10 @@
  ******************************************************************************/
 package com.hybris.yps.hyeclipse;
 
-import java.io.File;
 import java.util.Set;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -42,11 +37,6 @@ public class Activator extends AbstractUIPlugin {
 	private static Activator plugin;
 	
 	private com.hybris.hyeclipse.ytypesystem.Activator typeSystemExporter;
-	private File platformHome;
-	
-	// used to disable the nature lookup during importing
-	private static final String ORG_ECLIPSE_EPP_MPC_NATURELOOKUP = "org.eclipse.epp.mpc.naturelookup";
-	private static final String ORG_ECLIPSE_EPP_MPC_UI_PREFS = "org.eclipse.epp.mpc.ui";
 	
 
 	/**
@@ -63,29 +53,9 @@ public class Activator extends AbstractUIPlugin {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-		resetPlatformBootstrapBundle();
-		disableProjectNatureSolutionLookup();
-		log("Disabled automatic project nature solution lookup");
+		com.hybris.hyeclipse.commons.Activator.resetPlatformBootstrapBundle();
 	}
 	
-	public void resetPlatformBootstrapBundle() {
-		String platformHomeStr = null;
-		if (platformHome == null) {
-			
-			Preferences preferences = InstanceScope.INSTANCE.getNode("com.hybris.hyeclipse.preferences");
-			platformHomeStr = preferences.get("platform_home", null);
-			if (platformHomeStr == null) {
-				IProject platformProject = ResourcesPlugin.getWorkspace().getRoot().getProject("platform");
-				IPath platformProjectPath = platformProject.getLocation();
-				if (platformProjectPath != null) {
-					platformHome = platformProjectPath.toFile();
-				}
-			}
-			else {
-				platformHome = new File(platformHomeStr);
-			}
-		}
-	}
 
 	/**
 	 * Returns the shared instance
@@ -104,7 +74,7 @@ public class Activator extends AbstractUIPlugin {
 	}
 	
 	public void resetPlatform(String platformHome) {
-		resetPlatformBootstrapBundle();
+		com.hybris.hyeclipse.commons.Activator.resetPlatformBootstrapBundle();
 		
 		try {
 			Preferences preferences = InstanceScope.INSTANCE.getNode("com.hybris.hyeclipse.preferences");
@@ -151,25 +121,4 @@ public class Activator extends AbstractUIPlugin {
 		}
 		getLog().log(status);
 	}
-	
-	
-	/**
-	 * In oxygen there is an nature solution lookup feature that causes a dialog to open for each imported project. 
-	 * We disable it since it's not a very useful feature.
-	 * 
-	 * @return
-	 */
-	private boolean disableProjectNatureSolutionLookup()
-	{
-		IEclipsePreferences prefs =  InstanceScope.INSTANCE.getNode(ORG_ECLIPSE_EPP_MPC_UI_PREFS);
-		boolean val = prefs.getBoolean(ORG_ECLIPSE_EPP_MPC_NATURELOOKUP, true);
-		prefs.putBoolean(ORG_ECLIPSE_EPP_MPC_NATURELOOKUP, false);
-		try {
-			prefs.flush();
-		} catch (BackingStoreException e) {
-			throw new IllegalStateException(e);
-		}
-		return val;
-	}
-
 }

@@ -18,24 +18,20 @@
  */
 package com.hybris.hyeclipse.emf.beans.impl;
 
-import com.hybris.hyeclipse.emf.beans.AbstractPojos;
-import com.hybris.hyeclipse.emf.beans.Bean;
-import com.hybris.hyeclipse.emf.beans.BeansPackage;
-
 import java.util.Collection;
 
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-
 import org.eclipse.emf.ecore.util.BasicFeatureMap;
 import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.InternalEList;
+
+import com.hybris.hyeclipse.emf.beans.AbstractPojos;
+import com.hybris.hyeclipse.emf.beans.Bean;
+import com.hybris.hyeclipse.emf.beans.BeansPackage;
 
 /**
  * <!-- begin-user-doc -->
