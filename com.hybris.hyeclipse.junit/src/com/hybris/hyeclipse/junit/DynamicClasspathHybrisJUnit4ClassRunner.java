@@ -94,7 +94,11 @@ public class DynamicClasspathHybrisJUnit4ClassRunner extends HybrisJUnit4ClassRu
 		final String extPath = ext.getExtensionDirectory().getAbsolutePath();
 		// only add core extensions and the ones that are not already on
 		// the class path
+<<<<<<< HEAD
 		if (!ext.isCoreExtension() &&  extPath.contains("/solrserver"))
+=======
+		if (!ext.isCoreExtension() && !extPath.contains("/solrserver"))
+>>>>>>> feature/ai
 		{
 			// add the server jar e.g. catalog/bin/catalogserver.jar
 			addURLtoClasspath(extPath + "/bin/" + ext.getName() + "server.jar");
@@ -218,6 +222,11 @@ public class DynamicClasspathHybrisJUnit4ClassRunner extends HybrisJUnit4ClassRu
 			final String b = prop.getValue().toString();
 			final String c = platformHome.getAbsolutePath();
 			props.put(a, b.replace("${platformhome}", c));
+<<<<<<< HEAD
+=======
+			
+			
+>>>>>>> feature/ai
 		}
 		// hybris 5.7 additional properties
 		props.put("HYBRIS_ROLES_DIR", platformHome.getAbsolutePath() + "/../../roles");
