@@ -29,7 +29,7 @@
 		<sonar.organization>sap-1</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
-		<sonar.java.source>11</sonar.java.source>
+		<sonar.java.source>17</sonar.java.source>
 	</properties>
 
 	<prerequisites>
@@ -41,12 +41,12 @@
 		<tag>HEAD</tag>
 		<url>https://github.com/SAP/hybris-commerce-eclipse-plugin</url>
 	</scm>
-	
+
 	<issueManagement>
 		<url>https://github.com/SAP/hybris-commerce-eclipse-plugin/issues</url>
 		<system>GitHub</system>
 	</issueManagement>
-	
+
 	<ciManagement>
 		<url>https://app.travis-ci.com/github/SAP/hybris-commerce-eclipse-plugin/</url>
 		<system>Travis-CI</system>
