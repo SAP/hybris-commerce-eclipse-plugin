@@ -20,8 +20,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
@@ -72,7 +70,8 @@ public class ImpexTypeSystemContentAssistProcessor implements IContentAssistProc
 			//before cursor: lineWithoutCommandUpToCursor
 			//after cursor: lineAfterCursor
 			String tempString = new StringBuilder(lineWithoutCommandUpToCursor).append(";").append(lineAfterCursor).toString();
-			String[] headerParts = StringUtils.split(tempString, ";");
+			
+			String[] headerParts = tempString.split(";");
 			
 			boolean showTypes = false;
 			boolean showAttributes = false;
@@ -135,7 +134,7 @@ public class ImpexTypeSystemContentAssistProcessor implements IContentAssistProc
 					//If not empty, filter based on currentPart
 					autoSuggests = new ArrayList<>();
 					for (String typeCode : allTypeNames) {
-						if (StringUtils.upperCase(typeCode).startsWith(StringUtils.upperCase(currentPart)) && currentPart.length() < typeCode.length()) {
+						if (typeCode.toUpperCase().startsWith(currentPart.toUpperCase()) && currentPart.length() < typeCode.length()) {
 							autoSuggests.add(typeCode);
 						}
 					}
@@ -168,7 +167,7 @@ public class ImpexTypeSystemContentAssistProcessor implements IContentAssistProc
 						}
 						//If its inside brackets, include all attributes
 						//Otherwise, exclude those already used
-						if (StringUtils.upperCase(attributeQualifier).startsWith(StringUtils.upperCase(tempCurrentPart)) && tempCurrentPart.length() < attributeQualifier.length()) {
+						if (attributeQualifier.toUpperCase().startsWith(tempCurrentPart.toUpperCase()) && tempCurrentPart.length() < attributeQualifier.length()) {
 							if (insideBrackets) {
 								autoSuggests.add(attributeQualifier);
 							}
@@ -231,7 +230,7 @@ public class ImpexTypeSystemContentAssistProcessor implements IContentAssistProc
 					//If not empty, filter based on currentPart
 					autoSuggests = new ArrayList<>();
 					for (String keyword : Formatter.IMPEX_KEYWORDS_ATTRIBUTES) {
-						if (StringUtils.upperCase(keyword).startsWith(StringUtils.upperCase(currentPart)) && currentPart.length() < keyword.length()) {
+						if (keyword.toUpperCase().startsWith(currentPart.toUpperCase()) && currentPart.length() < keyword.length()) {
 							autoSuggests.add(keyword);
 						}
 					}

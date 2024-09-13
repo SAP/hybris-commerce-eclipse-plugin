@@ -14,9 +14,9 @@
 	<name>SAP Commerce Cloud - Eclipse plugin junit</name>
 	<description>JUnit Integration Tests Runner</description>
 	<organization>
-		<url>https://wiki.hybris.com/display/hyps</url>
+		<url>https://github.com/SAP</url>
 		<name>SAP Expert Services</name>
 	</organization>
-	<url>https://wiki.hybris.com/display/hyps/SAP+Hybris+Commerce+development+tools+for+Eclipse</url>
+	<url>https://github.com/SAP/hybris-commerce-eclipse-plugin</url>
 </project>
 

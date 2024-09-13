@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
@@ -128,11 +127,10 @@ public class ImpexCommandContentAssistProcessor implements IContentAssistProcess
 	}
 
 	private Collection<? extends ICompletionProposal> addHeaderAttributes(String oldWord, int offset) {
-		
-		int bracketPos = StringUtils.lastIndexOf(oldWord, "[");
+		int bracketPos = oldWord.lastIndexOf("[");
 		int wordLength = oldWord.length();
 		int replacementPos = wordLength - bracketPos;
-		String word = StringUtils.substringAfterLast(oldWord, "[");
+		String word = oldWord.substring(bracketPos);
 		List<String> keywords = Formatter.IMPEX_KEYWORDS_ATTRIBUTES;
 		Collection<ICompletionProposal> result = Lists.newArrayList();
 		
@@ -147,7 +145,7 @@ public class ImpexCommandContentAssistProcessor implements IContentAssistProcess
 	}
 
 	private boolean containsOpenBracket(String word) {
-		return StringUtils.contains(word, "[");
+		return word.contains("[");
 	}
 
 	private void proposeHeaderOperands(int offset, IDocument document, List<ICompletionProposal> proposals) {
