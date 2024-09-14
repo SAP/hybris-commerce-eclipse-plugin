@@ -1,0 +1,131 @@
+version = 1
+SPDX-PackageName = "Eclipse Plugin for SAP Commerce"
+SPDX-PackageSupplier = "Pawel Wolanski <pawel.wolanski@sap.com>"
+SPDX-PackageDownloadLocation = "https://github.com/SAP/hybris-commerce-eclipse-plugin"
+SPDX-PackageComment = "The code in this project may include calls to APIs (“API Calls”) of\n SAP or third-party products or services developed outside of this project\n (“External Products”).\n “APIs” means application programming interfaces, as well as their respective\n specifications and implementing code that allows software to communicate with\n other software.\n API Calls to External Products are not licensed under the open source license\n that governs this project. The use of such API Calls and related External\n Products are subject to applicable additional agreements with the relevant\n provider of the External Products. In no event shall the open source license\n that governs this project grant any rights in or to any External Products,or\n alter, expand or supersede any terms of the applicable additional agreements.\n If you have a valid license agreement with SAP for the use of a particular SAP\n External Product, then you may make use of any API Calls included in this\n project’s code for that SAP External Product, subject to the terms of such\n license agreement. If you do not have a valid license agreement for the use of\n a particular SAP External Product, then you may only make use of any API Calls\n in this project for that SAP External Product for your internal, non-productive\n and non-commercial test and evaluation of such API Calls. Nothing herein grants\n you any rights to use or access any SAP External Product, or provide any third\n parties the right to use of access any SAP External Product, through API Calls."
+
+[[annotations]]
+path = "com.hybris.hyeclipse.commons/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "com.hybris.hyeclipse.editor/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "com.hybris.hyeclipse.emf.beans/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "com.hybris.hyeclipse.emf.beans.edit/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "com.hybris.hyeclipse.emf.beans.editor/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "com.hybris.hyeclipse.extgen/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "com.hybris.hyeclipse.feature/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "com.hybris.hyeclipse.hac/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "com.hybris.hyeclipse.impexed/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "com.hybris.hyeclipse.importer/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "com.hybris.hyeclipse.junit/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "com.hybris.hyeclipse.lsp/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "com.hybris.hyeclipse.platform/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "com.hybris.hyeclipse.property.configuration/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "com.hybris.hyeclipse.tests/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "com.hybris.hyeclipse.tsv/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "com.hybris.hyeclipse.tsv.extended/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "com.hybris.hyeclipse.ytypesystem/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "updatesite/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = ["docs/**", ".github/**", "com.hybris.hyeclipse.site/**", ".gitignore", ".project", ".settings/**", ".travis", "CHANGELOG.md", "CODE_OF_CONDUCT.md", "README.md", "docs.code-workspace", "pom.xml", "CONTRIBUTING.md", "CONTRIBUTING_USING_GENAI.md", "REUSE.toml", ".travis.yml"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = [".mvn/wrapper/**", "mvnw", "mvnw.cmd"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors"
+SPDX-License-Identifier = "Apache-2.0"
