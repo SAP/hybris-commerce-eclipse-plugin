@@ -25,85 +25,85 @@ Disclaimer: The code in this project may include calls to APIs (“API Calls”)
  parties the right to use of access any SAP External Product, through API Calls.
 
 Files: com.hybris.hyeclipse.commons/*
-Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors 
+Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors
 License: Apache-2.0
 
 Files: com.hybris.hyeclipse.editor/*
-Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors 
+Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors
 License: Apache-2.0
 
 Files: com.hybris.hyeclipse.emf.beans/*
-Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors 
+Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors
 License: Apache-2.0
 
 Files: com.hybris.hyeclipse.emf.beans.edit/*
-Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors 
+Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors
 License: Apache-2.0
 
 Files: com.hybris.hyeclipse.emf.beans.editor/*
-Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors 
+Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors
 License: Apache-2.0
 
 Files: com.hybris.hyeclipse.extgen/*
-Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors 
+Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors
 License: Apache-2.0
 
 Files: com.hybris.hyeclipse.feature/*
-Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors 
+Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors
 License: Apache-2.0
 
 Files: com.hybris.hyeclipse.hac/*
-Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors 
+Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors
 License: Apache-2.0
 
 Files: com.hybris.hyeclipse.impexed/*
-Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors 
+Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors
 License: Apache-2.0
 
 Files: com.hybris.hyeclipse.importer/*
-Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors 
+Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors
 License: Apache-2.0
 
 Files: com.hybris.hyeclipse.junit/*
-Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors 
+Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors
 License: Apache-2.0
 
 Files: com.hybris.hyeclipse.lsp/*
-Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors 
+Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors
 License: Apache-2.0
 
 Files: com.hybris.hyeclipse.platform/*
-Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors 
+Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors
 License: Apache-2.0
 
 Files: com.hybris.hyeclipse.property.configuration/*
-Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors 
+Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors
 License: Apache-2.0
 
 Files: com.hybris.hyeclipse.tests/*
-Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors 
+Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors
 License: Apache-2.0
 
 Files: com.hybris.hyeclipse.tsv/*
-Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors 
+Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors
 License: Apache-2.0
 
 Files: com.hybris.hyeclipse.tsv.extended/*
-Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors 
+Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors
 License: Apache-2.0
 
 Files: com.hybris.hyeclipse.ytypesystem/*
-Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors 
+Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors
 License: Apache-2.0
 
 Files: updatesite/*
-Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors 
+Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors
 License: Apache-2.0
 
-Files: docs/* .github/* com.hybris.hyeclipse.site/* .gitignore .project .settings/* .travis CHANGELOG.md CODE_OF_CONDUCT.md README.md docs.code-workspace pom.xml CONTRIBUTING.md
-Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors 
+Files: docs/* .github/* com.hybris.hyeclipse.site/* .gitignore .project .settings/* .travis CHANGELOG.md CODE_OF_CONDUCT.md README.md docs.code-workspace pom.xml CONTRIBUTING.md CONTRIBUTING_USING_GENAI.md
+Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors
 License: Apache-2.0
 
-Files: .mvn/wrapper/maven-wrapper.properties mvnw mvnw.cmd
-Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors 
+Files: .mvn/wrapper/* mvnw mvnw.cmd
+Copyright: 2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors
 License: Apache-2.0
