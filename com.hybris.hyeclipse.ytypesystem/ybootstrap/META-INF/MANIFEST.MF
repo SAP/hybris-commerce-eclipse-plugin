@@ -36,5 +36,5 @@ Export-Package: de.hybris.bootstrap.annotations,de.hybris.bootstrap.be
  rg.jaxen.function.ext,org.jaxen.function.xslt,org.jaxen.javabean,org.
  jaxen.jdom,org.jaxen.pattern,org.jaxen.saxpath,org.jaxen.saxpath.base
  ,org.jaxen.saxpath.helpers,org.jaxen.util,org.jaxen.xom,org.w3c.dom
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 

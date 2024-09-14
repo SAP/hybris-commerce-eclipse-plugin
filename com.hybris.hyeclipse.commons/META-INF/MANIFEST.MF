@@ -14,7 +14,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.e4.core.commands,
  org.eclipse.ui.workbench.texteditor,
  org.eclipse.jdt.annotation
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-ActivationPolicy: lazy
 Export-Package: com.hybris.hyeclipse.commons,
  com.hybris.hyeclipse.commons.handlers,

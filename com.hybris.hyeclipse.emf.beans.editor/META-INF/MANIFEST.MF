@@ -7,7 +7,7 @@ Bundle-ClassPath: .
 Bundle-Activator: com.hybris.hyeclipse.emf.beans.presentation.internal.BeansEditorPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Export-Package: com.hybris.hyeclipse.emf.beans.presentation,
  com.hybris.hyeclipse.emf.beans.presentation.internal;x-internal:=true,
  com.hybris.hyeclipse.emf.beans.presentation.platformdependent

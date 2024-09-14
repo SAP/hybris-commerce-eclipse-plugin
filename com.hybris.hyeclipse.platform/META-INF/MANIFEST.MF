@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Platform Plugin
 Bundle-SymbolicName: com.hybris.hyeclipse.platform;singleton:=true
 Bundle-Version: 22.9.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
