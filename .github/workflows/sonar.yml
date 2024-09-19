@@ -29,11 +29,9 @@ jobs:
       with:
         maven-version: 3.9.6
     - name: Build with Maven
-      run: mvn -B package sonar:sonar --file pom.xml -Dsonar.login=$SONAR_TOKEN -Dsonar.projectKey=$SONAR_KEY -Dsonar.organization=$SONAR_ORG
+      run: mvn -B verify sonar:sonar --file pom.xml -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=sap-1 -Dsonar.projectKey=SAP_hybris-commerce-eclipse-plugin -Dsonar.maven.scanAll=true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        SONAR_KEY: ${{ secrets.SONAR_KEY }}
-        SONAR_ORG: ${{ secrets.SONAR_ORG }}
         FORCE_JAVASCRIPT_ACTIONS_TO_NODE20: true
 

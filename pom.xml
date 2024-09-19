@@ -47,12 +47,6 @@
 		<system>GitHub</system>
 	</issueManagement>
 
-	<ciManagement>
-		<url>https://app.travis-ci.com/github/SAP/hybris-commerce-eclipse-plugin/</url>
-		<system>Travis-CI</system>
-	</ciManagement>
-
-
 	<modules>
 		<module>com.hybris.hyeclipse.commons</module>
 		<module>com.hybris.hyeclipse.hac</module>
