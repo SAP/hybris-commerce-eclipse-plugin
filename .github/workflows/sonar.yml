@@ -34,4 +34,5 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         SONAR_KEY: ${{ secrets.SONAR_KEY }}
         SONAR_ORG: ${{ secrets.SONAR_ORG }}
+        FORCE_JAVASCRIPT_ACTIONS_TO_NODE20: true
 
