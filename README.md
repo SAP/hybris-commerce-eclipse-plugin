@@ -55,3 +55,10 @@ Licensing
 --------------
 
 Please see our [LICENSE](LICENSE) for copyright and license information. Detailed information including third-party components and their licensing/copyright information is available via the [REUSE tool](https://api.reuse.software/info/github.com/SAP/hybris-commerce-eclipse-plugin).
+
+
+Deprecated Features
+-------------------
+
+Some features have been already deprecated as there are currently supported by Eclipse functionality, little usage, or just no time to maintenance. More details can be found on [Deprecation List](docs/deprecation/deprecation.md) page. 
+

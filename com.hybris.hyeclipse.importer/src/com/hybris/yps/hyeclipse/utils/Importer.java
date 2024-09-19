@@ -60,13 +60,11 @@ import org.eclipse.jdt.internal.core.JavaProject;
 import org.eclipse.ui.internal.wizards.datatransfer.SmartImportJob;
 import org.eclipse.ui.progress.IProgressConstants;
 
+import com.hybris.hyeclipse.commons.Constants;
 import com.hybris.yps.hyeclipse.Activator;
 import com.hybris.yps.hyeclipse.ExtensionHolder;
 
 public class Importer {
-
-	public static final String HYBRIS_EXTENSION_FILE = "extensioninfo.xml";
-	public static final String LOCAL_EXTENSION_FILE = "localextensions.xml";
 
 	private static final String WARNING_MSG = "warning";
 	private static final String CONFIG_FOLDER = "config";
@@ -86,6 +84,7 @@ public class Importer {
 	public void resetProjectsFromLocalExtensions(final File platformHome, final IProgressMonitor monitor,
 			final boolean fixClasspath, final boolean removeHybrisGenerator, final boolean createWorkingSets,
 			final boolean useMultiThread, final boolean skipJarScanning) throws CoreException, InterruptedException {
+		com.hybris.hyeclipse.commons.Activator.disableProjectNatureSolutionLookup();
 		plugin.resetPlatform(platformHome.getAbsolutePath());
 
 		importExtensionsNotInWorkspace(monitor, platformHome);
@@ -114,6 +113,7 @@ public class Importer {
 		}
 
 		fixSpringBeans(monitor);
+		com.hybris.hyeclipse.commons.Activator.restoreProjectNatureSolutionLookup();
 	}
 
 	private void importExtensionsNotInWorkspace(final IProgressMonitor monitor, final File platformHome)
@@ -130,7 +130,7 @@ public class Importer {
 			int progress = 0;
 			for (final ExtensionHolder extensionHolder : extensions) {
 				final IPath extP = Path.fromOSString(extensionHolder.getPath());
-				final IPath projectFilepath = extP.append("/.project");
+				final IPath projectFilepath = extP.append("/" + Constants.DOT_PROJECT);
 				final boolean projectFileExist = projectFilepath.toFile().exists();
 				if (projectFileExist) {
 					Activator.log("Importing Eclipse project [" + extensionHolder + "]");
@@ -164,8 +164,8 @@ public class Importer {
 	 *         {@code Importer#HYBRIS_EXTENSION_FILE}
 	 */
 	protected boolean isHybrisExtension(final IPath path) {
-		return path.append(HYBRIS_EXTENSION_FILE).toFile().exists()
-				|| path.append(LOCAL_EXTENSION_FILE).toFile().exists();
+		return path.append(Constants.EXTENSION_INFO_XML).toFile().exists()
+				|| path.append(Constants.LOCAL_EXTENSIONS_XML).toFile().exists();
 	}
 
 	private void closeProjectsThatAreNotReferenced(final IProgressMonitor monitor, final File platformHome) {
@@ -640,7 +640,7 @@ public class Importer {
 		final Set<IProject> projects = FixProjectsUtils.getAllHybrisProjects();
 		final IProject config = projects.stream().filter(p -> CONFIG_FOLDER.equals(p.getName())).findFirst()
 				.orElse(null);
-		final IProject platform = projects.stream().filter(p -> "platform".equals(p.getName())).findFirst()
+		final IProject platform = projects.stream().filter(p -> Constants.PLATFROM.equals(p.getName())).findFirst()
 				.orElse(null);
 
 		if (config != null && platform != null) {
@@ -701,7 +701,7 @@ public class Importer {
 		}
 
 		// add db drivers for platform/lib/dbdriver directory
-		if ("platform".equalsIgnoreCase(project.getName())) {
+		if (Constants.PLATFROM.equalsIgnoreCase(project.getName())) {
 			addMembersOfFolderToClasspath("/lib/dbdriver", monitor, javaProject);
 		}
 	}

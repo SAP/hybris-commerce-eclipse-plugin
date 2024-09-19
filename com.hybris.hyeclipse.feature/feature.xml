@@ -6,13 +6,15 @@
       provider-name="SAP">
 
    <description url="https://wiki.hybris.com/display/hyps/SAP+Hybris+Commerce+development+tools+for+Eclipse">
-      SAP Commerce, development tools for Eclipse is a suite of Eclipse plugins for SAP Commerce projects that improves developer productivity by providing functionality such as:
-
-- Import and synchronize from projects from using the platform configuration (using localextensions.xml and extension classpaths)
+      SAP Commerce, development tools for Eclipse is a suite of Eclipse
+plugins for SAP Commerce projects that improves developer productivity
+by providing functionality such as:
+- Import and synchronize from projects from using the platform
+configuration (using localextensions.xml and extension classpaths)
 - ImpEx Editor with code assist
 - Type System (*-items.xml) validator
-
-See https://wiki.hybris.com/display/hyps/SAP+Hybris+Commerce+development+tools+for+Eclipse for more information
+See https://github.com/SAP/hybris-commerce-eclipse-plugin/blob/master/README.md
+for more information
    </description>
 
    <copyright>
@@ -183,13 +185,6 @@ All rights reserved.
 
    <plugin
          id="com.hybris.hyeclipse.junit"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.hybris.hyeclipse.editor"
          download-size="0"
          install-size="0"
          version="0.0.0"

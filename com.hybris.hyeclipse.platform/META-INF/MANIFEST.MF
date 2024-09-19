@@ -3,13 +3,14 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Platform Plugin
 Bundle-SymbolicName: com.hybris.hyeclipse.platform;singleton:=true
 Bundle-Version: 22.9.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
  org.eclipse.jdt.core,
  org.eclipse.jdt.launching,
- org.eclipse.ui.workbench
+ org.eclipse.ui.workbench,
+ com.hybris.hyeclipse.commons
 Bundle-ClassPath: .
 Bundle-Activator: com.hybris.hyeclipse.platform.internal.Plugin
 Export-Package: com.hybris.hyeclipse.platform;version="1.0.3",

@@ -20,11 +20,12 @@ import java.io.File;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 
+import com.hybris.hyeclipse.commons.Constants;
+
 /**
  * Utility class around platform path handling.
  */
 public class PathUtils {
-	private static final String PLATFORM_PROJECT_NAME = "platform";
 	private static final String DEFAULT_EXTENSION_DIR = "custom";
 	private static final String LOCAL_EXTENSIONS_PATH = "config/localextensions.xml";
 	private static final String TEMPLATE_DIR = "ext-template";
@@ -89,7 +90,7 @@ public class PathUtils {
 	 * @return path to platform project directory
 	 */
 	public static String getPlatformPath() {
-		IPath platformProjectPath = ResourcesPlugin.getWorkspace().getRoot().getProject(PLATFORM_PROJECT_NAME)
+		IPath platformProjectPath = ResourcesPlugin.getWorkspace().getRoot().getProject(Constants.PLATFROM)
 				.getLocation();
 		return platformProjectPath.toFile().getAbsolutePath();
 	}

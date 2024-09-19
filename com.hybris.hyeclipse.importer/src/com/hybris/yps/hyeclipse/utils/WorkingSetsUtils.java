@@ -49,6 +49,7 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+import com.hybris.hyeclipse.commons.Constants;
 import com.hybris.yps.hyeclipse.Activator;
 
 public class WorkingSetsUtils {
@@ -211,7 +212,7 @@ public class WorkingSetsUtils {
 		int projectsProcessed = 0;
 		for (IProject project : allProjects) {
 			// projects to ignore
-			if (project.getName().equals("RemoteSystemsTempFiles") || project.getName().equals("platform") || project.getName().equals("config"))
+			if (project.getName().equals("RemoteSystemsTempFiles") || project.getName().equals(Constants.PLATFROM) || project.getName().equals("config"))
 			{ 
 				continue;
 			}
@@ -219,7 +220,7 @@ public class WorkingSetsUtils {
 			String directoryName = directory.getName();
 			if (!extToProjectMap.containsKey(directoryName)) {
 				extToProjectMap.put(directoryName, new HashSet<IProject>());
-				extToProjectMap.get(directoryName).add(ResourcesPlugin.getWorkspace().getRoot().getProject("platform"));
+				extToProjectMap.get(directoryName).add(ResourcesPlugin.getWorkspace().getRoot().getProject(Constants.PLATFROM));
 				extToProjectMap.get(directoryName).add(ResourcesPlugin.getWorkspace().getRoot().getProject("config"));
 			}
 			extToProjectMap.get(directoryName).add(project);

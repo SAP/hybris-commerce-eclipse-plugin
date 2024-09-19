@@ -31,6 +31,8 @@ import org.eclipse.swt.widgets.Label;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
+import com.hybris.hyeclipse.commons.Constants;
+
 /**
  * TODO refactor, duplicate code in SynchronizePlatformPage 
  */
@@ -235,7 +237,7 @@ public class ImportPlatformPage extends WizardPage
 		File platformDir = getPlatformDirectory();
 		
 		if (!(platformDir.isDirectory() && 
-				(platformDir.getAbsolutePath().endsWith( "platform" ) || 
+				(platformDir.getAbsolutePath().endsWith( Constants.PLATFROM ) || 
 						platformDir.getAbsolutePath().endsWith( "platform/" ) || 
 						platformDir.getAbsolutePath().endsWith( "platform\\" ))))
 		{

@@ -18,6 +18,7 @@ package com.hybris.hyeclipse.extgen.utils;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,16 +27,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPath;
@@ -68,6 +64,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
+
+import com.hybris.hyeclipse.commons.Constants;
 import com.hybris.hyeclipse.commons.utils.XmlScannerUtils;
 import com.hybris.yps.hyeclipse.Activator;
 import com.hybris.yps.hyeclipse.ExtensionHolder;
@@ -114,7 +112,7 @@ public class ExtensionUtils {
 	 */
 	public static void importExtension(IProgressMonitor monitor, File source, String extensionName) throws CoreException {
 		IProjectDescription description;
-		String path = source.getAbsolutePath() + File.separator + extensionName + File.separator + ".project";
+		String path =  Paths.get(source.getAbsolutePath(), extensionName, Constants.DOT_PROJECT).toAbsolutePath().toString();
 		description = ResourcesPlugin.getWorkspace().loadProjectDescription(new Path(path));
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(description.getName());
 		project.create(description, null);
@@ -288,7 +286,7 @@ public class ExtensionUtils {
 	 */
 	private static boolean isTemplate(IProject extensionProject) {
 		String path = extensionProject.getLocation().toOSString();
-		File extInfo = new File(path, "extensioninfo.xml");
+		File extInfo = new File(path, Constants.EXTENSION_INFO_XML);
 		if (extInfo.exists()) {
 			try {
 				DocumentBuilder dBuilder = XmlScannerUtils.newDocumentBuilder();
@@ -301,7 +299,7 @@ public class ExtensionUtils {
 							&& value.getNodeValue().equals("true");
 				}
 			} catch (SAXException | IOException | ParserConfigurationException e) {
-				Activator.logError("Failed to parse extensioninfo.xml for project " + extensionProject.getName() , e);
+				Activator.logError("Failed to parse "+ Constants.EXTENSION_INFO_XML +" for project " + extensionProject.getName() , e);
 			}
 
 		}

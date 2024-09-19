@@ -18,17 +18,16 @@
  */
 package com.hybris.hyeclipse.emf.beans.util;
 
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.util.Switch;
+
 import com.hybris.hyeclipse.emf.beans.AbstractPojo;
 import com.hybris.hyeclipse.emf.beans.AbstractPojos;
 import com.hybris.hyeclipse.emf.beans.Bean;
 import com.hybris.hyeclipse.emf.beans.BeansPackage;
 import com.hybris.hyeclipse.emf.beans.DocumentRoot;
 import com.hybris.hyeclipse.emf.beans.Property;
-
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EPackage;
-
-import org.eclipse.emf.ecore.util.Switch;
 
 /**
  * <!-- begin-user-doc -->

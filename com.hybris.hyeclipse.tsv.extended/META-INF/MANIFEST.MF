@@ -4,7 +4,7 @@ Bundle-Name: TSV Extended
 Bundle-SymbolicName: com.hybris.hyeclipse.tsv.extended;singleton:=true
 Bundle-Version: 22.9.0.qualifier
 Bundle-Activator: com.hybris.hyeclipse.tsv.Activator
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,

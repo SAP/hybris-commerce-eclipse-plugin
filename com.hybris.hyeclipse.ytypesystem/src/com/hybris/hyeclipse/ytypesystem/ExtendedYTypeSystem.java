@@ -24,11 +24,11 @@ import java.util.Set;
 import de.hybris.bootstrap.typesystem.YAttributeDescriptor;
 import de.hybris.bootstrap.typesystem.YComposedType;
 import de.hybris.bootstrap.typesystem.YDeployment;
+import de.hybris.bootstrap.typesystem.YExtension;
 import de.hybris.bootstrap.typesystem.YIndex;
 import de.hybris.bootstrap.typesystem.YIndexDeployment;
-import de.hybris.bootstrap.typesystem.YTypeSystem;
 import de.hybris.bootstrap.typesystem.YNamespace;
-import de.hybris.bootstrap.typesystem.YExtension;
+import de.hybris.bootstrap.typesystem.YTypeSystem;
 
 public class ExtendedYTypeSystem extends YTypeSystem {
 

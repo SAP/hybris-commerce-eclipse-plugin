@@ -18,7 +18,7 @@ package com.hybris.impexformatter.assistprocessors;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Locale;
+import java.util.Optional;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -37,6 +37,7 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.hybris.impexformatter.Activator;
 import com.hybris.impexformatter.actions.Formatter;
+import com.hybris.impexformatter.utils.StringHelper;
 
 public class ImpexCommandContentAssistProcessor implements IContentAssistProcessor {
 
@@ -71,7 +72,7 @@ public class ImpexCommandContentAssistProcessor implements IContentAssistProcess
 			
 			//Line isn't empty...
 			for (String keyword : keywords) {
-				if (keyword.toUpperCase(Locale.ENGLISH).startsWith(line.toUpperCase(Locale.ENGLISH)) && line.length() < keyword.length()) {
+				if (StringHelper.findMatches(keyword, line)) {
 					return standardMethod(itv, cursorPosition, keywords, autoCompProposals);
 				}
 			}
@@ -109,7 +110,7 @@ public class ImpexCommandContentAssistProcessor implements IContentAssistProcess
 				autoCompProposals.addAll(addHeaderAttributes(word, offset));
 			}
 			for (String keyword : keywords) {
-				if (keyword.toUpperCase(Locale.ENGLISH).startsWith(word.toUpperCase(Locale.ENGLISH)) && word.length() < keyword.length()) {
+				if (StringHelper.findMatches(keyword, word)) {
 					autoCompProposals.add(new CompletionProposal(keyword + " ", index + 1, offset - (index + 1), keyword.length() + 1));
 				}
 			}
@@ -127,25 +128,32 @@ public class ImpexCommandContentAssistProcessor implements IContentAssistProcess
 	}
 
 	private Collection<? extends ICompletionProposal> addHeaderAttributes(String oldWord, int offset) {
-		int bracketPos = oldWord.lastIndexOf("[");
-		int wordLength = oldWord.length();
-		int replacementPos = wordLength - bracketPos;
-		String word = oldWord.substring(bracketPos);
+		
 		List<String> keywords = Formatter.IMPEX_KEYWORDS_ATTRIBUTES;
 		Collection<ICompletionProposal> result = Lists.newArrayList();
-		
-		for (String keyword : keywords) {
-			if (keyword.toUpperCase(Locale.ENGLISH).startsWith(word.toUpperCase(Locale.ENGLISH)) && word.length() < keyword.length()) {
-				
-				result.add(new CompletionProposal(keyword + "=", (offset - replacementPos) + 1, word.length(), keyword.length() + 1));
-			}
+		int bracketPos = Optional.ofNullable(oldWord).orElse("").lastIndexOf("[");
+		int wordLength = oldWord.length();
+		int replacementPos = wordLength - bracketPos;
+		if (bracketPos > -1) {
+			String word = oldWord.substring(bracketPos);
+			for (String keyword : keywords) {
+				if (StringHelper.findMatches(keyword, word)) {					
+					result.add(new CompletionProposal(keyword + "=", (offset - replacementPos) + 1, word.length(), keyword.length() + 1));
+				}
+			}	
 		}
+		
 		return result;
 		
 	}
 
+	/**
+	 * Null-safe open-bracket character finder
+	 * @param word - main string which is used for search
+	 * @return return {@code true} when contains open bracket in text.
+	 */
 	private boolean containsOpenBracket(String word) {
-		return word.contains("[");
+		return Optional.ofNullable(word).orElse("").contains("[");
 	}
 
 	private void proposeHeaderOperands(int offset, IDocument document, List<ICompletionProposal> proposals) {

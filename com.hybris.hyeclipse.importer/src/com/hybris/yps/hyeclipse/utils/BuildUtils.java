@@ -41,11 +41,12 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.osgi.service.prefs.BackingStoreException;
 
+import com.hybris.hyeclipse.commons.Constants;
+
 public class BuildUtils {
 
 	private static final String PLATFORM_BUILD_CONFIG = "yplatform_build";
 	private static final String PLATFORM_CLEAN_BUILD_CONFIG = "yplatform_clean_build";
-	private static final String PLATFORM_NAME = "platform";
 	
 	private BuildUtils() {
 		// inteded to be empty
@@ -68,7 +69,7 @@ public class BuildUtils {
 		enableAutoBuild(false);
 		String projectLocation = project.getLocation().toString() + File.separator + "build.xml";
 		String projectName = project.getName();
-		if (!projectName.equals(PLATFORM_NAME)) {
+		if (!projectName.equals(Constants.PLATFROM)) {
 			cfg = cfg + "_" + projectName;
 		}
 		try {
@@ -161,7 +162,7 @@ public class BuildUtils {
 	 *            single extension project to be refreshed
 	 */
 	private static void refreshPlatformAndCurrentProject(IProject project) throws CoreException {
-		final IProject platformProject = ResourcesPlugin.getWorkspace().getRoot().getProject(PLATFORM_NAME);
+		final IProject platformProject = ResourcesPlugin.getWorkspace().getRoot().getProject(Constants.PLATFROM);
 		project.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
 		platformProject.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
 	}

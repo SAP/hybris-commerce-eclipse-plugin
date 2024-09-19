@@ -11,14 +11,13 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jface.text,
  org.eclipse.core.resources,
  org.eclipse.ui.console,
- org.eclipse.ui.editors,
  org.eclipse.e4.core.commands,
- org.eclipse.e4.core.contexts,
- org.eclipse.jdt.annotation;resolution:=optional,
- org.eclipse.jdt.core;resolution:=optional
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+ org.eclipse.ui.workbench.texteditor,
+ org.eclipse.jdt.annotation
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-ActivationPolicy: lazy
-Export-Package: com.hybris.hyeclipse.commons.handlers,
+Export-Package: com.hybris.hyeclipse.commons,
+ com.hybris.hyeclipse.commons.handlers,
  com.hybris.hyeclipse.commons.testers,
  com.hybris.hyeclipse.commons.utils,
  org.apache.commons.io,

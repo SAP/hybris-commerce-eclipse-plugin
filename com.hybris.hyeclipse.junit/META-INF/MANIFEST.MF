@@ -20,9 +20,9 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jdt.junit4.runtime,
  org.junit,
  org.eclipse.jdt.junit
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,lib/ybootstrap.jar,lib/coreserver.jar,lib/commons-lang-2.6.jar
 Automatic-Module-Name: com.hybris.hyeclipse.junit
-Export-Package: com.hybris.hyeclipse.junit, 
+Export-Package: com.hybris.hyeclipse.junit,
  test.resources

@@ -6,7 +6,7 @@ Bundle-Version: 22.9.0.qualifier
 Bundle-ClassPath: .
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Export-Package: com.hybris.hyeclipse.emf.beans,
  com.hybris.hyeclipse.emf.beans.impl,
  com.hybris.hyeclipse.emf.beans.util

@@ -49,11 +49,14 @@ import org.eclipse.ui.services.ISourceProviderService;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
+import com.hybris.hyeclipse.commons.Constants;
 import com.hybris.yps.hyeclipse.Activator;
 import com.hybris.yps.hyeclipse.CommandState;
+import com.hybris.yps.hyeclipse.utils.AntImporter;
 import com.hybris.yps.hyeclipse.utils.FixProjectsUtils;
 import com.hybris.yps.hyeclipse.utils.Importer;
 import com.hybris.yps.hyeclipse.utils.ProjectSourceJob;
+import com.hybris.yps.hyeclipse.utils.ShellImporter;
 
 /**
  * Wizard to walk the user through importing all projects from a given platform
@@ -166,7 +169,7 @@ public class ImportPlatformWizard extends Wizard implements IImportWizard {
 
 
 	protected void fixRuntimeEnvironment() {
-		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("platform"); //$NON-NLS-1$
+		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(Constants.PLATFROM); //$NON-NLS-1$
 		IJavaProject javaProject = JavaCore.create(project);
 		IVMInstall javaInstall = null;
 		try {
@@ -273,15 +276,17 @@ public class ImportPlatformWizard extends Wizard implements IImportWizard {
 	protected void importPlatform(IProgressMonitor monitor, File platformDir, boolean fixClasspath,
 			boolean removeHybrisGenerator, boolean createWorkingSets, boolean useMultiThread, boolean skipJarScanning)
 			throws InvocationTargetException, InterruptedException {
-		try {
-			new Importer().resetProjectsFromLocalExtensions(platformDir, monitor, fixClasspath, removeHybrisGenerator,
-					createWorkingSets, useMultiThread, skipJarScanning);
-		} catch (CoreException e) {
-			Activator.logError(Messages.error_on_import, e);
-			throw new InvocationTargetException(e);
-		} catch (InterruptedException e) {
-			Activator.logError(Messages.error_on_import, e);
-			throw e;
-		}
+//		try {
+//			new Importer().resetProjectsFromLocalExtensions(platformDir, monitor, fixClasspath, removeHybrisGenerator,
+//					createWorkingSets, useMultiThread, skipJarScanning);
+		new ShellImporter().resetProjectsFromLocalExtensions(platformDir, monitor, fixClasspath, removeHybrisGenerator,
+				createWorkingSets, useMultiThread, skipJarScanning);
+//		} catch (CoreException e) {
+//			Activator.logError(Messages.error_on_import, e);
+//			throw new InvocationTargetException(e);
+//		} catch (InterruptedException e) {
+//			Activator.logError(Messages.error_on_import, e);
+//			throw e;
+//		}
 	}
 }
