@@ -12,7 +12,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.workbench,
  org.eclipse.ui.ide,
  org.eclipse.debug.core,
- org.apache.commons.io,
  com.hybris.hyeclipse.ytypesystem;bundle-version="[1.0.0,22.9.1)",
  com.hybris.hyeclipse.importer;bundle-version="[1.0.0,22.9.1)",
  com.hybris.hyeclipse.commons

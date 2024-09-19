@@ -30,9 +30,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Properties;
 
-import org.apache.commons.io.FilenameUtils;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.model.InitializationError;
 
@@ -132,7 +132,7 @@ public class DynamicClasspathHybrisJUnit4ClassRunner extends HybrisJUnit4ClassRu
 		{
 			for (final File jar : libDirectory.listFiles())
 			{
-				if (jar.isFile() && FilenameUtils.getExtension(jar.getAbsolutePath()).equals("jar"))
+				if (jar.isFile() && getExtensionByStringHandling(jar.getAbsolutePath()).orElse("").equalsIgnoreCase("jar"))
 				{
 					addURLtoClasspath(jar.getAbsolutePath());
 				}
@@ -256,5 +256,15 @@ public class DynamicClasspathHybrisJUnit4ClassRunner extends HybrisJUnit4ClassRu
 	protected boolean isEclipseExecution()
 	{
 		return System.getProperty("sun.java.command").contains("org.eclipse.jdt");
+	}
+	/**
+	 * getting file extension
+	 * @param filename
+	 * @return
+	 */
+	public Optional<String> getExtensionByStringHandling(String filename) {
+	    return Optional.ofNullable(filename)
+	      .filter(f -> f.contains("."))
+	      .map(f -> f.substring(filename.lastIndexOf(".") + 1));
 	}
 }

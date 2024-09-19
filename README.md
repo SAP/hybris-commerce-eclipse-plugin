@@ -5,7 +5,6 @@ Description
 This Eclipse plugin makes developers more efficient by taking care of some of the common issues of developing with the SAP Commerce Suite. For example, with this plugin it's possible to have a new project workspace quickly configured with all project extensions compiling in minutes rather than hours.
 
 ![Eclipse](https://img.shields.io/badge/Eclipse-FE7A16.svg?logo=Eclipse&logoColor=white)
-[![Build Status - Master](https://travis-ci.com/mikolayek/hybris-commerce-eclipse-plugin.svg?branch=master)](https://travis-ci.com/mikolayek/hybris-commerce-eclipse-plugin)
 [![Join the chat at https://gitter.im/SAP/commerce-eclipse-plugin](https://badges.gitter.im/SAP/commerce-eclipse-plugin.svg)](https://gitter.im/SAP/commerce-eclipse-plugin?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![REUSE status](https://api.reuse.software/badge/github.com/SAP/hybris-commerce-eclipse-plugin)](https://api.reuse.software/info/github.com/SAP/hybris-commerce-eclipse-plugin)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor_Covenant-1.4-4baaaa)](CODE_OF_CONDUCT.md)
@@ -60,5 +59,5 @@ Please see our [LICENSE](LICENSE) for copyright and license information. Detaile
 Deprecated Features
 -------------------
 
-Some features have been already deprecated as there are currently supported by Eclipse functionality, little usage, or just no time to maintenance. More details can be found on [Deprecation List](docs/deprecation/deprecation.md) page. 
+Some features have been already deprecated as there are currently supported by Eclipse functionality, little usage, or just no time to maintenance. More details can be found on [Deprecation List](docs/deprecation/deprecation.md) page.
 
