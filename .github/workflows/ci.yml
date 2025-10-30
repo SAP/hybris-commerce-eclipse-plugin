@@ -12,7 +12,7 @@ jobs:
       uses: "actions/setup-java@v5"
       with:
         distribution: "sapmachine"
-        java-version: "17"
+        java-version: "21"
 
     - name: Cache Maven packages
       uses: actions/cache@v4
