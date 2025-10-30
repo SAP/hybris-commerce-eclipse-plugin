@@ -29,7 +29,7 @@
 		<sonar.organization>sap-1</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
-		<sonar.java.source>17</sonar.java.source>
+		<sonar.java.source>21</sonar.java.source>
 	</properties>
 
 	<prerequisites>
@@ -117,8 +117,8 @@
 				<artifactId>tycho-compiler-plugin</artifactId>
 				<version>${tycho-version}</version>
 				<configuration>
-					<source>17</source>
-					<target>17</target>
+					<source>21</source>
+					<target>21</target>
 				</configuration>
 			</plugin>
 			<plugin>
