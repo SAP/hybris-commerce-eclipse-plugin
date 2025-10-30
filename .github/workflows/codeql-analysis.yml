@@ -40,7 +40,7 @@ jobs:
       uses: "actions/setup-java@v5"
       with:
         distribution: "sapmachine"
-        java-version: "17"
+        java-version: "21"
 
     - name: Set up Maven
       uses: stCarolas/setup-maven@v5
