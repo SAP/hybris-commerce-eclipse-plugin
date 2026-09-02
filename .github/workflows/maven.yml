@@ -19,7 +19,7 @@ jobs:
     permissions:
       artifact-metadata: write
       contents: read
-      pull-requests: read
+      pull-requests: write
       
     runs-on: ubuntu-latest
 
