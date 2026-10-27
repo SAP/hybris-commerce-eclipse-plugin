@@ -15,4 +15,12 @@
 	<name>SAP Commerce Cloud - Eclipse plugin (site)</name>
 	<description>SAP Commerce Cloud - Eclipse plugin (site)</description>
 	<url>https://github.com/SAP/hybris-commerce-eclipse-plugin</url>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.hybris.hyeclipse</groupId>
+			<artifactId>com.hybris.hyeclipse.feature</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	</dependencies>
 </project>
