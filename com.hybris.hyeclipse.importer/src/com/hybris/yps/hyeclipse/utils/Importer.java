@@ -50,6 +50,8 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -85,35 +87,38 @@ public class Importer {
 			final boolean fixClasspath, final boolean removeHybrisGenerator, final boolean createWorkingSets,
 			final boolean useMultiThread, final boolean skipJarScanning) throws CoreException, InterruptedException {
 		com.hybris.hyeclipse.commons.Activator.disableProjectNatureSolutionLookup();
-		plugin.resetPlatform(platformHome.getAbsolutePath());
+		try {
+			plugin.resetPlatform(platformHome.getAbsolutePath());
 
-		importExtensionsNotInWorkspace(monitor, platformHome);
-		closeProjectsThatAreNotReferenced(monitor, platformHome);
+			importExtensionsNotInWorkspace(monitor, platformHome);
+			closeProjectsThatAreNotReferenced(monitor, platformHome);
 
-		if (fixClasspath) {
-			fixMissingProjectDependencies(monitor);
-			fixMissingProjectResources(monitor, platformHome);
-			fixProjectClasspaths(monitor);
+			if (fixClasspath) {
+				fixMissingProjectDependencies(monitor);
+				fixMissingProjectResources(monitor, platformHome);
+				fixProjectClasspaths(monitor);
+			}
+
+			if (removeHybrisGenerator) {
+				fixBuilders(monitor);
+			}
+
+			if (createWorkingSets) {
+				WorkingSetsUtils.organizeWorkingSetsFromExtensionDirectories(monitor);
+			}
+
+			if (useMultiThread) {
+				UseMultiThreadUtils.useMultiThread(platformHome);
+			}
+
+			if (skipJarScanning) {
+				SkipJarScanningUtils.skipJarScanning(platformHome);
+			}
+
+			fixSpringBeans(monitor);
+		} finally {
+			com.hybris.hyeclipse.commons.Activator.restoreProjectNatureSolutionLookup();
 		}
-
-		if (removeHybrisGenerator) {
-			fixBuilders(monitor);
-		}
-
-		if (createWorkingSets) {
-			WorkingSetsUtils.organizeWorkingSetsFromExtensionDirectories(monitor);
-		}
-
-		if (useMultiThread) {
-			UseMultiThreadUtils.useMultiThread(platformHome);
-		}
-
-		if (skipJarScanning) {
-			SkipJarScanningUtils.skipJarScanning(platformHome);
-		}
-
-		fixSpringBeans(monitor);
-		com.hybris.hyeclipse.commons.Activator.restoreProjectNatureSolutionLookup();
 	}
 
 	private void importExtensionsNotInWorkspace(final IProgressMonitor monitor, final File platformHome)
@@ -129,6 +134,9 @@ public class Importer {
 			monitor.beginTask("Importing extensions", extensions.size());
 			int progress = 0;
 			for (final ExtensionHolder extensionHolder : extensions) {
+				if (monitor.isCanceled()) {
+					throw new OperationCanceledException();
+				}
 				final IPath extP = Path.fromOSString(extensionHolder.getPath());
 				final IPath projectFilepath = extP.append("/" + Constants.DOT_PROJECT);
 				final boolean projectFileExist = projectFilepath.toFile().exists();
@@ -202,13 +210,28 @@ public class Importer {
 				false);
 		importJob.setProperty(IProgressConstants.PROPERTY_IN_DIALOG, true);
 		importJob.schedule();
-		importJob.join(10_000L, monitor);
+		// Source attachment and classpath fixes must not race an unfinished smart import.
+		try {
+			importJob.join(0L, monitor);
+		} catch (InterruptedException | OperationCanceledException e) {
+			importJob.cancel();
+			throw e;
+		}
+		final IStatus importResult = importJob.getResult();
+		if (importResult != null && importResult.matches(IStatus.CANCEL)) {
+			throw new OperationCanceledException();
+		}
+		if (importResult != null && importResult.matches(IStatus.ERROR)) {
+			throw new CoreException(importResult);
+		}
 		final String name = extensionFolder.lastSegment();
 
 		final IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(name);
 		if (!project.exists()) {
 			try {
-				project.create(null, progress.newChild(3));				
+				final IProjectDescription description = ResourcesPlugin.getWorkspace().newProjectDescription(name);
+				description.setLocation(extensionFolder);
+				project.create(description, progress.newChild(3));
 			} catch (ResourceException e) {
 				if (e.getStatus().getCode() == IResourceStatus.RESOURCE_EXISTS) {
 					project.open(monitor);

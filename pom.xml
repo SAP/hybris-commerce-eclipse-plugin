@@ -62,6 +62,7 @@
 		<module>com.hybris.hyeclipse.feature</module>
 		<module>com.hybris.hyeclipse.site</module>
 		<module>com.hybris.hyeclipse.tests</module>
+		<module>com.hybris.hyeclipse.junit.tests</module>
 	</modules>
 
 	<repositories>

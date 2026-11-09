@@ -16,13 +16,18 @@
 package com.hybris.yps.hyeclipse.preferences;
 
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+
+import com.hybris.yps.hyeclipse.Activator;
+import com.hybris.yps.hyeclipse.wizards.Messages;
 
 public class HyEclipsePreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
 	public HyEclipsePreferencePage() {
 		super(GRID);
+		setPreferenceStore(Activator.getDefault().getPreferenceStore());
 		setDescription("SAP Commerce, development tools for Eclipse is a suite of Eclipse plugins for SAP Commerce projects that improves developer productivity.\n\nSee https://wiki.hybris.com/display/hyps/SAP+Hybris+Commerce+development+tools+for+Eclipse for details.");
 	}
 	
@@ -30,6 +35,11 @@ public class HyEclipsePreferencePage extends FieldEditorPreferencePage implement
 	public void init(IWorkbench arg0) {}
 
 	@Override
-	protected void createFieldEditors() {}
+	protected void createFieldEditors() {
+		final FileFieldEditor shell = new FileFieldEditor(HyEclipsePreferenceConstants.P_DEFAULT_SHELL,
+				Messages.HyEclipsePreferencePage_shell_path, true, getFieldEditorParent());
+		shell.setEmptyStringAllowed(false);
+		addField(shell);
+	}
 
 }

@@ -7,4 +7,7 @@ Bundle-Vendor: SAP
 Fragment-Host: com.hybris.hyeclipse.importer
 Automatic-Module-Name: com.hybris.hyeclipse.tests
 Bundle-RequiredExecutionEnvironment: JavaSE-21
-Require-Bundle: org.junit
+Require-Bundle: org.junit,
+ com.hybris.hyeclipse.platform,
+ org.eclipse.jdt.launching,
+ org.eclipse.debug.core

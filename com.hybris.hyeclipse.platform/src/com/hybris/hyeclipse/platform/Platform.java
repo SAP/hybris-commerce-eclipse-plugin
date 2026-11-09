@@ -39,7 +39,8 @@ public class Platform {
 
 	static boolean isPlatformProject(final IProject project) {
 		try {
-			return project.exists() && project.hasNature(JavaCore.NATURE_ID) && project.getName().equals(Constants.PLATFROM);
+			return project.isOpen() && project.hasNature(JavaCore.NATURE_ID)
+					&& project.getName().equals(Constants.PLATFROM);
 		} catch (CoreException e) {
 			return false;
 		}

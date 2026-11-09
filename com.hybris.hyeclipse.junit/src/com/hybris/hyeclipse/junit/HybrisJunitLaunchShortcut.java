@@ -15,20 +15,36 @@
  ******************************************************************************/
 package com.hybris.hyeclipse.junit;
 
+import java.util.Arrays;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.internal.junit.launcher.JUnitLaunchConfigurationConstants;
 import org.eclipse.jdt.junit.launcher.JUnitLaunchShortcut;
+import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 
 @SuppressWarnings("restriction")
-public class HybrisJunitLaunchShortcut extends JUnitLaunchShortcut
-{
-	   @Override
-	   protected ILaunchConfigurationWorkingCopy createLaunchConfiguration(IJavaElement pElement) throws CoreException
-	   {
-	      ILaunchConfigurationWorkingCopy config = super.createLaunchConfiguration(pElement);
-	      config.setAttribute(JUnitLaunchConfigurationConstants.ATTR_TEST_RUNNER_KIND, "com.hybris.junit.kind");
-	      return config;
-	   }
+public class HybrisJunitLaunchShortcut extends JUnitLaunchShortcut {
+
+	@Override
+	protected ILaunchConfigurationWorkingCopy createLaunchConfiguration(final IJavaElement element,
+			final String testName) throws CoreException {
+		final ILaunchConfigurationWorkingCopy config = super.createLaunchConfiguration(element, testName);
+		config.setAttribute(JUnitLaunchConfigurationConstants.ATTR_TEST_RUNNER_KIND,
+				HybrisJUnitClasspathProvider.TEST_KIND_ID);
+		config.setAttribute(IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER,
+				HybrisJUnitClasspathProvider.ID);
+		return config;
 	}
+
+	@Override
+	protected String[] getAttributeNamesToCompare() {
+		final String[] attributes = super.getAttributeNamesToCompare();
+		final String[] result = Arrays.copyOf(attributes, attributes.length + 2);
+		// Never reuse an ordinary JUnit launch or a legacy launch without the provider.
+		result[attributes.length] = JUnitLaunchConfigurationConstants.ATTR_TEST_RUNNER_KIND;
+		result[attributes.length + 1] = IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER;
+		return result;
+	}
+}

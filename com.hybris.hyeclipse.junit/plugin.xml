@@ -4,15 +4,43 @@
     <extension point="org.eclipse.jdt.junit.internal_testKinds">
         <kind
                 id="com.hybris.junit.kind"
-                displayName="Hybris JUnit 4"
+                displayName="%hybrisJUnit.label"
                 finderClass="org.eclipse.jdt.internal.junit.launcher.JUnit4TestFinder"
-                loaderPluginId="HybrisJUnit4Runner"
+                loaderPluginId="com.hybris.hyeclipse.junit"
                 loaderClass="com.hybris.hyeclipse.junit.HybrisJUnitIntegrationTestLoader">
             <runtimeClasspathEntry pluginId="org.eclipse.jdt.junit4.runtime" />
             <runtimeClasspathEntry pluginId="org.eclipse.jdt.junit.core" />
             <runtimeClasspathEntry pluginId="org.eclipse.jdt.junit.runtime"/>
             <runtimeClasspathEntry pluginId="com.hybris.hyeclipse.junit"/>
         </kind>
+    </extension>
+
+    <extension point="org.eclipse.jdt.launching.classpathProviders">
+        <classpathProvider
+                id="com.hybris.hyeclipse.junit.classpathProvider"
+                class="com.hybris.hyeclipse.junit.HybrisJUnitClasspathProvider"/>
+    </extension>
+    <extension point="org.eclipse.debug.ui.launchShortcuts">
+        <shortcut
+                id="com.hybris.hyeclipse.junit.launchShortcut"
+                label="%hybrisJUnit.label"
+                class="com.hybris.hyeclipse.junit.HybrisJunitLaunchShortcut"
+                modes="run,debug">
+            <contextualLaunch>
+                <enablement>
+                    <with variable="selection">
+                        <count value="1"/>
+                        <iterate>
+                            <adapt type="org.eclipse.jdt.core.IJavaElement">
+                                <test property="org.eclipse.jdt.junit.canLaunchAsJUnit"
+                                      forcePluginActivation="true"/>
+                            </adapt>
+                        </iterate>
+                    </with>
+                </enablement>
+            </contextualLaunch>
+            <configurationType id="org.eclipse.jdt.junit.launchconfig"/>
+        </shortcut>
     </extension>
 
 </plugin>
