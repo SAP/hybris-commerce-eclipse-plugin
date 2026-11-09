@@ -30,15 +30,18 @@ public class HyEclipsePreferenceInitializer extends AbstractPreferenceInitialize
 	public void initializeDefaultPreferences() {
 		Activator.getDefault().getPreferenceStore().setDefault(HyEclipsePreferenceConstants.P_DEFAULT_SHELL,
 				getDefaultShell());
+		Activator.getDefault().getPreferenceStore().setDefault(HyEclipsePreferenceConstants.P_ANT_GOAL,
+				HyEclipsePreferenceConstants.DEFAULT_ANT_GOAL);
+		Activator.getDefault().getPreferenceStore().setDefault(HyEclipsePreferenceConstants.P_ANT_JDK,
+				StringUtils.EMPTY);
 	}
 
 	/**
-	 * @return Bash on Unix, or the configured Windows command processor
+	 * @return the platform's default shell or Windows command processor
 	 */
 	public static String getDefaultShell() {
 		if (Platform.OS_WIN32.equals(Platform.getOS())) {
-			final String shell = System.getenv("ComSpec"); //$NON-NLS-1$
-			return StringUtils.isNotBlank(shell) ? shell.trim() : HyEclipsePreferenceConstants.WINDOWS_DEFAULT_SHELL;
+			return getWindowsDefaultShell();
 		}
 		// On macOS and Unix, prefer the user's active $SHELL if valid, or /bin/zsh on macOS
 	    final String userShell = System.getenv("SHELL"); //$NON-NLS-1$
@@ -52,5 +55,13 @@ public class HyEclipsePreferenceInitializer extends AbstractPreferenceInitialize
 	        return "/bin/zsh"; //$NON-NLS-1$
 	    }
 	    return HyEclipsePreferenceConstants.DEFAULT_SHELL;
+	}
+
+	/**
+	 * @return the Windows command processor from ComSpec, or cmd.exe
+	 */
+	public static String getWindowsDefaultShell() {
+		final String shell = System.getenv("ComSpec"); //$NON-NLS-1$
+		return StringUtils.isNotBlank(shell) ? shell.trim() : HyEclipsePreferenceConstants.WINDOWS_DEFAULT_SHELL;
 	}
 }

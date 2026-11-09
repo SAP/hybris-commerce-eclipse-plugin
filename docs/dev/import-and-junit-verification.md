@@ -39,11 +39,28 @@ Use an Eclipse runtime with these plugins installed and a built Commerce platfor
 Repeat import smoke tests on Windows: the command must call `setantenv.bat` before
 `ant updateMavenDependencies`. Unix uses `setantenv.sh` and the same Ant target.
 
-The shell executable can be changed in **Preferences > SAP Commerce, development
-tools for Eclipse > Shell executable for platform imports**. The Unix default is
-`/bin/bash`; Windows defaults to `ComSpec` or `cmd.exe`. Specify an executable path,
-not a command with arguments. Unix alternatives must support `--login -c` and sourcing
-`setantenv.sh`; for example, `/bin/zsh`.
+The Ant goal(s) can be changed at the top of **Preferences > SAP Commerce, development
+tools for Eclipse > Ant import settings**. The default is `updateMavenDependencies`;
+multiple goals, such as `clean all`, are supported. A blank stored value falls back
+to the default.
+
+Select **JDK for Ant imports** from the JDK installations registered in Eclipse's
+**Java > Installed JREs** preferences. The selector shows installation names, Java
+versions (when available), and home directories. **Workspace default JDK** follows
+Eclipse's default installation. Only installations containing `javac` are offered;
+a removed installation or a JRE-only default causes a clear import error.
+
+The selected JDK sets `JAVA_HOME` and is prepended to `PATH` both before and after
+Commerce's `setantenv` setup, so login-shell settings cannot choose a different Java
+for Ant. The import console prints the resulting `java -version`. This does not
+change the workspace's default JDK or your terminal environment.
+
+The shell executable is configured separately in the same section and applies to
+Linux and macOS only. The default prefers the executable from `SHELL`, with
+platform-specific fallbacks. Windows always uses `ComSpec` or `cmd.exe`, ignoring
+the Unix shell preference. Specify an executable path, not a command with arguments.
+Unix alternatives must support `--login -c` and sourcing `setantenv.sh`;
+for example, `/bin/zsh`.
 
 Existing launch configurations without the classpath provider should be recreated
 using **Run As > Hybris JUnit 4**. The shortcut deliberately does not reuse ordinary

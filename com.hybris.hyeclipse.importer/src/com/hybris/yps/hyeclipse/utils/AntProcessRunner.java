@@ -32,6 +32,8 @@ import java.util.stream.Collectors;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 
+import com.hybris.hyeclipse.ytypesystem.Activator;
+
 /** Executes Ant without blocking cancellation or leaving output readers running. */
 final class AntProcessRunner {
 
@@ -63,7 +65,8 @@ final class AntProcessRunner {
 			awaitReader(errors, monitor);
 			checkCanceled(monitor);
 			if (process.exitValue() != 0) {
-				throw new IOException("Ant exited with code " + process.exitValue()); //$NON-NLS-1$
+				Activator.log("Ant execution ended with exit code: %d.\nCommand: %s\nEnvs: %s".formatted(process.exitValue(), builder.command(), builder.environment()));
+				throw new IOException("Ant exited with code %s.\nReview information in eclipse log.\nValidate error message in terminal.\nValidate in Eclipse settings if your shell is the same as you use\nValidate in Eclipse settings if your Java JDK is compatible with your SAP Commerce Cloud platform\nValidate in your `platform` folder if `%s` exits with non-zero value. ".formatted(process.exitValue(), builder.command())); //$NON-NLS-1$
 			}
 		} finally {
 			// Kill children before the shell so cancellation cannot leave Ant orphaned.

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 
@@ -21,6 +22,7 @@ import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
 
 import com.hybris.yps.hyeclipse.Activator;
+import com.hybris.yps.hyeclipse.preferences.AntJavaRuntime;
 import com.hybris.yps.hyeclipse.preferences.HyEclipsePreferenceConstants;
 import com.hybris.yps.hyeclipse.preferences.HyEclipsePreferenceInitializer;
 import com.hybris.yps.hyeclipse.wizards.ImportJobData;
@@ -28,7 +30,6 @@ import com.hybris.yps.hyeclipse.wizards.Messages;
 
 public class ShellImporter {
 
-	private static final String ANT_INIT_CONFIG = "updateMavenDependencies"; //$NON-NLS-1$
 	private static final String ANT_LOG = "ant.ser.log"; //$NON-NLS-1$
 
 	private MessageConsoleStream out;
@@ -55,16 +56,50 @@ public class ShellImporter {
 	}
 
 	String defaultShell() {
+		if (isWindows()) {
+			return HyEclipsePreferenceInitializer.getWindowsDefaultShell();
+		}
 		final String shell = Activator.getDefault().getPreferenceStore()
 				.getString(HyEclipsePreferenceConstants.P_DEFAULT_SHELL);
 		return StringUtils.isNotBlank(shell) ? shell.trim() : HyEclipsePreferenceInitializer.getDefaultShell();
 	}
 
-	static List<String> antCommand(final String shell, final boolean windows) {
+	String antGoal() {
+		final String goal = Activator.getDefault().getPreferenceStore()
+				.getString(HyEclipsePreferenceConstants.P_ANT_GOAL);
+		return StringUtils.isNotBlank(goal) ? goal.trim() : HyEclipsePreferenceConstants.DEFAULT_ANT_GOAL;
+	}
+
+	List<String> antCommand(final String shell, final boolean windows) {
+		final String goal = antGoal();
+		// Reapply the selected JDK after startup files and setantenv can change JAVA_HOME/PATH.
 		if (windows) {
-			return Arrays.asList(shell, "/c", "call setantenv.bat && ant " + ANT_INIT_CONFIG); //$NON-NLS-1$ //$NON-NLS-2$
+			// Delayed expansion preserves PATH additions made by setantenv.bat on this command line.
+			final String javaEnvironment = "set \"JAVA_HOME=!" + AntJavaRuntime.ANT_JAVA_HOME
+					+ "!\" && set \"PATH=!" + AntJavaRuntime.ANT_JAVA_HOME + "!\\bin;!PATH!\""; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			return Arrays.asList(HyEclipsePreferenceInitializer.getWindowsDefaultShell(),
+					"/v:on", "/c", javaEnvironment + " && call setantenv.bat && " + javaEnvironment
+							+ " && java -version && ant " + goal); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		}
-		return Arrays.asList(shell, "--login", "-c", ". ./setantenv.sh && exec ant " + ANT_INIT_CONFIG); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		final String javaEnvironment = "export JAVA_HOME=\"$" + AntJavaRuntime.ANT_JAVA_HOME
+				+ "\" && export PATH=\"$JAVA_HOME/bin:$PATH\""; //$NON-NLS-1$ //$NON-NLS-2$
+		return Arrays.asList(shell, "--login", "-c", javaEnvironment + " && . ./setantenv.sh && "
+				+ javaEnvironment + " && java -version && exec ant " + goal); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+	}
+
+	ProcessBuilder antProcess(final File platformHome) throws IOException {
+		final File javaHome = AntJavaRuntime.getJavaHome();
+		final ProcessBuilder builder = new ProcessBuilder(antCommand(defaultShell(), isWindows()));
+		builder.directory(platformHome);
+		final Map<String, String> environment = builder.environment();
+		environment.put(AntJavaRuntime.JAVA_HOME, javaHome.getAbsolutePath());
+		environment.put(AntJavaRuntime.ANT_JAVA_HOME, javaHome.getAbsolutePath());
+		// Windows environment keys are case-insensitive; avoid creating both Path and PATH.
+		final String pathKey = environment.keySet().stream().filter(key -> key.equalsIgnoreCase(AntJavaRuntime.PATH))
+				.findFirst().orElse(AntJavaRuntime.PATH);
+		environment.put(pathKey, new File(javaHome, AntJavaRuntime.BIN_DIRECTORY).getAbsolutePath()
+				+ File.pathSeparator + StringUtils.defaultString(environment.get(pathKey)));
+		return builder;
 	}
 
 	/**
@@ -85,8 +120,7 @@ public class ShellImporter {
 			err.setColor(display.getSystemColor(SWT.COLOR_RED));
 		});
 		try (final MessageConsoleStream output = out; final MessageConsoleStream errors = err) {
-			final ProcessBuilder builder = new ProcessBuilder(antCommand(defaultShell(), isWindows()));
-			builder.directory(platformHome);
+			final ProcessBuilder builder = antProcess(platformHome);
 			monitor.subTask(Messages.ShellImporter_updating_dependencies);
 			try {
 				AntProcessRunner.execute(builder, monitor, this::consumeMsg, this::consumeErr);

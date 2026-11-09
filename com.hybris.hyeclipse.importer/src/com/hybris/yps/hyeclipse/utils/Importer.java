@@ -210,7 +210,8 @@ public class Importer {
 				false);
 		importJob.setProperty(IProgressConstants.PROPERTY_IN_DIALOG, true);
 		importJob.schedule();
-		// Source attachment and classpath fixes must not race an unfinished smart import.
+		// Source attachment and classpath fixes must not race an unfinished smart
+		// import.
 		try {
 			importJob.join(0L, monitor);
 		} catch (InterruptedException | OperationCanceledException e) {
@@ -243,7 +244,7 @@ public class Importer {
 		final IJavaProject javaProject = JavaCore.create(project);
 		javaProject.save(monitor, DEBUG);
 		if (JavaProject.hasJavaNature(project)) {
-			javaProject.open(monitor);			
+			javaProject.open(monitor);
 		}
 		fixProjectCompilerSettings(project, javaProject, version);
 		project.open(progress.newChild(3));

@@ -15,7 +15,14 @@ public class Messages extends NLS {
 	public static String CreateWorkingSetWizard_title;
 	public static String error_on_import;
 	public static String error_on_import_info;
+	public static String HyEclipsePreferencePage_ant_goal;
+	public static String HyEclipsePreferencePage_ant_jdk;
+	public static String HyEclipsePreferencePage_ant_settings;
+	public static String HyEclipsePreferencePage_jdk_information;
+	public static String HyEclipsePreferencePage_shell_information;
 	public static String HyEclipsePreferencePage_shell_path;
+	public static String HyEclipsePreferencePage_unavailable_jdk;
+	public static String HyEclipsePreferencePage_workspace_jdk;
 	public static String ImportPlatformWizard_autobuild_error;
 	public static String ImportPlatformWizard_import_job_title;
 	public static String ImportWizard_error_attaching_srcs;

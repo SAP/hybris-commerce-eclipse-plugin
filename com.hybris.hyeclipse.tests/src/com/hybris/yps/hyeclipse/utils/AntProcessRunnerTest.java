@@ -32,10 +32,14 @@ public class AntProcessRunnerTest {
 
 	@Test
 	public void commandsInitializeEnvironmentAndUseSameTarget() {
-		final List<String> windows = ShellImporter.antCommand("cmd.exe", true);
-		Assert.assertEquals("call setantenv.bat && ant updateMavenDependencies", windows.get(2));
-		final List<String> unix = ShellImporter.antCommand("/bin/bash", false);
-		Assert.assertEquals(". ./setantenv.sh && exec ant updateMavenDependencies", unix.get(3));
+		final ShellImporter importer = new ShellImporter();
+		final List<String> windows = importer.antCommand("cmd.exe", true);
+		Assert.assertEquals("/v:on", windows.get(1));
+		Assert.assertTrue(windows.get(3).contains(" && call setantenv.bat && "));
+		Assert.assertTrue(windows.get(3).endsWith(" && java -version && ant updateMavenDependencies"));
+		final List<String> unix = importer.antCommand("/bin/bash", false);
+		Assert.assertTrue(unix.get(3).contains(" && . ./setantenv.sh && "));
+		Assert.assertTrue(unix.get(3).endsWith(" && java -version && exec ant updateMavenDependencies"));
 	}
 
 	@Test(timeout = 10000)

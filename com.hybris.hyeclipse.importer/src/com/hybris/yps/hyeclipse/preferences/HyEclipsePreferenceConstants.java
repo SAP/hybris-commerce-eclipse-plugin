@@ -15,10 +15,13 @@
  ******************************************************************************/
 package com.hybris.yps.hyeclipse.preferences;
 
-/** Preference keys and shell defaults for Commerce imports. */
+/** Preference keys and Ant defaults for Commerce imports. */
 public final class HyEclipsePreferenceConstants {
 
 	public static final String P_DEFAULT_SHELL = "defaultShell"; //$NON-NLS-1$
+	public static final String P_ANT_GOAL = "antGoal"; //$NON-NLS-1$
+	public static final String P_ANT_JDK = "antJdk"; //$NON-NLS-1$
+	public static final String DEFAULT_ANT_GOAL = "updateMavenDependencies"; //$NON-NLS-1$
 	public static final String DEFAULT_SHELL = "/bin/zsh"; //$NON-NLS-1$
 	public static final String WINDOWS_DEFAULT_SHELL = "cmd.exe"; //$NON-NLS-1$
 
