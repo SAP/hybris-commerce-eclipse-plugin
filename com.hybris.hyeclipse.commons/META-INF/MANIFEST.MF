@@ -13,13 +13,17 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.console,
  org.eclipse.e4.core.commands,
  org.eclipse.ui.workbench.texteditor,
- org.eclipse.jdt.annotation
+ org.eclipse.jdt.annotation,
+ org.eclipse.jdt.core
 Bundle-RequiredExecutionEnvironment: JavaSE-21
 Bundle-ActivationPolicy: lazy
 Export-Package: com.hybris.hyeclipse.commons,
+ com.hybris.hyeclipse.commons.config,
  com.hybris.hyeclipse.commons.handlers,
  com.hybris.hyeclipse.commons.testers,
+ com.hybris.hyeclipse.commons.typesystem,
  com.hybris.hyeclipse.commons.utils,
+ com.hybris.hyeclipse.commons.validation,
  org.apache.commons.io,
  org.apache.commons.io.comparator,
  org.apache.commons.io.filefilter,

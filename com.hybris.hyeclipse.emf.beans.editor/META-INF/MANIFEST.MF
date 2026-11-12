@@ -12,6 +12,7 @@ Export-Package: com.hybris.hyeclipse.emf.beans.presentation,
  com.hybris.hyeclipse.emf.beans.presentation.internal;x-internal:=true,
  com.hybris.hyeclipse.emf.beans.presentation.platformdependent
 Require-Bundle: org.eclipse.core.runtime,
+ com.hybris.hyeclipse.commons,
  org.eclipse.core.resources;visibility:=reexport,
  com.hybris.hyeclipse.emf.beans.edit;visibility:=reexport,
  org.eclipse.emf.ecore.xmi;visibility:=reexport,
@@ -19,5 +20,4 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui.ide;visibility:=reexport,
  com.hybris.hyeclipse.ytypesystem;bundle-version="[1.0.0,22.9.1)"
 Bundle-ActivationPolicy: lazy
-DynamicImport-Package: de.hybris.bootstrap.typesystem, de.hybris.bootstrap.config
 Automatic-Module-Name: com.hybris.hyeclipse.emf.beans.editor

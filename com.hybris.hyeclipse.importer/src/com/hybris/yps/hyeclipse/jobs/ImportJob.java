@@ -17,6 +17,7 @@ package com.hybris.yps.hyeclipse.jobs;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
@@ -29,14 +30,18 @@ import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.services.ISourceProviderService;
 
+import com.hybris.hyeclipse.commons.config.SystemConfig;
 import com.hybris.yps.hyeclipse.Activator;
 import com.hybris.yps.hyeclipse.CommandState;
+import com.hybris.yps.hyeclipse.preferences.AntJavaRuntime;
 import com.hybris.yps.hyeclipse.utils.FixProjectsUtils;
 import com.hybris.yps.hyeclipse.utils.Importer;
+import com.hybris.yps.hyeclipse.utils.ProjectJavaRuntime;
 import com.hybris.yps.hyeclipse.utils.ProjectSourceJob;
 import com.hybris.yps.hyeclipse.utils.ShellImporter;
 import com.hybris.yps.hyeclipse.wizards.ImportJobData;
@@ -47,6 +52,9 @@ public class ImportJob extends Job {
 
 	private final ImportJobData data;
 	private final File sourceArchive;
+	private SystemConfig systemConfig;
+	private IVMInstall javaRuntime;
+	private File javaHome;
 
 	/**
 	 * @param data selected platform and import options
@@ -67,20 +75,47 @@ public class ImportJob extends Job {
 
 	@Override
 	public IStatus run(final IProgressMonitor monitor) {
+		try (final ProjectJavaRuntime.ChangeScope change = ProjectJavaRuntime.beginChange(monitor)) {
+			return runImport(monitor);
+		} catch (OperationCanceledException e) {
+			monitor.done();
+			return Status.CANCEL_STATUS;
+		} catch (InterruptedException e) {
+			monitor.done();
+			Thread.currentThread().interrupt();
+			return Status.CANCEL_STATUS;
+		}
+	}
+
+	private IStatus runImport(final IProgressMonitor monitor) {
 		final boolean autoBuild = ResourcesPlugin.getWorkspace().getDescription().isAutoBuilding();
 		boolean interrupted = false;
 		IStatus result = Status.OK_STATUS;
 		try {
 			setAutoBuild(false);
 			checkCanceled(monitor);
+			javaRuntime = AntJavaRuntime.getVMInstall();
+			javaHome = AntJavaRuntime.getJavaHome(javaRuntime).getCanonicalFile();
+			ProjectJavaRuntime.compilerCompliance(javaRuntime);
 			// Do not remove existing projects if dependency preparation fails.
-			updateDependencies(monitor);
+			final Collection<String> log = updateDependencies(monitor);
+			if (!javaHome.equals(AntJavaRuntime.getJavaHome(javaRuntime).getCanonicalFile())) {
+				throw new IOException("The selected JDK installation changed during Ant execution; retry the import");
+			}
+			this.systemConfig = SystemConfig.parse(log);
+			this.systemConfig.validate();
+			if (!data.platformDir().getCanonicalFile().equals(systemConfig.getPlatformHome())) {
+				throw new IOException("Ant output belongs to a different platform");
+			}
+			this.systemConfig = systemConfig.withExtensionMetadata();
 			checkCanceled(monitor);
 			if (data.removeExistingProjects()) {
 				removeExistingProjects(monitor);
 			}
 			importProjects(monitor);
 			checkCanceled(monitor);
+			// Persist before restoring auto-build: builders must see the imported configuration.
+			saveSystemConfig();
 		} catch (OperationCanceledException e) {
 			result = Status.CANCEL_STATUS;
 		} catch (InterruptedException e) {
@@ -111,12 +146,30 @@ public class ImportJob extends Job {
 	}
 
 	/**
+	 * Returns the parsed system configuration from the Ant dependency update task,
+	 * or {@code null} if dependencies have not been updated yet.
+	 *
+	 * @return the parsed {@link SystemConfig}
+	 */
+	public SystemConfig getSystemConfig() {
+		return systemConfig;
+	}
+
+	/** @throws CoreException if the successful import cannot be persisted */
+	protected void saveSystemConfig() throws CoreException {
+		com.hybris.hyeclipse.commons.Activator.getDefault().getSystemConfigRepository().save(systemConfig);
+		com.hybris.hyeclipse.commons.Activator.getDefault().getTypeSystemIndex().requestRefresh();
+	}
+
+	/**
 	 * @param monitor cancellation monitor
+	 * @return Ant output used to populate the system configuration
 	 * @throws IOException if Ant fails
 	 * @throws InterruptedException if interrupted
 	 */
-	protected void updateDependencies(final IProgressMonitor monitor) throws IOException, InterruptedException {
-		new ShellImporter().executeAntTask(data.platformDir(), monitor);
+	protected Collection<String> updateDependencies(final IProgressMonitor monitor)
+			throws IOException, InterruptedException {
+		return new ShellImporter(javaRuntime).executeAntTask(data.platformDir(), monitor);
 	}
 
 	/**
@@ -125,8 +178,9 @@ public class ImportJob extends Job {
 	 * @throws InterruptedException if interrupted
 	 */
 	protected void importProjects(final IProgressMonitor monitor) throws CoreException, InterruptedException {
-		new Importer().resetProjectsFromLocalExtensions(data.platformDir(), monitor, data.fixClasspath(),
-				data.removeHybrisBuilder(), data.createWorkingSet(), data.useMultiThread(), data.skipJarScanning());
+		new Importer(this.systemConfig, javaRuntime).resetProjectsFromLocalExtensions(data.platformDir(), monitor,
+				data.fixClasspath(), data.removeHybrisBuilder(), data.createWorkingSet(), data.useMultiThread(),
+				data.skipJarScanning());
 	}
 
 	/** Enables commands on the display thread and attaches sources to imported projects. */

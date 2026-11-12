@@ -29,6 +29,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.IVMInstallType;
 import org.eclipse.jdt.launching.JavaRuntime;
+import org.eclipse.jdt.launching.VMStandin;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.junit.After;
 import org.junit.Assert;
@@ -155,16 +156,17 @@ public class ShellImporterJavaRuntimeTest {
 
 	private IVMInstall installation(final boolean jdk) throws Exception {
 		final IVMInstallType type = JavaRuntime.getVMInstallTypes()[0];
-		final IVMInstall vm = type.createVMInstall(UUID.randomUUID().toString());
-		installations.add(vm);
-		vm.setName("Ant fixture " + vm.getId());
-		final File home = temporary.newFolder("jdk's home " + vm.getId());
+		final VMStandin definition = new VMStandin(type, UUID.randomUUID().toString());
+		definition.setName("Ant fixture " + definition.getId());
+		final File home = temporary.newFolder("jdk's home " + definition.getId());
 		if (jdk) {
 			final File bin = new File(home, "bin");
 			Files.createDirectories(bin.toPath());
 			Files.createFile(new File(bin, Platform.OS_WIN32.equals(Platform.getOS()) ? "javac.exe" : "javac").toPath());
 		}
-		vm.setInstallLocation(home);
+		definition.setInstallLocation(home);
+		final IVMInstall vm = definition.convertToRealVM();
+		installations.add(vm);
 		return vm;
 	}
 

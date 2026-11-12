@@ -3,6 +3,7 @@ package com.hybris.yps.hyeclipse.utils;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingDeque;
@@ -13,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.console.ConsolePlugin;
@@ -35,6 +37,17 @@ public class ShellImporter {
 	private MessageConsoleStream out;
 	private MessageConsoleStream err;
 	private final BlockingDeque<String> deque = new LinkedBlockingDeque<>();
+	private final IVMInstall javaRuntime;
+
+	/** Uses the saved import JDK selection. */
+	public ShellImporter() {
+		this(null);
+	}
+
+	/** @param javaRuntime JDK captured for this import, or null to resolve the saved selection */
+	public ShellImporter(final IVMInstall javaRuntime) {
+		this.javaRuntime = javaRuntime;
+	}
 
 	/**
 	 * Updates dependencies, then imports and configures the selected extensions.
@@ -46,9 +59,12 @@ public class ShellImporter {
 	 */
 	public void resetProjectsFromLocalExtensions(final ImportJobData data, final IProgressMonitor monitor)
 			throws IOException, CoreException, InterruptedException {
-		executeAntTask(data.platformDir(), monitor);
-		new Importer().resetProjectsFromLocalExtensions(data.platformDir(), monitor, data.fixClasspath(),
-				data.removeHybrisBuilder(), data.createWorkingSet(), data.useMultiThread(), data.skipJarScanning());
+		try (final ProjectJavaRuntime.ChangeScope change = ProjectJavaRuntime.beginChange(monitor)) {
+			final IVMInstall vm = javaRuntime != null ? javaRuntime : AntJavaRuntime.getVMInstall();
+			new ShellImporter(vm).executeAntTask(data.platformDir(), monitor);
+			new Importer(null, vm).resetProjectsFromLocalExtensions(data.platformDir(), monitor, data.fixClasspath(),
+					data.removeHybrisBuilder(), data.createWorkingSet(), data.useMultiThread(), data.skipJarScanning());
+		}
 	}
 
 	public boolean isWindows() {
@@ -88,7 +104,8 @@ public class ShellImporter {
 	}
 
 	ProcessBuilder antProcess(final File platformHome) throws IOException {
-		final File javaHome = AntJavaRuntime.getJavaHome();
+		final File javaHome = javaRuntime != null ? AntJavaRuntime.getJavaHome(javaRuntime)
+				: AntJavaRuntime.getJavaHome();
 		final ProcessBuilder builder = new ProcessBuilder(antCommand(defaultShell(), isWindows()));
 		builder.directory(platformHome);
 		final Map<String, String> environment = builder.environment();
@@ -106,10 +123,11 @@ public class ShellImporter {
 	 * Runs the dependency update target and records its complete output.
 	 * @param platformHome Commerce platform directory
 	 * @param monitor cancellation monitor
+	 * @return console output for future processing
 	 * @throws IOException if process execution or logging fails
 	 * @throws InterruptedException if interrupted
 	 */
-	public void executeAntTask(final File platformHome, final IProgressMonitor monitor)
+	public Collection<String> executeAntTask(final File platformHome, final IProgressMonitor monitor)
 			throws IOException, InterruptedException {
 		deque.clear();
 		final Display display = Display.getDefault();
@@ -129,6 +147,7 @@ public class ShellImporter {
 				FileUtils.writeLines(new File(platformHome, ANT_LOG), deque);
 			}
 		}
+		return deque;
 	}
 
 	private void consumeMsg(String msg) {

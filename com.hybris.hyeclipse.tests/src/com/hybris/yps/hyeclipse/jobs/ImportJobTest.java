@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.resources.IWorkspace;
@@ -57,7 +58,7 @@ public class ImportJobTest {
 		final TestImportJob job = new TestImportJob();
 		Assert.assertTrue(job.run(new NullProgressMonitor()).isOK());
 		Assert.assertFalse(ResourcesPlugin.getWorkspace().getDescription().isAutoBuilding());
-		Assert.assertEquals(Arrays.asList("dependencies", "import", "completed"), job.events);
+		Assert.assertEquals(Arrays.asList("dependencies", "import", "save", "completed"), job.events);
 	}
 
 	@Test
@@ -86,6 +87,30 @@ public class ImportJobTest {
 		Assert.assertEquals(IStatus.ERROR, job.run(new NullProgressMonitor()).getSeverity());
 		Assert.assertEquals(Arrays.asList("dependencies", "import"), job.events);
 		Assert.assertTrue(ResourcesPlugin.getWorkspace().getDescription().isAutoBuilding());
+	}
+
+	@Test
+	public void incompleteAntOutputPreventsImportAndPersistence() throws Exception {
+		final TestImportJob job = new TestImportJob();
+		job.incompleteOutput = true;
+		Assert.assertEquals(IStatus.ERROR, job.run(new NullProgressMonitor()).getSeverity());
+		Assert.assertEquals(Arrays.asList("dependencies"), job.events);
+	}
+
+	@Test
+	public void cancellationAfterImportPreventsPersistenceAndFollowUp() throws Exception {
+		final TestImportJob job = new TestImportJob();
+		job.cancelDuringImport = true;
+		Assert.assertEquals(IStatus.CANCEL, job.run(new NullProgressMonitor()).getSeverity());
+		Assert.assertEquals(Arrays.asList("dependencies", "import"), job.events);
+	}
+
+	@Test
+	public void persistenceFailurePreventsFollowUp() throws Exception {
+		final TestImportJob job = new TestImportJob();
+		job.saveFailure = new CoreException(new Status(IStatus.ERROR, "test", "Save failed"));
+		Assert.assertEquals(IStatus.ERROR, job.run(new NullProgressMonitor()).getSeverity());
+		Assert.assertEquals(Arrays.asList("dependencies", "import", "save"), job.events);
 	}
 
 	@Test
@@ -121,15 +146,19 @@ public class ImportJobTest {
 		private final List<String> events = new ArrayList<>();
 		private IOException dependencyFailure;
 		private CoreException importFailure;
+		private CoreException saveFailure;
 		private boolean interrupt;
 		private boolean autoBuildAtCompletion;
+		private boolean incompleteOutput;
+		private boolean cancelDuringImport;
 
 		TestImportJob() {
 			super(new ImportJobData(false, true, true, true, true, true, new File("platform")), new File("sources.zip"));
 		}
 
 		@Override
-		protected void updateDependencies(final IProgressMonitor monitor) throws IOException, InterruptedException {
+		protected Collection<String> updateDependencies(final IProgressMonitor monitor)
+				throws IOException, InterruptedException {
 			events.add("dependencies");
 			Assert.assertFalse(ResourcesPlugin.getWorkspace().getDescription().isAutoBuilding());
 			if (interrupt) {
@@ -138,6 +167,11 @@ public class ImportJobTest {
 			if (dependencyFailure != null) {
 				throw dependencyFailure;
 			}
+			if (incompleteOutput) {
+				return new ArrayList<>();
+			}
+			return Arrays.asList("[echo] Platform home: " + new File("platform").getAbsolutePath(),
+					"[echo] hybris Platform version: 2211", "[echo] core 2211 [pci]");
 		}
 
 		@Override
@@ -145,6 +179,18 @@ public class ImportJobTest {
 			events.add("import");
 			if (importFailure != null) {
 				throw importFailure;
+			}
+			if (cancelDuringImport) {
+				monitor.setCanceled(true);
+			}
+		}
+
+		@Override
+		protected void saveSystemConfig() throws CoreException {
+			events.add("save");
+			Assert.assertFalse(ResourcesPlugin.getWorkspace().getDescription().isAutoBuilding());
+			if (saveFailure != null) {
+				throw saveFailure;
 			}
 		}
 

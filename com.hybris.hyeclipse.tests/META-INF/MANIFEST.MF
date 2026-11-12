@@ -10,4 +10,6 @@ Bundle-RequiredExecutionEnvironment: JavaSE-21
 Require-Bundle: org.junit,
  com.hybris.hyeclipse.platform,
  org.eclipse.jdt.launching,
- org.eclipse.debug.core
+ org.eclipse.debug.core,
+ com.hybris.hyeclipse.tsv,
+ com.hybris.hyeclipse.tsv.extended

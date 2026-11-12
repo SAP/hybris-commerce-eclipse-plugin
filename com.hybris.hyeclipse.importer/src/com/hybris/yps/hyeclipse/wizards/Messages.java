@@ -33,6 +33,11 @@ public class Messages extends NLS {
 	public static String ImportWizard_wrong_src_zip;
 	public static String ImportWizard_wrong_src_zip_info;
 	public static String ProjectSourceJob_classpath_fetch_error;
+	public static String ProjectJavaRuntime_update_failed;
+	public static String ProjectJavaRuntime_update_title;
+	public static String ProjectJavaRuntime_update_question;
+	public static String ProjectJavaRuntime_update_job;
+	public static String ProjectJavaRuntime_prepare_job;
 	public static String ShellImporter_console_title;
 	public static String ShellImporter_updating_dependencies;
 	public static String SynchronizePlatformWizard_5;

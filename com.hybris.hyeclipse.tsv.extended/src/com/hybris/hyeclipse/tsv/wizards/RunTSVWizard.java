@@ -16,8 +16,6 @@
 package com.hybris.hyeclipse.tsv.wizards;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,7 +27,10 @@ import java.util.List;
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
@@ -43,27 +44,19 @@ import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.hybris.hyeclipse.commons.validation.ValidationResult;
+import com.hybris.hyeclipse.commons.validation.ValidationService;
+import com.hybris.hyeclipse.commons.validation.ValidationXml;
 import com.hybris.hyeclipse.tsv.Activator;
 import com.hybris.hyeclipse.tsv.Messages;
 import com.hybris.hyeclipse.tsv.editors.TSVResultsInput;
 import com.hybris.hyeclipse.tsv.editors.TSVResultsStorage;
-import com.hybris.ps.tsv.main.CmdLineOptions;
-import com.hybris.ps.tsv.main.TSVMain;
-import com.hybris.ps.tsv.output.OutputFormat;
-import com.hybris.ps.tsv.results.IResult;
-import com.hybris.ps.tsv.rules.IRuleSet;
 
 public class RunTSVWizard extends Wizard implements INewWizard {
 	private RunTSVWizardPage page;
 	private ISelection selection;
 	private String resultsString;
-
-	private static final String TSV_SPRING_CONFIG = "tsv-spring-config.xml"; //$NON-NLS-1$
-	private static final String TSV_MAIN_BEAN = "tsvMain"; //$NON-NLS-1$
-	private static final String TSV_OPTIONS_BEAN = "cmdLineOptions"; //$NON-NLS-1$
 
 	public RunTSVWizard() {
 		super();
@@ -91,8 +84,14 @@ public class RunTSVWizard extends Wizard implements INewWizard {
 		};
 
 		try {
-			getContainer().run(true, false, op);
-		} catch (InterruptedException | InvocationTargetException e) { // NOSONAR
+			getContainer().run(true, true, op);
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			return false;
+		} catch (InvocationTargetException e) {
+			if (e.getTargetException() instanceof OperationCanceledException) {
+				return false;
+			}
 			Activator.logError(Messages.RunTSVWizard_error, e);
 			MessageDialog.openError(getShell(), Messages.RunTSVWizard_error, e.getMessage());
 			return false;
@@ -109,7 +108,7 @@ public class RunTSVWizard extends Wizard implements INewWizard {
 		monitor.worked(1);
 
 		try {
-			runTSVAnalysis(scanDir);
+			runTSVAnalysis(scanDir, monitor);
 			monitor.worked(1);
 
 			monitor.setTaskName(Messages.RunTSVWizard_taskOpening);
@@ -123,45 +122,30 @@ public class RunTSVWizard extends Wizard implements INewWizard {
 						IStorageEditorInput input = new TSVResultsInput(storage, Messages.RunTSVWizard_TSVTitle);
 						IDE.openEditor(page, input, "com.hybris.hyeclipse.tsv.editors.TSVEditor", true); //$NON-NLS-1$
 					} catch (PartInitException e) {
-						e.printStackTrace();
+						Activator.logError(Messages.RunTSVWizard_error, e);
 					}
 				}
 			});
 			monitor.worked(1);
 		} catch (RuntimeException re) {
-			Activator.logError(Messages.RunTSVWizard_error, re); // $NON-NLS-1$
-			MessageDialog.openError(getShell(), Messages.RunTSVWizard_error, re.getMessage());
+			if (re instanceof OperationCanceledException) {
+				throw re;
+			}
+			throw new CoreException(new Status(IStatus.ERROR, Activator.PLUGIN_ID, Messages.RunTSVWizard_error, re));
 		}
 
 	}
 
-	private void runTSVAnalysis(File scanDir) {
-
-		ApplicationContext appContext = new ClassPathXmlApplicationContext(new String[] { TSV_SPRING_CONFIG });
-		TSVMain tsvMain = (TSVMain) appContext.getBean(TSV_MAIN_BEAN);
-		CmdLineOptions options = (CmdLineOptions) appContext.getBean(TSV_OPTIONS_BEAN);
-		options.setErrorsOnly(true);
-
-		List<File> inputFiles = new ArrayList<File>();
-		inputFiles.add(scanDir);
+	private void runTSVAnalysis(final File scanDir, final IProgressMonitor monitor) throws CoreException {
 		try {
-			List<File> files = tsvMain.getFileService().locateFiles(inputFiles);
-			IRuleSet ruleSet = tsvMain.getRuleService().loadDefaultRules();
-
-			for (File file : files) {
-				tsvMain.getTestExecutionService().execute(file, ruleSet);
+			final List<ValidationResult> results = new ArrayList<>();
+			final ValidationService service = new ValidationService();
+			for (final File file : ValidationService.findItemsFiles(scanDir, monitor)) {
+				results.addAll(service.analyze(file, monitor));
 			}
-
-			List<IResult> results = tsvMain.getResultProvider().getResults();
-
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			tsvMain.getOutputGenerator().generate(baos, OutputFormat.XML, results);
-			byte[] bytes = baos.toByteArray();
-			ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-			setResultsString(fromStream(bais));
-		} catch (Exception e) {
-			Activator.logError(Messages.RunTSVWizard_error, e);
-			MessageDialog.openError(getShell(), Messages.RunTSVWizard_error, e.getMessage());
+			setResultsString(ValidationXml.report(results));
+		} catch (IOException e) {
+			throw new CoreException(new Status(IStatus.ERROR, Activator.PLUGIN_ID, Messages.RunTSVWizard_error, e));
 		}
 
 	}

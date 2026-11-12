@@ -19,7 +19,7 @@ import org.eclipse.jface.viewers.BaseLabelProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.swt.graphics.Image;
 
-import de.hybris.bootstrap.typesystem.YType;
+import com.hybris.hyeclipse.commons.typesystem.YType;
 
 class YTypeLabelProvider extends BaseLabelProvider implements ILabelProvider {
 	

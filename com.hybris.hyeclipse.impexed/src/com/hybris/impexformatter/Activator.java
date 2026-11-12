@@ -21,11 +21,13 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
+import com.hybris.hyeclipse.commons.typesystem.TypeSystemSnapshot;
+import com.hybris.hyeclipse.commons.typesystem.YAttributeDescriptor;
+
 public class Activator extends AbstractUIPlugin {
 	
 	// The plug-in ID
 	public static final String PLUGIN_ID = "com.hybris.hyeclipse.impexed"; //$NON-NLS-1$
-	private com.hybris.hyeclipse.ytypesystem.Activator typeSystemExporter;
 	
 	public static final String IMPEX_PARTITIONING = "__impex_partitioning";
 	
@@ -48,29 +50,23 @@ public class Activator extends AbstractUIPlugin {
 		return plugin;
 	}
 	
-	public com.hybris.hyeclipse.ytypesystem.Activator getTypeSystemExporter() {
-		if (typeSystemExporter == null) {
-			typeSystemExporter = com.hybris.hyeclipse.ytypesystem.Activator.getDefault();
-		}
-		return typeSystemExporter;
+	/** @return current shared generated-model snapshot */
+	public TypeSystemSnapshot getTypeSystemSnapshot() {
+		return com.hybris.hyeclipse.commons.Activator.getDefault().getTypeSystemIndex().getSnapshot();
 	}
 	
 	public List<String> getAllTypeNames() {
 		
-		return getTypeSystemExporter().getAllTypeNames();
-	}
-	
-	public String getTypeLoaderInfo(String typeName) {
-		
-		return getTypeSystemExporter().getTypeLoaderInfo(typeName);
+		return getTypeSystemSnapshot().getAllTypeNames();
 	}
 	
 	public List<String> getAllAttributeNames(String typeName) {
-		return getTypeSystemExporter().getAllAttributeNames(typeName);
+		return getTypeSystemSnapshot().getAllAttributeNames(typeName);
 	}
 	
-	public String getAttributeName(String typeName, String blah) {
-		return getTypeSystemExporter().getAttributeName(typeName, blah);
+	public String getAttributeName(String typeName, String qualifier) {
+		final YAttributeDescriptor attribute = getTypeSystemSnapshot().getAttribute(typeName, qualifier);
+		return attribute != null ? attribute.getQualifier() : null;
 	}
 	
 	public static void log(String msg) {

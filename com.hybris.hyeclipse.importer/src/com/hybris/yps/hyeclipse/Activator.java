@@ -15,15 +15,32 @@
  ******************************************************************************/
 package com.hybris.yps.hyeclipse;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.jdt.launching.IVMInstall;
+import org.eclipse.jdt.launching.JavaRuntime;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
+
+import com.hybris.yps.hyeclipse.jobs.UpdateWorkspaceJdkJob;
+import com.hybris.yps.hyeclipse.preferences.AntJavaRuntime;
+import com.hybris.yps.hyeclipse.preferences.JdkPreferenceChangeListener;
+import com.hybris.yps.hyeclipse.utils.ProjectJavaRuntime;
+import com.hybris.yps.hyeclipse.wizards.Messages;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -37,6 +54,10 @@ public class Activator extends AbstractUIPlugin {
 	private static Activator plugin;
 	
 	private com.hybris.hyeclipse.ytypesystem.Activator typeSystemExporter;
+	private JdkPreferenceChangeListener jdkListener;
+	private final AtomicLong jdkChangeVersion = new AtomicLong();
+	private Job jdkPreparation;
+	private UpdateWorkspaceJdkJob jdkUpdate;
 	
 
 	/**
@@ -54,6 +75,78 @@ public class Activator extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		com.hybris.hyeclipse.commons.Activator.resetPlatformBootstrapBundle();
+		jdkListener = new JdkPreferenceChangeListener(getPreferenceStore(), this::requestJdkUpdatePrompt);
+		getPreferenceStore().addPropertyChangeListener(jdkListener);
+		JavaRuntime.addVMInstallChangedListener(jdkListener);
+	}
+
+	@Override
+	public void stop(final BundleContext context) throws Exception {
+		jdkChangeVersion.incrementAndGet();
+		if (jdkListener != null) {
+			getPreferenceStore().removePropertyChangeListener(jdkListener);
+			JavaRuntime.removeVMInstallChangedListener(jdkListener);
+			jdkListener = null;
+		}
+		if (jdkPreparation != null) {
+			jdkPreparation.cancel();
+		}
+		if (jdkUpdate != null) {
+			jdkUpdate.cancel();
+		}
+		plugin = null;
+		super.stop(context);
+	}
+
+	private void requestJdkUpdatePrompt() {
+		if (!PlatformUI.isWorkbenchRunning()) {
+			return;
+		}
+		final long revision = jdkChangeVersion.incrementAndGet();
+		final Display display = PlatformUI.getWorkbench().getDisplay();
+		jdkPreparation = new Job(Messages.ProjectJavaRuntime_prepare_job) {
+			@Override
+			protected IStatus run(final IProgressMonitor monitor) {
+				try {
+					final IVMInstall vm = AntJavaRuntime.getVMInstall();
+					final String compliance = ProjectJavaRuntime.compilerCompliance(vm);
+					if (!monitor.isCanceled() && !display.isDisposed()) {
+						display.asyncExec(() -> {
+							if (!isCurrentJdkChange(revision)) {
+								return;
+							}
+							final boolean confirmed = MessageDialog.openQuestion(display.getActiveShell(),
+									Messages.ProjectJavaRuntime_update_title, MessageFormat.format(
+											Messages.ProjectJavaRuntime_update_question, vm.getName(), compliance));
+							if (confirmed && isCurrentJdkChange(revision)) {
+								if (jdkUpdate != null) {
+									jdkUpdate.cancel();
+								}
+								jdkUpdate = new UpdateWorkspaceJdkJob(vm);
+								jdkUpdate.schedule();
+							}
+						});
+					}
+				} catch (IOException e) {
+					if (!display.isDisposed()) {
+						display.asyncExec(() -> {
+							if (isCurrentJdkChange(revision)) {
+								MessageDialog.openError(display.getActiveShell(),
+										Messages.ProjectJavaRuntime_update_failed, e.getMessage());
+							}
+						});
+					}
+				}
+				return Status.OK_STATUS;
+			}
+		};
+		jdkPreparation.setSystem(true);
+		jdkPreparation.schedule();
+	}
+
+	private boolean isCurrentJdkChange(final long revision) {
+		return plugin == this && jdkListener != null && revision == jdkChangeVersion.get()
+				&& PlatformUI.isWorkbenchRunning();
 	}
 	
 
@@ -74,7 +167,7 @@ public class Activator extends AbstractUIPlugin {
 	}
 	
 	public void resetPlatform(String platformHome) {
-		com.hybris.hyeclipse.commons.Activator.resetPlatformBootstrapBundle();
+		com.hybris.hyeclipse.commons.Activator.setPlatformHome(new File(platformHome));
 		
 		try {
 			Preferences preferences = InstanceScope.INSTANCE.getNode("com.hybris.hyeclipse.preferences");
@@ -86,20 +179,13 @@ public class Activator extends AbstractUIPlugin {
 		}
 		
 		getTypeSystemExporter().setPlatformHome(null);
-		getTypeSystemExporter().nullifySystemConfig();
-		getTypeSystemExporter().nullifyPlatformConfig();
-		getTypeSystemExporter().nullifyTypeSystem();
-		getTypeSystemExporter().nullifyAllTypes();
-		getTypeSystemExporter().nullifyAllTypeNames();
 	}
 	
 	public Set<ExtensionHolder> getAllExtensionsForPlatform() {
-		
 		return getTypeSystemExporter().getAllExtensionsForPlatform();
 	}
 
 	public String getConfigDirectory() {
-		
 		return getTypeSystemExporter().getConfigDirectory();
 	}
 

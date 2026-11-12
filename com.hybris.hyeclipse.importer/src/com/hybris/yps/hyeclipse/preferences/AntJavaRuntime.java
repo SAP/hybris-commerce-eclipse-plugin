@@ -31,7 +31,7 @@ import org.eclipse.jdt.launching.JavaRuntime;
 import com.hybris.yps.hyeclipse.Activator;
 import com.hybris.yps.hyeclipse.wizards.Messages;
 
-/** Resolves Ant's JDK from Eclipse's registered VM installations. */
+/** Shared JDK selection for Ant and imported Java projects. */
 public final class AntJavaRuntime {
 
 	public static final String JAVA_HOME = "JAVA_HOME"; //$NON-NLS-1$
@@ -84,11 +84,30 @@ public final class AntJavaRuntime {
 	 * @throws IOException if the selected installation is missing or is not a JDK
 	 */
 	public static File getJavaHome() throws IOException {
+		return getJavaHome(getVMInstall());
+	}
+
+	/**
+	 * @return the registered JDK selected in workspace import preferences
+	 * @throws IOException if the selection is unavailable or is not a JDK
+	 */
+	public static IVMInstall getVMInstall() throws IOException {
 		final String selected = Activator.getDefault().getPreferenceStore()
 				.getString(HyEclipsePreferenceConstants.P_ANT_JDK);
 		final IVMInstall vm = StringUtils.isBlank(selected) ? JavaRuntime.getDefaultVMInstall()
 				: JavaRuntime.getVMFromCompositeId(selected);
-		if (vm == null || !isJdk(vm)) {
+		getJavaHome(vm);
+		return vm;
+	}
+
+	/**
+	 * @param vm captured VM installation
+	 * @return validated JDK home
+	 * @throws IOException if the captured installation is no longer available
+	 */
+	public static File getJavaHome(final IVMInstall vm) throws IOException {
+		if (vm == null || JavaRuntime.getVMFromCompositeId(JavaRuntime.getCompositeIdFromVM(vm)) == null
+				|| !isJdk(vm)) {
 			throw new IOException("The Ant import JDK is unavailable. Select a JDK in Ant import settings "
 					+ "and configure its installation under Java > Installed JREs."); //$NON-NLS-1$ //$NON-NLS-2$
 		}

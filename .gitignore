@@ -6,3 +6,5 @@
 */bin/*
 */target/**
 !docs/dev/import-and-junit-verification.md
+.metals
+.vscode

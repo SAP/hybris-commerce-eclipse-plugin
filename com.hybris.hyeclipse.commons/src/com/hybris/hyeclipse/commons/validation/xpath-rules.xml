@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset>
+  <rule id="DeploymentTableMustExistForItemExtendingGenericItem" priority="H"
+    description="A deployment table must be defined for all Items extending GenericItem"
+    selectionQuery="//itemtype[@extends='GenericItem' or not(@extends)]"
+    testQuery="count(./deployment) &gt; 0 or (./@autocreate='false' and ./@generate='false')" nameQuery="./@code"/>
+  <rule id="DeploymentTypeCodeMustBeGreaterThanTenThousand" priority="M"
+    description="Type codes between 1 and 10000 are reserved for hybris"
+    selectionQuery="//itemtype/deployment" testQuery="./@typecode &gt; 10000" nameQuery="../@code"/>
+  <rule id="NoDeploymentTableShouldExistForItemIfNotExtendingGenericItem" priority="H"
+    description="A deployment table must not be defined for items extending anything other than GenericItem"
+    selectionQuery="//itemtype[@extends!='GenericItem']" testQuery="count(./deployment) = 0" nameQuery="./@code"/>
+  <rule id="JaloClassIsNotAllowedWhenAddingFieldsToExistingClass" priority="H"
+    description="The jaloclass attribute is not allowed when autocreate='false' and generate='false'"
+    selectionQuery="//itemtype[@autocreate='false' and @generate='false']"
+    testQuery="self::node()[not (@jaloclass)]" nameQuery="./@code"/>
+  <rule id="DeploymentTableMustExistForManyToManyRelation" priority="H"
+    description="A deployment table must be defined for all many-to-many relations"
+    selectionQuery="//relation[sourceElement[@cardinality='many']][targetElement[@cardinality='many']]"
+    testQuery="count(./deployment) &gt; 0" nameQuery="./@code"/>
+  <rule id="MandatoryFieldMustHaveInitialValue" priority="M"
+    description="Mandatory fields need initial='true' or a default value"
+    selectionQuery="//itemtype/attributes/attribute[modifiers[@optional='false']]"
+    testQuery="./modifiers/@initial = 'true' or count(./defaultvalue) &gt; 0" nameQuery="../../@code|./@qualifier"/>
+  <rule id="ImmutableFieldMustHaveInitialValue" priority="M"
+    description="Immutable fields need initial='true' or a default value"
+    selectionQuery="//itemtype/attributes/attribute[modifiers[@write='false']]"
+    testQuery="./modifiers/@initial = 'true' or count(./defaultvalue) &gt; 0" nameQuery="../../@code|./@qualifier"/>
+  <rule id="BooleanFieldCannotBeOptional" priority="M"
+    description="Boolean fields must be mandatory or have a default value"
+    selectionQuery="//itemtype/attributes/attribute[@type='java.lang.Boolean']"
+    testQuery="./modifiers/@optional = 'false' or count(./defaultvalue) &gt; 0" nameQuery="../../@code|./@qualifier"/>
+  <rule id="JaloPersistanceTypeIsDeprecated" priority="M"
+    description="Use dynamic persistence instead of jalo"
+    selectionQuery="//itemtype/attributes/attribute"
+    testQuery="count(./persistence) = 0 or ./persistence/@type != 'jalo'" nameQuery="../../@code|./@qualifier"/>
+  <rule id="CmpPersistanceTypeIsDeprecated" priority="M"
+    description="Attributes should not use cmp persistence"
+    selectionQuery="//itemtype/attributes/attribute"
+    testQuery="count(./persistence) = 0 or ./persistence/@type != 'cmp'" nameQuery="../../@code|./@qualifier"/>
+  <rule id="TypeNameMustStartWithUppercaseLetter" priority="M"
+    description="Type names must start with an uppercase letter"
+    selectionQuery="//itemtype|//enumtype|//relation"
+    testQuery="substring(./@code, 1, 1) = translate(substring(./@code, 1, 1), 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    nameQuery="./@code"/>
+  <rule id="TypeNameMustNotStartWithGenerated" priority="M"
+    description="Type names must not start with Generated"
+    selectionQuery="//itemtype|//enumtype|//relation"
+    testQuery="not(starts-with(translate(./@code, 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'), 'GENERATED'))"
+    nameQuery="./@code"/>
+  <rule id="FieldNameMustStartWithLowercaseLetter" priority="M"
+    description="Attribute names must start with a lowercase letter"
+    selectionQuery="//itemtype/attributes/attribute"
+    testQuery="substring(./@qualifier, 1, 1) = translate(substring(./@qualifier, 1, 1), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"
+    nameQuery="../../@code|./@qualifier"/>
+  <rule id="RelationshipQualifierNameMustStartWithLowercaseLetter" priority="M"
+    description="Relationship qualifiers must start with a lowercase letter"
+    selectionQuery="//relation/sourceElement|//relation/targetElement"
+    testQuery="substring(./@qualifier, 1, 1) = translate(substring(./@qualifier, 1, 1), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"
+    nameQuery="../@code|./@qualifier"/>
+  <rule id="OrderingOfRelationShouldBeAvoided" priority="L"
+    description="Ordered many-side relations should be avoided"
+    selectionQuery="//relation/sourceElement[@cardinality='many']|//relation/targetElement[@cardinality='many']"
+    testQuery="./@ordered = 'false' or count(./@ordered) = 0" nameQuery="../@code|./@qualifier"/>
+  <rule id="ListsInRelationShouldBeAvoided" priority="L"
+    description="Many-side relations should prefer set collections"
+    selectionQuery="//relation/sourceElement[@cardinality='many']|//relation/targetElement[@cardinality='many']"
+    testQuery="./@collectiontype = 'set' or count(./@collectiontype) = 0" nameQuery="../@code|./@qualifier"/>
+  <rule id="UseOfUnoptimizedAttributesIsNotRecommended" priority="L"
+    description="Use of unoptimized attributes is not recommended"
+    selectionQuery="//itemtype/attributes/attribute[modifiers[@dontOptimize='true']]"
+    testQuery="false()" nameQuery="../../@code|./@qualifier"/>
+</ruleset>

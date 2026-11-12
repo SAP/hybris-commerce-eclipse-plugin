@@ -61,14 +61,13 @@ import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.ISetSelectionTarget;
 
+import com.hybris.hyeclipse.commons.config.ExtensionConfig;
+import com.hybris.hyeclipse.commons.typesystem.TypeSystemSnapshot;
 import com.hybris.hyeclipse.emf.beans.BeansFactory;
 import com.hybris.hyeclipse.emf.beans.BeansPackage;
 import com.hybris.hyeclipse.emf.beans.presentation.BeansEditorPlugin;
 import com.hybris.hyeclipse.emf.beans.util.BeansResourceFactoryImpl;
 import com.hybris.hyeclipse.ytypesystem.Activator;
-
-import de.hybris.bootstrap.config.ExtensionInfo;
-import de.hybris.bootstrap.config.PlatformConfig;
 
 
 /**
@@ -195,8 +194,9 @@ public class BeansModelWizard extends Wizard implements INewWizard {
 	 * @generated NOT
 	 */
 	protected EObject createInitialModel(final IProgressMonitor monitor) {
-		final PlatformConfig platformConfig = Activator.getDefault().getPlatformConfig();
-		final BeansGenerator beansGenerator = new BeansGenerator(platformConfig, typeSelectionPage.getSelectedTypes());
+		final TypeSystemSnapshot snapshot =
+				com.hybris.hyeclipse.commons.Activator.getDefault().getTypeSystemIndex().getSnapshot();
+		final BeansGenerator beansGenerator = new BeansGenerator(snapshot, typeSelectionPage.getSelectedTypes());
 		beansGenerator.run(monitor);
 		return beansGenerator.documentRoot;
 	}
@@ -343,8 +343,8 @@ public class BeansModelWizard extends Wizard implements INewWizard {
 			return getModelFile().getProject();
 		}
 		
-		public ExtensionInfo getModelFileExtensionInfo() {
-			return Activator.getDefault().getPlatformConfig().getExtensionInfo(getModelProject().getName());
+		public ExtensionConfig getModelFileExtensionInfo() {
+			return Activator.getDefault().getSystemConfig().getExtension(getModelProject().getName());
 		}
 	}
 

@@ -93,25 +93,19 @@ public class ModuleTableViewer {
 			
 			public void widgetSelected(SelectionEvent e) {
 				
-				shell.getDisplay().asyncExec(new Runnable() {
-					public void run() {
-						
-						IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-						
-						try {
-							getTSVExtendedAnalyser().runTSVAnalysis();
-							IStorage storage = new TSVResultsStorage(getTSVExtendedAnalyser().getResultsString(), new Path("garbage"));
-							IStorageEditorInput input = new TSVResultsInput(storage);
-							IDE.openEditor(page, input, "com.hybris.hyeclipse.tsv.editors.TSVEditor", true);
-						}
-						catch (PartInitException e) {
-							e.printStackTrace();
-						} 
+				// Keep the owner shell alive while the forked validation operation uses its progress dialog.
+				getTSVExtendedAnalyser().runTSVAnalysis();
+				final String report = getTSVExtendedAnalyser().getResultsString();
+				if (report != null) {
+					final IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+					try {
+						final IStorage storage = new TSVResultsStorage(report, new Path("results"));
+						IDE.openEditor(page, new TSVResultsInput(storage), "com.hybris.hyeclipse.tsv.editors.TSVEditor", true);
+					} catch (PartInitException failure) {
+						com.hybris.hyeclipse.tsv.Activator.logError("Could not open TSV results", failure);
 					}
-				});
-				
-				// Close the view i.e. dispose of the composite's parent
-				table.getParent().getParent().dispose();
+				}
+				shell.dispose();
 			}
 		});
 		

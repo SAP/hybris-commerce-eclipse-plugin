@@ -16,6 +16,8 @@
 package com.hybris.hyeclipse.tsv.editors;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,13 +25,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-
+import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IStorage;
@@ -39,6 +37,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -46,10 +47,10 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IStorageEditorInput;
@@ -57,6 +58,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.MultiPageEditorPart;
+import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.wst.sse.ui.StructuredTextEditor;
 
 import com.hybris.hyeclipse.tsv.Activator;
@@ -75,7 +77,6 @@ public class TSVEditor extends MultiPageEditorPart implements IResourceChangeLis
 	/** The text editor used in page 0. */
 	private TextEditor editor;
 	
-	private JAXBContext jaxbContext;
 	
 	public TSVEditor() {
 		super();
@@ -125,44 +126,56 @@ public class TSVEditor extends MultiPageEditorPart implements IResourceChangeLis
 			public void doubleClick(DoubleClickEvent event) {
 				
 				IStructuredSelection structuredSelection = (IStructuredSelection) event.getSelection();
-		        if (structuredSelection.isEmpty()) return;
+				if (structuredSelection.isEmpty()) {
+					return;
+				}
 
 		        Object selection = structuredSelection.getFirstElement();
 		        
-		        if (selection instanceof TSVResult) {
-		        	String fileName = ((TSVResult) selection).getFilename();
-		        	int lineNumber = ((TSVResult) selection).getLineNumber();
-		        	String extensionName = fileName.replaceAll("-items.xml", "");
-		        		
-		        	IProject extension = ResourcesPlugin.getWorkspace().getRoot().getProject(extensionName);
-		        	IFile itemsxml = extension.getFile("resources/" + fileName);
-		        	if (itemsxml.exists()) {
-			        	IMarker marker;
-			        	try {
-							marker = itemsxml.createMarker(IMarker.TEXT);
-							HashMap<String, Object> map = new HashMap<String, Object>();
-							map.put(IMarker.LINE_NUMBER, lineNumber);
-							marker.setAttributes(map);
-							IDE.openEditor(getSite().getPage(), marker);
-							marker.delete();
-						}
-			        	catch (CoreException e) {
-							e.printStackTrace();
-						}
-		        	}
-		        	else {
-		        		MessageBox dialog = new MessageBox(getContainer().getShell(), SWT.ICON_WARNING | SWT.OK);
-		        		dialog.setText("Extension not found");
-		        		dialog.setMessage("The extension " + extensionName + " was not found in the workspace. Please import it and try again.");
-		        		dialog.open();
-		        	}
-		        }
+				if (selection instanceof TSVResult) {
+					openResultSource((TSVResult) selection);
+				}
 			}
 			
 		});
 
 		int index = addPage(composite);
 		setPageText(index, "Results");
+	}
+
+	private void openResultSource(final TSVResult result) {
+		final File source = new File(result.getFilename());
+		final IFile[] matches = ResourcesPlugin.getWorkspace().getRoot().findFilesForLocationURI(source.toURI());
+		IFile workspaceFile = matches.length > 0 ? matches[0] : null;
+		if (workspaceFile == null && !source.isAbsolute()) {
+			final String extension = source.getName().replace("-items.xml", "");
+			if (!extension.isEmpty()) {
+				workspaceFile = ResourcesPlugin.getWorkspace().getRoot().getProject(extension)
+						.getFile("resources/" + source.getName());
+			}
+		}
+		try {
+			if (workspaceFile != null && workspaceFile.exists()) {
+				final IMarker marker = workspaceFile.createMarker(IMarker.TEXT);
+				try {
+					marker.setAttribute(IMarker.LINE_NUMBER, result.getLineNumber());
+					IDE.openEditor(getSite().getPage(), marker);
+				} finally {
+					marker.delete();
+				}
+			} else if (source.isFile()) {
+				final IEditorPart opened = IDE.openEditorOnFileStore(getSite().getPage(),
+						EFS.getLocalFileSystem().getStore(source.toURI()));
+				if (opened instanceof ITextEditor) {
+					final ITextEditor text = (ITextEditor) opened;
+					final IDocument document = text.getDocumentProvider().getDocument(text.getEditorInput());
+					final IRegion line = document.getLineInformation(Math.max(0, result.getLineNumber() - 1));
+					text.selectAndReveal(line.getOffset(), line.getLength());
+				}
+			}
+		} catch (CoreException | BadLocationException e) {
+			Activator.logError("Could not open TSV finding source", e);
+		}
 	}
 	
 	HashMap<String, List<TSVResult>> resultMap = new HashMap<String, List<TSVResult>>();
@@ -173,32 +186,27 @@ public class TSVEditor extends MultiPageEditorPart implements IResourceChangeLis
 			String reportFile = ((IFileEditorInput)editorInput).getFile().getLocation().toOSString();
 			File file = new File(reportFile);
 			if (file.exists() && file.length() > 0) {
-				try {
-					Unmarshaller jaxbUnmarshaller = getJaxbContext().createUnmarshaller();
-					TSVResults results = (TSVResults) jaxbUnmarshaller.unmarshal(file);
+				try (final InputStream input = new FileInputStream(file)) {
+					TSVResults results = TSVResults.read(input);
 					resultMap.putAll(parseResults(results, resultMap));
 					return resultMap;
 				}
-				catch (JAXBException e) {
+				catch (IOException e) {
 					Activator.getDefault().getLog().log(new Status(IStatus.WARNING, Activator.PLUGIN_ID, "error while reading XML file: " + reportFile, e));
-					e.printStackTrace();
 				}
 			}
 		}
 		else if (editorInput instanceof IStorageEditorInput) {
-			InputStream resultsStream;
 			try {
 				IStorage tsvStorage = (IStorage) ((IStorageEditorInput)editorInput).getStorage();
-				resultsStream = tsvStorage.getContents();
-				
-				Unmarshaller jaxbUnmarshaller = getJaxbContext().createUnmarshaller();
-				TSVResults results = (TSVResults) jaxbUnmarshaller.unmarshal(resultsStream);
-				resultMap.putAll(parseResults(results, resultMap));
-				return resultMap;
+				try (final InputStream resultsStream = tsvStorage.getContents()) {
+					TSVResults results = TSVResults.read(resultsStream);
+					resultMap.putAll(parseResults(results, resultMap));
+					return resultMap;
+				}
 			}
-			catch (CoreException|JAXBException e) {
+			catch (CoreException | IOException e) {
 				Activator.getDefault().getLog().log(new Status(IStatus.WARNING, Activator.PLUGIN_ID, "error while reading XML content", e));
-				e.printStackTrace();
 			}
 		}
 		return null;
@@ -271,16 +279,5 @@ public class TSVEditor extends MultiPageEditorPart implements IResourceChangeLis
 	 * Closes all project files on project close.
 	 */
 	public void resourceChanged(final IResourceChangeEvent event){}
-	
-	public JAXBContext getJaxbContext() throws JAXBException {
-		if (jaxbContext == null) {
-			jaxbContext = JAXBContext.newInstance(TSVResults.class);
-		}
-		return jaxbContext;
-	}
-	
-	public void setJaxbContext(JAXBContext jaxbContext) {
-		this.jaxbContext = jaxbContext;
-	}
 	
 }
