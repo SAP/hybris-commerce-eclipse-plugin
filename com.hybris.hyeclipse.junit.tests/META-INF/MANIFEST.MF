@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JUnit launcher tests
 Bundle-SymbolicName: com.hybris.hyeclipse.junit.tests;singleton:=true
-Bundle-Version: 22.9.0.qualifier
+Bundle-Version: 22.9.0.RELEASE
 Bundle-Vendor: SAP
 Fragment-Host: com.hybris.hyeclipse.junit
 Bundle-RequiredExecutionEnvironment: JavaSE-21
