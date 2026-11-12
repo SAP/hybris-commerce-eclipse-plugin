@@ -31,7 +31,6 @@ import com.hybris.impexformatter.Activator;
 
 public class ImpexTypeHyperlinkDetector extends AbstractHyperlinkDetector implements IHyperlinkDetector {
 	
-	private List<String> allTypeNames;
 
 	@Override
 	public IHyperlink[] detectHyperlinks(ITextViewer textViewer, IRegion region, boolean canShowMultipleHyperlinks) {
@@ -53,8 +52,9 @@ public class ImpexTypeHyperlinkDetector extends AbstractHyperlinkDetector implem
 		String upperCandidate = candidate.toUpperCase(Locale.ENGLISH);
 		if (upperCandidate.startsWith("INSERT") || upperCandidate.startsWith("REMOVE") || upperCandidate.startsWith("UPDATE")) {
 			// look for keyword
-			if (allTypeNames == null) {
-				allTypeNames = Activator.getDefault().getAllTypeNames();
+			final List<String> allTypeNames = Activator.getDefault().getAllTypeNames();
+			if (candidate.indexOf(";") < 0) {
+				return null;
 			}
 		
 			String headerPlusType = candidate.substring(0, candidate.indexOf(";"));

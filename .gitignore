@@ -1,7 +1,10 @@
 .project
 .settings
 .classpath
+!com.hybris.hyeclipse.junit/.classpath
 *.class
 */bin/*
 */target/**
-.mvn
+!docs/dev/import-and-junit-verification.md
+.metals
+.vscode

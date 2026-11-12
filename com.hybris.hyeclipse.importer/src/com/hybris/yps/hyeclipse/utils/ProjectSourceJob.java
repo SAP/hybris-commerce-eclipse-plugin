@@ -118,7 +118,7 @@ public class ProjectSourceJob extends Job {
 		// (1) Filter for kind=lib: entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY
 		// (2) Filter for path ending in server.jar
 		// (2.bis) Hybris JAR are : ybootstrap.jar or ytomcat.jar or yant.jar
-		return p -> p.getContentKind() == IClasspathEntry.CPE_LIBRARY && (StringUtils
+		return p -> p.getEntryKind() == IClasspathEntry.CPE_LIBRARY && (StringUtils
 				.endsWithAny(p.getPath().lastSegment(), "server.jar", "ybootstrap.jar", "ytomcat.jar", "yant.jar"));
 	}
 

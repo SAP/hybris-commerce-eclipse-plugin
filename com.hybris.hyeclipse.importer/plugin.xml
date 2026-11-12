@@ -157,9 +157,12 @@
       <page
             class="com.hybris.yps.hyeclipse.preferences.HyEclipsePreferencePage"
             id="com.hybris.yps.hyeclipse.preferences.HyEclipsePreferencePage"
-            name="SAP Commerce, development tools for Eclipse">
-      </page>
-   </extension>
+             name="SAP Commerce, development tools for Eclipse">
+       </page>
+    </extension>
+    <extension point="org.eclipse.core.runtime.preferences">
+        <initializer class="com.hybris.yps.hyeclipse.preferences.HyEclipsePreferenceInitializer"/>
+    </extension>
   
   <extension
          point="org.eclipse.ui.services">

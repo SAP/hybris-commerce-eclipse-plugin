@@ -15,53 +15,27 @@
  ******************************************************************************/
 package com.hybris.hyeclipse.ytypesystem;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
 import java.util.Set;
 
-import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.eclipse.ui.statushandlers.StatusManager;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleException;
 
 import com.hybris.hyeclipse.commons.Constants;
+import com.hybris.hyeclipse.commons.config.ExtensionConfig;
+import com.hybris.hyeclipse.commons.config.SystemConfig;
+import com.hybris.hyeclipse.commons.typesystem.TypeSystemSnapshot;
+import com.hybris.hyeclipse.commons.typesystem.YAttributeDescriptor;
+import com.hybris.hyeclipse.commons.typesystem.YType;
 import com.hybris.yps.hyeclipse.ExtensionHolder;
 
-import de.hybris.bootstrap.config.ExtensionInfo;
-import de.hybris.bootstrap.config.PlatformConfig;
-import de.hybris.bootstrap.config.SystemConfig;
-import de.hybris.bootstrap.typesystem.YAttributeDescriptor;
-import de.hybris.bootstrap.typesystem.YType;
-import de.hybris.bootstrap.typesystem.YTypeSystem;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -71,18 +45,10 @@ public class Activator extends AbstractUIPlugin {
 	// The plug-in ID
 	public static final String PLUGIN_ID = "com.hybris.hyeclipse.ytypesystem"; //$NON-NLS-1$
 
-	public static final String YBOOTSTRAP_PLUGIN_ID = "com.hybris.hyeclipse.ybootstrap";
-
 	// The shared instance
 	private static Activator plugin;
 
-	private Bundle ybootstrapBundle;
 	private File platformHome;
-	private SystemConfig systemConfig;
-	private PlatformConfig platformConfig;
-	private YTypeSystem typeSystem;
-	private Set<? extends YType> allTypes;
-	private List<String> allTypeNames;
 
 	public Activator() {
 		super();
@@ -91,15 +57,6 @@ public class Activator extends AbstractUIPlugin {
 		}
 	}
 	
-	@Override
-	public void start(BundleContext bundleContext) throws Exception {
-		super.start(bundleContext);
-
-		if (getPlatformHome() != null) {
-			loadBootstrapBundle();
-		}
-	}
-
 	/**
 	 * Returns the shared instance
 	 *
@@ -120,14 +77,6 @@ public class Activator extends AbstractUIPlugin {
 		return imageDescriptorFromPlugin(PLUGIN_ID, path);
 	}
 
-	public Bundle getYbootstrapBundle() {
-		return ybootstrapBundle;
-	}
-
-	public void setYbootstrapBundle(Bundle ybootstrapBundle) {
-		this.ybootstrapBundle = ybootstrapBundle;
-	}
-
 	public File getPlatformHome() {
 		if (platformHome == null) {
 			// Get platform home from workspace preferences
@@ -141,182 +90,57 @@ public class Activator extends AbstractUIPlugin {
 		this.platformHome = platformHome;
 	}
 
-	public void unloadBootstrapBundle() {
-		if (ybootstrapBundle != null) {
-			try {
-				ybootstrapBundle.uninstall();
-				ybootstrapBundle = null;
-			} catch (BundleException e) {
-				logError("couldn't unload bootstrap", e);
-			}
-		}
-	}
-
-	public void loadBootstrapBundle() {
-		
-		List<String> items = Arrays.asList("ybootstrap/log4j-1.2.17.jar", "ybootstrap/commons-collections-3.2.2.jar", "ybootstrap/META-INF");
-		
-		Bundle bundle = getDefault().getBundle();
-		
-		//Build zip containing ybootstrap, log4j and MANIFEST.MF
-		List<File> sources = new ArrayList<>();
-		Path p = Paths.get(getPlatformHome().getAbsolutePath(), "bootstrap", "bin", "ybootstrap.jar");
-		if (!p.toFile().exists()) {
-			logError(
-					MessageFormat.format("could not find ybootstrap in platform folder {0}",
-							getPlatformHome().getAbsolutePath()),
-					new URISyntaxException(p.toString(), "could not resolve path"));
-		}
-		sources.add(p.toFile());
-		
-		try {
-			for (String item : items) {
-					sources.add(entryToFile(item));
-			}
-			ByteArrayOutputStream baos = BundlePackager.buildZip(sources);
-			byte[] bytes = baos.toByteArray();
-			ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-			
-			setYbootstrapBundle(bundle.getBundleContext().installBundle(YBOOTSTRAP_PLUGIN_ID, bais));
-
-		} catch (URISyntaxException | IOException e) {
-			logError("URISyntaxException | IOException", e);
-		}
-		catch (BundleException e) {
-			logError("BundleException", e);
-		}		
-	}
-
-	private File entryToFile(String url) throws IOException, URISyntaxException {
-		Bundle bundle = getDefault().getBundle();
-		URL bundleUrl = bundle.getEntry(url);
-		URL fileUrl = FileLocator.toFileURL(bundleUrl);
-		
-		return new File(new URI(fileUrl.getProtocol(), fileUrl.getPath(), null));
-	}
-
 	public SystemConfig getSystemConfig() {
-		if (systemConfig == null) {
-
-			Map<String, String> props = null;
-			try {
-				props = loadProperties(getPlatformHome());
-			} catch (SecurityException | IOException | IllegalArgumentException e) {
-				logError("(NoSuchField|IO|Security|IllegalArgument|IllegalAccess)Exception", e);
-			} catch (java.lang.UnsupportedClassVersionError err) {
-				final Status status = new Status(IStatus.ERROR, Activator.PLUGIN_ID,
-						"Incompatible JVM for IDE and SAP Commerce version", err);
-				StatusManager.getManager().handle(status);
-
-				printError("Incompatible JVM for IDE and SAP Commerce version",
-						"eclipse IDE has to run on java version equal or greater than supported by SAP Commerce. More information how to change VM for IDE is available here: https://wiki.eclipse.org/Eclipse.ini",
-						status);
-			}
-
-			systemConfig = SystemConfig.getInstanceByProps(new Hashtable<String, String>(props));
+		final File home = getPlatformHome();
+		if (home == null) {
+			throw new IllegalStateException("No Commerce platform selected; import a platform first");
 		}
-		return systemConfig;
-	}
-
-	private void printError(String title, String description, Status status) {
-		PlatformUI.getWorkbench().getDisplay().syncExec(() -> {
-
-			Shell parent = PlatformUI.getWorkbench().getDisplay().getActiveShell(); // get shell.
-			ErrorDialog.openError(parent, title, description, status);
-		});
-	}
-
-	public void nullifySystemConfig() {
-		systemConfig = null;
-	}
-
-	public PlatformConfig getPlatformConfig() {
-		if (platformConfig == null) {
-			platformConfig = PlatformConfig.getInstance(getSystemConfig());
+		try {
+			return com.hybris.hyeclipse.commons.Activator.getDefault().getSystemConfigRepository().find(home)
+					.orElseThrow(() -> new IllegalStateException(
+							"System configuration is unavailable; rerun the platform import"));
+		} catch (CoreException e) {
+			throw new IllegalStateException(e.getStatus().getMessage(), e);
 		}
-		return platformConfig;
 	}
 
-	public void nullifyPlatformConfig() {
-		platformConfig = null;
-	}
-
-	public YTypeSystem getTypeSystem() {
-		if (typeSystem == null) {
-			typeSystem = YTypeSystemBuilder.buildTypeSystem();
-		}
-		return typeSystem;
-	}
-
-	public void nullifyTypeSystem() {
-		typeSystem = null;
+	/** @return the shared generated-model snapshot */
+	public TypeSystemSnapshot getTypeSystemSnapshot() {
+		return com.hybris.hyeclipse.commons.Activator.getDefault().getTypeSystemIndex().getSnapshot();
 	}
 
 	public String getConfigDirectory() {
-		SystemConfig sysConfig = getPlatformConfig().getSystemConfig();
+		SystemConfig sysConfig = getSystemConfig();
 		if (sysConfig != null) {
 			return sysConfig.getConfigDir().getAbsolutePath();
 		}
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
 	public Set<YType> getAllTypes() {
-		if (allTypes == null) {
-			allTypes = getTypeSystem().getTypes();
-		}
-		return (Set<YType>) allTypes;
-	}
-
-	public void nullifyAllTypes() {
-		allTypes = null;
+		return new HashSet<>(getTypeSystemSnapshot().getTypes());
 	}
 
 	public List<String> getAllTypeNames() {
-		if (allTypeNames == null) {
-			Set<? extends YType> types = getAllTypes();
-			allTypeNames = new ArrayList<>(types.size());
-			for (YType type : types) {
-				allTypeNames.add(type.getCode());
-			}
-		}
-		return allTypeNames;
-	}
-
-	public void nullifyAllTypeNames() {
-		allTypeNames = null;
+		return getTypeSystemSnapshot().getAllTypeNames();
 	}
 
 	public List<String> getAllAttributeNames(String typeName) {
-		Set<YAttributeDescriptor> typeAttributes = getTypeSystem().getAttributes(typeName);
-		List<String> allAttributeNames = new ArrayList<>(typeAttributes.size());
-		for (YAttributeDescriptor attribute : typeAttributes) {
-			allAttributeNames.add(attribute.getQualifier());
-		}
-		return allAttributeNames;
+		return getTypeSystemSnapshot().getAllAttributeNames(typeName);
 	}
 
 	public String getAttributeName(String typeName, String potentialAttributeName) {
-		YType type = getTypeSystem().getType(typeName);
-		YAttributeDescriptor attribute = getTypeSystem().getAttribute(type.getCode(), potentialAttributeName);
+		YAttributeDescriptor attribute = getTypeSystemSnapshot().getAttribute(typeName, potentialAttributeName);
 		if (attribute != null) {
 			return attribute.getQualifier();
 		}
 		return null;
 	}
 
-	public String getTypeLoaderInfo(String typeName) {
-		YType type = getTypeSystem().getType(typeName);
-		if (type != null) {
-			return type.getLoaderInfo();// core-items.xml:2793(ItemTypeTagListener)
-		}
-		return "";
-	}
-
 	public Set<ExtensionHolder> getAllExtensionsForPlatform() {
 		Set<ExtensionHolder> allExtensions = new HashSet<>();
-		List<ExtensionInfo> allExtensionInfos = getPlatformConfig().getExtensionInfosInBuildOrder();
-		for (ExtensionInfo extension : allExtensionInfos) {
+		List<ExtensionConfig> allExtensionInfos = getSystemConfig().getExtensionsInOrder();
+		for (ExtensionConfig extension : allExtensionInfos) {
 			// sanity check, should never be null
 			if (extension != null) {
 				ExtensionHolder extHolder = createExtensionHolderFromExtensionInfo(extension);
@@ -328,11 +152,11 @@ public class Activator extends AbstractUIPlugin {
 		return allExtensions;
 	}
 
-	private ExtensionHolder createExtensionHolderFromExtensionInfo(ExtensionInfo extension) {
+	private ExtensionHolder createExtensionHolderFromExtensionInfo(ExtensionConfig extension) {
 
 		ExtensionHolder extHolder = null;
 		
-		if (extension.isCoreExtension()) {
+		if (extension.isPlatformExtension()) {
 			return extHolder;
 		}
 
@@ -343,21 +167,17 @@ public class Activator extends AbstractUIPlugin {
 		}
 		String path = extension.getExtensionDirectory().getAbsolutePath();
 		extHolder = new ExtensionHolder(path, extension.getName());
-		if (extension.getCoreModule() != null) {
+		if (extension.isCoreModule()) {
 			extHolder.setCoreModule(true);
 		}
-		if (extension.getWebModule() != null) {
+		if (extension.isWebModule()) {
 			extHolder.setWebModule(true);
 		}
-		if (extension.getHMCModule() != null && getPlatformConfig().getExtensionInfo("hmc") != null) {
+		if (extension.isHmcModule() && getSystemConfig().getExtension("hmc") != null) {
 			extHolder.setHmcModule(true);
 		}
 
-		extHolder.setBackofficeModule(false);
-		String backOfficeMeta = extension.getMeta("backoffice-module");
-		if (backOfficeMeta != null && backOfficeMeta.equalsIgnoreCase("true")) {
-			extHolder.setBackofficeModule(true);
-		}
+		extHolder.setBackofficeModule(extension.isBackofficeModule());
 
 		extHolder.setAddOnModule(false);
 		File addonDir = new File(path, "acceleratoraddon");
@@ -370,13 +190,15 @@ public class Activator extends AbstractUIPlugin {
 			File[] files = libDir.listFiles((File dir, String name) -> 
 				name.toLowerCase(Locale.ENGLISH).endsWith(".jar")
 			);
-			for (File file : files) {
-				extHolder.getJarFiles().add(file.getName());
+			if (files != null) {
+				for (File file : files) {
+					extHolder.getJarFiles().add(file.getName());
+				}
 			}
 		}
 
-		if (!extension.getAllRequiredExtensionNames().isEmpty()) {
-			List<String> extensions = new LinkedList<>(extension.getAllRequiredExtensionNames());
+		if (!extension.getDependencies().isEmpty()) {
+			List<String> extensions = new LinkedList<>(extension.getDependencies());
 			if (!extensions.contains(Constants.PLATFROM)) {
 				extensions.add(Constants.PLATFROM);
 			}
@@ -384,42 +206,6 @@ public class Activator extends AbstractUIPlugin {
 		}
 
 		return extHolder;
-	}
-
-	private static Map<String, String> loadProperties(File platformHome)
-			throws IOException {
-
-		File file = new File(platformHome, "active-role-env.properties");
-		if (!file.exists()) {
-			file = new File(platformHome, "env.properties");
-			if (!file.exists()) {
-				throw new IllegalStateException(
-						"Could not find either " + platformHome + "/env.properties or " + platformHome
-								+ "/active-role-env.properties, ensure you have built the platform before continuing");
-			}
-		}
-
-		Map<String, String> props = new HashMap<>();
-		props.put("platformhome", platformHome.getAbsolutePath());
-		Properties properties = new Properties();
-		try (InputStream in = new FileInputStream(file.getAbsolutePath())) {
-			properties.load(in);
-		}
-
-		for (Entry<?, ?> prop : properties.entrySet()) {
-
-			String a = prop.getKey().toString();
-			String b = prop.getValue().toString();
-			String c = platformHome.getAbsolutePath();
-
-			props.put(a, b.replace("${platformhome}", c));
-		}
-
-		// hybris 5.7 additional properties
-		props.put("HYBRIS_ROLES_DIR", platformHome.getAbsolutePath() + "/../../roles");
-		props.put("HYBRIS_BOOTSTRAP_BIN_DIR", platformHome.getAbsolutePath() + "/bootstrap/bin");
-
-		return props;
 	}
 
 	public static void log(String msg) {

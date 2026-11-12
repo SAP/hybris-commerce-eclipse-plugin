@@ -38,7 +38,7 @@ public class PlatformHolder {
 	private final ClasspathChagedListener classpathChagedListener = new ClasspathChagedListener(this);
 	private final WorkspaceChangedListener workspaceChangeListener = new WorkspaceChangedListener(this);
 	
-	private Platform currentPlatform;
+	private volatile Platform currentPlatform;
 	
 	PlatformHolder(ILog log) {
 		this.log = log;
@@ -86,29 +86,47 @@ public class PlatformHolder {
 	void clear() {
 		JavaCore.removeElementChangedListener(classpathChagedListener);
 		currentPlatform = null;
-		addResourceChangeListenerToWorkspace();
 	}
 	
 	void classPathChanged() {
-		assert isPlatformAvailable();
-		
-		updatePlatform(currentPlatform.getPlatformJavaProject());
+		final Platform platform = currentPlatform;
+		if (platform != null) {
+			updatePlatform(platform.getPlatformJavaProject());
+		}
 	}
 
 	boolean isCurrentPlatformProject(IJavaProject javaProject) {
-		return isPlatformAvailable() && currentPlatform.getPlatformJavaProject() == javaProject;
+		final Platform platform = currentPlatform;
+		return platform != null && platform.getPlatformJavaProject().equals(javaProject);
 	}
 	
 	void projectAdded(final IProject project) {
-		if (isPlatformAvailable() && Platform.isPlatformProject(project)) {
-			log.log(new Status(ERROR, log.getBundle().getSymbolicName(), "Platform project added while platform already available. There can only be ONE."));
+		if (Platform.isPlatformProject(project)) {
+			if (!isPlatformAvailable()) {
+				platformProjectAdded(project);
+			} else if (!currentPlatform.getPlatformJavaProject().getProject().equals(project)) {
+				log.log(new Status(ERROR, log.getBundle().getSymbolicName(),
+						"Platform project added while platform already available. There can only be ONE."));
+			}
+		}
+	}
+
+	private void projectChanged(final IProject project) {
+		final Platform platform = currentPlatform;
+		if (platform != null && platform.getPlatformJavaProject().getProject().equals(project)
+				&& !Platform.isPlatformProject(project)) {
+			clear();
+		} else {
+			// Import creates a project before opening it and assigning its Java nature.
+			projectAdded(project);
 		}
 	}
 
 	void workspaceChanged(IResourceChangeEvent event) {
 		try {
 			if (event.getType() == IResourceChangeEvent.PRE_DELETE || event.getType() == IResourceChangeEvent.PRE_CLOSE) {
-				if (Platform.isPlatformProject((IProject)event.getResource())) {
+				final Platform platform = currentPlatform;
+				if (platform != null && platform.getPlatformJavaProject().getProject().equals(event.getResource())) {
 					clear();
 				}
 			}
@@ -117,9 +135,13 @@ public class PlatformHolder {
 
 					@Override
 					public boolean visit(IResourceDelta delta) throws CoreException {
-						if (delta.getKind() == IResourceDelta.ADDED
-								&& delta.getResource().getType() == IResource.PROJECT) {
-							projectAdded((IProject) delta.getResource());
+						if (delta.getResource().getType() == IResource.PROJECT) {
+							if (delta.getKind() == IResourceDelta.ADDED) {
+								projectAdded((IProject) delta.getResource());
+							} else if (delta.getKind() == IResourceDelta.CHANGED
+									&& (delta.getFlags() & (IResourceDelta.DESCRIPTION | IResourceDelta.OPEN)) != 0) {
+								projectChanged((IProject) delta.getResource());
+							}
 						}
 						return delta.getResource().getType() == IResource.ROOT;
 					}

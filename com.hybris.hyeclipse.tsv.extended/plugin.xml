@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <extension point="org.eclipse.ui.commands">
+      <command id="com.hybris.hyeclipse.tsv.run" name="%tsv_run"
+         defaultHandler="com.hybris.hyeclipse.tsv.handlers.TSVHandler"/>
+      <command id="com.hybris.hyeclipse.tsv.extended.run" name="%tsv_extended_run"
+         defaultHandler="com.hybris.hyeclipse.tsvextended.handlers.TSVExtendedHandlerWrapper"/>
+   </extension>
+   <extension point="org.eclipse.ui.menus">
+      <menuContribution locationURI="menu:org.eclipse.ui.main.menu?after=additions">
+         <menu id="com.hybris.hyeclipse.tsv.menu" label="%tsv_menu">
+            <command commandId="com.hybris.hyeclipse.tsv.run" label="%tsv_run" style="push"/>
+            <command commandId="com.hybris.hyeclipse.tsv.extended.run" label="%tsv_extended_run" style="push"/>
+         </menu>
+      </menuContribution>
+   </extension>
+   <extension point="org.eclipse.ui.editors">
+      <editor id="com.hybris.hyeclipse.tsv.editors.TSVEditor" name="%tsv_results"
+         class="com.hybris.hyeclipse.tsv.editors.TSVEditor" extensions="tsvreport" default="false"/>
+   </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
       <page

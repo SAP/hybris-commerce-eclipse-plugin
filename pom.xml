@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.hybris.hyeclipse</groupId>
 	<artifactId>com.hybris.hyeclipse.parent</artifactId>
-	<version>22.9.0-SNAPSHOT</version>
+	<version>22.9.0.RELEASE</version>
 	<packaging>pom</packaging>
 	<name>SAP Commerce Cloud - Eclipse plugin (parent)</name>
 
@@ -48,8 +50,6 @@
 		<module>com.hybris.hyeclipse.hac</module>
 		<module>com.hybris.hyeclipse.impexed</module>
 		<module>com.hybris.hyeclipse.importer</module>
-		<module>com.hybris.hyeclipse.site</module>
-		<module>com.hybris.hyeclipse.feature</module>
 		<module>com.hybris.hyeclipse.ytypesystem</module>
 		<module>com.hybris.hyeclipse.platform</module>
 		<module>com.hybris.hyeclipse.tsv</module>
@@ -59,14 +59,17 @@
 		<module>com.hybris.hyeclipse.emf.beans.editor</module>
 		<module>com.hybris.hyeclipse.extgen</module>
 		<module>com.hybris.hyeclipse.junit</module>
+		<module>com.hybris.hyeclipse.feature</module>
+		<module>com.hybris.hyeclipse.site</module>
 		<module>com.hybris.hyeclipse.tests</module>
+		<module>com.hybris.hyeclipse.junit.tests</module>
 	</modules>
 
 	<repositories>
 		<repository>
-			<id>2026-06</id>
+			<id>2026-09</id>
 			<layout>p2</layout>
-			<url>https://download.eclipse.org/releases/2026-06</url>
+			<url>https://download.eclipse.org/releases/2026-09</url>
 		</repository>
 	</repositories>
 
@@ -135,7 +138,7 @@
 						<environment>
 							<os>macosx</os>
 							<ws>cocoa</ws>
-							<arch>x86_64</arch>
+							<arch>aarch64</arch>
 						</environment>
 					</environments>
 				</configuration>

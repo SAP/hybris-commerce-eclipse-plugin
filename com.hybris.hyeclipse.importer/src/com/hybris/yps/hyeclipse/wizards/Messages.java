@@ -15,6 +15,14 @@ public class Messages extends NLS {
 	public static String CreateWorkingSetWizard_title;
 	public static String error_on_import;
 	public static String error_on_import_info;
+	public static String HyEclipsePreferencePage_ant_goal;
+	public static String HyEclipsePreferencePage_ant_jdk;
+	public static String HyEclipsePreferencePage_ant_settings;
+	public static String HyEclipsePreferencePage_jdk_information;
+	public static String HyEclipsePreferencePage_shell_information;
+	public static String HyEclipsePreferencePage_shell_path;
+	public static String HyEclipsePreferencePage_unavailable_jdk;
+	public static String HyEclipsePreferencePage_workspace_jdk;
 	public static String ImportPlatformWizard_autobuild_error;
 	public static String ImportPlatformWizard_import_job_title;
 	public static String ImportWizard_error_attaching_srcs;
@@ -25,6 +33,13 @@ public class Messages extends NLS {
 	public static String ImportWizard_wrong_src_zip;
 	public static String ImportWizard_wrong_src_zip_info;
 	public static String ProjectSourceJob_classpath_fetch_error;
+	public static String ProjectJavaRuntime_update_failed;
+	public static String ProjectJavaRuntime_update_title;
+	public static String ProjectJavaRuntime_update_question;
+	public static String ProjectJavaRuntime_update_job;
+	public static String ProjectJavaRuntime_prepare_job;
+	public static String ShellImporter_console_title;
+	public static String ShellImporter_updating_dependencies;
 	public static String SynchronizePlatformWizard_5;
 	public static String SynchronizePlatformWizard_6;
 	public static String SynchronizePlatformWizard_missingPlatformDirectoryError;

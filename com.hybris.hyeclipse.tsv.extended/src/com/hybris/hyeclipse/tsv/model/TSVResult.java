@@ -15,10 +15,6 @@
  ******************************************************************************/
 package com.hybris.hyeclipse.tsv.model;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-@XmlRootElement(name="result")
 public class TSVResult {
 	
 	private String filename;
@@ -34,7 +30,6 @@ public class TSVResult {
 	public String getFilename() {
 		return filename;
 	}
-	@XmlElement
 	public void setFilename(String filename) {
 		this.filename = filename;
 	}
@@ -42,7 +37,6 @@ public class TSVResult {
 	public int getLineNumber() {
 		return lineNumber;
 	}
-	@XmlElement(name="line")
 	public void setLineNumber(int lineNumber) {
 		this.lineNumber = lineNumber;
 	}
@@ -50,7 +44,6 @@ public class TSVResult {
 	public String getRuleId() {
 		return ruleId;
 	}
-	@XmlElement(name="rule_id")
 	public void setRuleId(String ruleId) {
 		this.ruleId = ruleId;
 	}
@@ -58,7 +51,6 @@ public class TSVResult {
 	public String getRulePriority() {
 		return rulePriority;
 	}
-	@XmlElement(name="rule_priority")
 	public void setRulePriority(String rulePriority) {
 		this.rulePriority = rulePriority;
 	}
@@ -66,7 +58,6 @@ public class TSVResult {
 	public String getState() {
 		return state;
 	}
-	@XmlElement
 	public void setState(String state) {
 		this.state = state;
 	}
@@ -74,7 +65,6 @@ public class TSVResult {
 	public String getElement() {
 		return element;
 	}
-	@XmlElement
 	public void setElement(String element) {
 		this.element = element;
 	}
@@ -82,7 +72,6 @@ public class TSVResult {
 	public String getDescription() {
 		return description;
 	}
-	@XmlElement
 	public void setDescription(String description) {
 		this.description = description;
 	}

@@ -32,30 +32,69 @@ Results will be available on your local website
 Release notes are generated thanks to [gren](https://github.com/github-tools/github-release-notes).
 
 
-## Incrementing project version
+## Releasing a New Version
 
-It is required to change project version before releasing latest changes. To do that it is possible to use one of Tycho functionalities for that 
+Follow these steps to prepare, build, and publish a new release:
 
+### 1. Create a Release Branch
+Start from the latest `master` (or target development branch):
 ```bash
-git flow release start 1.5.0
-# create release version
-mvn org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=1.5.0.RELEASE
-# add all changes to git and push to your repository (i.e. feature.xml, MANIFEST.MF and pom.xml)
-mvn clean install
-rm -rf updatesite/neon && cp -R com.hybris.hyeclipse.site/target/repository updatesite/neon
-# push all changes to your git repository
-git add updatesite/neon/* updatesite/neon/*/* */*/MANIFEST.MF */pom.xml */feature.xml pom.xml
-git commit -m "bumping version to 1.5.0"
-# git add <changed files>
+git checkout master
+git pull origin master
+git checkout -b release/VERSION   # e.g., release/22.9.0
+```
+
+### 2. Set the New Release Version
+Use the Tycho Versions plugin to bump all `pom.xml`, `MANIFEST.MF`, and `feature.xml` files simultaneously:
+```bash
+./mvnw org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=VERSION.RELEASE
+# e.g., -DnewVersion=22.9.0.RELEASE
+```
+
+### 3. Build & Test Locally
+Build all bundles, verify unit tests, and generate the p2 update site repository:
+```bash
+make test
+make build
+```
+
+### 4. Update In-Repo Update Site (if maintained)
+Sync the built p2 repository into `updatesite/neon`:
+```bash
+rm -rf updatesite/neon/*
+cp -R com.hybris.hyeclipse.site/target/repository/* updatesite/neon/
+```
+
+### 5. Commit and Tag Release
+```bash
+git add pom.xml */pom.xml */META-INF/MANIFEST.MF */feature.xml updatesite/neon/
+git commit -m "chore(release): bump version to VERSION.RELEASE"
+git tag -a vVERSION -m "Release vVERSION"   # e.g., git tag -a v22.9.0 -m "Release v22.9.0"
+git push origin release/VERSION --tags
+```
+
+### 6. Create Pull Request and Merge to Master
+1. Open a pull request from `release/VERSION` into `master` on GitHub.
+2. Ensure GitHub Actions CI passes.
+3. Merge the pull request.
+
+### 7. Publish GitHub Release on github.com
+1. Go to the GitHub repository: **Releases -> Draft a new release** (or use the GitHub CLI `gh`).
+2. Select the existing tag (e.g. `v22.9.0`).
+3. Set the release title: `SAP Commerce Cloud - Eclipse Plugin v22.9.0`.
+4. Generate release notes automatically or paste changelog entries.
+5. Attach the built update-site ZIP distribution archive:
+   - File: `com.hybris.hyeclipse.site/target/com.hybris.hyeclipse.site-VERSION.RELEASE.zip`
+6. Click **Publish release**.
+
+### 8. Prepare Next Development Iteration
+Bump the codebase to the next `-SNAPSHOT` version on `master`:
+```bash
+git checkout master
+git pull origin master
+./mvnw org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=NEXT_VERSION-SNAPSHOT
+# e.g., -DnewVersion=22.10.0-SNAPSHOT
+git add pom.xml */pom.xml */META-INF/MANIFEST.MF */feature.xml
+git commit -m "chore: prepare for next development iteration NEXT_VERSION-SNAPSHOT"
 git push origin master
-git flow release finish
-gren release -T <github-token> --tags v1.5.0 v<last-one>
-## go to github.com and update release notes by adding zip file which is found in
-## com.hybris.hyeclipse.site/target/com.hybris.hyeclipse.site-1.5.0.RELEASE.zip
-gren changelog -T <github-token> -G --tags=all --override
-# create pull request on github.com from your private repository
-mvn org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=1.5.1-SNAPSHOT
-git add */*/MANIFEST.MF */pom.xml */feature.xml pom.xml CHANGELOG.md
-
-
 ```

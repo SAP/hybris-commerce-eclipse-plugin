@@ -15,15 +15,15 @@
  ******************************************************************************/
 package com.hybris.hyeclipse.tsvextended.utils;
 
-import de.hybris.bootstrap.config.ExtensionInfo;
+import com.hybris.hyeclipse.commons.config.ExtensionConfig;
 
 public class ExtensionHolder {
 	
 	private String name;
-	private ExtensionInfo extensionInfo;
+	private ExtensionConfig extensionInfo;
 	private boolean isSelected = false;
 
-	public ExtensionHolder(ExtensionInfo extensionInfo) {
+	public ExtensionHolder(ExtensionConfig extensionInfo) {
 		this.extensionInfo = extensionInfo;
 	}
 
@@ -35,11 +35,11 @@ public class ExtensionHolder {
 		this.name = name;
 	}
 
-	public ExtensionInfo getExtensionInfo() {
+	public ExtensionConfig getExtensionInfo() {
 		return extensionInfo;
 	}
 
-	public void setExtensionInfo(ExtensionInfo extensionInfo) {
+	public void setExtensionInfo(ExtensionConfig extensionInfo) {
 		this.extensionInfo = extensionInfo;
 	}
 

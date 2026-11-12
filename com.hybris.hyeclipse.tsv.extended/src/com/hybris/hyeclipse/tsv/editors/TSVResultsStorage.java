@@ -17,6 +17,7 @@ package com.hybris.hyeclipse.tsv.editors;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.CoreException;
@@ -36,7 +37,7 @@ public class TSVResultsStorage extends PlatformObject implements IStorage {
 	@Override
 	public InputStream getContents() throws CoreException {
 		
-		return new ByteArrayInputStream(resultsString.getBytes());
+		return new ByteArrayInputStream(resultsString.getBytes(StandardCharsets.UTF_8));
 	}
 	
 	@Override

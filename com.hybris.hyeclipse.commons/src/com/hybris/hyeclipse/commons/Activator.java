@@ -25,8 +25,13 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.osgi.framework.BundleContext;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
+
+import com.hybris.hyeclipse.commons.config.SystemConfigRepository;
+import com.hybris.hyeclipse.commons.typesystem.TypeSystemIndex;
+import com.hybris.hyeclipse.commons.typesystem.TypeSystemRepository;
 
 public class Activator extends AbstractUIPlugin {
 
@@ -41,6 +46,8 @@ public class Activator extends AbstractUIPlugin {
 	
 	private static File platformHome;
 	private static boolean natureLookup = false;
+	private SystemConfigRepository systemConfigRepository;
+	private TypeSystemIndex typeSystemIndex;
 	
 	public Activator() {
 		super();
@@ -56,6 +63,38 @@ public class Activator extends AbstractUIPlugin {
 	 */
 	public static Activator getDefault() {
 		return plugin;
+	}
+
+	/** @return the shared workspace-local configuration repository */
+	public synchronized SystemConfigRepository getSystemConfigRepository() {
+		if (systemConfigRepository == null) {
+			systemConfigRepository = new SystemConfigRepository(getStateLocation().toFile());
+		}
+		return systemConfigRepository;
+	}
+
+	/** @return shared generated-model index with non-blocking snapshot lookups */
+	public synchronized TypeSystemIndex getTypeSystemIndex() {
+		if (typeSystemIndex == null) {
+			typeSystemIndex = new TypeSystemIndex(ResourcesPlugin.getWorkspace(),
+					new TypeSystemRepository(getStateLocation().toFile()));
+			typeSystemIndex.start();
+		}
+		return typeSystemIndex;
+	}
+
+	@Override
+	public void stop(final BundleContext context) throws Exception {
+		if (typeSystemIndex != null) {
+			typeSystemIndex.stop();
+		}
+		plugin = null;
+		super.stop(context);
+	}
+
+	/** @param home newly selected platform home */
+	public static void setPlatformHome(final File home) {
+		platformHome = home;
 	}
 	
 	public static File resetPlatformBootstrapBundle() {

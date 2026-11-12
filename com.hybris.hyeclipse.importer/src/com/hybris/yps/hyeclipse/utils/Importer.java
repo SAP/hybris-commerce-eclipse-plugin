@@ -17,24 +17,22 @@ package com.hybris.yps.hyeclipse.utils;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.eclipse.core.internal.resources.ResourceException;
@@ -50,19 +48,27 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jdt.internal.core.JavaProject;
+import org.eclipse.jdt.launching.IVMInstall;
+import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.ui.internal.wizards.datatransfer.SmartImportJob;
 import org.eclipse.ui.progress.IProgressConstants;
 
 import com.hybris.hyeclipse.commons.Constants;
+import com.hybris.hyeclipse.commons.config.ExtensionConfig;
+import com.hybris.hyeclipse.commons.config.SystemConfig;
+import com.hybris.hyeclipse.commons.config.SystemConfigRepository;
 import com.hybris.yps.hyeclipse.Activator;
 import com.hybris.yps.hyeclipse.ExtensionHolder;
+import com.hybris.yps.hyeclipse.preferences.AntJavaRuntime;
 
 public class Importer {
 
@@ -77,50 +83,92 @@ public class Importer {
 	private static final String BROKEN_WST_SETTINGS_FILE_EXT = "promotionengineservices";
 	private static final String SPRINGBEANS_FILE = ".springBeans";
 
-	private static final double JVM8_VERSION = 5.6d;
-	private static final double JVM11_VERSION = 1811d;
-	Pattern platformVersionPattern = Pattern.compile("[0-9]*\\.[0-9]*");
+	private final SystemConfig systemConfig;
+	private IVMInstall javaRuntime;
+
+	/** Uses the persisted configuration for the platform being synchronized. */
+	public Importer() {
+		this(null);
+	}
+
+	public Importer(SystemConfig systemConfig) {
+		this(systemConfig, null);
+	}
+
+	/**
+	 * @param systemConfig imported platform configuration
+	 * @param javaRuntime JDK already captured for the Ant process, or null to use the saved selection
+	 */
+	public Importer(final SystemConfig systemConfig, final IVMInstall javaRuntime) {
+		this.systemConfig = systemConfig;
+		this.javaRuntime = javaRuntime;
+	}
 
 	public void resetProjectsFromLocalExtensions(final File platformHome, final IProgressMonitor monitor,
 			final boolean fixClasspath, final boolean removeHybrisGenerator, final boolean createWorkingSets,
 			final boolean useMultiThread, final boolean skipJarScanning) throws CoreException, InterruptedException {
-		com.hybris.hyeclipse.commons.Activator.disableProjectNatureSolutionLookup();
-		plugin.resetPlatform(platformHome.getAbsolutePath());
-
-		importExtensionsNotInWorkspace(monitor, platformHome);
-		closeProjectsThatAreNotReferenced(monitor, platformHome);
-
-		if (fixClasspath) {
-			fixMissingProjectDependencies(monitor);
-			fixMissingProjectResources(monitor, platformHome);
-			fixProjectClasspaths(monitor);
+		try (final ProjectJavaRuntime.ChangeScope change = ProjectJavaRuntime.beginChange(monitor)) {
+			try {
+				ProjectJavaRuntime.compilerCompliance(getJavaRuntime());
+			} catch (IOException e) {
+				throw new CoreException(new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+						"The configured project JDK is unsupported", e));
+			}
+			resetProjects(platformHome, monitor, fixClasspath, removeHybrisGenerator, createWorkingSets,
+					useMultiThread, skipJarScanning);
 		}
-
-		if (removeHybrisGenerator) {
-			fixBuilders(monitor);
-		}
-
-		if (createWorkingSets) {
-			WorkingSetsUtils.organizeWorkingSetsFromExtensionDirectories(monitor);
-		}
-
-		if (useMultiThread) {
-			UseMultiThreadUtils.useMultiThread(platformHome);
-		}
-
-		if (skipJarScanning) {
-			SkipJarScanningUtils.skipJarScanning(platformHome);
-		}
-
-		fixSpringBeans(monitor);
-		com.hybris.hyeclipse.commons.Activator.restoreProjectNatureSolutionLookup();
 	}
 
-	private void importExtensionsNotInWorkspace(final IProgressMonitor monitor, final File platformHome)
+	private void resetProjects(final File platformHome, final IProgressMonitor monitor,
+			final boolean fixClasspath, final boolean removeHybrisGenerator, final boolean createWorkingSets,
+			final boolean useMultiThread, final boolean skipJarScanning) throws CoreException, InterruptedException {
+		final SystemConfigRepository repository =
+				com.hybris.hyeclipse.commons.Activator.getDefault().getSystemConfigRepository();
+		final SystemConfig config = systemConfig != null ? systemConfig
+				: repository.find(platformHome)
+						.orElseThrow(() -> new IllegalStateException(
+								"System configuration is unavailable; rerun the platform import"));
+		com.hybris.hyeclipse.commons.Activator.disableProjectNatureSolutionLookup();
+		try (final SystemConfigRepository.ImportSnapshot snapshot = repository.beginImport(config)) {
+			plugin.resetPlatform(platformHome.getAbsolutePath());
+
+			importExtensionsNotInWorkspace(monitor, platformHome, config);
+			closeProjectsThatAreNotReferenced(monitor, platformHome);
+
+			if (fixClasspath) {
+				fixMissingProjectDependencies(monitor, config);
+				fixMissingProjectResources(monitor, platformHome);
+				fixProjectClasspaths(monitor);
+			}
+
+			if (removeHybrisGenerator) {
+				fixBuilders(monitor);
+			}
+
+			if (createWorkingSets) {
+				WorkingSetsUtils.organizeWorkingSetsFromExtensionDirectories(monitor);
+			}
+
+			if (useMultiThread) {
+				UseMultiThreadUtils.useMultiThread(platformHome);
+			}
+
+			if (skipJarScanning) {
+				SkipJarScanningUtils.skipJarScanning(platformHome);
+			}
+
+			fixSpringBeans(monitor);
+		} finally {
+			com.hybris.hyeclipse.commons.Activator.restoreProjectNatureSolutionLookup();
+		}
+	}
+
+	private void importExtensionsNotInWorkspace(final IProgressMonitor monitor, final File platformHome,
+			final SystemConfig config)
 			throws CoreException, InterruptedException {
 		Activator.log("Retrieving extensions not in workspace");
 
-		final double version = getPlatformVersion(platformHome);
+		final double version = convertPlatformVersion(config.getPlatformVersion(), SystemConfig.PLATFORM_V_22_11);
 
 		final Collection<ExtensionHolder> extensions = FixProjectsUtils
 				.getExtensionsNotInWorkspace(platformHome.getAbsolutePath());
@@ -129,6 +177,9 @@ public class Importer {
 			monitor.beginTask("Importing extensions", extensions.size());
 			int progress = 0;
 			for (final ExtensionHolder extensionHolder : extensions) {
+				if (monitor.isCanceled()) {
+					throw new OperationCanceledException();
+				}
 				final IPath extP = Path.fromOSString(extensionHolder.getPath());
 				final IPath projectFilepath = extP.append("/" + Constants.DOT_PROJECT);
 				final boolean projectFileExist = projectFilepath.toFile().exists();
@@ -202,13 +253,29 @@ public class Importer {
 				false);
 		importJob.setProperty(IProgressConstants.PROPERTY_IN_DIALOG, true);
 		importJob.schedule();
-		importJob.join(10_000L, monitor);
+		// Source attachment and classpath fixes must not race an unfinished smart
+		// import.
+		try {
+			importJob.join(0L, monitor);
+		} catch (InterruptedException | OperationCanceledException e) {
+			importJob.cancel();
+			throw e;
+		}
+		final IStatus importResult = importJob.getResult();
+		if (importResult != null && importResult.matches(IStatus.CANCEL)) {
+			throw new OperationCanceledException();
+		}
+		if (importResult != null && importResult.matches(IStatus.ERROR)) {
+			throw new CoreException(importResult);
+		}
 		final String name = extensionFolder.lastSegment();
 
 		final IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(name);
 		if (!project.exists()) {
 			try {
-				project.create(null, progress.newChild(3));				
+				final IProjectDescription description = ResourcesPlugin.getWorkspace().newProjectDescription(name);
+				description.setLocation(extensionFolder);
+				project.create(description, progress.newChild(3));
 			} catch (ResourceException e) {
 				if (e.getStatus().getCode() == IResourceStatus.RESOURCE_EXISTS) {
 					project.open(monitor);
@@ -217,35 +284,32 @@ public class Importer {
 				}
 			}
 		}
-		final IJavaProject javaProject = JavaCore.create(project);
-		javaProject.save(monitor, DEBUG);
-		if (JavaProject.hasJavaNature(project)) {
-			javaProject.open(monitor);			
-		}
-		fixProjectCompilerSettings(project, javaProject, version);
-		project.open(progress.newChild(3));
-		FixProjectsUtils.removeBuildersFromProject(progress.newChild(3), project);
-		addHybrisNature(project, progress.newChild(3));
+		configureImportedProject(project, version, progress);
 		return project;
 	}
 
-	protected double getPlatformVersion(final File platformHome) {
-		final java.nio.file.Path buildNumberPath = platformHome.toPath().resolve("build.number");
-		Double platformVersion = 6.3d;
-		String propertyVersion = "";
-		try (FileReader fr = new FileReader(buildNumberPath.toFile())) {
-			final Properties platformProps = new Properties();
-			platformProps.load(fr);
-			propertyVersion = platformProps.getProperty("version", platformVersion.toString());
-			platformVersion = convertPlatformVersion(propertyVersion, platformVersion);
-		} catch (final IOException e) {
-			throw new IllegalStateException(MessageFormat.format("Error reading file {0}", buildNumberPath), e);
-		}
-		return platformVersion;
+	/**
+	 * Configures a project after Eclipse Smart Import has created it.
+	 * @param project newly imported project
+	 * @param version platform version used for warning preferences
+	 * @param monitor import progress monitor
+	 * @throws CoreException if project or JDK configuration fails
+	 */
+	protected void configureImportedProject(final IProject project, final double version,
+			final IProgressMonitor monitor) throws CoreException {
+		project.open(monitor);
+		addHybrisNature(project, monitor);
+		final IJavaProject javaProject = JavaCore.create(project);
+		javaProject.open(monitor);
+		fixProjectCompilerSettings(project, javaProject, version);
+		// This is required even when the optional classpath-fixing phase is disabled.
+		ProjectJavaRuntime.apply(javaProject, getJavaRuntime(), monitor);
+		javaProject.save(monitor, DEBUG);
+		FixProjectsUtils.removeBuildersFromProject(monitor, project);
 	}
 
 	protected Double convertPlatformVersion(final String platformVersion, final Double def) {
-		final Matcher m = platformVersionPattern.matcher(platformVersion);
+		final Matcher m = SystemConfig.platformVersionPattern.matcher(platformVersion);
 		Double ret = def;
 		if (m.find()) {
 			try {
@@ -275,17 +339,6 @@ public class Importer {
 		javaProject.setOption(JavaCore.COMPILER_PB_UNNECESSARY_TYPE_CHECK, WARNING_MSG);
 		javaProject.setOption(JavaCore.COMPILER_PB_UNDOCUMENTED_EMPTY_BLOCK, WARNING_MSG);
 
-		// make sure all 1.7 settins are substitute for 1.8
-		// for versions 5.6 and higher
-		final Hashtable<String, String> javaCompilerOptions = JavaCore.getOptions();
-		if (platformVersion >= JVM8_VERSION) {
-			JavaCore.setComplianceOptions("1.8", javaCompilerOptions);
-		} else if (platformVersion >= JVM11_VERSION) {
-			JavaCore.setComplianceOptions("11", javaCompilerOptions);
-		}
-		if (!javaCompilerOptions.isEmpty()) {
-			JavaCore.setOptions(javaCompilerOptions);
-		}
 	}
 
 	private void addHybrisNature(final IProject project, final IProgressMonitor monitor) throws CoreException {
@@ -448,28 +501,28 @@ public class Importer {
 	 */
 	private void fixMissingJavaRuntime(final IProgressMonitor monitor, final IJavaProject javaProject)
 			throws JavaModelException {
-
-		if (!CONFIG_FOLDER.equals(javaProject.getProject().getName())) {
-			final IClasspathEntry[] classPathEntries = javaProject.getRawClasspath();
-			boolean found = false;
-			for (final IClasspathEntry classpathEntry : classPathEntries) {
-				// fix missing runtime
-				if (classpathEntry.getEntryKind() == IClasspathEntry.CPE_CONTAINER
-						&& classpathEntry.getPath().toString().startsWith("org.eclipse.jdt.launching.JRE_CONTAINER")) {
-					found = true;
-					break;
-				}
-			}
-
-			if (!found) {
-				final IClasspathEntry entry = JavaCore
-						.newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER"), false);
-				final Set<IClasspathEntry> entries = new HashSet<>(Arrays.asList(classPathEntries));
-				entries.add(entry);
-				FixProjectsUtils.setClasspath(entries.toArray(new IClasspathEntry[entries.size()]), javaProject,
-						monitor);
+		// Existing projects keep their explicit SDK unless the user confirms a workspace-wide change.
+		for (final IClasspathEntry entry : javaProject.getRawClasspath()) {
+			if ((entry.getEntryKind() == IClasspathEntry.CPE_CONTAINER
+					&& JavaRuntime.JRE_CONTAINER.equals(entry.getPath().segment(0)))
+					|| (entry.getEntryKind() == IClasspathEntry.CPE_VARIABLE
+							&& JavaRuntime.JRELIB_VARIABLE.equals(entry.getPath().segment(0)))) {
+				return;
 			}
 		}
+		ProjectJavaRuntime.apply(javaProject, getJavaRuntime(), monitor);
+	}
+
+	private IVMInstall getJavaRuntime() throws JavaModelException {
+		if (javaRuntime == null) {
+			try {
+				javaRuntime = AntJavaRuntime.getVMInstall();
+			} catch (IOException e) {
+				throw new JavaModelException(new CoreException(new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+						"The configured import JDK is unavailable", e)));
+			}
+		}
+		return javaRuntime;
 	}
 
 	/**
@@ -596,11 +649,12 @@ public class Importer {
 		}
 	}
 
-	private void fixMissingProjectDependencies(final IProgressMonitor monitor) throws JavaModelException {
-		final Set<ExtensionHolder> extensions = FixProjectsUtils.getAllExtensionsForPlatform();
+	private void fixMissingProjectDependencies(final IProgressMonitor monitor, final SystemConfig config)
+			throws JavaModelException {
+		final List<ExtensionConfig> extensions = config.getExtensionsInOrder();
 		final Set<IProject> projects = FixProjectsUtils.getAllOpenHybrisProjects();
 		for (final IProject project : projects) {
-			for (final ExtensionHolder extHolder : extensions) {
+			for (final ExtensionConfig extHolder : extensions) {
 				if (extHolder.getName().equalsIgnoreCase(project.getName())) {
 					addMissingProjectDependencies(monitor, project, extHolder);
 				}
@@ -609,12 +663,16 @@ public class Importer {
 	}
 
 	private void addMissingProjectDependencies(final IProgressMonitor monitor, final IProject project,
-			final ExtensionHolder extHolder) throws JavaModelException {
+			final ExtensionConfig extHolder) throws JavaModelException {
 		final IJavaProject javaProject = JavaCore.create(project);
 
 		final IClasspathEntry[] classPathEntries = javaProject.getRawClasspath();
-		if (!extHolder.getDependentExtensions().isEmpty()) {
-			for (final String ext : extHolder.getDependentExtensions()) {
+		final List<String> dependencies = new ArrayList<>(extHolder.getDependencies());
+		if (!Constants.PLATFROM.equals(project.getName()) && !dependencies.contains(Constants.PLATFROM)) {
+			dependencies.add(Constants.PLATFROM);
+		}
+		if (!dependencies.isEmpty()) {
+			for (final String ext : dependencies) {
 				boolean found = false;
 				for (final IClasspathEntry classpathEntry : classPathEntries) {
 					// fix jar files

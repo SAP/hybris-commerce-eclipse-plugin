@@ -16,7 +16,6 @@
 package com.hybris.hyeclipse.tsv.builder;
 
 import java.util.Collection;
-import java.util.EnumMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 
@@ -34,18 +33,10 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.SubMonitor;
 
 import com.hybris.hyeclipse.tsv.validator.ItemsXmlValidator;
-import com.hybris.ps.tsv.results.IResult;
-import com.hybris.ps.tsv.results.ResultState;
-import com.hybris.ps.tsv.rules.xml.RulePriority;
+import com.hybris.hyeclipse.commons.validation.ValidationResult;
+import com.hybris.hyeclipse.commons.validation.ValidationResult.State;
 
 abstract class TsvBuilder extends IncrementalProjectBuilder {
-
-	private static final Map<RulePriority, Integer> priorityMap = new EnumMap<>(RulePriority.class);
-	static {
-		priorityMap.put(RulePriority.H, IMarker.PRIORITY_HIGH);
-		priorityMap.put(RulePriority.M, IMarker.PRIORITY_NORMAL);
-		priorityMap.put(RulePriority.L, IMarker.PRIORITY_LOW);
-	}
 
 	class ItemsXmlFinder implements IResourceDeltaVisitor, IResourceVisitor {
 		final Collection<IFile> files = new LinkedHashSet<>();
@@ -117,13 +108,15 @@ abstract class TsvBuilder extends IncrementalProjectBuilder {
 		}
 	}
 
-	private void processResults(final IFile file, final Collection<IResult> results, final IProgressMonitor monitor) throws CoreException {
+	private void processResults(final IFile file, final Collection<ValidationResult> results,
+			final IProgressMonitor monitor) throws CoreException {
         final SubMonitor progress = SubMonitor.convert(monitor, "Processing results", results.size());
         deleteMarkers(file);
-        for (final IResult result : results) {
-        	if (result.getState() == ResultState.FAIL || result.getState() == ResultState.ERROR) {
-				addMarker(file, result.getDescription(), result.getLine() != null ? result.getLine().intValue() : 1, IMarker.SEVERITY_ERROR,
-						priorityMap.get(result.getRule().getPriority()));
+		for (final ValidationResult result : results) {
+			if (result.getState() == State.FAIL || result.getState() == State.ERROR) {
+				final int priority = "H".equals(result.getPriority()) ? IMarker.PRIORITY_HIGH
+						: "L".equals(result.getPriority()) ? IMarker.PRIORITY_LOW : IMarker.PRIORITY_NORMAL;
+				addMarker(file, result.getDescription(), result.getLine(), IMarker.SEVERITY_ERROR, priority);
         	}
         	progress.worked(1);
         }

@@ -15,9 +15,11 @@
  ******************************************************************************/
 package com.hybris.hyeclipse.emf.beans.presentation.platformdependent;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.HashSet;
 
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
@@ -36,10 +38,9 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
-import com.hybris.hyeclipse.ytypesystem.Activator;
-
-import de.hybris.bootstrap.typesystem.YComposedType;
-import de.hybris.bootstrap.typesystem.YType;
+import com.hybris.hyeclipse.commons.Activator;
+import com.hybris.hyeclipse.commons.typesystem.TypeSystemIndex;
+import com.hybris.hyeclipse.commons.typesystem.YType;
 
 class BeansModelWizardTypeSelectionPage extends WizardPage {
 	
@@ -87,7 +88,15 @@ class BeansModelWizardTypeSelectionPage extends WizardPage {
 		tableViewer.getTable().setLayoutData(new GridData(GridData.FILL_BOTH));
 		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
 		tableViewer.setLabelProvider(new YTypeLabelProvider());
-		final Collection<? extends YType> allTypes = Activator.getDefault().getTypeSystem().getComposedTypes();
+		final TypeSystemIndex index = Activator.getDefault().getTypeSystemIndex();
+		try {
+			new ProgressMonitorDialog(getShell()).run(true, true, monitor -> index.awaitPendingRefresh(monitor));
+		} catch (InvocationTargetException e) {
+			Activator.logError("Could not load model types for bean generation", e);
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+		}
+		final Collection<YType> allTypes = index.getSnapshot().getTypes();
 		tableViewer.setInput(allTypes);
 		
 		final Button selectAllButton = new Button(composite, SWT.CHECK);
@@ -101,7 +110,7 @@ class BeansModelWizardTypeSelectionPage extends WizardPage {
 			@Override
 			public void checkStateChanged(CheckStateChangedEvent event) {
 				if (event.getChecked()) {
-					selectedTypes.add((YComposedType) event.getElement());
+					selectedTypes.add((YType) event.getElement());
 				}
 				else {
 					selectedTypes.remove(event.getElement());

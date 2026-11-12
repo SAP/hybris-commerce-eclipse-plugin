@@ -2,12 +2,13 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ProjectImporter
 Bundle-SymbolicName: com.hybris.hyeclipse.importer;singleton:=true
-Bundle-Version: 22.9.0.qualifier
+Bundle-Version: 22.9.0.RELEASE
 Bundle-Activator: com.hybris.yps.hyeclipse.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-21
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
+ org.eclipse.core.filesystem,
  org.eclipse.ui.ide,
  org.eclipse.core.resources,
  org.eclipse.jdt.core,
