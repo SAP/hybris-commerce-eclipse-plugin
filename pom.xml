@@ -32,10 +32,6 @@
 		<sonar.java.source>21</sonar.java.source>
 	</properties>
 
-	<prerequisites>
-		<maven>3.0</maven>
-	</prerequisites>
-
 	<scm>
 		<connection>https://github.com/SAP/hybris-commerce-eclipse-plugin.git</connection>
 		<tag>HEAD</tag>
@@ -68,11 +64,10 @@
 
 	<repositories>
 		<repository>
-			<id>2024-09</id>
+			<id>2026-06</id>
 			<layout>p2</layout>
-			<url>https://download.eclipse.org/releases/2024-09</url>
+			<url>https://download.eclipse.org/releases/2026-06</url>
 		</repository>
-
 	</repositories>
 
 	<build>
@@ -89,7 +84,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-enforcer-plugin</artifactId>
-				<version>3.6.2</version>
+				<version>3.6.3</version>
 				<executions>
 					<execution>
 						<id>enforce-maven</id>
@@ -99,7 +94,7 @@
 						<configuration>
 							<rules>
 								<requireMavenVersion>
-									<version>3.0</version>
+									<version>3.9.15</version>
 								</requireMavenVersion>
 							</rules>
 						</configuration>
