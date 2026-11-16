@@ -68,12 +68,10 @@ public class ExtensionLabelProvider extends LabelProvider implements ITableLabel
 	@Override
 	public Image getColumnImage(Object element, int columnIndex) {
 		ExtensionHolder extension = (ExtensionHolder) element;
-		switch (columnIndex) {
-			case 1 :
-				return getImage(extension.isSelected());
-			default :
-				return null; 	
-		}
+		return switch (columnIndex) {
+			case 1  -> getImage(extension.isSelected());
+			default  -> null; 	
+		};
 	
 	}
 

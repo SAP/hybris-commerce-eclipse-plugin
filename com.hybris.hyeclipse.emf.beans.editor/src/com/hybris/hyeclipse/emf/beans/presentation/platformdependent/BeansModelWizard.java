@@ -174,8 +174,7 @@ public class BeansModelWizard extends Wizard implements INewWizard {
 			for (EStructuralFeature eStructuralFeature : ExtendedMetaData.INSTANCE.getAllElements(ExtendedMetaData.INSTANCE.getDocumentRoot(beansPackage))) {
 				if (eStructuralFeature.isChangeable()) {
 					EClassifier eClassifier = eStructuralFeature.getEType();
-					if (eClassifier instanceof EClass) {
-						EClass eClass = (EClass)eClassifier;
+					if (eClassifier instanceof EClass eClass) {
 						if (!eClass.isAbstract()) {
 							initialObjectNames.add(eStructuralFeature.getName());
 						}
@@ -263,12 +262,12 @@ public class BeansModelWizard extends Wizard implements INewWizard {
 			IWorkbenchWindow workbenchWindow = workbench.getActiveWorkbenchWindow();
 			IWorkbenchPage page = workbenchWindow.getActivePage();
 			final IWorkbenchPart activePart = page.getActivePart();
-			if (activePart instanceof ISetSelectionTarget) {
+			if (activePart instanceof ISetSelectionTarget target) {
 				final ISelection targetSelection = new StructuredSelection(modelFile);
 				getShell().getDisplay().asyncExec
 					(new Runnable() {
 						 public void run() {
-							 ((ISetSelectionTarget)activePart).selectReveal(targetSelection);
+							 target.selectReveal(targetSelection);
 						 }
 					 });
 			}
@@ -361,7 +360,7 @@ public class BeansModelWizard extends Wizard implements INewWizard {
 		newFileCreationPage = new BeansModelWizardNewFileCreationPage("Whatever", selection);
 		newFileCreationPage.setTitle(BeansEditorPlugin.INSTANCE.getString("_UI_BeansModelWizard_label"));
 		newFileCreationPage.setDescription(BeansEditorPlugin.INSTANCE.getString("_UI_BeansModelWizard_description"));
-		newFileCreationPage.setFileName(BeansEditorPlugin.INSTANCE.getString("_UI_BeansEditorFilenameDefaultBase") + "." + FILE_EXTENSIONS.get(0));
+		newFileCreationPage.setFileName(BeansEditorPlugin.INSTANCE.getString("_UI_BeansEditorFilenameDefaultBase") + "." + FILE_EXTENSIONS.getFirst());
 		addPage(newFileCreationPage);
 
 		// Try and get the resource selection to determine a current directory for the file dialog.
@@ -370,10 +369,7 @@ public class BeansModelWizard extends Wizard implements INewWizard {
 			// Get the resource...
 			//
 			Object selectedElement = selection.iterator().next();
-			if (selectedElement instanceof IResource) {
-				// Get the resource parent, if its a file.
-				//
-				IResource selectedResource = (IResource)selectedElement;
+			if (selectedElement instanceof IResource selectedResource) {
 				if (selectedResource.getType() == IResource.FILE) {
 					selectedResource = selectedResource.getParent();
 				}
@@ -388,7 +384,7 @@ public class BeansModelWizard extends Wizard implements INewWizard {
 					// Make up a unique new name here.
 					//
 					String defaultModelBaseFilename = BeansEditorPlugin.INSTANCE.getString("_UI_BeansEditorFilenameDefaultBase");
-					String defaultModelFilenameExtension = FILE_EXTENSIONS.get(0);
+					String defaultModelFilenameExtension = FILE_EXTENSIONS.getFirst();
 					String modelFilename = defaultModelBaseFilename + "." + defaultModelFilenameExtension;
 					for (int i = 1; ((IContainer)selectedResource).findMember(modelFilename) != null; ++i) {
 						modelFilename = defaultModelBaseFilename + i + "." + defaultModelFilenameExtension;

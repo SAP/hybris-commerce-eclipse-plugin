@@ -119,7 +119,7 @@ public class NewExtensionWizardPage extends WizardPage {
 		    // prefs are automatically flushed during a plugin's "super.stop()".
 		    prefs.flush();  
 		  } catch (BackingStoreException e) {
-			  Activator.logError("Couldn't save default location for custom extensions", e);;
+			  Activator.logError("Couldn't save default location for custom extensions", e);
 		}
 	}
 	/**

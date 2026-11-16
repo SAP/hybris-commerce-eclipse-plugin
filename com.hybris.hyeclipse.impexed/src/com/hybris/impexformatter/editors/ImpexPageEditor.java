@@ -135,8 +135,8 @@ public class ImpexPageEditor extends MultiPageEditorPart implements IResourceCha
 	}
 
 	static void formatText(IEditorPart editorPart) {
-		if(editorPart instanceof ImpexPageEditor) {
-			String unformattedText = ((ImpexPageEditor)editorPart).editor.getDocumentProvider().getDocument(editorPart.getEditorInput()).get();
+		if(editorPart instanceof ImpexPageEditor pageEditor) {
+			String unformattedText = pageEditor.editor.getDocumentProvider().getDocument(editorPart.getEditorInput()).get();
 	
 			try (BufferedReader reader = new BufferedReader(new StringReader(unformattedText));
 			                StringWriter writer = new StringWriter()) {
@@ -155,7 +155,7 @@ public class ImpexPageEditor extends MultiPageEditorPart implements IResourceCha
 					}
 				}
 	
-				((ImpexPageEditor)editorPart).editor.getDocumentProvider().getDocument(editorPart.getEditorInput()).set(writer.toString());
+				pageEditor.editor.getDocumentProvider().getDocument(editorPart.getEditorInput()).set(writer.toString());
 	
 			}
 			catch (final IOException e) {

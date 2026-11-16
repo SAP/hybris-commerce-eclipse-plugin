@@ -110,14 +110,14 @@ public final class ValidationXml {
 	 */
 	public static int line(final Node node) {
 		final Object line = node.getUserData(LINE_KEY);
-		return line instanceof Integer ? ((Integer) line).intValue() : 1;
+		return line instanceof Integer i ? i.intValue() : 1;
 	}
 
 	static List<Element> children(final Element parent, final String name) {
 		final List<Element> result = new ArrayList<>();
 		for (Node node = parent.getFirstChild(); node != null; node = node.getNextSibling()) {
-			if (node instanceof Element && name.equals(node.getNodeName())) {
-				result.add((Element) node);
+			if (node instanceof Element element && name.equals(node.getNodeName())) {
+				result.add(element);
 			}
 		}
 		return result;
@@ -125,7 +125,7 @@ public final class ValidationXml {
 
 	static Element child(final Element parent, final String name) {
 		final List<Element> values = children(parent, name);
-		return values.isEmpty() ? null : values.get(0);
+		return values.isEmpty() ? null : values.getFirst();
 	}
 
 	static void checkCanceled(final IProgressMonitor monitor) {

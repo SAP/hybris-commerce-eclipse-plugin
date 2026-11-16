@@ -33,8 +33,7 @@ public class DocumentProvider extends FileDocumentProvider {
 		//IDocumentPartitioner partitioner = createDocumentPartitioner();
 		IDocumentPartitioner partitioner = new ImpexDocumentPartitioner();
 		
-		if ((document instanceof IDocumentExtension3)) {
-			IDocumentExtension3 extension3 = (IDocumentExtension3) document;
+		if ((document instanceof IDocumentExtension3 extension3)) {
 			extension3.setDocumentPartitioner(Activator.IMPEX_PARTITIONING, partitioner);
 		}
 		else {

@@ -77,8 +77,8 @@ public class ExtensionCleanBuildHandler extends AbstractHandler {
 			return null;
 		IStructuredSelection structuredSelection = (IStructuredSelection) selection;
 		Object element = structuredSelection.getFirstElement();
-		if (element instanceof IProject)
-			return (IProject) element;
+		if (element instanceof IProject iProject)
+			return iProject;
 		if (!(element instanceof IAdaptable))
 			return null;
 		IAdaptable adaptable = (IAdaptable) element;

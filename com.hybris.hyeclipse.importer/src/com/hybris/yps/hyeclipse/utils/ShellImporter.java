@@ -166,8 +166,8 @@ public class ShellImporter {
 		IConsole[] existing = conMan.getConsoles();
 		MessageConsole myConsole = null;
 		for (int i = 0; i < existing.length; i++) {
-			if (name.equals(existing[i].getName()) && existing[i] instanceof MessageConsole) {
-				myConsole = (MessageConsole) existing[i];
+			if (name.equals(existing[i].getName()) && existing[i] instanceof MessageConsole console) {
+				myConsole = console;
 				break;
 			}
 		}

@@ -44,15 +44,17 @@ public class GeneratedModelScannerTest {
 				+ "@Accessor(qualifier=CODE) public abstract String getCode(); "
 				+ "@Accessor(qualifier=\"ignoredSetter\") public abstract void notAnAccessor();"));
 		sources.put("/platform/bootstrap/gensrc/DealerModel.java", source("DealerModel", "ParentModel",
-				"public static final String _TYPECODE = (\"Deal\" + \"er\"); "
-				+ "public static final String DEALER = \"dealer\"; public static final String NOISE=\"notAnAttribute\"; "
-				+ "// @Accessor(qualifier=\"comment\")\n"
-				+ "@Accessor(qualifier=DEALER) public abstract void setDealer(Object value); "
-				+ "@Accessor(qualifier=DealerModel.DEALER) public abstract String getDealer(); "
-				+ "@Accessor(qualifier=CODE) public abstract Integer getCode(); "
-				+ "@Accessor(qualifier=\"members\") public abstract java.util.List<ParentModel> getMembers(); "
-				+ "@Accessor(qualifier=\"field\") private boolean enabled; "
-				+ "public abstract String getUnannotated();"));
+				"""
+				public static final String _TYPECODE = ("Deal" + "er"); \
+				public static final String DEALER = "dealer"; public static final String NOISE="notAnAttribute"; \
+				// @Accessor(qualifier="comment")
+				@Accessor(qualifier=DEALER) public abstract void setDealer(Object value); \
+				@Accessor(qualifier=DealerModel.DEALER) public abstract String getDealer(); \
+				@Accessor(qualifier=CODE) public abstract Integer getCode(); \
+				@Accessor(qualifier="members") public abstract java.util.List<ParentModel> getMembers(); \
+				@Accessor(qualifier="field") private boolean enabled; \
+				public abstract String getUnannotated();\
+				"""));
 		final TypeSystemSnapshot snapshot = scan(sources);
 		Assert.assertEquals(Arrays.asList("Dealer", "Item", "Parent"), snapshot.getAllTypeNames());
 		final YType dealer = snapshot.getType("Dealer");

@@ -132,8 +132,8 @@ public class TSVEditor extends MultiPageEditorPart implements IResourceChangeLis
 
 		        Object selection = structuredSelection.getFirstElement();
 		        
-				if (selection instanceof TSVResult) {
-					openResultSource((TSVResult) selection);
+				if (selection instanceof TSVResult result) {
+					openResultSource(result);
 				}
 			}
 			
@@ -166,8 +166,7 @@ public class TSVEditor extends MultiPageEditorPart implements IResourceChangeLis
 			} else if (source.isFile()) {
 				final IEditorPart opened = IDE.openEditorOnFileStore(getSite().getPage(),
 						EFS.getLocalFileSystem().getStore(source.toURI()));
-				if (opened instanceof ITextEditor) {
-					final ITextEditor text = (ITextEditor) opened;
+				if (opened instanceof ITextEditor text) {
 					final IDocument document = text.getDocumentProvider().getDocument(text.getEditorInput());
 					final IRegion line = document.getLineInformation(Math.max(0, result.getLineNumber() - 1));
 					text.selectAndReveal(line.getOffset(), line.getLength());
@@ -182,8 +181,8 @@ public class TSVEditor extends MultiPageEditorPart implements IResourceChangeLis
 	
 	private Object createModel() {
 		IEditorInput editorInput = editor.getEditorInput();
-		if (editorInput instanceof IFileEditorInput) {
-			String reportFile = ((IFileEditorInput)editorInput).getFile().getLocation().toOSString();
+		if (editorInput instanceof IFileEditorInput input1) {
+			String reportFile = input1.getFile().getLocation().toOSString();
 			File file = new File(reportFile);
 			if (file.exists() && file.length() > 0) {
 				try (final InputStream input = new FileInputStream(file)) {
@@ -196,9 +195,9 @@ public class TSVEditor extends MultiPageEditorPart implements IResourceChangeLis
 				}
 			}
 		}
-		else if (editorInput instanceof IStorageEditorInput) {
+		else if (editorInput instanceof IStorageEditorInput input) {
 			try {
-				IStorage tsvStorage = (IStorage) ((IStorageEditorInput)editorInput).getStorage();
+				IStorage tsvStorage = (IStorage) input.getStorage();
 				try (final InputStream resultsStream = tsvStorage.getContents()) {
 					TSVResults results = TSVResults.read(resultsStream);
 					resultMap.putAll(parseResults(results, resultMap));

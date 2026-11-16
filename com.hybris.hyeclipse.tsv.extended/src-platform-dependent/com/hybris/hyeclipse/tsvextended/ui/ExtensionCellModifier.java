@@ -55,7 +55,7 @@ public class ExtensionCellModifier implements ICellModifier {
 				result = extension.getName();
 				break;
 			case 1 : // CORE_COLUMN 
-				result = new Boolean(extension.isSelected());
+				result = Boolean.valueOf(extension.isSelected());
 				break;
 			default :
 				result = "";

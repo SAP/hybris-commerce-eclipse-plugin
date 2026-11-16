@@ -17,7 +17,6 @@ package com.hybris.yps.hyeclipse.utils;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -131,9 +130,11 @@ public class ShellImporterJavaRuntimeTest {
 		executable(new File(oldJava, "java"), "#!/bin/sh\necho wrong-java-17\n");
 		executable(new File(oldJava, "ant"), "#!/bin/sh\necho \"ant-java-home=$JAVA_HOME\"\njava\n");
 		Files.writeString(new File(platform, "setantenv.sh").toPath(),
-				"test \"$JAVA_HOME\" = \"$HYECLIPSE_ANT_JAVA_HOME\" || return 19\n"
-						+ "export JAVA_HOME=/wrong-java-17\nexport PATH=\"$PWD/old-java-bin:$PATH\"\n",
-				StandardCharsets.UTF_8);
+				"""
+				test "$JAVA_HOME" = "$HYECLIPSE_ANT_JAVA_HOME" || return 19
+				export JAVA_HOME=/wrong-java-17
+				export PATH="$PWD/old-java-bin:$PATH"
+				""");
 		final ShellImporter importer = new ShellImporter() {
 			@Override
 			String defaultShell() {
@@ -175,7 +176,7 @@ public class ShellImporterJavaRuntimeTest {
 	}
 
 	private void executable(final File file, final String contents) throws IOException {
-		Files.writeString(file.toPath(), contents, StandardCharsets.UTF_8);
+		Files.writeString(file.toPath(), contents);
 		Assert.assertTrue(file.setExecutable(true));
 	}
 }

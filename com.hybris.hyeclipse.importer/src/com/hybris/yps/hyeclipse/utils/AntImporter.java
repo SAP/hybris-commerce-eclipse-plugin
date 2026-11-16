@@ -2,7 +2,6 @@ package com.hybris.yps.hyeclipse.utils;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.apache.tools.ant.BuildEvent;
 import org.apache.tools.ant.BuildException;
@@ -138,7 +137,7 @@ public class AntImporter {
         project.setBasedir(buildXmlFileFullPath);
         project.setNewProperty("PLATFORM_HOME", buildXmlFileFullPath);
         project.setJavaVersionProperty();
-        Path buildPath = Paths.get(buildXmlFileFullPath, "build.xml");
+        Path buildPath = Path.of(buildXmlFileFullPath, "build.xml");
         File buildFile = buildPath.toFile();
 
 
