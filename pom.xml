@@ -20,6 +20,7 @@
 	</developers>
 
 	<properties>
+      <maven.compiler.release>21</maven.compiler.release>
 		<tycho-version>5.0.4</tycho-version>
 
 		<!-- PROJECT SETTINGS -->

@@ -58,7 +58,7 @@ public class HybrisJUnitIntegrationTestLoader implements ITestLoader {
 			List<Description> children= current.getChildren();
 			if (children.size() != 1 || matcher.matches(current))
 				return current;
-			current= children.get(0);
+			current= children.getFirst();
 		}
 	}
 
@@ -112,7 +112,6 @@ public class HybrisJUnitIntegrationTestLoader implements ITestLoader {
 			if (setup.getReturnType() == Test.class && Modifier.isPublic(modifiers) && Modifier.isStatic(modifiers))
 				return true;
 		} catch (SecurityException | NoSuchMethodException e1) {
-			;
 		}
 		return false;
 	}

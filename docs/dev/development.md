@@ -27,6 +27,70 @@ mvn clean verify sonar:sonar
 
 Results will be available on your local website
 
+## Java Upgrades with OpenRewrite
+
+[OpenRewrite](https://docs.openrewrite.org/) is used for automated refactoring and source migrations when upgrading target Java versions or applying modern Java recipes across the codebase.
+
+### Running OpenRewrite via Maven
+
+The `rewrite-maven-plugin` can be invoked directly on-demand using the Maven wrapper without modifying `pom.xml`.
+
+#### 1. Dry Run (Preview Changes)
+
+To preview proposed refactorings and generate a patch without modifying files on disk:
+
+```bash
+./mvnw org.openrewrite.maven:rewrite-maven-plugin:dryRun \
+  -Drewrite.recipeArtifactCoordinates=org.openrewrite.recipe:rewrite-migrate-java:RELEASE \
+  -Drewrite.activeRecipes=org.openrewrite.java.migrate.UpgradeToJava21 \
+  -Drewrite.exclusions="**/com.hybris.hyeclipse.emf.beans/**"
+```
+
+The dry run prints a summary of modified files and writes a patch file to `target/site/rewrite/rewrite.patch`.
+
+#### 2. Apply Changes
+
+To apply recipes directly to the source code:
+
+```bash
+./mvnw org.openrewrite.maven:rewrite-maven-plugin:run \
+  -Drewrite.recipeArtifactCoordinates=org.openrewrite.recipe:rewrite-migrate-java:RELEASE \
+  -Drewrite.activeRecipes=org.openrewrite.java.migrate.UpgradeToJava21 \
+  -Drewrite.exclusions="**/com.hybris.hyeclipse.emf.beans/**"
+```
+
+#### 3. Common Recipes
+
+- **Java 21 migration:** `org.openrewrite.java.migrate.UpgradeToJava21`
+- **Java 17 migration:** `org.openrewrite.java.migrate.UpgradeToJava17`
+- **Java version best practices:** `org.openrewrite.java.migrate.JavaVersionBestPractices`
+
+### Important Considerations for this Repository
+
+1. **Exclude EMF Generated Code**:
+   Do **not** apply automated transformations to `com.hybris.hyeclipse.emf.beans/src/`. This code is generated from `model/beans.ecore` and `model/beans.genmodel`. Always pass:
+   ```bash
+   -Drewrite.exclusions="**/com.hybris.hyeclipse.emf.beans/**"
+   ```
+2. **Review Code Style and Project Conventions**:
+   Always inspect the diff (`git diff`) after running recipes. This repository enforces conservative Java features:
+   - Do **not** use `var` (retain explicit types)
+   - Do **not** use pattern matching `instanceof` (use traditional cast-after-check)
+   - Do **not** use records, sealed classes, or text blocks (`"""`)
+   - Preserve 4-space tab indentation and K&R braces
+   Reformat modified files using `eclipse-formatter.xml` or `docs/dev/eclipse-code-style.xml`.
+3. **Update OSGi and Tycho Metadata**:
+   OpenRewrite only modifies Java source files. When upgrading the Java target version, manually update:
+   - Root `pom.xml`: `<maven.compiler.release>`, `<source>`, `<target>`, and `<sonar.java.source>`
+   - `META-INF/MANIFEST.MF` across all bundles: `Bundle-RequiredExecutionEnvironment: JavaSE-<version>` (e.g. `JavaSE-21`)
+   - `Makefile`: `JAVA_HOME` auto-detection logic if bumping minimum runtime version
+4. **Build and Test Verification**:
+   Verify that all OSGi bundles compile and pass tests:
+   ```bash
+   make test
+   make build
+   ```
+
 ## Generating Release Notes
 
 Release notes are generated thanks to [gren](https://github.com/github-tools/github-release-notes).

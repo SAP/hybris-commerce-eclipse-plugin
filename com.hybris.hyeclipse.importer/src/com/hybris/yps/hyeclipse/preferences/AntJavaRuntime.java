@@ -64,8 +64,8 @@ public final class AntJavaRuntime {
 		for (final IVMInstall vm : installations) {
 			final String id = JavaRuntime.getCompositeIdFromVM(vm);
 			String version = StringUtils.EMPTY;
-			if (vm instanceof IVMInstall2) {
-				version = ((IVMInstall2) vm).getJavaVersion();
+			if (vm instanceof IVMInstall2 install2) {
+				version = install2.getJavaVersion();
 			}
 			final String label = vm.getName() + (StringUtils.isNotBlank(version) ? " - " + version : StringUtils.EMPTY)
 					+ " (" + vm.getInstallLocation().getAbsolutePath() + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$

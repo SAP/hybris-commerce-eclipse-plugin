@@ -354,8 +354,8 @@ public final class ValidationService {
 		int line = 1;
 		Throwable cause = failure;
 		while (cause != null) {
-			if (cause instanceof SAXParseException) {
-				line = ((SAXParseException) cause).getLineNumber();
+			if (cause instanceof SAXParseException exception) {
+				line = exception.getLineNumber();
 			}
 			cause = cause.getCause();
 		}

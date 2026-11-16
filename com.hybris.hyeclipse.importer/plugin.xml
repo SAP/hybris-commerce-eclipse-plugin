@@ -215,7 +215,7 @@
                mnemonic="C">
             <command
                   commandId="com.hybris.yps.hyeclipse.handlers.help.OpenHelpDotComHandler"
-                  label="SAP Help - Commerce"
+                  label="SAP Help - Commerce Cloud"
                   style="push">
             </command>
             <command
@@ -226,7 +226,12 @@
             </command>
             <command
                   commandId="com.hybris.yps.hyeclipse.handlers.help.OpenExpertsForumHandler"
-                  label="SAP Experts Forum"
+                  label="SAP Community - Home"
+                  style="push">
+            </command>
+            <command
+                  commandId="com.hybris.hyeclipse.importer.command1"
+                  label="SAP Community - Commerce Cloud"
                   style="push">
             </command>
             <command

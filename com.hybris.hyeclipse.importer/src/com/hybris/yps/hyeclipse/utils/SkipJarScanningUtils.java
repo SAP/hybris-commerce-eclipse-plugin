@@ -20,7 +20,6 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -69,7 +68,7 @@ public class SkipJarScanningUtils {
 
 	public static void skipJarScanning(File platformHome) {
 		
-		Path catalinaPropPath = Paths.get(platformHome.getAbsolutePath(), "..", "..", "config", "tomcat", "conf", "catalina.properties");
+		Path catalinaPropPath = Path.of(platformHome.getAbsolutePath(), "..", "..", "config", "tomcat", "conf", "catalina.properties");
 
 		File catalinaFile = catalinaPropPath.toFile();
 		List<String> jarNameList = new ArrayList<>();
@@ -91,7 +90,7 @@ public class SkipJarScanningUtils {
 			}
 			sb.append(System.lineSeparator()).append(System.lineSeparator());
 
-			String content = new String(Files.readAllBytes(Paths.get(catalinaFile.getAbsolutePath())));
+			String content = new String(Files.readAllBytes(Path.of(catalinaFile.getAbsolutePath())));
 
 			Pattern regex = Pattern.compile(REGEX_TO_REPLACE, Pattern.DOTALL);
 			Matcher regexMatcher = regex.matcher(content);
@@ -111,7 +110,7 @@ public class SkipJarScanningUtils {
 
 		try {
 			for (String dirToCheck : dirsToCheck) {
-				File libDir = Paths.get(extDir.getAbsolutePath(), dirToCheck).toFile();
+				File libDir = Path.of(extDir.getAbsolutePath(), dirToCheck).toFile();
 				includeJarToSkip(jarNames, libDir);
 			}
 		} catch (Exception e) {

@@ -168,7 +168,7 @@ public class BeansPackageImpl extends EPackageImpl implements BeansPackage {
 	 * @generated
 	 */
 	public EAttribute getAbstractPojo_Class() {
-		return (EAttribute)abstractPojoEClass.getEStructuralFeatures().get(0);
+		return (EAttribute)abstractPojoEClass.getEStructuralFeatures().getFirst();
 	}
 
 	/**
@@ -195,7 +195,7 @@ public class BeansPackageImpl extends EPackageImpl implements BeansPackage {
 	 * @generated
 	 */
 	public EAttribute getAbstractPojos_Group() {
-		return (EAttribute)abstractPojosEClass.getEStructuralFeatures().get(0);
+		return (EAttribute)abstractPojosEClass.getEStructuralFeatures().getFirst();
 	}
 
 	/**
@@ -231,7 +231,7 @@ public class BeansPackageImpl extends EPackageImpl implements BeansPackage {
 	 * @generated
 	 */
 	public EAttribute getBean_Description() {
-		return (EAttribute)beanEClass.getEStructuralFeatures().get(0);
+		return (EAttribute)beanEClass.getEStructuralFeatures().getFirst();
 	}
 
 	/**
@@ -285,7 +285,7 @@ public class BeansPackageImpl extends EPackageImpl implements BeansPackage {
 	 * @generated
 	 */
 	public EAttribute getDocumentRoot_Mixed() {
-		return (EAttribute)documentRootEClass.getEStructuralFeatures().get(0);
+		return (EAttribute)documentRootEClass.getEStructuralFeatures().getFirst();
 	}
 
 	/**
@@ -330,7 +330,7 @@ public class BeansPackageImpl extends EPackageImpl implements BeansPackage {
 	 * @generated
 	 */
 	public EAttribute getEnum_Description() {
-		return (EAttribute)enumEClass.getEStructuralFeatures().get(0);
+		return (EAttribute)enumEClass.getEStructuralFeatures().getFirst();
 	}
 
 	/**
@@ -366,7 +366,7 @@ public class BeansPackageImpl extends EPackageImpl implements BeansPackage {
 	 * @generated
 	 */
 	public EAttribute getProperty_Description() {
-		return (EAttribute)propertyEClass.getEStructuralFeatures().get(0);
+		return (EAttribute)propertyEClass.getEStructuralFeatures().getFirst();
 	}
 
 	/**

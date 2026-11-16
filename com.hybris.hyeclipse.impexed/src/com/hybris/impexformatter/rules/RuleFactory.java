@@ -22,36 +22,22 @@ import org.eclipse.jface.text.rules.WordRule;
 
 public class RuleFactory {
 
-	public enum ImpexRules {KEYWORD, VARIABLE, REFERENCE, SEMICOLON, COMMA};
+	public enum ImpexRules {KEYWORD, VARIABLE, REFERENCE, SEMICOLON, COMMA}
 	
 	public static WordRule buildRule(ImpexRules ruleType, IToken token) {
-		WordRule result = null;
-		switch (ruleType) {
-		case KEYWORD:
-			result = buildKeywordRule(token);
-			break;
-		case VARIABLE:
-			result = buildVariableRule('$', token);
-			break;
-		case REFERENCE:
-			result = buildVariableRule('&', token);
-			break;
-		case SEMICOLON:
-			result = buildCharRule(';', token);
-			break;
-		case COMMA:
-			result = buildCharRule(',', token);
-			break;
-		default:
-			result = null;
-			break;
-		}
-		return result;
+		return switch (ruleType) {
+		case KEYWORD -> buildKeywordRule(token);
+		case VARIABLE -> buildVariableRule('$', token);
+		case REFERENCE -> buildVariableRule('&', token);
+		case SEMICOLON -> buildCharRule(';', token);
+		case COMMA -> buildCharRule(',', token);
+		default -> null;
+		};
 	}
 	
 	private static WordRule buildCharRule(final char startChar, IToken token) {
 		if (token == null) {token = Token.UNDEFINED;}
-		WordRule rule = new WordRule(new IWordDetector() {
+		return new WordRule(new IWordDetector() {
 			
 			@Override
 			public boolean isWordStart(char c) {
@@ -63,12 +49,11 @@ public class RuleFactory {
 				return false;
 			}
 		}, token);
-		return rule;
 	}
 
 	private static WordRule buildKeywordRule(IToken token) {
 		if (token == null) {token = Token.UNDEFINED;}
-		WordRule rule = new WordRule(new IWordDetector() {
+		return new WordRule(new IWordDetector() {
 			public boolean isWordStart(char c) {
 				return Character.isJavaIdentifierStart(c);
 			}
@@ -77,12 +62,11 @@ public class RuleFactory {
 				return Character.isJavaIdentifierPart(c);
 			}
 		}, token);
-		return rule;
 	}
 	
 	private static WordRule buildVariableRule(final char startChar, IToken token) {
 		if (token == null) {token = Token.UNDEFINED;}
-		WordRule rule = new WordRule(new IWordDetector() {
+		return new WordRule(new IWordDetector() {
 			public boolean isWordStart(char c) {
 				return c == startChar;
 			}
@@ -91,6 +75,5 @@ public class RuleFactory {
 				return Character.isJavaIdentifierPart(c);
 			}
 		}, token);
-		return rule;
 	}
 }

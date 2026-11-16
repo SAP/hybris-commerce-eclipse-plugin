@@ -302,15 +302,15 @@ public class BeansEditor
 	protected IPartListener partListener =
 		new IPartListener() {
 			public void partActivated(IWorkbenchPart p) {
-				if (p instanceof ContentOutline) {
-					if (((ContentOutline)p).getCurrentPage() == contentOutlinePage) {
+				if (p instanceof ContentOutline outline) {
+					if (outline.getCurrentPage() == contentOutlinePage) {
 						getActionBarContributor().setActiveEditor(BeansEditor.this);
 
 						setCurrentViewer(contentOutlineViewer);
 					}
 				}
-				else if (p instanceof PropertySheet) {
-					if (propertySheetPages.contains(((PropertySheet)p).getCurrentPage())) {
+				else if (p instanceof PropertySheet sheet) {
+					if (propertySheetPages.contains(sheet.getCurrentPage())) {
 						getActionBarContributor().setActiveEditor(BeansEditor.this);
 						handleActivate();
 					}
@@ -1019,7 +1019,7 @@ public class BeansEditor
 
 				selectionViewer.setLabelProvider(new AdapterFactoryLabelProvider(adapterFactory));
 				selectionViewer.setInput(editingDomain.getResourceSet());
-				selectionViewer.setSelection(new StructuredSelection(editingDomain.getResourceSet().getResources().get(0)), true);
+				selectionViewer.setSelection(new StructuredSelection(editingDomain.getResourceSet().getResources().getFirst()), true);
 				viewerPane.setTitle(editingDomain.getResourceSet());
 
 				new AdapterFactoryTreeEditor(selectionViewer.getTree(), adapterFactory);
@@ -1332,7 +1332,7 @@ public class BeansEditor
 					if (!editingDomain.getResourceSet().getResources().isEmpty()) {
 					  // Select the root object in the view.
 					  //
-					  contentOutlineViewer.setSelection(new StructuredSelection(editingDomain.getResourceSet().getResources().get(0)), true);
+					  contentOutlineViewer.setSelection(new StructuredSelection(editingDomain.getResourceSet().getResources().getFirst()), true);
 					}
 				}
 
@@ -1400,8 +1400,8 @@ public class BeansEditor
 	 * @generated
 	 */
 	public void handleContentOutlineSelection(ISelection selection) {
-		if (currentViewerPane != null && !selection.isEmpty() && selection instanceof IStructuredSelection) {
-			Iterator<?> selectedElements = ((IStructuredSelection)selection).iterator();
+		if (currentViewerPane != null && !selection.isEmpty() && selection instanceof IStructuredSelection structuredSelection) {
+			Iterator<?> selectedElements = structuredSelection.iterator();
 			if (selectedElements.hasNext()) {
 				// Get the first selected element.
 				//
@@ -1564,7 +1564,7 @@ public class BeansEditor
 	 * @generated
 	 */
 	protected void doSaveAs(URI uri, IEditorInput editorInput) {
-		(editingDomain.getResourceSet().getResources().get(0)).setURI(uri);
+		(editingDomain.getResourceSet().getResources().getFirst()).setURI(uri);
 		setInputWithNotify(editorInput);
 		setPartName(editorInput.getName());
 		IProgressMonitor progressMonitor =
@@ -1673,8 +1673,8 @@ public class BeansEditor
 			contentOutlineStatusLineManager : getActionBars().getStatusLineManager();
 
 		if (statusLineManager != null) {
-			if (selection instanceof IStructuredSelection) {
-				Collection<?> collection = ((IStructuredSelection)selection).toList();
+			if (selection instanceof IStructuredSelection structuredSelection) {
+				Collection<?> collection = structuredSelection.toList();
 				switch (collection.size()) {
 					case 0: {
 						statusLineManager.setMessage(getString("_UI_NoObjectSelected"));

@@ -45,8 +45,8 @@ public class TSVResultsContentProvider implements ITreeContentProvider {
 	@Override
 	public Object[] getElements(Object object) {
 		
-		if (object instanceof HashMap<?, ?>) {
-			return ((HashMap<?,?>) object).keySet().toArray();
+		if (object instanceof HashMap<?,?> map) {
+			return map.keySet().toArray();
 		}
 		else if (object instanceof String) {
 			return resultMap.get(object).toArray();

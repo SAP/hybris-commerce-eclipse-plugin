@@ -21,7 +21,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -438,7 +437,7 @@ public class Importer {
 
 			// We don't care about the existing one. Just overwrite it
 			// bluntly
-			try (FileWriter fw = new FileWriter(springBeansFileNew);) {
+			try (FileWriter fw = new FileWriter(springBeansFileNew)) {
 				fw.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 				fw.write("<beansProjectDescription>\n");
 				fw.write("\t<version>1</version>\n");
@@ -812,7 +811,7 @@ public class Importer {
 		}
 		// remove broken wst settings file
 		if (BROKEN_WST_SETTINGS_FILE_EXT.equals(extension.getName())) {
-			final java.nio.file.Path brokenConfig = Paths.get(extension.getPath(), BROKEN_WST_SETTINGS_FILE);
+			final java.nio.file.Path brokenConfig = java.nio.file.Path.of(extension.getPath(), BROKEN_WST_SETTINGS_FILE);
 			if (Files.exists(brokenConfig)) {
 				try {
 					Files.delete(brokenConfig);

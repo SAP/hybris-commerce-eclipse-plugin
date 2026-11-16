@@ -154,18 +154,18 @@ public class Formatter {
 
 	public static void formatLines(ArrayList<Integer> columnMaxWidth, StringWriter writer, List<LineData> dataBlock)
 	                throws IOException {
-		int firstItemLength = dataBlock.get(0).colData.get(0).length();
+		int firstItemLength = dataBlock.getFirst().colData.getFirst().length();
 		for (LineData row : dataBlock) {
 			if (row != null) {
 				String format = FIRST_LFT_FORMATTER + firstItemLength + STR_FORMATTER;
 				// if row starts with ;
-				if (row.colData.get(0).toString().startsWith(SEMICOLON_MARK)) {
+				if (row.colData.getFirst().toString().startsWith(SEMICOLON_MARK)) {
 					// remove semicolon from first value
-					row.colData.set(0, row.colData.get(0).substring(0, row.colData.get(0).length() - 1));
+					row.colData.set(0, row.colData.getFirst().substring(0, row.colData.getFirst().length() - 1));
 					format = PERCENT_MARK + firstItemLength + COL_STR_FORMATTER;
 				} else if (row.numberOfCol > 1) { // if row at the beginning has end of long value
-					if (row.colData.get(0).toString().endsWith(SEMICOLON_MARK)) {
-						row.colData.set(0, row.colData.get(0).substring(0, row.colData.get(0).length() - 1));
+					if (row.colData.getFirst().toString().endsWith(SEMICOLON_MARK)) {
+						row.colData.set(0, row.colData.getFirst().substring(0, row.colData.getFirst().length() - 1));
 					}
 					if (row.longValueColIndex <= 0) {
 						format = FIRST_LFT_FORMATTER + firstItemLength + COL_STR_FORMATTER;

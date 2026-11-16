@@ -90,8 +90,7 @@ public final class GeneratedModelScanner {
 		final Map<String, SourceModel> models = new TreeMap<>();
 		folder.accept(resource -> {
 			checkCanceled(monitor);
-			if (resource instanceof IFile && "java".equals(resource.getFileExtension())) {
-				final IFile file = (IFile) resource;
+			if (resource instanceof IFile file && "java".equals(resource.getFileExtension())) {
 				try (final InputStream input = file.getContents(true)) {
 					addSource(file.getFullPath().toPortableString(),
 							new String(input.readAllBytes(), Charset.forName(file.getCharset())), models, monitor);
@@ -137,8 +136,8 @@ public final class GeneratedModelScanner {
 			}
 		}
 		for (final Object declaration : unit.types()) {
-			if (declaration instanceof TypeDeclaration) {
-				addDeclaration((TypeDeclaration) declaration, unit, path, models);
+			if (declaration instanceof TypeDeclaration typeDeclaration) {
+				addDeclaration(typeDeclaration, unit, path, models);
 			}
 		}
 	}
@@ -247,8 +246,7 @@ public final class GeneratedModelScanner {
 	private static void addAccessor(final List<?> modifiers, final String javaType, final boolean getter,
 			final int line, final List<AccessorSource> accessors) {
 		for (final Object modifier : modifiers) {
-			if (modifier instanceof NormalAnnotation) {
-				final NormalAnnotation annotation = (NormalAnnotation) modifier;
+			if (modifier instanceof NormalAnnotation annotation) {
 				for (final Object value : annotation.values()) {
 					final MemberValuePair pair = (MemberValuePair) value;
 					if (TypeSystemConstants.QUALIFIER_MEMBER.equals(pair.getName().getIdentifier())) {
@@ -404,7 +402,7 @@ public final class GeneratedModelScanner {
 						&& !"void".equals(method.getReturnType2().toString());
 				if (getter || method.parameters().size() == 1) {
 					final String javaType = getter ? method.getReturnType2().toString()
-							: ((SingleVariableDeclaration) method.parameters().get(0)).getType().toString();
+							: ((SingleVariableDeclaration) method.parameters().getFirst()).getType().toString();
 					addAccessor(method.modifiers(), javaType, getter,
 							unit.getLineNumber(method.getStartPosition()), accessors);
 				}
@@ -442,17 +440,16 @@ public final class GeneratedModelScanner {
 		}
 
 		private static ConstantValue from(final Expression expression) {
-			if (expression instanceof StringLiteral) {
-				return new ConstantValue(((StringLiteral) expression).getLiteralValue(), null, null);
+			if (expression instanceof StringLiteral stringLiteral) {
+				return new ConstantValue(stringLiteral.getLiteralValue(), null, null);
 			}
-			if (expression instanceof Name) {
-				return new ConstantValue(null, ((Name) expression).getFullyQualifiedName(), null);
+			if (expression instanceof Name name) {
+				return new ConstantValue(null, name.getFullyQualifiedName(), null);
 			}
-			if (expression instanceof ParenthesizedExpression) {
-				return from(((ParenthesizedExpression) expression).getExpression());
+			if (expression instanceof ParenthesizedExpression parenthesizedExpression) {
+				return from(parenthesizedExpression.getExpression());
 			}
-			if (expression instanceof InfixExpression) {
-				final InfixExpression infix = (InfixExpression) expression;
+			if (expression instanceof InfixExpression infix) {
 				if (infix.getOperator() == InfixExpression.Operator.PLUS) {
 					final List<ConstantValue> parts = new ArrayList<>();
 					parts.add(from(infix.getLeftOperand()));

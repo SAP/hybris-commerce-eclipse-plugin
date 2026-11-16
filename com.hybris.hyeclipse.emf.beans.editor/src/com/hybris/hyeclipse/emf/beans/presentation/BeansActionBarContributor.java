@@ -109,8 +109,8 @@ public class BeansActionBarContributor
 
 			@Override
 			public void run() {
-				if (activeEditorPart instanceof IViewerProvider) {
-					Viewer viewer = ((IViewerProvider)activeEditorPart).getViewer();
+				if (activeEditorPart instanceof IViewerProvider provider) {
+					Viewer viewer = provider.getViewer();
 					if (viewer != null) {
 						viewer.refresh();
 					}
@@ -272,8 +272,8 @@ public class BeansActionBarContributor
 		Collection<?> newSiblingDescriptors = null;
 
 		ISelection selection = event.getSelection();
-		if (selection instanceof IStructuredSelection && ((IStructuredSelection)selection).size() == 1) {
-			Object object = ((IStructuredSelection)selection).getFirstElement();
+		if (selection instanceof IStructuredSelection structuredSelection && structuredSelection.size() == 1) {
+			Object object = structuredSelection.getFirstElement();
 
 			EditingDomain domain = ((IEditingDomainProvider)activeEditorPart).getEditingDomain();
 
@@ -372,8 +372,8 @@ public class BeansActionBarContributor
 
 				// Delete the ActionContributionItems with matching action.
 				//
-				if (contributionItem instanceof ActionContributionItem) {
-					IAction action = ((ActionContributionItem)contributionItem).getAction();
+				if (contributionItem instanceof ActionContributionItem item) {
+					IAction action = item.getAction();
 					if (actions.contains(action)) {
 						manager.remove(contributionItem);
 					}

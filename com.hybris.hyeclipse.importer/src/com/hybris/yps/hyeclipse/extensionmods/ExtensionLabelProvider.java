@@ -67,18 +67,13 @@ public class ExtensionLabelProvider extends LabelProvider implements ITableLabel
 	@Override
 	public Image getColumnImage(Object element, int columnIndex) {
 		ExtensionHolder extension = (ExtensionHolder) element;
-		switch (columnIndex) {
-			case 0:  // NAME_COLUMN
-				return null;
-			case 1 :
-				return getImage(extension.isCoreModule());
-			case 2 :
-				return getImage(extension.isWebModule());
-			case 3 :
-				return getImage(extension.isHmcModule());
-			default :
-				return null; 	
-		}
+		return switch (columnIndex) {
+			case 0 -> null;
+			case 1  -> getImage(extension.isCoreModule());
+			case 2  -> getImage(extension.isWebModule());
+			case 3  -> getImage(extension.isHmcModule());
+			default  -> null; 	
+		};
 	
 	}
 

@@ -18,7 +18,6 @@ package com.hybris.hyeclipse.extgen.utils;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -112,7 +111,7 @@ public class ExtensionUtils {
 	 */
 	public static void importExtension(IProgressMonitor monitor, File source, String extensionName) throws CoreException {
 		IProjectDescription description;
-		String path =  Paths.get(source.getAbsolutePath(), extensionName, Constants.DOT_PROJECT).toAbsolutePath().toString();
+		String path =  java.nio.file.Path.of(source.getAbsolutePath(), extensionName, Constants.DOT_PROJECT).toAbsolutePath().toString();
 		description = ResourcesPlugin.getWorkspace().loadProjectDescription(new Path(path));
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(description.getName());
 		project.create(description, null);

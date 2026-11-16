@@ -70,15 +70,12 @@ public class BundlePackager {
         }
 
 		zOutputStream.putNextEntry(new ZipEntry(computeFilePath(filePath, fileDir.getName())));
-		FileInputStream fInputStream = new FileInputStream(fileDir);
-		try {
+		try (FileInputStream fInputStream = new FileInputStream(fileDir)) {
 			byte[] bufferArray = new byte[4092];
 			int count = 0;
 			while ((count = fInputStream.read(bufferArray)) != -1) {
 				zOutputStream.write(bufferArray, 0, count);
 			}
-		} finally {
-			fInputStream.close();
 		}
 		zOutputStream.closeEntry();
     }
