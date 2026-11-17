@@ -129,3 +129,9 @@ path = [".mvn/wrapper/**", "mvnw", "mvnw.cmd", "Makefile"]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors"
 SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "com.hybris.hyeclipse.junit.tests/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors"
+SPDX-License-Identifier = "Apache-2.0"
