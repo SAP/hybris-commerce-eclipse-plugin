@@ -27,7 +27,14 @@ Features
 
 Requirements
 ------------
-It is required to install latest Eclipse IDE for plugin. Plugin is backward compatible with IDE at least 6 months old since plugin version release date.
+Use the latest Eclipse IDE. The current development version requires Java 21 to run Eclipse.
+Plugin releases are backward compatible with IDE versions at least 6 months old at the time of release.
+
+Documentation
+-------------
+
+Read the [project documentation](https://sap.github.io/hybris-commerce-eclipse-plugin/)
+for user guides, troubleshooting, and developer documentation. The documentation sources are maintained in this README and [docs/](docs/).
 
 Contributing & Code of Conduct
 --------------
@@ -39,7 +46,8 @@ Download & Installation
 ----------
 This GitHub repository is for managing the source code of the plugin.
 
-To install the plugin visit the [Eclipse Marketplace](https://marketplace.eclipse.org/content/sap-hybris-commerce-development-tools-eclipse) and for up to date documentation, the Application Lifecycle Framework for Commerce: [SAP Commerce development tools for Eclipse](https://wiki.hybris.com/display/hybrisALF/SAP+Hybris+Commerce+development+tools+for+Eclipse).
+To install the plugin visit the [Eclipse Marketplace](https://marketplace.eclipse.org/content/sap-hybris-commerce-development-tools-eclipse).
+For usage and development guidance, see the [project documentation](https://sap.github.io/hybris-commerce-eclipse-plugin/).
 
 Compile and Install From Source
 -------------------------------
@@ -60,4 +68,3 @@ Deprecated Features
 -------------------
 
 Some features have been already deprecated as there are currently supported by Eclipse functionality, little usage, or just no time to maintenance. More details can be found on [Deprecation List](docs/deprecation/deprecation.md) page.
-

@@ -1,5 +1,45 @@
 #  Development
 
+## Documentation website
+
+The documentation site uses MkDocs with Material. `README.md` supplies the homepage;
+the remaining pages and images come from `docs/`. Do not maintain a separate `docs/index.md`.
+Navigation and site settings are in the root `mkdocs.yml`.
+
+From the repository root, use Python 3.13 and an isolated environment:
+
+```bash
+python3 -m venv .venv-docs
+source .venv-docs/bin/activate
+python -m pip install -r tools/docs/requirements.txt
+python -m unittest discover -s tools/docs -p 'test_*.py'
+python -m mkdocs serve --strict
+```
+
+Open the local URL printed by MkDocs. README and documentation changes trigger a rebuild.
+For a production build and internal link/image validation, run:
+
+```bash
+python -m mkdocs build --strict
+```
+
+The generated `site/` directory and virtual environment are ignored by Git.
+Operational files such as Sonar scripts and Docker configuration are not published.
+External links are not checked by the strict build.
+
+### GitHub Pages deployment
+
+In repository **Settings → Pages**, select **GitHub Actions** as the source.
+The Documentation workflow validates pull requests without deploying them and publishes
+documentation changes pushed to `master`. To rebuild manually, run the workflow from
+the Actions tab with `master` selected. Other branches cannot deploy.
+
+The public site is https://sap.github.io/hybris-commerce-eclipse-plugin/.
+This site hosts documentation only, not the Eclipse p2 update repository.
+
+Material for MkDocs receives critical fixes and security updates until May 5, 2027.
+Reassess the theme/toolchain before that date; Markdown sources remain independent of it.
+
 ## Continuous Integration
 
 folder contains docker configuration for sonarqube installation.

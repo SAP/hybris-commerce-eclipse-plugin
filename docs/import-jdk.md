@@ -8,13 +8,6 @@ JDK. JDKs must be registered under **Java > Installed JREs** and contain `javac`
 
 ## Import behaviour
 
-`ImportJob` captures the selected VM and validates its compiler level before Ant
-or workspace project changes. The captured VM is passed to both `ShellImporter`
-and `Importer`; changing the preference while Ant is running does not switch the
-JDK halfway through the import. The JDK installation home is checked again after
-Ant, so an installation edited during Ant execution does not silently produce
-inconsistent project settings.
-
 Each newly imported Java project gets:
 
 - A JRE container referencing the captured registered VM.
@@ -24,21 +17,7 @@ Each newly imported Java project gets:
 - Preserved non-JRE classpath entries and runtime-container access rules,
   attributes and exported flag. Duplicate JRE references are consolidated.
 
-This happens even when **Fix classpaths** is disabled. The old platform-version
-logic that globally forced Java 8 compiler options was removed. Workspace default
-VM and workspace compiler options are not changed by import or the update job.
-
-Existing projects keep their configured runtime during optional missing-runtime
-repair; a missing runtime is repaired using the saved preference. Consequently,
-declining a workspace-wide update does not silently replace existing SDK choices
-during that repair phase.
-
 ## Preference changes
-
-The importer bundle listens for committed changes to `antJdk`. Saving the same
-value or changing an unrelated preference does not prompt. When the preference
-uses the workspace default, a change to that default VM also prompts; initial VM
-registration does not.
 
 JDK/version validation runs in a background Job. A confirmation question then
 runs on the display thread:
