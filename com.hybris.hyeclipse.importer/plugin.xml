@@ -201,6 +201,11 @@
             id="com.hybris.yps.hyeclipse.handlers.help.OpenSAPDownloadCenterHandler"
             name="openDownloadCenterHandler">
       </command>
+      <command
+            defaultHandler="com.hybris.yps.hyeclipse.handlers.help.OpenSAPCommunityCommHandler"
+            id="com.hybris.yps.hyeclipse.handlers.help.OpenSAPCommunityCommHandler"
+            name="openSAPCommunityCommHandler">
+      </command>
    </extension>
    
    <extension
@@ -230,7 +235,7 @@
                   style="push">
             </command>
             <command
-                  commandId="com.hybris.hyeclipse.importer.command1"
+                  commandId="com.hybris.yps.hyeclipse.handlers.help.OpenSAPCommunityCommHandler"
                   label="SAP Community - Commerce Cloud"
                   style="push">
             </command>
