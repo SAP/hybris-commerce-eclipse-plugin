@@ -57,6 +57,16 @@ class SiteTest(unittest.TestCase):
                 self.assertFalse((site / excluded).exists())
             search = json.loads((site / "search/search_index.json").read_text(encoding="utf-8"))
             self.assertTrue(search["docs"], "Search index must contain documentation")
+            repository = site / "updates/latest"
+            self.assertTrue((repository / "p2.index").is_file())
+            self.assertTrue((repository / "content.xml.xz").is_file())
+            self.assertTrue((repository / "artifacts.xml.xz").is_file())
+            self.assertFalse((repository / ".DS_Store").exists())
+            for published in repository.rglob("*"):
+                self.assertFalse(published.is_symlink())
+                if published.is_file():
+                    source = root / "updatesite/latest" / published.relative_to(repository)
+                    self.assertEqual(source.read_bytes(), published.read_bytes())
 
 
 if __name__ == "__main__":

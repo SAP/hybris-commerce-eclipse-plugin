@@ -26,6 +26,7 @@ hooks:
 watch:
   - README.md
   - tools/docs
+  - updatesite
 
 exclude_docs: |
   docker-compose.yml
@@ -52,6 +53,7 @@ markdown_extensions:
 nav:
   - Home: index.md
   - User guide:
+      - Installation and update site: installation.md
       - Project importer: importer/importer.md
       - Beans generation: beangen/beangen.md
       - JDK selection: import-jdk.md

@@ -47,6 +47,9 @@ Download & Installation
 This GitHub repository is for managing the source code of the plugin.
 
 To install the plugin visit the [Eclipse Marketplace](https://marketplace.eclipse.org/content/sap-hybris-commerce-development-tools-eclipse).
+Alternatively, add `https://sap.github.io/hybris-commerce-eclipse-plugin/updates/latest/`
+in Eclipse under **Help → Install New Software…**. See the [installation guide](docs/installation.md)
+for details and the hosted release policy.
 For usage and development guidance, see the [project documentation](https://sap.github.io/hybris-commerce-eclipse-plugin/).
 
 Compile and Install From Source
