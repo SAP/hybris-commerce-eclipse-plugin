@@ -8,7 +8,7 @@
          defaultHandler="com.hybris.hyeclipse.tsvextended.handlers.TSVExtendedHandlerWrapper"/>
    </extension>
    <extension point="org.eclipse.ui.menus">
-      <menuContribution locationURI="menu:org.eclipse.ui.main.menu?after=additions">
+      <menuContribution locationURI="menu:com.hybris.yps.hyeclipse.menu?after=additions">
          <menu id="com.hybris.hyeclipse.tsv.menu" label="%tsv_menu">
             <command commandId="com.hybris.hyeclipse.tsv.run" label="%tsv_run" style="push"/>
             <command commandId="com.hybris.hyeclipse.tsv.extended.run" label="%tsv_extended_run" style="push"/>

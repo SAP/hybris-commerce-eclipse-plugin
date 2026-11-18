@@ -2,11 +2,14 @@
 
 Document collects known issues related to plugin and solutions for them.
 
-## JVM 11/17 Compatibility
+## JVM Compatibility
 
-Eclipse IDE should be run on the same or newer JVM version like SAP Commerce. That is caused due to dynamic JAR binding to IDE class loader to be able to run Commerce core functionality for project import and project build. Having older JVM will cause error shown below:
+The current development version of the plugin requires Java 21 to run Eclipse.
+See [JDK selection](../import-jdk.md) for the separate Commerce project and Ant JDK settings.
+The following class-loading guidance and compatibility table describe historical versions.
+For current Commerce patch requirements, consult SAP Help's "Third-Party Compatibility" page.
 
-![Incompatible JVM](imgs/jvm-incompatibility.png)
+Eclipse IDE can run independently on diferent JVM version than imported SAP Commerce Cloud project. JDK version can be changed in Eclipse Setting Preference Page. 
 
 Details how to set up JVM for Eclipse IDE can be found on page https://wiki.eclipse.org/Eclipse.ini
 
@@ -14,11 +17,11 @@ Information about SAP Commerce JVM compatibility is available on SAP Help page "
 
 Milestone JVM changes for SAP Commerce:
 
-| SAP Commerce Version | Java Version |
-| -------------------- | -------------|
-| <= 5.5.0             | Java 7 (1.7) |
-| 5.5.1 - 6.7          | Java 8 (1.8) |
-| 1808 - 1811          | Java 8 (1.8) |
-| 1905 - 2207          | Java 11      |
-| 2211                 | Java 17      |
-
+| SAP Commerce Version | Java Version | Notes |
+| -------------------- | -------------|-------|
+| <= 5.5.0             | Java 7 (1.7) | not supported |
+| 5.5.1 - 6.7          | Java 8 (1.8) | not supported |
+| 1808 - 1811          | Java 8 (1.8) | not supported |
+| 1905 - 2207          | Java 11      | not supported |
+| 2211                 | Java 17      | not supported |
+| 2211-jdk21           | Java 21      | supported     |

@@ -1,14 +1,9 @@
 # Source-built TSV migration
 
+This page describes the current development implementation. It does not imply that
+all changes are available in the latest published plugin release.
+
 ## Reference project
-
-The implementation was informed by the supplied `consultant-toolbox/tsv-extended`
-source project, version **3.0.1**, particularly:
-
-- `rules/TypeSystemRule.java`: inherited indexes and redeclaration handling.
-- `utils/TypeSystemEvalUtils.java`: known platform-type index exemptions.
-- `src/main/resources/extended-ruleset.xml`: the nine updated schema rules.
-- The sibling `tsv` project: XPath selection, test and source-location conventions.
 
 The source fixes the old system-classloader cast and declares JAXB providers,
 but still uses SAP `SystemConfig`/`PlatformConfig`/`YTypeSystem`, Spring and Groovy.
@@ -29,7 +24,7 @@ Both TSV plugins now compile against commons rather than prebuilt toolbox jars.
 TSV no longer packages or loads `tsv-2.1.0-jar-with-dependencies.jar`,
 `tsv-extended-0.0.1-SNAPSHOT.jar`, `platform-dependent.jar` or `ybootstrap.jar`.
 The three unused TSV jar files have also been removed from the plugin `lib/`
-directories. Historical releases under `updatesite/neon/` remain unchanged.
+directories.
 No Spring, Groovy, JAXB or customer class loading is used
 by the new TSV code. The separate toolbox checkout was not changed.
 
