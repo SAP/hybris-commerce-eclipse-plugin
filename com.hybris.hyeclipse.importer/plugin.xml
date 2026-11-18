@@ -248,33 +248,6 @@
       </menuContribution>
    </extension>
    
-   <extension point="org.eclipse.ui.menus">
-      <menuContribution 
-        id="com.hybris.hyeclipse.menu.contribution"
-      	locationURI="popup:org.eclipse.ui.popup.any?after=additions">
-          <menu
-               label="Build extension"
-               path="additions"
-               id="com.hybris.hyeclipse.impexed.importer.menu.contributor"
-               icon="icon/hybris.ico">
-         	<visibleWhen>
-               <test forcePluginActivation="true"
-                     property="com.hybris.hyeclipse.importer.isExtension">
-                  </test>
-            </visibleWhen>
-         <command
-               commandId="com.hybris.yps.hyeclipse.ExtensionBuildCommand"
-               label="all"
-               style="push" icon="icon/hybris.ico">
-         </command>
-          <command
-               commandId="com.hybris.yps.hyeclipse.ExtensionCleanBuildCommand"
-               label="clean all"
-               style="push" icon="icon/hybris.ico">
-         </command>
-         </menu>
-      </menuContribution>
-   </extension>
    
    	<extension
          point="org.eclipse.core.expressions.propertyTesters">
