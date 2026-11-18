@@ -1,5 +1,28 @@
 # Changelog
 
+## v22.11.0 (18/11/2026)
+
+- Modernize Java 21 source code and update build tooling.
+- Move the TSV menu under the SAP menu.
+- Update SAP Commerce Cloud help and community links.
+- Remove the broken **Build extension** context menu and obsolete bundle-packaging code.
+- Add GitHub Pages documentation and byte-preserving Eclipse p2 hosting.
+
+### Distribution and verification
+
+This release is published to the personal fork at
+https://github.com/mikolayek/hybris-commerce-eclipse-plugin/releases/tag/v22.11.0.
+The feature and plugin JARs are **unsigned**; signing was explicitly waived for this release.
+SHA-256 checksums verify downloaded bytes, not publisher identity.
+
+Requires Java 21 to run Eclipse. Built against the Eclipse 2026-09 target platform
+with Maven 3.9.16 and Tycho 5.0.4. All 91 Equinox tests passed. Interactive installation
+and real Commerce workspace smoke tests were not performed for this release.
+
+Download the update-site ZIP from the fork release and use Eclipse's
+**Help → Install New Software… → Add… → Archive…** option.
+The hosted Pages update site will change only after the release snapshot is merged into `master`.
+
 ## v22.08 Improvements in Project Import (5/8/2022)
 
 - [**closed**] Issue Raised on project Import [#111](https://github.com/SAP/hybris-commerce-eclipse-plugin/issues/111)
