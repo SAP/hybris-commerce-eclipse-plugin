@@ -19,7 +19,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Properties;
@@ -104,7 +103,7 @@ public class SystemConfigRepositoryTest {
 		final File[] files = new File(state, "system-configs").listFiles();
 		Assert.assertNotNull(files);
 		Assert.assertEquals(1, files.length);
-		Files.writeString(files[0].toPath(), "not XML", StandardCharsets.UTF_8);
+		Files.writeString(files[0].toPath(), "not XML");
 		final SystemConfigRepository reopened = new SystemConfigRepository(state);
 		Assert.assertThrows(CoreException.class, () -> reopened.find(platform));
 		reopened.save(config(platform, "2211.1"));

@@ -109,7 +109,7 @@ public final class ProjectJavaRuntime {
 	 */
 	public static String compilerCompliance(final IVMInstall vm) throws IOException {
 		final File home = AntJavaRuntime.getJavaHome(vm);
-		String version = vm instanceof IVMInstall2 ? ((IVMInstall2) vm).getJavaVersion() : null;
+		String version = vm instanceof IVMInstall2 ivmi ? ivmi.getJavaVersion() : null;
 		if (StringUtils.isBlank(version)) {
 			// Some VM types do not expose a version, but JDK installations provide it in their release metadata.
 			final Properties release = new Properties();

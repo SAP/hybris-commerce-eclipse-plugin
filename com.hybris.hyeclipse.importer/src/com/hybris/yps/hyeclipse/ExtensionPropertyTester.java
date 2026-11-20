@@ -43,11 +43,11 @@ public class ExtensionPropertyTester extends PropertyTester {
 		if (receiver instanceof List) {
 			@SuppressWarnings("unchecked")
 			List<Object> list = (List<Object>) receiver;
-			if (list.size() == 1 && list.get(0) instanceof IProject) {
-				final IProject project = (IProject) list.get(0);
+			if (list.size() == 1 && list.getFirst() instanceof IProject) {
+				final IProject project = (IProject) list.getFirst();
 				return project.exists();
-			} else if (list.size() == 1 && list.get(0) instanceof IJavaProject) {
-				final IJavaProject project = (IJavaProject) list.get(0);
+			} else if (list.size() == 1 && list.getFirst() instanceof IJavaProject) {
+				final IJavaProject project = (IJavaProject) list.getFirst();
 				return project.exists();
 			}			
 		}

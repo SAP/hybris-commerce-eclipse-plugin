@@ -19,7 +19,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -91,8 +90,8 @@ public class FixProjectsUtils {
 			boolean found = false;
 			for (ExtensionHolder ext : exts) {
 
-				Path projectLocation = Paths.get(project.getLocation().toFile().getAbsolutePath());
-				Path extLocation = Paths.get(ext.getPath());
+				Path projectLocation = Path.of(project.getLocation().toFile().getAbsolutePath());
+				Path extLocation = Path.of(ext.getPath());
 				try {
 					if (Files.isSameFile(projectLocation, extLocation)
 							|| (project.getName().equals(Constants.PLATFROM) || (project.getName().equals(CONFIG_DIR)))) {
@@ -128,8 +127,8 @@ public class FixProjectsUtils {
 
 			boolean found = false;
 			for (IProject project : allHybrisProjects) {
-				Path projectLocation = Paths.get(project.getLocation().toFile().getAbsolutePath());
-				Path extLocation = Paths.get(ext.getPath());
+				Path projectLocation = Path.of(project.getLocation().toFile().getAbsolutePath());
+				Path extLocation = Path.of(ext.getPath());
 				try {
 					if (Files.isSameFile(projectLocation, extLocation)) {
 						// Match in workspace and localextensions.xml: between extension & project
@@ -199,7 +198,7 @@ public class FixProjectsUtils {
 			return true;
 		}
 		else {
-			return Files.exists(Paths.get(project.getLocation().toFile().getAbsolutePath(), Constants.EXTENSION_INFO_XML));
+			return Files.exists(Path.of(project.getLocation().toFile().getAbsolutePath(), Constants.EXTENSION_INFO_XML));
 		}
 	}
 	
@@ -336,19 +335,12 @@ public class FixProjectsUtils {
 	public static void addToClassPath(IResource res, int type, IJavaProject javaProject, IProgressMonitor monitor) throws JavaModelException
 	{
 		Set<IClasspathEntry> entries = new HashSet<>(Arrays.asList(javaProject.getRawClasspath()));
-		IClasspathEntry entry = null;
-		switch (type) {
-		case IClasspathEntry.CPE_LIBRARY: 
-			entry = JavaCore.newLibraryEntry(res.getFullPath(), null, null, true);
-			break;
-		case IClasspathEntry.CPE_PROJECT: 
-			entry = JavaCore.newProjectEntry(res.getFullPath(), true);
-			break;
+		IClasspathEntry entry = switch (type) {
+		case IClasspathEntry.CPE_LIBRARY: yield JavaCore.newLibraryEntry(res.getFullPath(), null, null, true);
+		case IClasspathEntry.CPE_PROJECT: yield JavaCore.newProjectEntry(res.getFullPath(), true);
 		case IClasspathEntry.CPE_SOURCE:
-		default:
-			entry = JavaCore.newSourceEntry(res.getFullPath());
-			break;
-		}
+		default: yield JavaCore.newSourceEntry(res.getFullPath());
+		};
 			
 		entries.add(entry);
 		setClasspath(entries.toArray(new IClasspathEntry[entries.size()]), javaProject, monitor);
@@ -362,7 +354,7 @@ public class FixProjectsUtils {
 		{
 			File classPathFile = javaProject.getProject().getFile(".classpath").getLocation().toFile();
 			try {
-				Files.copy(Paths.get(classPathFile.getAbsolutePath()), Paths.get(classPathFileBak.getAbsolutePath()), StandardCopyOption.REPLACE_EXISTING);
+				Files.copy(Path.of(classPathFile.getAbsolutePath()), Path.of(classPathFileBak.getAbsolutePath()), StandardCopyOption.REPLACE_EXISTING);
 			}
 			catch (IOException e) {
 				// can't back up file but we should continue anyway

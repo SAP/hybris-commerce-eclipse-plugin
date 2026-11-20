@@ -58,9 +58,12 @@ public class ValidationServiceTest {
 	@Test
 	public void preservesXPathChecksAndSourceLinesWithoutJaxb() throws Exception {
 		final File file = temporary.newFile("custom-items.xml");
-		Files.writeString(file.toPath(), "<items>\n<itemtypes>\n<itemtype code=\"wrong\" extends=\"GenericItem\">"
-				+ "<attributes><attribute qualifier=\"Name\"><modifiers write=\"false\"/></attribute></attributes>"
-				+ "</itemtype></itemtypes></items>");
+		Files.writeString(file.toPath(), """
+				<items>
+				<itemtypes>
+				<itemtype code="wrong" extends="GenericItem">\
+				<attributes><attribute qualifier="Name"><modifiers write="false"/></attribute></attributes>\
+				</itemtype></itemtypes></items>""");
 		final List<ValidationResult> results = service.analyze(file, monitor);
 		Assert.assertEquals(State.FAIL, result(results, "wrong", "TypeNameMustStartWithUppercaseLetter").getState());
 		Assert.assertEquals(3, result(results, "wrong", "TypeNameMustStartWithUppercaseLetter").getLine());

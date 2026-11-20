@@ -1,0 +1,4 @@
+# SPDX-FileCopyrightText: 2026 SAP SE or an SAP affiliate company and contributors
+# SPDX-License-Identifier: Apache-2.0
+mkdocs==1.6.1
+mkdocs-material==9.8.1

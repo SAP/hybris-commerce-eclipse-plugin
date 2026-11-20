@@ -48,13 +48,12 @@ public class TSVResultsLabelProvider extends LabelProvider implements ITableLabe
 
 	@Override
 	public String getColumnText(Object element, int columnIndex) {
-		if (element instanceof String) {
+		if (element instanceof String string) {
 			if (columnIndex == 0) {
-				return (String) element;
+				return string;
 			}
 		}
-		else if (element instanceof TSVResult) {
-			TSVResult result = (TSVResult)element;
+		else if (element instanceof TSVResult result) {
 			switch(columnIndex) {
 			case 0:
 				return result.getElement();
@@ -77,8 +76,7 @@ public class TSVResultsLabelProvider extends LabelProvider implements ITableLabe
 
 	@Override
 	public Color getForeground(Object element, int columnIndex) {
-		if (element instanceof TSVResult) {
-			TSVResult result = (TSVResult)element;
+		if (element instanceof TSVResult result) {
 			
 			if (result.getRulePriority().equalsIgnoreCase("H")) {
 				

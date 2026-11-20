@@ -20,7 +20,7 @@ public class OpenExpertsForumHandler extends AbstractOpenInExternalBrowserHandle
 	
 	@Override
 	protected String getURL() {
-		return "https://community.sap.com/topics/commerce-cloud";
+		return "https://community.sap.com/topics/commerce-cloud?refId=eclipse-sap-commerce-plugin";
 	}
 
 }

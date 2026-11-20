@@ -42,7 +42,7 @@ public class ExtensionBuildHandler extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		project = getSelectedExtension(HandlerUtil.getCurrentSelection(event));
-		Job job = new Job(" Build") {
+		Job job = new Job("Build") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				try {
@@ -77,8 +77,8 @@ public class ExtensionBuildHandler extends AbstractHandler {
 			return null;
 		IStructuredSelection structuredSelection = (IStructuredSelection) selection;
 		Object element = structuredSelection.getFirstElement();
-		if (element instanceof IProject)
-			return (IProject) element;
+		if (element instanceof IProject iProject)
+			return iProject;
 		if (!(element instanceof IAdaptable))
 			return null;
 		IAdaptable adaptable = (IAdaptable) element;

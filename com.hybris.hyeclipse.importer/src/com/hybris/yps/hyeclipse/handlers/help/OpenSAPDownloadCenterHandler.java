@@ -20,7 +20,7 @@ public class OpenSAPDownloadCenterHandler extends AbstractOpenInExternalBrowserH
 	
 	@Override
 	protected String getURL() {
-		return "https://support.sap.com/swdc";
+		return "https://support.sap.com/swdc?refId=eclipse-sap-commerce-plugin";
 	}
 
 }

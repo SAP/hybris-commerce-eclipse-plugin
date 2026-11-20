@@ -65,7 +65,7 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
 
 		IActionBars actionBars = getActionBars();
 		if (actionBars != null) {
-			ITextEditor editor = (part instanceof ITextEditor) ? (ITextEditor) part : null;
+			ITextEditor editor = (part instanceof ITextEditor ite) ? ite : null;
 
 			actionBars.setGlobalActionHandler(ActionFactory.DELETE.getId(),
 			                getAction(editor, ITextEditorActionConstants.DELETE));
