@@ -22,6 +22,36 @@ import org.junit.Test;
 public class ImpexRegistrationTest {
 
 	@Test
+	public void languageServerMappingAndLegacyFormatterScopeAreRegistered() throws Exception {
+		boolean mapping = false;
+		boolean server = false;
+		for (final IConfigurationElement element : Platform.getExtensionRegistry()
+				.getConfigurationElementsFor("org.eclipse.lsp4e.languageServer")) {
+			if ("com.hybris.hyeclipse.impex.languageServer".equals(element.getAttribute("id"))) {
+				if ("server".equals(element.getName())) {
+					Assert.assertNotNull(Platform.getBundle(element.getContributor().getName())
+							.loadClass(element.getAttribute("class")));
+					server = true;
+				} else if ("contentTypeMapping".equals(element.getName())) {
+					Assert.assertEquals("com.hybris.hyeclipse.impex.impex", element.getAttribute("contentType"));
+					Assert.assertEquals("impex", element.getAttribute("languageId"));
+					mapping = true;
+				}
+			}
+		}
+		Assert.assertTrue(server && mapping);
+		boolean scoped = false;
+		for (final IConfigurationElement element : Platform.getExtensionRegistry()
+				.getConfigurationElementsFor("org.eclipse.ui.bindings")) {
+			if ("impexFormatter".equals(element.getAttribute("commandId"))) {
+				Assert.assertEquals("com.hybris.hyeclipse.impexed.editorContext", element.getAttribute("contextId"));
+				scoped = true;
+			}
+		}
+		Assert.assertTrue(scoped);
+	}
+
+	@Test
 	public void replacementWizardOwnsTheExistingCommandAndShortcut() throws Exception {
 		final String id = "com.hybris.impexformatter.wizards.NewImpexWizard";
 		int wizards = 0;

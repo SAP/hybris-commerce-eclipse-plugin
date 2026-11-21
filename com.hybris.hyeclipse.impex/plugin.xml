@@ -37,4 +37,21 @@
 		<key commandId="com.hybris.impexformatter.wizards.NewImpexWizard" sequence="M1+Shift+Y"
 			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration" contextId="org.eclipse.ui.contexts.window"/>
 	</extension>
+	<extension point="org.eclipse.lsp4e.languageServer">
+		<server id="com.hybris.hyeclipse.impex.languageServer" label="%languageServerName"
+			class="com.hybris.hyeclipse.impex.lsp.ImpexConnectionProvider" singleton="true"/>
+		<contentTypeMapping id="com.hybris.hyeclipse.impex.languageServer"
+			contentType="com.hybris.hyeclipse.impex.impex" languageId="impex"/>
+	</extension>
+	<extension point="org.eclipse.ui.menus">
+		<menuContribution locationURI="popup:#TextEditorContext?after=additions">
+			<command commandId="org.eclipse.lsp4e.format" label="%formatName">
+				<visibleWhen>
+					<with variable="activeEditorId">
+						<equals value="com.hybris.hyeclipse.impex.editor"/>
+					</with>
+				</visibleWhen>
+			</command>
+		</menuContribution>
+	</extension>
 </plugin>

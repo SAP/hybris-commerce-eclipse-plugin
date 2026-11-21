@@ -20,6 +20,7 @@ package com.hybris.impexformatter.editors;
 //import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.ui.editors.text.TextEditor;
 
+import com.hybris.impexformatter.Activator;
 import com.hybris.impexformatter.DocumentProvider;
 
 public class ImpexEditor extends TextEditor {
@@ -28,6 +29,12 @@ public class ImpexEditor extends TextEditor {
 		super();
 		setSourceViewerConfiguration(new ImpexSourceViewerConfig(getPreferenceStore()));
 		setDocumentProvider(new DocumentProvider());
+	}
+
+	/** Keeps the legacy formatter shortcut local to this editor during migration. */
+	@Override
+	protected void initializeKeyBindingScopes() {
+		setKeyBindingScopes(new String[] {Activator.EDITOR_CONTEXT_ID});
 	}
 	
 	/*@Override

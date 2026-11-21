@@ -27,9 +27,21 @@ Status: migration started on `feature/impex-lsp-migration`; legacy editor retain
   ImpEx grammar, registration, and workspace-creation tests. The p2 ZIP contains
   the wizard and its NLS resources with no legacy wizard registration. Interactive
   browsing, Java selection, shortcut execution, and editor-opening checks remain.
-- Next: continuation-aware lexical scanning and LSP
-  lifecycle, formatting, and project-scoped type-system services. These features
-  are not implemented by the preview, and the legacy editor must not be retired.
+- Added a non-UI `com.hybris.hyeclipse.impex.ls` bundle with cell-aware scanning,
+  safe document/range formatting, full document synchronization, and an in-process
+  LSP4E connection. The server advertises implemented capabilities only and never
+  reads server files or executes scripts. See its README for the fixed alignment
+  policy and safety/resource limits.
+- Scoped the legacy formatter shortcut to its editor context; the preview uses
+  LSP4E's formatter action. Tests cover real JSON-RPC startup/restart/shutdown,
+  logical record boundaries, value preservation, UTF-16/ranges, cancellation,
+  and LSP4E's stale-edit rejection and compound document undo/redo.
+- Formatting verification: all 133 tests passed in the full 21-module reactor,
+  including 42 ImpEx tests. The p2 ZIP contains both editor bundles, the language
+  server, and its connection provider. Live shortcut/focus and upgrade checks remain.
+- Next: project-scoped type-system completion/navigation, macro assistance,
+  symbols/diagnostics, and interactive UI/upgrade checks. TextMate continuation
+  highlighting still needs refinement. The legacy editor must not be retired yet.
 
 ## Goal and scope
 

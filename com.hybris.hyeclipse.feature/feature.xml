@@ -108,6 +108,13 @@ All rights reserved.
          unpack="false"/>
 
    <plugin
+         id="com.hybris.hyeclipse.impex.ls"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="com.hybris.hyeclipse.impex"
          download-size="0"
          install-size="0"

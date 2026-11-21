@@ -30,6 +30,7 @@ public class Activator extends AbstractUIPlugin {
 	public static final String PLUGIN_ID = "com.hybris.hyeclipse.impexed"; //$NON-NLS-1$
 	
 	public static final String IMPEX_PARTITIONING = "__impex_partitioning";
+	public static final String EDITOR_CONTEXT_ID = PLUGIN_ID + ".editorContext"; //$NON-NLS-1$
 	
 	// The shared instance
 	private static Activator plugin;

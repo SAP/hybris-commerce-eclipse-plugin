@@ -47,8 +47,12 @@
 			commandId="impexFormatter"
             sequence="M1+Shift+F"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            contextId="org.eclipse.ui.textEditorScope">
+            contextId="com.hybris.hyeclipse.impexed.editorContext">
 		</key>
+	</extension>
+	<extension point="org.eclipse.ui.contexts">
+		<context id="com.hybris.hyeclipse.impexed.editorContext" name="%legacyEditorContext"
+			parentId="org.eclipse.ui.textEditorScope"/>
 	</extension>
 	
 	<extension
