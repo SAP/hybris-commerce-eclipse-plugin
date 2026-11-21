@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+	<extension point="org.eclipse.core.contenttype.contentTypes">
+		<content-type id="impex" name="%contentTypeName"
+			base-type="org.eclipse.core.runtime.text" file-extensions="impex" priority="normal"/>
+	</extension>
+	<extension point="org.eclipse.ui.editors">
+		<editor id="com.hybris.hyeclipse.impex.editor" name="%editorName"
+			class="org.eclipse.ui.internal.genericeditor.ExtensionBasedTextEditor" extensions="impex" default="false">
+			<contentTypeBinding contentTypeId="com.hybris.hyeclipse.impex.impex"/>
+		</editor>
+	</extension>
+	<extension point="org.eclipse.tm4e.registry.grammars">
+		<grammar scopeName="text.tabular.impex" path="syntaxes/impex.tmLanguage.json"/>
+		<scopeNameContentTypeBinding contentTypeId="com.hybris.hyeclipse.impex.impex"
+			scopeName="text.tabular.impex"/>
+	</extension>
+	<extension point="org.eclipse.ui.genericeditor.presentationReconcilers">
+		<presentationReconciler class="org.eclipse.tm4e.ui.text.TMPresentationReconciler"
+			contentType="com.hybris.hyeclipse.impex.impex"/>
+	</extension>
+</plugin>

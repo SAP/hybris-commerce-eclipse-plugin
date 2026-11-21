@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %bundleName
+Bundle-SymbolicName: com.hybris.hyeclipse.impex;singleton:=true
+Bundle-Version: 22.11.1.qualifier
+Bundle-Vendor: SAP
+Bundle-RequiredExecutionEnvironment: JavaSE-21
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.core.contenttype,
+ org.eclipse.ui.genericeditor,
+ org.eclipse.tm4e.registry,
+ org.eclipse.tm4e.ui
+Automatic-Module-Name: com.hybris.hyeclipse.impex

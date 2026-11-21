@@ -1,6 +1,26 @@
 # ImpEx editor replacement plan
 
-Status: proposed; no production editor or build changes made.
+Status: migration started on `feature/impex-lsp-migration`; legacy editor retained.
+
+## Implementation progress
+
+- Added `com.hybris.hyeclipse.impex` and its independent OSGi test bundle to
+  the reactor, and the preview bundle to the installable feature.
+- Registered **Open With > ImpEx Editor (Preview)** as a non-default Generic
+  Editor, with an ImpEx content type and TM4E presentation reconciler.
+- Moved the grammar into the production bundle as the canonical resource;
+  implemented initial header/modifier/macro/data/comment/script scopes and
+  cell-aware quoting. Grammar and extension-registration tests cover this slice.
+- The 2026-09 target supplies TM4E. Its Generic Editor implementation class is
+  `org.eclipse.ui.internal.genericeditor.ExtensionBasedTextEditor`; the preview
+  registration uses it directly and tests class resolution. Recheck this internal
+  entry point on future platform upgrades.
+- Verification: 9 new OSGi tests passed; the full 20-module package build passed
+  with tests skipped after the isolated test run. The resulting p2 ZIP contains
+  both editors and the packaged grammar. Interactive UI/upgrade checks remain.
+- Next: continuation-aware lexical scanning, the new-file wizard, and LSP
+  lifecycle, formatting, and project-scoped type-system services. These features
+  are not implemented by the preview, and the legacy editor must not be retired.
 
 ## Goal and scope
 
@@ -16,7 +36,8 @@ Inputs:
 - [ImpEx behavior notes](impex-docs.md): reference for lexical edge cases, not a
   complete formal language specification. Runtime-dependent claims require
   verification against the supported Commerce version.
-- [TextMate grammar](impex.tmLanguage.json): starting point, not production-ready.
+- [TextMate grammar](../../../com.hybris.hyeclipse.impex/syntaxes/impex.tmLanguage.json):
+  canonical packaged grammar, still under migration.
 - Existing `com.hybris.hyeclipse.impexed/plugin.xml`, editor, wizard, formatter,
   completion processors, and hyperlink classes.
 
@@ -56,9 +77,10 @@ p2 feature resolves these dependencies, not just the development target.
 
 ## Grammar corrections
 
-The current grammar starts a string on any quote, treats `\\.` as an escape,
-recognizes only unquoted `#` comments, and cannot distinguish scripts from
-comments. Correct these before editor cutover:
+The original supplied grammar started a string on any quote, treated `\\.` as
+an escape, recognized only unquoted `#` comments, and could not distinguish
+scripts from comments. The preview fixes initial cases; complete and validate
+the following behavior before editor cutover:
 
 - Model cell boundaries and quoted multiline cells; quoting starts at the
   beginning of a cell, allowing leading whitespace as verified by fixtures.

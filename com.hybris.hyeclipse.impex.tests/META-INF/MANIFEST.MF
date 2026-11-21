@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ImpEx language tests
+Bundle-SymbolicName: com.hybris.hyeclipse.impex.tests;singleton:=true
+Bundle-Version: 22.11.1.qualifier
+Bundle-Vendor: SAP
+Bundle-RequiredExecutionEnvironment: JavaSE-21
+Require-Bundle: org.junit,
+ org.eclipse.core.runtime,
+ org.eclipse.core.contenttype,
+ org.eclipse.tm4e.core,
+ com.hybris.hyeclipse.impex
+Automatic-Module-Name: com.hybris.hyeclipse.impex.tests

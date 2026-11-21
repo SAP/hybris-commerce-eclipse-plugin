@@ -50,6 +50,8 @@
 		<module>com.hybris.hyeclipse.commons</module>
 		<module>com.hybris.hyeclipse.hac</module>
 		<module>com.hybris.hyeclipse.impexed</module>
+		<module>com.hybris.hyeclipse.impex</module>
+		<module>com.hybris.hyeclipse.impex.tests</module>
 		<module>com.hybris.hyeclipse.importer</module>
 		<module>com.hybris.hyeclipse.ytypesystem</module>
 		<module>com.hybris.hyeclipse.platform</module>
