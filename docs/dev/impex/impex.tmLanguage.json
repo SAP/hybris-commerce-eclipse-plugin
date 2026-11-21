@@ -1,0 +1,87 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+    "name": "ImpEx",
+    "fileTypes": [
+        "impex"
+    ],
+	"patterns": [
+		{
+			"include": "#keywords"
+		},
+		{
+			"include": "#strings"
+        },
+        {
+            "include": "#comment"
+        },
+        {
+            "include": "#declaration"
+        },
+        {
+            "include": "#punctuation"
+        },
+        {
+            "include": "#constant"
+        }
+	],
+	"repository": {
+		"keywords": {
+			"patterns": [
+                {
+                    "name": "keyword.control.header.impex",
+                    "match": "(?i)^(INSERT_UPDATE|INSERT|UPDATE|REMOVE)\\s+"
+                },
+                {
+                    "name": "constant.language.impex",
+                    "match": "(?i)\\b(true|false)\\b"
+                }
+            ]
+		},
+		"strings": {
+			"patterns": [{
+                "name": "string.quoted.double.impex",
+			    "begin": "\"",
+			    "end": "\"",
+			    "patterns": [{
+                    "name": "constant.character.escape.impex",
+                    "match": "\\\\."
+			    }]
+            }]
+        },
+        "comment": {
+            "patterns": [{
+                "name": "comment.line.impex",
+                "match": "^#.+$"
+            }]
+        },
+        "declaration": {
+            "patterns": [
+                {
+                    "name": "variable.name.impex",
+                    "match": "\\$[a-zA-Z0-9]+"
+                }
+            ]
+        },
+        "punctuation": {
+			"patterns": [
+				{
+					"name": "punctuation.separator.impex",
+					"match": ";"
+                },
+                {
+                    "name": "punctuation.separator.impex",
+                    "match": ","
+                }
+			]
+        },
+        "constant": {
+            "patterns": [
+                {
+                    "name": "constant.numeric",
+                    "match": "\\b([0-9]+)\\b"
+                }
+            ]
+        }
+	},
+	"scopeName": "text.tabular.impex"
+}
