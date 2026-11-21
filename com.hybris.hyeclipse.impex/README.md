@@ -27,8 +27,20 @@ continued, malformed, or unsupported blocks are left unchanged. See the
 [formatting policy](../com.hybris.hyeclipse.impex.ls/README.md) for limits and options.
 The legacy formatter shortcut is scoped to its own editor to avoid interference.
 
-Type-system completion/navigation, macro assistance, symbols, and diagnostics are
-not implemented yet. Use the legacy editor for type-system completion workflows.
+Content assist (**Ctrl+Space**) now offers operation/type names, inherited
+attributes, nested reference attributes, header/column modifiers, supported modifier
+values, and macros defined earlier in the document. Definition hyperlinks resolve
+indexed type/attribute declarations to their generated Java sources.
+
+Indexed proposals are limited to workspace files in the Commerce tree belonging to
+the open project named `platform`. Other/unindexed roots, external extensions, and
+ambiguous workspace aliases get syntax/macro assistance only—not another platform's
+types. The index is reused and refreshed by the existing background indexing jobs.
+Quoted/continued headers and macro-expanded header structures are not yet resolved
+for type assistance. See the [language-service policy](../com.hybris.hyeclipse.impex.ls/README.md).
+
+Macro hover, symbols, diagnostics, and interactive UI/upgrade validation remain
+subsequent slices. The legacy editor has not been retired.
 
 Run the isolated OSGi tests:
 
@@ -38,6 +50,7 @@ Run the isolated OSGi tests:
 
 Rebuild both editor bundles so registration tests do not use cached legacy metadata.
 The tests exercise the packaged grammar, file creation, registration, formatting,
-real JSON-RPC lifecycle, and LSP4E's stale-edit protection and document undo/redo.
+real JSON-RPC lifecycle, scoped completion/navigation, index refresh, cancellation,
+and LSP4E's stale-edit protection and document undo/redo.
 They do not replace interactive shortcut, wizard, light/dark-theme, and
 existing-workspace upgrade testing.

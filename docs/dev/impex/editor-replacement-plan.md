@@ -39,8 +39,21 @@ Status: migration started on `feature/impex-lsp-migration`; legacy editor retain
 - Formatting verification: all 133 tests passed in the full 21-module reactor,
   including 42 ImpEx tests. The p2 ZIP contains both editor bundles, the language
   server, and its connection provider. Live shortcut/focus and upgrade checks remain.
-- Next: project-scoped type-system completion/navigation, macro assistance,
-  symbols/diagnostics, and interactive UI/upgrade checks. TextMate continuation
+- Added context-aware LSP completion and definition navigation using a workspace
+  adapter to the shared type index, without introducing UI dependencies into the
+  language server. Includes inherited/nested reference attributes, modifier names
+  and values, precise token replacement, and earlier document-local macro proposals.
+- The adapter explicitly scopes the current single `platform` index to its Commerce
+  tree. Other roots and ambiguous aliases receive no indexed types; external
+  extensions and full multi-platform indexing remain limitations. Source navigation
+  checks workspace accessibility instead of guessing class/file locations.
+- Tests cover metadata refresh, distinct document catalogs, inaccessible/deleted
+  sources, UTF-16 ranges, stale requests, cancellation, and real JSON-RPC assistance.
+- Completion/navigation verification: all 156 tests passed in the full reactor,
+  including 65 ImpEx tests. The p2 ZIP contains the language features, scoped
+  workspace adapter, and localized proposal descriptions. Live content-assist,
+  hyperlink, and multi-platform workflow checks remain outstanding.
+- Next: macro hover, symbols/diagnostics, and interactive UI/upgrade checks. TextMate continuation
   highlighting still needs refinement. The legacy editor must not be retired yet.
 
 ## Goal and scope

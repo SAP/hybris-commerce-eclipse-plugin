@@ -48,7 +48,7 @@ public final class ImpexConnectionProvider implements StreamConnectionProvider {
 			serverOutput = new PipedOutputStream(input);
 			serverInput = new PipedInputStream(PIPE_BUFFER_SIZE);
 			output = new PipedOutputStream(serverInput);
-			server = new ImpexLanguageServer();
+			server = new ImpexLanguageServer(new WorkspaceTypeSystemProvider());
 			transport = Executors.newFixedThreadPool(2, runnable -> {
 				final Thread thread = new Thread(runnable, "ImpEx LSP transport"); //$NON-NLS-1$
 				thread.setDaemon(true);

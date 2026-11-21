@@ -21,6 +21,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.eclipse.jface.text.Document;
 import org.eclipse.lsp4e.VersionedEdits;
+import org.eclipse.lsp4j.CompletionParams;
+import org.eclipse.lsp4j.DefinitionParams;
 import org.eclipse.lsp4j.DidChangeTextDocumentParams;
 import org.eclipse.lsp4j.DidCloseTextDocumentParams;
 import org.eclipse.lsp4j.DidOpenTextDocumentParams;
@@ -104,7 +106,8 @@ public class ImpexLanguageServerTest {
 			Assert.assertEquals("utf-16", capabilities.getPositionEncoding());
 			Assert.assertTrue(capabilities.getDocumentFormattingProvider().getLeft());
 			Assert.assertTrue(capabilities.getDocumentRangeFormattingProvider().getLeft());
-			Assert.assertNull(capabilities.getCompletionProvider());
+			Assert.assertNotNull(capabilities.getCompletionProvider());
+			Assert.assertTrue(capabilities.getDefinitionProvider().getLeft());
 			Assert.assertNull(capabilities.getHoverProvider());
 			Assert.assertNull(capabilities.getDocumentSymbolProvider());
 		}
@@ -195,6 +198,11 @@ public class ImpexLanguageServerTest {
 				final List<? extends TextEdit> edits = remote.getTextDocumentService().formatting(formatting())
 						.get(5, TimeUnit.SECONDS);
 				Assert.assertEquals(2, edits.size());
+				Assert.assertEquals(4, remote.getTextDocumentService().completion(new CompletionParams(
+						new TextDocumentIdentifier(URI), new Position(0, 0))).get(5, TimeUnit.SECONDS)
+						.getRight().getItems().size());
+				Assert.assertTrue(remote.getTextDocumentService().definition(new DefinitionParams(
+						new TextDocumentIdentifier(URI), new Position(0, 1))).get(5, TimeUnit.SECONDS).getLeft().isEmpty());
 				remote.shutdown().get(5, TimeUnit.SECONDS);
 				remote.exit();
 			} finally {

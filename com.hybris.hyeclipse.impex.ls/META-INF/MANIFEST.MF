@@ -6,7 +6,9 @@ Bundle-Version: 22.11.1.qualifier
 Bundle-Vendor: SAP
 Bundle-RequiredExecutionEnvironment: JavaSE-21
 Require-Bundle: org.eclipse.lsp4j,
- org.eclipse.lsp4j.jsonrpc
+ org.eclipse.lsp4j.jsonrpc,
+ org.eclipse.osgi
 Export-Package: com.hybris.hyeclipse.impex.ls,
- com.hybris.hyeclipse.impex.ls.format
+ com.hybris.hyeclipse.impex.ls.format,
+ com.hybris.hyeclipse.impex.ls.types
 Automatic-Module-Name: com.hybris.hyeclipse.impex.ls
