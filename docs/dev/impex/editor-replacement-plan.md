@@ -53,7 +53,14 @@ Status: migration started on `feature/impex-lsp-migration`; legacy editor retain
   including 65 ImpEx tests. The p2 ZIP contains the language features, scoped
   workspace adapter, and localized proposal descriptions. Live content-assist,
   hyperlink, and multi-platform workflow checks remain outstanding.
-- Next: macro hover, symbols/diagnostics, and interactive UI/upgrade checks. TextMate continuation
+- Added plain-text type/attribute/macro hover, lexical header/macro document symbols,
+  and pushed diagnostics for confirmed CSV quote errors. Diagnostics coalesce edits,
+  publish only current snapshots, and clear on correction/close; no runtime or
+  unknown-name validation is inferred. Symbol response shape follows client capabilities.
+- Verification: all 171 tests passed in the full reactor, including 80 ImpEx tests.
+  Tests cover hover/outline ranges, quote origins, surrogate pairs, notification
+  lifecycle, rapid edits/reopening, and real JSON-RPC hover/symbol/diagnostic exchange.
+- Next: interactive UI/upgrade checks and CSV/header compatibility refinements. TextMate continuation
   highlighting still needs refinement. The legacy editor must not be retired yet.
 
 ## Goal and scope

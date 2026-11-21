@@ -39,8 +39,13 @@ types. The index is reused and refreshed by the existing background indexing job
 Quoted/continued headers and macro-expanded header structures are not yet resolved
 for type assistance. See the [language-service policy](../com.hybris.hyeclipse.impex.ls/README.md).
 
-Macro hover, symbols, diagnostics, and interactive UI/upgrade validation remain
-subsequent slices. The legacy editor has not been retired.
+Hover now shows generated model/attribute details and the source of macro definitions
+without evaluating them. The Outline lists header and macro declarations. Confirmed
+CSV quote errors appear as diagnostics and clear after correction or document close.
+Unknown types/macros and runtime-dependent import behavior are not reported as errors.
+
+Interactive UI/upgrade validation, CSV compatibility refinements, and multi-platform
+indexing remain outstanding. The legacy editor has not been retired.
 
 Run the isolated OSGi tests:
 
@@ -50,7 +55,8 @@ Run the isolated OSGi tests:
 
 Rebuild both editor bundles so registration tests do not use cached legacy metadata.
 The tests exercise the packaged grammar, file creation, registration, formatting,
-real JSON-RPC lifecycle, scoped completion/navigation, index refresh, cancellation,
-and LSP4E's stale-edit protection and document undo/redo.
+real JSON-RPC lifecycle, scoped completion/navigation, hover, symbols, diagnostic
+publication/clearing, index refresh, cancellation, and LSP4E's stale-edit protection
+and document undo/redo.
 They do not replace interactive shortcut, wizard, light/dark-theme, and
 existing-workspace upgrade testing.

@@ -23,10 +23,14 @@ import java.util.regex.Pattern;
 import org.eclipse.lsp4j.CompletionItem;
 import org.eclipse.lsp4j.CompletionItemKind;
 import org.eclipse.lsp4j.CompletionList;
+import org.eclipse.lsp4j.Hover;
+import org.eclipse.lsp4j.MarkupContent;
+import org.eclipse.lsp4j.MarkupKind;
 import org.eclipse.lsp4j.Position;
 import org.eclipse.lsp4j.Range;
 import org.eclipse.lsp4j.TextEdit;
 import org.eclipse.lsp4j.jsonrpc.messages.Either;
+import org.eclipse.osgi.util.NLS;
 
 import com.hybris.hyeclipse.impex.ls.format.ImpexCsvScanner;
 import com.hybris.hyeclipse.impex.ls.format.ImpexCsvScanner.CsvRecord;
@@ -39,8 +43,9 @@ import com.hybris.hyeclipse.impex.ls.types.TypeCatalog.Type;
 public final class ImpexLanguageFeatures {
 
 	private static final int MAX_PROPOSALS = 200;
-	private static final Pattern MODE = Pattern.compile("(?i)^\\s*(INSERT_UPDATE|INSERT|UPDATE|REMOVE)(?:\\s+|$)"); //$NON-NLS-1$
-	private static final Pattern MACRO = Pattern.compile("^\\s*(\\$[\\w-]+)\\s*="); //$NON-NLS-1$
+	private static final int MAX_HOVER_TEXT = 2048;
+	static final Pattern MODE = Pattern.compile("(?i)^\\s*(INSERT_UPDATE|INSERT|UPDATE|REMOVE)(?:\\s+|$)"); //$NON-NLS-1$
+	static final Pattern MACRO = Pattern.compile("^\\s*(\\$[\\w-]+)\\s*="); //$NON-NLS-1$
 	private static final List<String> OPERATIONS = Arrays.asList("INSERT", "INSERT_UPDATE", "REMOVE", "UPDATE"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 	private static final List<String> HEADER_MODIFIERS = Arrays.asList("batchmode", "cacheUnique", "processor", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			"parallel", "ignoreKeyCase", "unlessExisting", "impex.legacy.mode", "sld.enabled", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
@@ -218,6 +223,73 @@ public final class ImpexLanguageFeatures {
 		return null;
 	}
 
+	/**
+	 * @param text open document snapshot
+	 * @param position requested UTF-16 position
+	 * @param catalog document-scoped metadata
+	 * @param cancelled cancellation/stale-document predicate
+	 * @return plain-text type, attribute, or macro information; null for unknown contexts
+	 */
+	public Hover hover(final String text, final Position position, final TypeCatalog catalog,
+			final BooleanSupplier cancelled) {
+		if (text.length() > ImpexCsvScanner.MAX_DOCUMENT_LENGTH || cancelled.getAsBoolean()) {
+			return null;
+		}
+		final TextPositions positions = new TextPositions(text);
+		final int offset;
+		final List<CsvRecord> records;
+		try {
+			offset = positions.offsetAt(position);
+			records = new ImpexCsvScanner().scan(text, cancelled);
+		} catch (final IllegalArgumentException e) {
+			return null;
+		}
+		final Context context = context(text, offset, records, catalog);
+		String description = null;
+		if (context.area == Area.TYPE) {
+			final Type type = catalog.getType(context.token.text);
+			if (type != null) {
+				description = NLS.bind(Messages.typeHover, type.getCode(), type.getJavaClass());
+			}
+		} else if (context.area == Area.ATTRIBUTE && context.type != null) {
+			final Attribute attribute = context.type.getAttribute(context.token.text);
+			if (attribute != null) {
+				description = NLS.bind(Messages.attributeHover,
+						new Object[] {context.type.getCode(), attribute.getName(), attribute.getJavaType()});
+			}
+		} else if (context.area == Area.MACRO) {
+			for (final CsvRecord record : records) {
+				if (cancelled.getAsBoolean()) {
+					return null;
+				}
+				if (record.isValid() && record.getKind() == Kind.MACRO) {
+					final Matcher macro = MACRO.matcher(ImpexCsvScanner.valueOf(record.getCells().getFirst()));
+					final boolean earlier = record.getEnd() <= offset && record.getContentEnd() < offset;
+					final boolean declaration = context.token.start >= record.getStart()
+							&& context.token.end <= record.getStart() + record.getCells().getFirst().indexOf('=');
+					if ((earlier || declaration) && macro.find() && macro.group(1).equals(context.token.text)) {
+						final int end = Math.min(record.getContentEnd(), record.getStart() + MAX_HOVER_TEXT);
+						final String definition = text.substring(record.getStart(), end)
+								+ (end < record.getContentEnd() ? Messages.truncated : ""); //$NON-NLS-1$
+						description = NLS.bind(Messages.macroHover, context.token.text, definition);
+					}
+				}
+			}
+		}
+		if (description == null || cancelled.getAsBoolean()) {
+			return null;
+		}
+		if (description.length() > MAX_HOVER_TEXT) {
+			int end = MAX_HOVER_TEXT;
+			if (Character.isHighSurrogate(description.charAt(end - 1)) && Character.isLowSurrogate(description.charAt(end))) {
+				end--;
+			}
+			description = description.substring(0, end) + Messages.truncated;
+		}
+		return new Hover(new MarkupContent(MarkupKind.PLAINTEXT, description),
+				new Range(positions.positionAt(context.token.start), positions.positionAt(context.token.end)));
+	}
+
 	/** @return an empty, complete proposal list */
 	public static CompletionList emptyCompletion() {
 		return new CompletionList(false, new ArrayList<>());
@@ -374,7 +446,7 @@ public final class ImpexLanguageFeatures {
 		return attribute == null ? null : catalog.referenceType(attribute.getJavaType());
 	}
 
-	private static boolean nameChar(final char c, final boolean dots) {
+	static boolean nameChar(final char c, final boolean dots) {
 		return Character.isLetterOrDigit(c) || c == '_' || c == '-' || c == '$' || (dots && c == '.');
 	}
 

@@ -57,6 +57,7 @@ public final class ImpexConnectionProvider implements StreamConnectionProvider {
 			final Launcher<LanguageClient> launcher = new Launcher.Builder<LanguageClient>()
 					.setLocalService(server).setRemoteInterface(LanguageClient.class)
 					.setInput(serverInput).setOutput(serverOutput).setExecutorService(transport).create();
+			server.connect(launcher.getRemoteProxy());
 			listening = launcher.startListening();
 		} catch (final IOException | RuntimeException e) {
 			try {
@@ -85,9 +86,6 @@ public final class ImpexConnectionProvider implements StreamConnectionProvider {
 
 	@Override
 	public synchronized void stop() {
-		if (server != null) {
-			server.close();
-		}
 		if (listening != null) {
 			listening.cancel(true);
 		}
@@ -104,6 +102,10 @@ public final class ImpexConnectionProvider implements StreamConnectionProvider {
 					}
 				}
 			}
+		}
+		// Unblock pipe writers before taking the server lock during shutdown.
+		if (server != null) {
+			server.close();
 		}
 		if (transport != null) {
 			transport.shutdownNow();

@@ -17,6 +17,12 @@ final class Messages extends NLS {
 	public static String headerModifier;
 	public static String columnModifier;
 	public static String modifierValue;
+	public static String typeHover;
+	public static String attributeHover;
+	public static String macroHover;
+	public static String truncated;
+	public static String unclosedQuote;
+	public static String textAfterQuote;
 
 	static {
 		NLS.initializeMessages("com.hybris.hyeclipse.impex.ls.types.Messages", Messages.class); //$NON-NLS-1$

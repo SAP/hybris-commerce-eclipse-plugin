@@ -2,7 +2,8 @@
 
 Non-UI LSP4J bundle, connected in-process through the preview bundle's LSP4E
 provider. Full document synchronization, UTF-16 positions, document/range formatting,
-completion, and definition navigation are advertised. The server analyzes open
+completion, definition navigation, hover, and document symbols are advertised.
+Quote diagnostics are pushed to the client. The server analyzes open
 snapshots and host-supplied metadata; it does not load files, connect to Commerce,
 or execute scripts.
 
@@ -48,10 +49,30 @@ or execute scripts.
   Closed, superseded, or cancelled requests cannot supply edits for old snapshots.
   LSP4E also rejects results when the editor document's modification stamp changed.
 
+## Hover, outline, and diagnostics
+
+- Hover shows indexed type/attribute details or the current/latest earlier macro
+  source definition. Definitions are not evaluated. Content is bounded to about
+  2 Ki UTF-16 units and sent as plain text, not interpreted Markdown/HTML.
+- Header/macro symbols identify lexical declarations, not runtime block scopes.
+  Header ranges cover declarations only; duplicate macro definitions remain separate
+  entries. Flat or hierarchical symbol response formats follow client capabilities.
+  At most 1,000 symbols are returned.
+- Diagnostics use push notifications, supported by the target LSP4E release.
+  A separate single-worker pump coalesces rapid changes per document, checks snapshot
+  identity before publication, includes document versions, and clears results on
+  correction or close. It does not fill the language-request queue with edit events.
+- Only unmatched opening quotes at EOF and unexpected characters after closing
+  cell quotes are reported. Ranges point to the opening quote or offending character
+  using UTF-16 positions. At most 100 confirmed quote errors are reported per document.
+- Unknown types/macros, row/header cell counts, modifiers, translators, scripting,
+  and import outcomes are not validated. Oversized/unsupported analysis produces no
+  inferred errors. No ImpEx code is executed to compute any result.
+
 Parser rules follow `docs/dev/impex/impex-docs.md`, not RFC 4180: quotes only start
 at cell boundaries, doubled quotes are literal, and backslashes do not escape quotes.
 The scanner groups continued/multiline records for safety, but does not implement
 the full import engine or header execution semantics.
 
-Macro hover, symbols, diagnostics, and UI/upgrade checks are subsequent slices.
-See [the migration plan](../docs/dev/impex/editor-replacement-plan.md).
+UI/upgrade checks, CSV/header compatibility refinements, and multi-platform indexing
+remain outstanding. See [the migration plan](../docs/dev/impex/editor-replacement-plan.md).

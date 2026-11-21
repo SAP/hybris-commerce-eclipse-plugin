@@ -37,15 +37,19 @@ public final class ImpexCsvScanner {
 		private final boolean valid;
 		private final boolean multiline;
 		private final Kind kind;
+		private final int textAfterQuote;
+		private final int unclosedQuote;
 
 		private CsvRecord(final int start, final int contentEnd, final int end, final List<String> cells,
-				final boolean valid, final boolean multiline) {
+				final boolean valid, final boolean multiline, final int textAfterQuote, final int unclosedQuote) {
 			this.start = start;
 			this.contentEnd = contentEnd;
 			this.end = end;
 			this.cells = Collections.unmodifiableList(new ArrayList<>(cells));
 			this.valid = valid;
 			this.multiline = multiline;
+			this.textAfterQuote = textAfterQuote;
+			this.unclosedQuote = unclosedQuote;
 			final String first = valueOf(cells.get(0));
 			if (first.startsWith("#%")) { //$NON-NLS-1$
 				kind = Kind.SCRIPT;
@@ -78,6 +82,10 @@ public final class ImpexCsvScanner {
 		public boolean isMultiline() { return multiline; }
 		/** @return lexical record kind */
 		public Kind getKind() { return kind; }
+		/** @return first offending character after a closing quote, or -1 when absent */
+		public int getTextAfterQuote() { return textAfterQuote; }
+		/** @return opening quote still unmatched at EOF, or -1 when absent */
+		public int getUnclosedQuote() { return unclosedQuote; }
 	}
 
 	/**
@@ -123,6 +131,8 @@ public final class ImpexCsvScanner {
 		boolean cellEnded = false;
 		boolean valid = true;
 		boolean multiline = false;
+		int quoteStart = -1;
+		int textAfterQuote = -1;
 		for (int i = 0; i < source.length(); i++) {
 			if (i % CANCELLATION_INTERVAL == 0 && cancelled.getAsBoolean()) {
 				return new ArrayList<>();
@@ -137,7 +147,8 @@ public final class ImpexCsvScanner {
 					continue;
 				}
 				cells.add(source.substring(cellStart, i));
-				add(records, new CsvRecord(recordStart, i, i + delimiterLength, cells, valid, multiline));
+				add(records, new CsvRecord(recordStart, i, i + delimiterLength, cells, valid, multiline,
+						textAfterQuote, -1));
 				i += delimiterLength - 1;
 				recordStart = i + 1;
 				cellStart = recordStart;
@@ -146,12 +157,15 @@ public final class ImpexCsvScanner {
 				cellEnded = false;
 				valid = true;
 				multiline = false;
+				quoteStart = -1;
+				textAfterQuote = -1;
 			} else if (quoted) {
 				if (c == '"') {
 					if (i + 1 < source.length() && source.charAt(i + 1) == '"') {
 						i++;
 					} else {
 						quoted = false;
+						quoteStart = -1;
 						cellEnded = true;
 					}
 				}
@@ -165,10 +179,14 @@ public final class ImpexCsvScanner {
 				cellEnded = false;
 			} else if (c == '"' && !cellStarted) {
 				quoted = true;
+				quoteStart = i;
 				cellStarted = true;
 			} else if (!Character.isWhitespace(c)) {
 				if (cellEnded) {
 					valid = false;
+					if (textAfterQuote < 0) {
+						textAfterQuote = i;
+					}
 				}
 				cellStarted = true;
 			}
@@ -177,7 +195,8 @@ public final class ImpexCsvScanner {
 			cells.add(source.substring(cellStart));
 			// A final continuation marker without a following line is ambiguous to format.
 			valid = valid && !quoted && !source.endsWith("\\"); //$NON-NLS-1$
-			add(records, new CsvRecord(recordStart, source.length(), source.length(), cells, valid, multiline));
+			add(records, new CsvRecord(recordStart, source.length(), source.length(), cells, valid, multiline,
+					textAfterQuote, quoted ? quoteStart : -1));
 		}
 		return records;
 	}

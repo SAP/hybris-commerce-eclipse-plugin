@@ -13,10 +13,12 @@ import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.jface.text.Document;
@@ -28,9 +30,12 @@ import org.eclipse.lsp4j.DidCloseTextDocumentParams;
 import org.eclipse.lsp4j.DidOpenTextDocumentParams;
 import org.eclipse.lsp4j.DocumentFormattingParams;
 import org.eclipse.lsp4j.DocumentRangeFormattingParams;
+import org.eclipse.lsp4j.DocumentSymbolParams;
 import org.eclipse.lsp4j.FormattingOptions;
+import org.eclipse.lsp4j.HoverParams;
 import org.eclipse.lsp4j.InitializeParams;
 import org.eclipse.lsp4j.Position;
+import org.eclipse.lsp4j.PublishDiagnosticsParams;
 import org.eclipse.lsp4j.Range;
 import org.eclipse.lsp4j.ServerCapabilities;
 import org.eclipse.lsp4j.TextDocumentContentChangeEvent;
@@ -108,8 +113,8 @@ public class ImpexLanguageServerTest {
 			Assert.assertTrue(capabilities.getDocumentRangeFormattingProvider().getLeft());
 			Assert.assertNotNull(capabilities.getCompletionProvider());
 			Assert.assertTrue(capabilities.getDefinitionProvider().getLeft());
-			Assert.assertNull(capabilities.getHoverProvider());
-			Assert.assertNull(capabilities.getDocumentSymbolProvider());
+			Assert.assertTrue(capabilities.getHoverProvider().getLeft());
+			Assert.assertTrue(capabilities.getDocumentSymbolProvider().getLeft());
 		}
 	}
 
@@ -179,13 +184,18 @@ public class ImpexLanguageServerTest {
 		Assert.assertEquals(provider.hashCode(), new ImpexConnectionProvider().hashCode());
 		for (int run = 0; run < 2; run++) {
 			final ExecutorService executor = Executors.newFixedThreadPool(2);
+			final BlockingQueue<PublishDiagnosticsParams> diagnostics = new LinkedBlockingQueue<>();
 			Future<?> listening = null;
 			try {
 				provider.start();
 				final LanguageClient client = (LanguageClient) Proxy.newProxyInstance(LanguageClient.class.getClassLoader(),
-						new Class<?>[] {LanguageClient.class}, (proxy, method, args) ->
-							CompletableFuture.class.isAssignableFrom(method.getReturnType())
-								? CompletableFuture.completedFuture(null) : null);
+						new Class<?>[] {LanguageClient.class}, (proxy, method, args) -> {
+							if ("publishDiagnostics".equals(method.getName())) {
+								diagnostics.add((PublishDiagnosticsParams) args[0]);
+							}
+							return CompletableFuture.class.isAssignableFrom(method.getReturnType())
+									? CompletableFuture.completedFuture(null) : null;
+						});
 				final Launcher<LanguageServer> launcher = new Launcher.Builder<LanguageServer>()
 						.setLocalService(client).setRemoteInterface(LanguageServer.class)
 						.setInput(provider.getInputStream()).setOutput(provider.getOutputStream())
@@ -198,11 +208,27 @@ public class ImpexLanguageServerTest {
 				final List<? extends TextEdit> edits = remote.getTextDocumentService().formatting(formatting())
 						.get(5, TimeUnit.SECONDS);
 				Assert.assertEquals(2, edits.size());
+				final PublishDiagnosticsParams firstDiagnostics = diagnostics.poll(5, TimeUnit.SECONDS);
+				Assert.assertNotNull(firstDiagnostics);
+				Assert.assertEquals(Integer.valueOf(1), firstDiagnostics.getVersion());
+				Assert.assertTrue(firstDiagnostics.getDiagnostics().isEmpty());
+				Assert.assertEquals("INSERT T", remote.getTextDocumentService().documentSymbol(
+						new DocumentSymbolParams(new TextDocumentIdentifier(URI))).get(5, TimeUnit.SECONDS)
+						.getFirst().getLeft().getName());
 				Assert.assertEquals(4, remote.getTextDocumentService().completion(new CompletionParams(
 						new TextDocumentIdentifier(URI), new Position(0, 0))).get(5, TimeUnit.SECONDS)
 						.getRight().getItems().size());
 				Assert.assertTrue(remote.getTextDocumentService().definition(new DefinitionParams(
 						new TextDocumentIdentifier(URI), new Position(0, 1))).get(5, TimeUnit.SECONDS).getLeft().isEmpty());
+				remote.getTextDocumentService().didChange(new DidChangeTextDocumentParams(
+						new VersionedTextDocumentIdentifier(URI, 2), Arrays.asList(new TextDocumentContentChangeEvent(
+								"$catalog=demo\nINSERT T;a;b\n;id;$catalog\n"))));
+				Assert.assertTrue(remote.getTextDocumentService().hover(new HoverParams(new TextDocumentIdentifier(URI),
+						new Position(2, 6))).get(5, TimeUnit.SECONDS).getContents().getRight().getValue()
+						.contains("$catalog=demo"));
+				final PublishDiagnosticsParams updatedDiagnostics = diagnostics.poll(5, TimeUnit.SECONDS);
+				Assert.assertNotNull(updatedDiagnostics);
+				Assert.assertEquals(Integer.valueOf(2), updatedDiagnostics.getVersion());
 				remote.shutdown().get(5, TimeUnit.SECONDS);
 				remote.exit();
 			} finally {
