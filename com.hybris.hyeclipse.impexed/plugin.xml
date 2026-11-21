@@ -16,21 +16,6 @@
 	</extension>
 	
 	<extension
-		point="org.eclipse.ui.newWizards">
-		<category
-        id="sapHybris"
-        name="SAP">
-		</category>
-		<wizard
-			name="New impex file"
-            icon="icon/hybris.ico"
-            category="sapHybris"
-            class="com.hybris.impexformatter.wizards.NewImpexWizard"
-            id="com.hybris.impexformatter.wizards.NewImpexWizard">
-		</wizard>
-	</extension>
-	
-	<extension
 		point = "org.eclipse.ui.editorActions">
 		<editorContribution
 			id="org.eclipse.ui.examples.readmetool.ec1"
@@ -54,12 +39,6 @@
             name="Impex Format"
             categoryId="impexCategory">
 		</command>
-		<command
-            id="com.hybris.impexformatter.wizards.NewImpexWizard"
-            defaultHandler="com.hybris.impexformatter.handlers.NewImpexWizardHandler"
-            name="Impex Wizard"
-            categoryId="impexCategory">
-		</command>
 	</extension>
 	
 	<extension
@@ -69,12 +48,6 @@
             sequence="M1+Shift+F"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             contextId="org.eclipse.ui.textEditorScope">
-		</key>
-		<key
-			commandId="com.hybris.impexformatter.wizards.NewImpexWizard"
-            sequence="M1+Shift+Y"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            contextId="org.eclipse.ui.contexts.window">
 		</key>
 	</extension>
 	

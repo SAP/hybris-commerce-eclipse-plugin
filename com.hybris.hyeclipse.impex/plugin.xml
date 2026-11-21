@@ -20,4 +20,21 @@
 		<presentationReconciler class="org.eclipse.tm4e.ui.text.TMPresentationReconciler"
 			contentType="com.hybris.hyeclipse.impex.impex"/>
 	</extension>
+	<extension point="org.eclipse.ui.newWizards">
+		<category id="sapHybris" name="%sapCategoryName"/>
+		<wizard id="com.hybris.impexformatter.wizards.NewImpexWizard" name="%wizardName"
+			category="sapHybris" class="com.hybris.hyeclipse.impex.wizards.NewImpexWizard">
+			<description>%wizardDescription</description>
+		</wizard>
+	</extension>
+	<extension point="org.eclipse.ui.commands">
+		<category id="com.hybris.hyeclipse.impex.commands" name="%commandCategoryName"/>
+		<command id="com.hybris.impexformatter.wizards.NewImpexWizard" name="%wizardName"
+			categoryId="com.hybris.hyeclipse.impex.commands"
+			defaultHandler="com.hybris.hyeclipse.impex.wizards.NewImpexWizardHandler"/>
+	</extension>
+	<extension point="org.eclipse.ui.bindings">
+		<key commandId="com.hybris.impexformatter.wizards.NewImpexWizard" sequence="M1+Shift+Y"
+			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration" contextId="org.eclipse.ui.contexts.window"/>
+	</extension>
 </plugin>

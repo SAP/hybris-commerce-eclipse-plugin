@@ -18,7 +18,16 @@ Status: migration started on `feature/impex-lsp-migration`; legacy editor retain
 - Verification: 9 new OSGi tests passed; the full 20-module package build passed
   with tests skipped after the isolated test run. The resulting p2 ZIP contains
   both editors and the packaged grammar. Interactive UI/upgrade checks remain.
-- Next: continuation-aware lexical scanning, the new-file wizard, and LSP
+- Added the new-file wizard using Eclipse's standard selection/validation page,
+  UTF-8 workspace creation, project line delimiters, cancellation, and overwrite
+  protection. Moved the old wizard/command/shortcut registrations to the new
+  bundle while retaining their IDs. CSV creation is supported; its content-type
+  override/highlighting remains a compatibility gap, explicitly described in the UI.
+- Wizard verification: full reactor `verify` passed all 110 tests, including 19
+  ImpEx grammar, registration, and workspace-creation tests. The p2 ZIP contains
+  the wizard and its NLS resources with no legacy wizard registration. Interactive
+  browsing, Java selection, shortcut execution, and editor-opening checks remain.
+- Next: continuation-aware lexical scanning and LSP
   lifecycle, formatting, and project-scoped type-system services. These features
   are not implemented by the preview, and the legacy editor must not be retired.
 

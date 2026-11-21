@@ -22,6 +22,43 @@ import org.junit.Test;
 public class ImpexRegistrationTest {
 
 	@Test
+	public void replacementWizardOwnsTheExistingCommandAndShortcut() throws Exception {
+		final String id = "com.hybris.impexformatter.wizards.NewImpexWizard";
+		int wizards = 0;
+		int commands = 0;
+		int bindings = 0;
+		for (final IConfigurationElement element : Platform.getExtensionRegistry()
+				.getConfigurationElementsFor("org.eclipse.ui.newWizards")) {
+			if (id.equals(element.getAttribute("id"))) {
+				Assert.assertEquals("com.hybris.hyeclipse.impex", element.getContributor().getName());
+				Assert.assertNotNull(Platform.getBundle(element.getContributor().getName())
+						.loadClass(element.getAttribute("class")));
+				wizards++;
+			}
+		}
+		for (final IConfigurationElement element : Platform.getExtensionRegistry()
+				.getConfigurationElementsFor("org.eclipse.ui.commands")) {
+			if (id.equals(element.getAttribute("id"))) {
+				Assert.assertEquals("com.hybris.hyeclipse.impex", element.getContributor().getName());
+				Assert.assertNotNull(Platform.getBundle(element.getContributor().getName())
+						.loadClass(element.getAttribute("defaultHandler")));
+				commands++;
+			}
+		}
+		for (final IConfigurationElement element : Platform.getExtensionRegistry()
+				.getConfigurationElementsFor("org.eclipse.ui.bindings")) {
+			if (id.equals(element.getAttribute("commandId"))) {
+				Assert.assertEquals("M1+Shift+Y", element.getAttribute("sequence"));
+				Assert.assertEquals("com.hybris.hyeclipse.impex", element.getContributor().getName());
+				bindings++;
+			}
+		}
+		Assert.assertEquals(1, wizards);
+		Assert.assertEquals(1, commands);
+		Assert.assertEquals(1, bindings);
+	}
+
+	@Test
 	public void recognizesImpexWithoutClaimingCsvFiles() {
 		final IContentType type = Platform.getContentTypeManager()
 				.getContentType("com.hybris.hyeclipse.impex.impex");

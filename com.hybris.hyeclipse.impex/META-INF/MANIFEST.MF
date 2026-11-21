@@ -7,7 +7,14 @@ Bundle-Vendor: SAP
 Bundle-RequiredExecutionEnvironment: JavaSE-21
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.contenttype,
+ org.eclipse.core.resources,
+ org.eclipse.core.runtime,
+ org.eclipse.equinox.preferences,
+ org.eclipse.jface,
+ org.eclipse.ui,
+ org.eclipse.ui.ide,
  org.eclipse.ui.genericeditor,
  org.eclipse.tm4e.registry,
  org.eclipse.tm4e.ui
 Automatic-Module-Name: com.hybris.hyeclipse.impex
+Export-Package: com.hybris.hyeclipse.impex.wizards
