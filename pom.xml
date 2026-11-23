@@ -49,7 +49,6 @@
 	<modules>
 		<module>com.hybris.hyeclipse.commons</module>
 		<module>com.hybris.hyeclipse.hac</module>
-		<module>com.hybris.hyeclipse.impexed</module>
 		<module>com.hybris.hyeclipse.impex</module>
 		<module>com.hybris.hyeclipse.impex.ls</module>
 		<module>com.hybris.hyeclipse.impex.tests</module>

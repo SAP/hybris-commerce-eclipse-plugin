@@ -13,9 +13,8 @@ The previous SAP `YTypeSystem` usages were:
 | `ytypesystem/Activator.java` | Runtime type loading, type/name caches, attributes and loader locations | Delegates to shared snapshots; caches/runtime loading removed |
 | `ytypesystem/YTypeSystemBuilder.java` | Loaded platform classes and parsed items XML | Removed |
 | `ytypesystem/ExtendedYTypeSystem.java` | Subclassed SAP type system and reflected into private fields | Removed |
-| `impexed/Activator.java` | Delegated completion and hyperlink data to the old Activator | Uses commons index directly |
-| ImpEx completion processors | Requested types and qualifiers through the Activator | Retain their API, now backed by generated models |
-| ImpEx hyperlink detector/link | Cached type names and decoded items.xml loader strings | Reads current names and opens the generated model source |
+| Legacy ImpEx Activator/completion processors | Requested types and qualifiers through the Activator | Removed; the LSP workspace adapter supplies document-scoped shared snapshots |
+| Legacy ImpEx hyperlink detector/link | Cached type names and decoded items.xml loader strings | Removed; LSP definitions resolve accessible generated-model source locations |
 | Beans type selection/label provider/generator | Used SAP composed types and attributes | Uses shared types and accessor Java types |
 | `tsv.extended/.../PlatformServiceImplHyeclipse.java` | Returns SAP `YTypeSystem` to the TSV library | Removed in the source-built TSV migration |
 | `tsv.extended/.../TSVExtendedYTypeSystem.java` | SAP subclass with private-field reflection | Removed in the source-built TSV migration |

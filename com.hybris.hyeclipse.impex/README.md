@@ -1,11 +1,11 @@
-# ImpEx editor preview
+# ImpEx editor
 
-Generic Editor/TM4E foundation for the [migration plan](../docs/dev/impex/editor-replacement-plan.md).
-The legacy `com.hybris.hyeclipse.impexed` bundle remains in the main feature.
+Generic Editor/TM4E/LSP4E replacement described in the
+[migration plan](../docs/dev/impex/editor-replacement-plan.md).
+The legacy bundle has been removed from the source, reactor, and installable feature.
 
-After installing the rebuilt feature, choose **Open With > ImpEx Editor (Preview)**
-on an `.impex` file. The preview is not registered as the default editor and does
-not claim `.csv` files. Colors follow the installed TM4E theme.
+After installing the rebuilt feature, **ImpEx Editor** is the default for `.impex`
+files. It does not claim `.csv` files. Colors follow the installed TM4E theme.
 
 The canonical grammar is `syntaxes/impex.tmLanguage.json`. Headers, modifiers,
 macros, data-cell strings, comments, and script directives have initial scopes;
@@ -15,7 +15,7 @@ header replacements still require further work.
 Use **File > New > Other > SAP > New ImpEx File**, or **M1+Shift+Y**, to create
 files with the replacement wizard. It uses the selected workspace project/folder,
 refuses overwrites (including local files not yet refreshed into the workspace),
-and opens the file in the preview. New files use UTF-8 and the project's configured
+and opens the file in the editor. New files use UTF-8 and the project's configured
 line delimiter. Explicit `.csv` names are accepted but currently open without
 ImpEx highlighting. The old wizard/command registrations have been transferred
 to this bundle without changing their IDs or duplicating the shortcut.
@@ -25,7 +25,7 @@ The in-process language server now provides safe document/range formatting throu
 block, or use the caret with no selection for document formatting. Multiline,
 continued, malformed, or unsupported blocks are left unchanged. See the
 [formatting policy](../com.hybris.hyeclipse.impex.ls/README.md) for limits and options.
-The legacy formatter shortcut is scoped to its own editor to avoid interference.
+Formatting uses LSP4E's action; the legacy formatter and its shortcut contribution are removed.
 
 Content assist (**Ctrl+Space**) now offers operation/type names, inherited
 attributes, nested reference attributes, header/column modifiers, supported modifier
@@ -45,15 +45,24 @@ CSV quote errors appear as diagnostics and clear after correction or document cl
 Unknown types/macros and runtime-dependent import behavior are not reported as errors.
 
 Interactive UI/upgrade validation, CSV compatibility refinements, and multi-platform
-indexing remain outstanding. The legacy editor has not been retired.
+indexing remain outstanding; removal approval does not imply those checks were performed.
+
+## Existing installations
+
+- User-specific file associations can override the new default. Reselect
+  **Open With > ImpEx Editor** or update the `.impex` association in Eclipse preferences.
+- An independently installed `com.hybris.hyeclipse.impexed` bundle may remain after
+  a feature upgrade. Review **Help > About Eclipse > Installation Details** and
+  uninstall the old editor if still present. No workspace preferences are reset automatically.
+- Historical published update-site snapshots are unchanged; new builds exclude the old bundle.
 
 Run the isolated OSGi tests:
 
 ```bash
-./mvnw -pl com.hybris.hyeclipse.commons,com.hybris.hyeclipse.impexed,com.hybris.hyeclipse.impex.ls,com.hybris.hyeclipse.impex,com.hybris.hyeclipse.impex.tests -am verify
+./mvnw -pl com.hybris.hyeclipse.commons,com.hybris.hyeclipse.impex.ls,com.hybris.hyeclipse.impex,com.hybris.hyeclipse.impex.tests -am verify
 ```
 
-Rebuild both editor bundles so registration tests do not use cached legacy metadata.
+The tests assert the new default registration and absence of legacy runtime contributions.
 The tests exercise the packaged grammar, file creation, registration, formatting,
 real JSON-RPC lifecycle, scoped completion/navigation, hover, symbols, diagnostic
 publication/clearing, index refresh, cancellation, and LSP4E's stale-edit protection

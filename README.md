@@ -18,7 +18,7 @@ Features
 * Configure the runtime JVM with optimal settings to run JUnit tests
 * Add the JDBC driver to the classpath (required to be able to run JUnit tests)
 * Actions to build the platform, ensuring projects are refreshed after the platform has generated files
-* Impex editor with type ahead and formatting functionality
+* ImpEx language editor with TextMate highlighting, LSP completion/navigation, and safe formatting
 * Create working sets from localextensions.xml
 * Disable unnecessary extension modules
 * Build individual extensions

@@ -17,6 +17,5 @@ Require-Bundle: org.junit,
  org.eclipse.lsp4e,
  com.hybris.hyeclipse.impex.ls,
  com.hybris.hyeclipse.commons,
- com.hybris.hyeclipse.impex,
- com.hybris.hyeclipse.impexed
+ com.hybris.hyeclipse.impex
 Automatic-Module-Name: com.hybris.hyeclipse.impex.tests

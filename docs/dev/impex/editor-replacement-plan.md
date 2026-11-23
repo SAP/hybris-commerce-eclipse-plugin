@@ -1,6 +1,26 @@
 # ImpEx editor replacement plan
 
-Status: migration started on `feature/impex-lsp-migration`; legacy editor retained.
+Status: cutover approved on 23 November 2026; legacy source/bundle removed on `feature/impex-lsp-migration`.
+
+## Approved cutover
+
+The user approved removal of the old editor. `com.hybris.hyeclipse.impexed` is
+removed from the source, reactor, feature, and test dependencies. The replacement
+is now named **ImpEx Editor** and registered as the default for `.impex` files.
+Existing wizard/command IDs are preserved for user key bindings, not as dependencies
+on the removed implementation. The phases and verification history below record
+the original coexistence rollout.
+
+Manual UI/upgrade checks and known grammar/compatibility refinements remain pending;
+cutover approval is not a claim that those checks passed. Existing installations may
+need editor reassociation and explicit removal of an independently installed old bundle.
+Published release/update-site history is unchanged. See the replacement bundle's
+README for upgrade notes.
+
+Cutover verification: all 171 tests passed both in a clean build with local artifacts
+ignored and in the normal cached build. Runtime registration tests confirm the old
+bundle/editor/formatter contributions are absent and the replacement is default.
+The new p2 ZIP, feature, and metadata exclude the retired bundle.
 
 ## Implementation progress
 
@@ -60,17 +80,17 @@ Status: migration started on `feature/impex-lsp-migration`; legacy editor retain
 - Verification: all 171 tests passed in the full reactor, including 80 ImpEx tests.
   Tests cover hover/outline ranges, quote origins, surrogate pairs, notification
   lifecycle, rapid edits/reopening, and real JSON-RPC hover/symbol/diagnostic exchange.
-- Next: interactive UI/upgrade checks and CSV/header compatibility refinements. TextMate continuation
-  highlighting still needs refinement. The legacy editor must not be retired yet.
+- Next: interactive UI/upgrade checks and CSV/header compatibility refinements.
+  TextMate continuation highlighting still needs refinement; the approved cutover
+  proceeds with these limitations documented rather than retaining the old source.
 
 ## Goal and scope
 
 Replace the custom `com.hybris.hyeclipse.impexed` editor with Eclipse's Generic
 Editor, TM4E syntax highlighting, and LSP4E-backed language services. Formatting,
 type-system completion, and the new-file wizard are mandatory replacement
-features. Highlighting-only builds are opt-in previews, not the completed
-replacement; retire the legacy editor only after these features pass acceptance
-tests and the remaining migration decisions are resolved.
+features. The original plan used opt-in previews before cutover; the user has now
+approved retirement while the remaining manual checks and compatibility work are tracked.
 
 Inputs:
 
@@ -79,8 +99,8 @@ Inputs:
   verification against the supported Commerce version.
 - [TextMate grammar](../../../com.hybris.hyeclipse.impex/syntaxes/impex.tmLanguage.json):
   canonical packaged grammar, still under migration.
-- Existing `com.hybris.hyeclipse.impexed/plugin.xml`, editor, wizard, formatter,
-  completion processors, and hyperlink classes.
+- Legacy editor, wizard, formatter, completion processors, and hyperlink classes,
+  available in Git history before the cutover commit.
 
 ## Architecture
 
@@ -120,8 +140,8 @@ p2 feature resolves these dependencies, not just the development target.
 
 The original supplied grammar started a string on any quote, treated `\\.` as
 an escape, recognized only unquoted `#` comments, and could not distinguish
-scripts from comments. The preview fixes initial cases; complete and validate
-the following behavior before editor cutover:
+scripts from comments. The replacement fixes initial cases; the remaining grammar
+review findings and the following behavior require follow-up after the approved cutover:
 
 - Model cell boundaries and quoted multiline cells; quoting starts at the
   beginning of a cell, allowing leading whitespace as verified by fixtures.
@@ -206,11 +226,11 @@ before changing the default editor:
 | Custom auto-edit/comment behavior | TM4E language configuration where safe; verify against data cells |
 | Old editor IDs/preferences | Document reassociation and preference changes; migrate only with explicit policy |
 
-Remove the old editor from the main feature/reactor only after parity decisions
-and upgrade tests pass. Test upgrades from an existing installation: dropping a
-bundle from a feature does not by itself prove old associations or installed
-bundles disappear. Keep a temporary opt-in legacy feature if gaps require it.
-Do not delete the old source or published update-site history during the spike.
+The approved cutover removes the old source and bundle from the main feature/reactor.
+Still test upgrades from existing installations: dropping a bundle from a feature
+does not prove old associations or independently installed bundles disappear.
+Preserve user workspace preferences and published update-site history; document
+manual reassociation/uninstallation rather than silently changing them.
 
 ## Required feature specifications
 
@@ -307,8 +327,8 @@ editor opening, shortcut/command routing, and operation without language service
   Unicode, external files, themes, and old workspace/file associations.
 - LSP tests: lifecycle, edits/positions (UTF-16), stale diagnostics, completion,
   cancellation where supported, and multiple projects with different type systems.
-- Required feature gates: all formatting, completion/navigation, and wizard
-  acceptance cases above pass before legacy-editor retirement.
+- Required feature gates: continue validating formatting, completion/navigation,
+  and wizard acceptance cases above; distinguish automated checks from pending manual ones.
 - Performance: benchmark large generated `.impex` files and long unterminated
   quoted cells; set latency/memory budgets from baseline measurements.
 - Run `make test` and `make package`; install the produced p2 ZIP in a clean

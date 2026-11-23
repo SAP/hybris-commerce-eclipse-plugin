@@ -53,7 +53,7 @@ SPDX-FileCopyrightText = "2006 SAP SE or an SAP affiliate company and *Eclipse P
 SPDX-License-Identifier = "Apache-2.0"
 
 [[annotations]]
-path = "com.hybris.hyeclipse.impexed/**"
+path = ["com.hybris.hyeclipse.impex/**", "com.hybris.hyeclipse.impex.ls/**", "com.hybris.hyeclipse.impex.tests/**"]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors"
 SPDX-License-Identifier = "Apache-2.0"

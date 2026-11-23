@@ -7,7 +7,7 @@
 	</extension>
 	<extension point="org.eclipse.ui.editors">
 		<editor id="com.hybris.hyeclipse.impex.editor" name="%editorName"
-			class="org.eclipse.ui.internal.genericeditor.ExtensionBasedTextEditor" extensions="impex" default="false">
+			class="org.eclipse.ui.internal.genericeditor.ExtensionBasedTextEditor" extensions="impex" default="true">
 			<contentTypeBinding contentTypeId="com.hybris.hyeclipse.impex.impex"/>
 		</editor>
 	</extension>
@@ -21,6 +21,7 @@
 			contentType="com.hybris.hyeclipse.impex.impex"/>
 	</extension>
 	<extension point="org.eclipse.ui.newWizards">
+		<!-- Preserve wizard/command IDs for existing key bindings; no legacy classes are required. -->
 		<category id="sapHybris" name="%sapCategoryName"/>
 		<wizard id="com.hybris.impexformatter.wizards.NewImpexWizard" name="%wizardName"
 			category="sapHybris" class="com.hybris.hyeclipse.impex.wizards.NewImpexWizard">

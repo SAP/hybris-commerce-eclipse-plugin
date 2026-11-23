@@ -22,7 +22,7 @@ import org.junit.Test;
 public class ImpexRegistrationTest {
 
 	@Test
-	public void languageServerMappingAndLegacyFormatterScopeAreRegistered() throws Exception {
+	public void languageServerMappingAndLspFormattingAreRegisteredWithoutLegacyContributions() throws Exception {
 		boolean mapping = false;
 		boolean server = false;
 		for (final IConfigurationElement element : Platform.getExtensionRegistry()
@@ -40,15 +40,20 @@ public class ImpexRegistrationTest {
 			}
 		}
 		Assert.assertTrue(server && mapping);
-		boolean scoped = false;
+		Assert.assertNull(Platform.getBundle("com.hybris.hyeclipse.impexed"));
+		boolean formatting = false;
 		for (final IConfigurationElement element : Platform.getExtensionRegistry()
 				.getConfigurationElementsFor("org.eclipse.ui.bindings")) {
-			if ("impexFormatter".equals(element.getAttribute("commandId"))) {
-				Assert.assertEquals("com.hybris.hyeclipse.impexed.editorContext", element.getAttribute("contextId"));
-				scoped = true;
+			Assert.assertNotEquals("impexFormatter", element.getAttribute("commandId"));
+			if ("org.eclipse.lsp4e.format".equals(element.getAttribute("commandId"))) {
+				formatting = true;
 			}
 		}
-		Assert.assertTrue(scoped);
+		Assert.assertTrue(formatting);
+		for (final IConfigurationElement element : Platform.getExtensionRegistry()
+				.getConfigurationElementsFor("org.eclipse.ui.editors")) {
+			Assert.assertNotEquals("com.hybris.impexformatter.editors.ImpexPageEditor", element.getAttribute("id"));
+		}
 	}
 
 	@Test
@@ -98,17 +103,17 @@ public class ImpexRegistrationTest {
 	}
 
 	@Test
-	public void previewEditorClassExistsAndIsNotDefault() throws Exception {
+	public void impexEditorClassExistsAndIsDefault() throws Exception {
 		for (final IConfigurationElement element : Platform.getExtensionRegistry()
 				.getConfigurationElementsFor("org.eclipse.ui.editors")) {
 			if ("com.hybris.hyeclipse.impex.editor".equals(element.getAttribute("id"))) {
-				Assert.assertEquals("false", element.getAttribute("default"));
+				Assert.assertEquals("true", element.getAttribute("default"));
 				Assert.assertNotNull(Platform.getBundle("com.hybris.hyeclipse.impex")
 						.loadClass(element.getAttribute("class")));
 				return;
 			}
 		}
-		Assert.fail("ImpEx preview editor is not registered");
+		Assert.fail("ImpEx editor is not registered");
 	}
 
 	@Test
