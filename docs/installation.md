@@ -5,7 +5,7 @@ Install the plugin through the
 or use the hosted Eclipse p2 repository:
 
 ```text
-https://sap.github.io/hybris-commerce-eclipse-plugin/updates/latest/
+https://mikolayek.github.io/hybris-commerce-eclipse-plugin/updates/latest/
 ```
 
 ## Install from the update site

@@ -43,9 +43,9 @@ archiving of their tagged documentation. To rebuild or backfill a release, run t
 the Actions tab with `master` selected; optionally provide `release_tag=vX.Y.Z`.
 Manual runs on other branches cannot deploy.
 
-The public site is https://sap.github.io/hybris-commerce-eclipse-plugin/; its root redirects to the latest working docs.
+The public site is https://mikolayek.github.io/hybris-commerce-eclipse-plugin/; its root redirects to the latest working docs.
 The same deployment also hosts the Eclipse p2 repository at
-https://sap.github.io/hybris-commerce-eclipse-plugin/updates/latest/.
+https://mikolayek.github.io/hybris-commerce-eclipse-plugin/updates/latest/.
 
 ### Versioned documentation
 
