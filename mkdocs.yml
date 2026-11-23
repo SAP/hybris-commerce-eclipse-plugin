@@ -1,11 +1,12 @@
 site_name: Eclipse Plugin for SAP Commerce
 site_description: User and developer documentation for the SAP Commerce Eclipse plugin.
-site_url: https://sap.github.io/hybris-commerce-eclipse-plugin/
-repo_url: https://github.com/SAP/hybris-commerce-eclipse-plugin
-repo_name: SAP/hybris-commerce-eclipse-plugin
+site_url: https://mikolayek.github.io/hybris-commerce-eclipse-plugin/
+repo_url: https://github.com/mikolayek/hybris-commerce-eclipse-plugin
+repo_name: mikolayek/hybris-commerce-eclipse-plugin
 edit_uri: edit/master/docs/
 docs_dir: docs
 site_dir: site
+remote_branch: docs-versions
 
 theme:
   name: material
@@ -19,6 +20,12 @@ theme:
 
 plugins:
   - search
+  - mike:
+      alias_type: redirect
+
+extra:
+  version:
+    provider: mike
 
 hooks:
   - tools/docs/hooks.py
@@ -61,9 +68,13 @@ nav:
       - Knowledge database: kb/info.md
   - Developer guide:
       - Development and releases: dev/development.md
+      - Documentation and plugin versioning: dev/versioning.md
+      - ImpEx:
+          - Language behavior: dev/impex/impex-docs.md
+          - Editor migration plan: dev/impex/editor-replacement-plan.md
       - Regression verification: dev/import-and-junit-verification.md
   - Project information:
       - Deprecations: deprecation/deprecation.md
-      - Contributing: https://github.com/SAP/hybris-commerce-eclipse-plugin/blob/master/CONTRIBUTING.md
-      - Code of conduct: https://github.com/SAP/hybris-commerce-eclipse-plugin/blob/master/CODE_OF_CONDUCT.md
-      - License: https://github.com/SAP/hybris-commerce-eclipse-plugin/blob/master/LICENSE
+      - Contributing: https://github.com/mikolayek/hybris-commerce-eclipse-plugin/blob/master/CONTRIBUTING.md
+      - Code of conduct: https://github.com/mikolayek/hybris-commerce-eclipse-plugin/blob/master/CODE_OF_CONDUCT.md
+      - License: https://github.com/mikolayek/hybris-commerce-eclipse-plugin/blob/master/LICENSE

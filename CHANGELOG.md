@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Replace the legacy ImpEx editor bundle with Generic Editor/TM4E/LSP4E language support.
+- Make **ImpEx Editor** the default for `.impex` files; preserve the existing new-file wizard command and shortcut.
+- Existing workspaces may need to reselect the editor and uninstall any independently installed legacy bundle.
+
 ## v22.11.0 (18/11/2026)
 
 - Modernize Java 21 source code and update build tooling.

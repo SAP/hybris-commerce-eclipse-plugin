@@ -1,0 +1,128 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "ImpEx",
+	"scopeName": "text.tabular.impex",
+	"fileTypes": ["impex"],
+	"patterns": [
+		{"include": "#quoted-script"},
+		{"include": "#script"},
+		{"include": "#quoted-comment"},
+		{"name": "comment.line.number-sign.impex", "match": "^\\s*#(?!%).*$"},
+		{"include": "#macro-definition"},
+		{"include": "#header"},
+		{"include": "#data"},
+		{"include": "#first-quoted-cell"},
+		{"include": "#macro"}
+	],
+	"repository": {
+		"quoted-script": {
+			"name": "meta.embedded.script.impex",
+			"begin": "^\\s*(\")(#%)",
+			"beginCaptures": {
+				"1": {"name": "punctuation.definition.string.begin.impex"},
+				"2": {"name": "keyword.control.script.impex"}
+			},
+			"end": "\"(?!\")",
+			"endCaptures": {"0": {"name": "punctuation.definition.string.end.impex"}},
+			"patterns": [{"include": "#doubled-quote"}, {"include": "#script-directive"}]
+		},
+		"script": {
+			"name": "meta.embedded.script.impex",
+			"begin": "^\\s*(#%)",
+			"beginCaptures": {"1": {"name": "keyword.control.script.impex"}},
+			"end": "$",
+			"patterns": [{"include": "#script-directive"}]
+		},
+		"script-directive": {
+			"patterns": [
+				{"name": "keyword.control.script.impex", "match": "\\b(?:if|endif|beforeEach|afterEach|forEach):(?:end\\b)?"},
+				{"name": "storage.type.script.impex", "match": "\\b(?:groovy|javascript|beanshell)%"}
+			]
+		},
+		"quoted-comment": {
+			"name": "comment.line.number-sign.impex",
+			"begin": "^\\s*\"\\s*#(?!%)",
+			"end": "\"(?!\")",
+			"patterns": [{"include": "#doubled-quote"}]
+		},
+		"macro-definition": {
+			"begin": "^\\s*(\\$[\\w-]+)(\\s*=)",
+			"beginCaptures": {
+				"1": {"name": "variable.other.definition.impex"},
+				"2": {"name": "keyword.operator.assignment.impex"}
+			},
+			"end": "$",
+			"patterns": [{"include": "#macro"}]
+		},
+		"header": {
+			"name": "meta.header.impex",
+			"begin": "(?i)^\\s*(INSERT_UPDATE|INSERT|UPDATE|REMOVE)\\s+([\\w.]+)",
+			"beginCaptures": {
+				"1": {"name": "keyword.control.header.impex"},
+				"2": {"name": "entity.name.type.impex"}
+			},
+			"end": "$",
+			"patterns": [
+				{"include": "#modifiers"},
+				{"include": "#macro"},
+				{"name": "entity.other.attribute-name.impex", "match": "[@&]?[A-Za-z_][\\w.-]*"},
+				{"name": "punctuation.separator.impex", "match": "[;,()]"}
+			]
+		},
+		"modifiers": {
+			"begin": "\\[",
+			"beginCaptures": {"0": {"name": "punctuation.section.brackets.begin.impex"}},
+			"end": "\\]",
+			"endCaptures": {"0": {"name": "punctuation.section.brackets.end.impex"}},
+			"patterns": [
+				{"name": "string.quoted.single.impex", "begin": "'", "end": "'", "patterns": [{"include": "#macro"}]},
+				{"name": "string.quoted.double.impex", "begin": "\"", "end": "\"(?!\")", "patterns": [{"include": "#doubled-quote"}, {"include": "#macro"}]},
+				{"name": "entity.other.attribute-name.modifier.impex", "match": "[\\w.-]+(?=\\s*=)"},
+				{"include": "#macro"},
+				{"include": "#scalar"},
+				{"name": "keyword.operator.assignment.impex", "match": "="},
+				{"name": "punctuation.separator.impex", "match": ","}
+			]
+		},
+		"data": {
+			"begin": "^\\s*(?=;)",
+			"end": "$",
+			"patterns": [
+				{"include": "#quoted-cell"},
+				{"name": "punctuation.separator.impex", "match": ";"},
+				{"include": "#unquoted-cell"}
+			]
+		},
+		"quoted-cell": {
+			"name": "string.quoted.double.impex",
+			"begin": "(?<=;)\\s*\"",
+			"end": "\"(?!\")",
+			"patterns": [{"include": "#doubled-quote"}, {"include": "#macro"}]
+		},
+		"first-quoted-cell": {
+			"name": "string.quoted.double.impex",
+			"begin": "^\\s*\"",
+			"end": "\"(?!\")",
+			"patterns": [{"include": "#doubled-quote"}, {"include": "#macro"}]
+		},
+		"unquoted-cell": {
+			"begin": "(?<=;)(?!\\s*\")(?=[^;\\r\\n])",
+			"end": "(?=;|$)",
+			"patterns": [
+				{"include": "#macro"},
+				{"include": "#scalar"},
+				{"name": "constant.language.impex", "match": "(?i)<(?:ignore|null)>"},
+				{"name": "keyword.operator.collection.impex", "match": "\\((?:\\+\\?|\\+|-)\\)"},
+				{"name": "punctuation.separator.continuation.impex", "match": "\\\\$"}
+			]
+		},
+		"doubled-quote": {"name": "constant.character.escape.impex", "match": "\"\""},
+		"macro": {"name": "variable.other.impex", "match": "\\$[\\w-]+"},
+		"scalar": {
+			"patterns": [
+				{"name": "constant.language.impex", "match": "(?i)(?<![\\w.-])(?:true|false)(?=\\s*(?:;|,|\\]|$))"},
+				{"name": "constant.numeric.impex", "match": "(?<![\\w.-])-?\\d+(?:\\.\\d+)?(?=\\s*(?:;|,|\\]|$))"}
+			]
+		}
+	}
+}

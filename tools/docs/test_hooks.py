@@ -3,15 +3,28 @@
 """Regression tests for the generated documentation homepage."""
 
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 
 from mkdocs.config import load_config
 from mkdocs.structure.files import Files
 
-from hooks import homepage_markdown
+from hooks import homepage_markdown, on_post_build
 
 
 class HomepageTest(unittest.TestCase):
+    def test_release_source_links_use_the_tag(self):
+        self.assertEqual(
+            "[Sources](https://example.com/repo/tree/v1.2.3/docs/) [License](https://example.com/repo/blob/v1.2.3/LICENSE)",
+            homepage_markdown("[Sources](docs/) [License](LICENSE)", "https://example.com/repo", "v1.2.3"),
+        )
+
+    def test_version_snapshot_does_not_copy_the_installer_repository(self):
+        with patch.dict("os.environ", {"COMMERCE_DOCS_VERSION_BUILD": "1"}):
+            with patch("hooks.publish_update_site") as publish:
+                on_post_build(None)
+                publish.assert_not_called()
+
     def test_document_links_preserve_fragments(self):
         self.assertEqual(
             "[Import](importer/importer.md#features)",

@@ -2,3 +2,4 @@
 # SPDX-License-Identifier: Apache-2.0
 mkdocs==1.6.1
 mkdocs-material==9.8.1
+mike==2.2.0

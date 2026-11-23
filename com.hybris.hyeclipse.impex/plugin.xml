@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+	<extension point="org.eclipse.core.contenttype.contentTypes">
+		<content-type id="impex" name="%contentTypeName"
+			base-type="org.eclipse.core.runtime.text" file-extensions="impex" priority="normal"/>
+	</extension>
+	<extension point="org.eclipse.ui.editors">
+		<editor id="com.hybris.hyeclipse.impex.editor" name="%editorName"
+			class="org.eclipse.ui.internal.genericeditor.ExtensionBasedTextEditor" extensions="impex" default="true">
+			<contentTypeBinding contentTypeId="com.hybris.hyeclipse.impex.impex"/>
+		</editor>
+	</extension>
+	<extension point="org.eclipse.tm4e.registry.grammars">
+		<grammar scopeName="text.tabular.impex" path="syntaxes/impex.tmLanguage.json"/>
+		<scopeNameContentTypeBinding contentTypeId="com.hybris.hyeclipse.impex.impex"
+			scopeName="text.tabular.impex"/>
+	</extension>
+	<extension point="org.eclipse.ui.genericeditor.presentationReconcilers">
+		<presentationReconciler class="org.eclipse.tm4e.ui.text.TMPresentationReconciler"
+			contentType="com.hybris.hyeclipse.impex.impex"/>
+	</extension>
+	<extension point="org.eclipse.ui.newWizards">
+		<!-- Preserve wizard/command IDs for existing key bindings; no legacy classes are required. -->
+		<category id="sapHybris" name="%sapCategoryName"/>
+		<wizard id="com.hybris.impexformatter.wizards.NewImpexWizard" name="%wizardName"
+			category="sapHybris" class="com.hybris.hyeclipse.impex.wizards.NewImpexWizard">
+			<description>%wizardDescription</description>
+		</wizard>
+	</extension>
+	<extension point="org.eclipse.ui.commands">
+		<category id="com.hybris.hyeclipse.impex.commands" name="%commandCategoryName"/>
+		<command id="com.hybris.impexformatter.wizards.NewImpexWizard" name="%wizardName"
+			categoryId="com.hybris.hyeclipse.impex.commands"
+			defaultHandler="com.hybris.hyeclipse.impex.wizards.NewImpexWizardHandler"/>
+	</extension>
+	<extension point="org.eclipse.ui.bindings">
+		<key commandId="com.hybris.impexformatter.wizards.NewImpexWizard" sequence="M1+Shift+Y"
+			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration" contextId="org.eclipse.ui.contexts.window"/>
+	</extension>
+	<extension point="org.eclipse.lsp4e.languageServer">
+		<server id="com.hybris.hyeclipse.impex.languageServer" label="%languageServerName"
+			class="com.hybris.hyeclipse.impex.lsp.ImpexConnectionProvider" singleton="true"/>
+		<contentTypeMapping id="com.hybris.hyeclipse.impex.languageServer"
+			contentType="com.hybris.hyeclipse.impex.impex" languageId="impex"/>
+	</extension>
+	<extension point="org.eclipse.ui.menus">
+		<menuContribution locationURI="popup:#TextEditorContext?after=additions">
+			<command commandId="org.eclipse.lsp4e.format" label="%formatName">
+				<visibleWhen>
+					<with variable="activeEditorId">
+						<equals value="com.hybris.hyeclipse.impex.editor"/>
+					</with>
+				</visibleWhen>
+			</command>
+		</menuContribution>
+	</extension>
+</plugin>
