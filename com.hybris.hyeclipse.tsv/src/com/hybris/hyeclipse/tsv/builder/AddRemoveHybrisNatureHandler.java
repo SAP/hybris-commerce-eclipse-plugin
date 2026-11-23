@@ -40,15 +40,15 @@ public class AddRemoveHybrisNatureHandler extends AbstractHandler {
 		// TODO Auto-generated method stub
 		ISelection selection = HandlerUtil.getCurrentSelection(event);
 		//
-		if (selection instanceof IStructuredSelection) {
-			for (Iterator<?> it = ((IStructuredSelection) selection).iterator(); it
+		if (selection instanceof IStructuredSelection structuredSelection) {
+			for (Iterator<?> it = structuredSelection.iterator(); it
 					.hasNext();) {
 				Object element = it.next();
 				IProject project = null;
-				if (element instanceof IProject) {
-					project = (IProject) element;
-				} else if (element instanceof IAdaptable) {
-					project = (IProject) ((IAdaptable) element)
+				if (element instanceof IProject iProject) {
+					project = iProject;
+				} else if (element instanceof IAdaptable adaptable) {
+					project = (IProject) adaptable
 							.getAdapter(IProject.class);
 				}
 				if (project != null) {

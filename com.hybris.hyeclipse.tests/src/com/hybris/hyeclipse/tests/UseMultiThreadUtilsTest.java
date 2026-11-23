@@ -18,7 +18,6 @@ package com.hybris.hyeclipse.tests;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
@@ -48,11 +47,11 @@ public class UseMultiThreadUtilsTest {
 	
 	@Before
 	public void before() throws IOException {
-		Path cp = java.nio.file.Paths.get("").toAbsolutePath();
+		Path cp = Path.of("").toAbsolutePath();
 		Path serverxml = cp.resolve(SERVER_XML_PATH);
 		UUID value = UUID.randomUUID();
 		String copyTo = SERVER_XML_PATH.concat(value.toString());
-		copyxml = Paths.get(copyTo);
+		copyxml = Path.of(copyTo);
 		Files.copy(serverxml, copyxml, StandardCopyOption.REPLACE_EXISTING);
 		
 	}
@@ -60,7 +59,7 @@ public class UseMultiThreadUtilsTest {
 	@Test
 	public void testUseMultiThread() throws ParserConfigurationException, SAXException, IOException {
 		
-		Path cp = java.nio.file.Paths.get("").toAbsolutePath();
+		Path cp = Path.of("").toAbsolutePath();
 		Path yplatform = cp.resolve(RESOURCES_BIN_PLATFORM);
 		Path serverxml = cp.resolve(SERVER_XML_PATH);
 		
@@ -84,7 +83,7 @@ public class UseMultiThreadUtilsTest {
 	@After
 	public void tearDown() throws IOException {
 		// copy back original file
-		Path cp = java.nio.file.Paths.get("").toAbsolutePath();
+		Path cp = Path.of("").toAbsolutePath();
 		Path serverxml = cp.resolve(SERVER_XML_PATH);
 		Files.copy(copyxml, serverxml, StandardCopyOption.REPLACE_EXISTING);
 		Assert.assertEquals(Files.readAllLines(copyxml), Files.readAllLines(serverxml));

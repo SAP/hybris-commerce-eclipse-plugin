@@ -69,8 +69,7 @@ public final class EclipseFileUtils {
 	public static IFile getSelectedFile(final ISelection selection) {
 		IFile file = null;
 		
-		if (selection instanceof IStructuredSelection) {
-			final IStructuredSelection ssel = (IStructuredSelection) selection;
+		if (selection instanceof IStructuredSelection ssel) {
 			final Object obj = ssel.getFirstElement();
 			file = Platform.getAdapterManager().getAdapter(obj, IFile.class);
 		} else if (selection instanceof TextSelection) {
@@ -90,8 +89,7 @@ public final class EclipseFileUtils {
 	public static Set<IFile> getSelectedFiles(final ISelection selection) {
 		final Set<IFile> files = new HashSet<>();
 
-		if (selection instanceof IStructuredSelection) {
-			final IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+		if (selection instanceof IStructuredSelection structuredSelection) {
 			
 			structuredSelection.toList().forEach(
 			                file -> files.add(Platform.getAdapterManager().getAdapter(file, IFile.class)));
@@ -114,11 +112,10 @@ public final class EclipseFileUtils {
 		final IEditorPart editorPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
 		                .getActiveEditor();
 		
-		if (editorPart instanceof ITextEditor) {
-			final ITextEditor editor = (ITextEditor) editorPart;
+		if (editorPart instanceof ITextEditor editor) {
 			final ISelection selection = editor.getSelectionProvider().getSelection();
-			if (selection instanceof TextSelection) {
-				currentTextSelection = Optional.of((TextSelection) selection);
+			if (selection instanceof TextSelection textSelection) {
+				currentTextSelection = Optional.of(textSelection);
 			}
 		}
 		

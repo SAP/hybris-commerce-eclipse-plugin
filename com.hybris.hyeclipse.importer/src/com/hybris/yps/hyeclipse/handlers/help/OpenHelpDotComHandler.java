@@ -20,7 +20,7 @@ public class OpenHelpDotComHandler extends AbstractOpenInExternalBrowserHandler 
 	
 	@Override
 	protected String getURL() {
-		return "https://help.sap.com/viewer/product/SAP_COMMERCE_CLOUD/SHIP/en-US";
+		return "https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD?refId=eclipse-sap-commerce-plugin";
 	}
 
 }

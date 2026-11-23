@@ -119,7 +119,7 @@ SPDX-FileCopyrightText = "2006 SAP SE or an SAP affiliate company and *Eclipse P
 SPDX-License-Identifier = "Apache-2.0"
 
 [[annotations]]
-path = ["docs/**", ".github/**", "com.hybris.hyeclipse.site/**", ".gitignore", ".project", ".settings/**", ".travis", "CHANGELOG.md", "CODE_OF_CONDUCT.md", "README.md", "docs.code-workspace", "pom.xml", "CONTRIBUTING.md", "CONTRIBUTING_USING_GENAI.md", "REUSE.toml", ".travis.yml"]
+path = ["docs/**", ".github/**", "com.hybris.hyeclipse.site/**", ".gitignore", ".project", ".settings/**", ".travis", "CHANGELOG.md", "CODE_OF_CONDUCT.md", "README.md", "docs.code-workspace", "pom.xml", "CONTRIBUTING.md", "CONTRIBUTING_USING_GENAI.md", "REUSE.toml", ".travis.yml", "mkdocs.yml"]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2006 SAP SE or an SAP affiliate company and *Eclipse Plugin for SAP Commerce* contributors"
 SPDX-License-Identifier = "Apache-2.0"

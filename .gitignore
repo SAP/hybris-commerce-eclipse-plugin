@@ -8,3 +8,6 @@
 !docs/dev/import-and-junit-verification.md
 .metals
 .vscode
+/site/
+/.venv-docs/
+__pycache__/

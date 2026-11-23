@@ -31,6 +31,6 @@ package:
 clean:
 	$(MVN) clean
 
-# REUSE license check
+# REUSE license check. If missing, install using `pipx install reuse`
 reuse:
-	pipx run reuse lint
+	reuse lint

@@ -97,21 +97,19 @@ public class NewImpexWizardPage extends WizardPage {
 	}
 
 	private void initialize() {
-		if (selection != null && selection.isEmpty() == false && selection instanceof IStructuredSelection) {
-			IStructuredSelection ssel = (IStructuredSelection) selection;
+		if (selection != null && selection.isEmpty() == false && selection instanceof IStructuredSelection ssel) {
 			if (ssel.size() > 1)
 				return;
 			Object obj = ssel.getFirstElement();
 			if (obj instanceof IResource) {
 				IContainer container;
-				if (obj instanceof IContainer)
-					container = (IContainer) obj;
+				if (obj instanceof IContainer iContainer)
+					container = iContainer;
 				else
 					container = ((IResource) obj).getParent();
 				containerText.setText(container.getFullPath().toString());
 			}
-			else if (ssel instanceof TreeSelection) {
-				TreeSelection treeSelection = (TreeSelection) ssel;
+			else if (ssel instanceof TreeSelection treeSelection) {
 				TreePath[] treePaths = treeSelection.getPaths();
 				TreePath treePath = treePaths[0];
 				Object lastSegmentObj = treePath.getLastSegment();

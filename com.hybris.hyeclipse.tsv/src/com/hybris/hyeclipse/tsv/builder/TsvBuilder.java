@@ -53,8 +53,7 @@ abstract class TsvBuilder extends IncrementalProjectBuilder {
 		
 		@Override
 		public boolean visit(final IResource resource) throws CoreException {
-			if (resource instanceof IFile) {
-				final IFile file = (IFile) resource;
+			if (resource instanceof IFile file) {
 				if (file.getName().endsWith("items.xml")) {
 					files.add(file);
 					return false;

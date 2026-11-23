@@ -64,7 +64,7 @@ public class AntProcessRunnerTest {
 			Assert.fail("Expected failed Ant status");
 		} catch (IOException e) {
 			Assert.assertTrue(e.getMessage().contains("7"));
-			Assert.assertEquals("failed", errors.get(0));
+			Assert.assertEquals("failed", errors.getFirst());
 		}
 		assertReadersStopped();
 	}

@@ -15,12 +15,12 @@ There you can find category `SAP` and there `Import SAP Platform`.
 
 Next wizard step shows list of checkboxes available during import and available directory field. It is required to point valid `hybris/bin/platform` folder for your project.
 
+### Custom JDK Selection
 
+It is possible to select proper JDK version for project import, which is required for running build process for SAP Commerce projects. Proper selection of JDK can be done via: `Window -> Settings -> Preferences -> SAP Commerce -> Import settings`.
 
-# Roadmap
+By default, the plugin uses JDK used by IDE. In order to pin specific JDK version for Ant build process, you can change it in plugin preference page. Same JDK will be used for setting SAP Commerce extension project settings.
 
-That is default approach with importing projects for SAP Commerce till version 1808. With that version Gradle support has been introduced as an experimental functionality and it is possible to use that option to play with.
+![SAP Preference Page](imgs/sap-preferences.png)
 
-That approach is supported by most IDEs on market.
-
-Project Importer functionality will be supported and fixes will be provided, but implementation will be focused on other areas of SAP Commerce plugin.
+For more info about custom JDK selection see [Custom JDK Selection](../import-jdk.md).
