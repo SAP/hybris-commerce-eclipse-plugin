@@ -33,7 +33,7 @@ The repository metadata determines the available plugin version.
 
 GitHub Pages serves the p2 metadata, feature JARs, and plugin JARs without modifying
 their bytes. Hosting does not sign artifacts or change their existing signatures.
-See the [release process](dev/development.md#4-sign-deliverable-eclipse-artifacts)
+See the [release process](dev/development.md#releasing-a-new-version)
 for signing requirements.
 
 The update URL is for Eclipse's installer, not a browsable documentation page.

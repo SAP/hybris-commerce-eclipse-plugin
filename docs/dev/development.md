@@ -6,6 +6,10 @@ The documentation site uses MkDocs with Material. `README.md` supplies the homep
 the remaining pages and images come from `docs/`. Do not maintain a separate `docs/index.md`.
 Navigation and site settings are in the root `mkdocs.yml`.
 
+Documentation tracks plugin release tags rather than a separate version counter.
+See [Documentation and plugin versioning](versioning.md) for update policy,
+release alignment, and how to read documentation for an installed version.
+
 From the repository root, use Python 3.13 and an isolated environment:
 
 ```bash
@@ -158,6 +162,9 @@ Release notes are generated thanks to [gren](https://github.com/github-tools/git
 
 Follow these steps to prepare, build, and publish a new release:
 
+Complete the [release documentation checklist](versioning.md#release-documentation-checklist)
+before tagging so the tag includes documentation matching the delivered artifacts.
+
 ### 1. Create a Release Branch
 Start from the latest `master` (or target development branch):
 ```bash
@@ -230,6 +237,10 @@ together. Once merged into `master`, the Pages workflow publishes it at the stab
 `updates/latest/` URL without rebuilding or re-signing it.
 
 ### 6. Commit and Tag Release
+Stage the reviewed `README.md`, `CHANGELOG.md`, and `docs/` changes alongside
+the synchronized release metadata. Do not tag a release with its matching
+documentation still uncommitted or add unrelated, unreviewed documentation files.
+
 ```bash
 git add pom.xml */pom.xml */META-INF/MANIFEST.MF */feature.xml updatesite/neon/
 git commit -m "chore(release): bump version to VERSION.RELEASE"

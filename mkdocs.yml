@@ -61,6 +61,10 @@ nav:
       - Knowledge database: kb/info.md
   - Developer guide:
       - Development and releases: dev/development.md
+      - Documentation and plugin versioning: dev/versioning.md
+      - ImpEx:
+          - Language behavior: dev/impex/impex-docs.md
+          - Editor migration plan: dev/impex/editor-replacement-plan.md
       - Regression verification: dev/import-and-junit-verification.md
   - Project information:
       - Deprecations: deprecation/deprecation.md

@@ -97,8 +97,9 @@ Inputs:
 - [ImpEx behavior notes](impex-docs.md): reference for lexical edge cases, not a
   complete formal language specification. Runtime-dependent claims require
   verification against the supported Commerce version.
-- [TextMate grammar](../../../com.hybris.hyeclipse.impex/syntaxes/impex.tmLanguage.json):
-  canonical packaged grammar, still under migration.
+- TextMate grammar at the repository-relative path
+  `com.hybris.hyeclipse.impex/syntaxes/impex.tmLanguage.json`, the canonical packaged
+  grammar still under migration.
 - Legacy editor, wizard, formatter, completion processors, and hyperlink classes,
   available in Git history before the cutover commit.
 
