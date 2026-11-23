@@ -21,6 +21,9 @@ To update an existing installation, use **Help → Check for Updates** with this
 
 ## What is published
 
+The documentation version selector changes documentation pages only. The installer
+URL above remains stable and is independent of selected documentation releases.
+
 The hosted repository mirrors the committed `updatesite/latest` repository on `master`.
 That path currently points to `updatesite/neon`; the directory name is historical and
 does not by itself determine Eclipse compatibility. Consult the release notes and

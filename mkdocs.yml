@@ -6,6 +6,7 @@ repo_name: SAP/hybris-commerce-eclipse-plugin
 edit_uri: edit/master/docs/
 docs_dir: docs
 site_dir: site
+remote_branch: docs-versions
 
 theme:
   name: material
@@ -19,6 +20,12 @@ theme:
 
 plugins:
   - search
+  - mike:
+      alias_type: redirect
+
+extra:
+  version:
+    provider: mike
 
 hooks:
   - tools/docs/hooks.py

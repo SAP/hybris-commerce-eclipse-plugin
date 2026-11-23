@@ -1,8 +1,45 @@
 # Documentation and plugin versioning
 
-Documentation follows the plugin's Git history and release tags. There is no
-independent documentation version number and no release-version selector on the
-current MkDocs site.
+Documentation follows the plugin's Git history and release tags. MkDocs/Material
+uses Mike to provide a version selector. There is no independent documentation
+version counter: release directories use the full plugin version, such as `22.11.0`.
+
+## Published documentation versions
+
+| URL suffix | Content |
+| --- | --- |
+| `/` | Redirect to the latest working documentation |
+| `/latest/` | Redirect alias for Development |
+| `/development/` | Latest successful `master` documentation build |
+| `/X.Y.Z/` | Immutable documentation snapshot from release tag `vX.Y.Z` |
+| `/updates/latest/` | Canonical Eclipse installer repository, always copied from committed `master` p2 files |
+
+The selector lists archived releases and **Development**. Development may describe
+unreleased changes; it is not a claim that the installer repository offers those
+features. Each release remains canonical to its own version directory.
+
+Generated HTML and `versions.json` are retained on the reserved `docs-versions`
+branch. The existing Pages workflow publishes versioned documentation and the
+canonical p2 repository together; do not publish a docs-only artifact separately.
+
+## Archive a release
+
+- Publishing a GitHub release runs the documentation workflow against current
+  trusted `master` tooling and archives the release tag's Markdown, README, and navigation.
+- To backfill an existing release, run **Documentation and Eclipse update site**
+  from the Actions tab with `master` selected and `release_tag` set to `vX.Y.Z`.
+  Leave the input blank to update Development only.
+- Eligible tags must contain MkDocs sources and `pom.xml` version `X.Y.Z.RELEASE`.
+  Some older tags predate MkDocs; inspect their source documentation through Git instead.
+- Existing release snapshots are not rebuilt. If a tag has been moved to another
+  commit, the workflow refuses to replace its recorded snapshot.
+- Tag builds never publish that tag's p2 files over `/updates/latest/`. The installer
+  bytes still come from `master`, even when release documentation is added.
+
+Only the trusted Pages deployment job has permission to push generated history.
+Pull requests and manual runs on other branches validate without publishing.
+For a fork, configure `mkdocs.yml`'s `site_url` and `repo_url` for the actual
+publishing repository so canonical and tagged source links point to the correct site.
 
 ## Version sources
 
@@ -13,7 +50,8 @@ current MkDocs site.
 | Release version | Synchronized Maven, bundle, and feature metadata | `22.11.1.RELEASE` |
 | Release tag | Git tag identifying the release source and documentation | `v22.11.1` |
 | Installed/distributed version | p2 metadata and release assets | Consult the installed feature or release notes |
-| Published documentation | Latest successful documentation deployment from `master` | May include unreleased changes |
+| Development documentation | Latest successful deployment from `master` | May include unreleased changes |
+| Archived documentation | Recorded release-tag source commit | `/22.11.0/` after that tag is archived |
 
 Examples illustrate the naming convention; they do not assign the next release.
 Maintain the existing three-component version sequence. Do not derive a plugin
@@ -65,12 +103,13 @@ release-maintenance branch or a new release.
 
 ## Read documentation for an installed release
 
-The public MkDocs site represents the latest deployed `master` documentation,
-not necessarily the version offered by `updates/latest/`. Documentation deployment
+The root/latest MkDocs pages represent the latest deployed `master` documentation,
+not necessarily the version offered by `updates/latest/`. Choose the installed
+version from the selector for an archived snapshot. Documentation deployment
 does not build or release Java bundles; p2 publication uses the committed repository.
 See [What is published](../installation.md#what-is-published).
 
-For version-specific source documentation, select the release tag on GitHub and
+For releases not yet archived, or version-specific source documentation, select the release tag on GitHub and
 browse `README.md` and `docs/` in the repository that published the release. A fork's
 tag may not exist in the upstream repository. Locally, inspect tagged files without
 changing the working tree:

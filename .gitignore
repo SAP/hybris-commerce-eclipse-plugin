@@ -9,5 +9,6 @@
 .metals
 .vscode
 /site/
+/docs-history.bundle
 /.venv-docs/
 __pycache__/
