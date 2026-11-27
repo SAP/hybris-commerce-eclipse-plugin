@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Eclipse p2 Repository — hybris commerce eclipse plugin</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #ffffff;
+      --fg: #1f2328;
+      --muted: #59636e;
+      --border: #d0d7de;
+      --card-bg: #f6f8fa;
+      --link: #0969da;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0d1117;
+        --fg: #e6edf3;
+        --muted: #8b949e;
+        --border: #30363d;
+        --card-bg: #161b22;
+        --link: #58a6ff;
+      }
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: var(--fg);
+      background: var(--bg);
+      max-width: 720px;
+      margin: 3rem auto;
+      padding: 0 1.25rem;
+    }
+    h1 {
+      font-size: 1.75rem;
+      margin-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+    }
+    a {
+      color: var(--link);
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1rem 1.25rem;
+      margin: 1.25rem 0;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.9em;
+    }
+    ul {
+      padding-left: 1.25rem;
+    }
+    li + li {
+      margin-top: 0.4rem;
+    }
+    .muted {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Eclipse p2 Repository</h1>
+    <p>
+      This directory hosts the Eclipse p2 update site for the
+      <strong>hybris commerce eclipse plugin</strong> (Eclipse Plugin for SAP Commerce).
+    </p>
+
+    <section class="card" aria-labelledby="repositories-heading">
+      <h2 id="repositories-heading" style="margin-top: 0; font-size: 1.15rem;">Available Update Sites</h2>
+      <ul>
+        <li>
+          <a href="latest/"><code>latest/</code></a> — Latest published Eclipse p2 repository
+        </li>
+        <li>
+          <a href="neon/"><code>neon/</code></a> — Eclipse p2 repository (<code>neon</code>)
+        </li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="install-heading">
+      <h2 id="install-heading" style="font-size: 1.15rem;">How to Install in Eclipse</h2>
+      <ol>
+        <li>Open Eclipse and select <strong>Help &rarr; Install New Software&hellip;</strong></li>
+        <li>Click <strong>Add&hellip;</strong> and enter the <code>latest/</code> or <code>neon/</code> URL as the Location.</li>
+        <li>Select <strong>SAP Commerce, development tools for Eclipse</strong> and follow the installation wizard.</li>
+      </ol>
+      <p class="muted">
+        Note: p2 repository directories contain Eclipse metadata (<code>content.jar</code>,
+        <code>artifacts.jar</code>, <code>p2.index</code>) for Eclipse&rsquo;s installer rather than browsable HTML pages.
+      </p>
+    </section>
+  </main>
+</body>
+</html>
