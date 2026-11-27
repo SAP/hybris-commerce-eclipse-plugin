@@ -5,23 +5,11 @@
 import json
 import tempfile
 import unittest
-from html.parser import HTMLParser
 from pathlib import Path
-from urllib.parse import unquote, urlsplit
 
 from mkdocs.commands.build import build
 from mkdocs.config import load_config
-
-
-class ResourceParser(HTMLParser):
-    def __init__(self):
-        super().__init__()
-        self.urls = []
-
-    def handle_starttag(self, tag, attrs):
-        for name, value in attrs:
-            if name in ("src", "href") and value:
-                self.urls.append(value)
+from resources import validate_site_resources
 
 
 class SiteTest(unittest.TestCase):
@@ -31,24 +19,7 @@ class SiteTest(unittest.TestCase):
             site = Path(directory) / "site"
             config = load_config(str(root / "mkdocs.yml"), site_dir=str(site), strict=True)
             build(config)
-            prefix = urlsplit(config.site_url).path
-            for page in site.rglob("*.html"):
-                parser = ResourceParser()
-                parser.feed(page.read_text(encoding="utf-8"))
-                for url in parser.urls:
-                    with self.subTest(page=str(page.relative_to(site)), url=url):
-                        parsed = urlsplit(url)
-                        if parsed.scheme or parsed.netloc or not parsed.path:
-                            continue
-                        path = unquote(parsed.path)
-                        if path.startswith("/"):
-                            self.assertTrue(path.startswith(prefix), "URL escapes project prefix")
-                            target = site / path[len(prefix):]
-                        else:
-                            target = page.parent / path
-                        if target.is_dir():
-                            target = target / "index.html"
-                        self.assertTrue(target.is_file(), f"Missing published resource: {target}")
+            validate_site_resources(site, config.site_url)
 
             for image in (root / "docs").rglob("*"):
                 if image.suffix in (".gif", ".png"):

@@ -16,18 +16,8 @@ jobs:
       with:
         distribution: "sapmachine"
         java-version: "21"
-
-    - name: Cache Maven packages
-      uses: actions/cache@v6
-      with:
-        path: ~/.m2
-        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-        restore-keys: ${{ runner.os }}-m2
-    - name: Set up Maven
-      uses: stCarolas/setup-maven@v5
-      with:
-        maven-version: 3.9.15
-    - name: Build with Maven
-      run: mvn --batch-mode --update-snapshots package
+        cache: maven
+    - name: MVN build
+      run: ./mvnw --batch-mode --update-snapshots package
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

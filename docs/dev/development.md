@@ -6,6 +6,10 @@ The documentation site uses MkDocs with Material. `README.md` supplies the homep
 the remaining pages and images come from `docs/`. Do not maintain a separate `docs/index.md`.
 Navigation and site settings are in the root `mkdocs.yml`.
 
+Documentation tracks plugin release tags rather than a separate version counter.
+See [Documentation and plugin versioning](versioning.md) for update policy,
+release alignment, and how to read documentation for an installed version.
+
 From the repository root, use Python 3.13 and an isolated environment:
 
 ```bash
@@ -30,13 +34,41 @@ External links are not checked by the strict build.
 ### GitHub Pages deployment
 
 In repository **Settings → Pages**, select **GitHub Actions** as the source.
+Allow `master` and release tags matching `v*` in the `github-pages` environment's
+deployment rules if that environment restricts branches/tags. The workflow still
+rejects manual publication from other branches and validates release tag versions.
 The Documentation and Eclipse update site workflow validates pull requests without deploying them and publishes
-documentation or `updatesite/` changes pushed to `master`. To rebuild manually, run the workflow from
-the Actions tab with `master` selected. Other branches cannot deploy.
+documentation or `updatesite/` changes pushed to `master`. Published GitHub releases also trigger
+archiving of their tagged documentation. To rebuild or backfill a release, run the workflow from
+the Actions tab with `master` selected; optionally provide `release_tag=vX.Y.Z`.
+Manual runs on other branches cannot deploy.
 
-The public site is https://sap.github.io/hybris-commerce-eclipse-plugin/.
+The public site is https://mikolayek.github.io/hybris-commerce-eclipse-plugin/; its root redirects to the latest working docs.
 The same deployment also hosts the Eclipse p2 repository at
-https://sap.github.io/hybris-commerce-eclipse-plugin/updates/latest/.
+https://mikolayek.github.io/hybris-commerce-eclipse-plugin/updates/latest/.
+
+### Versioned documentation
+
+Mike stores generated snapshots on `docs-versions`; Material displays its version selector.
+`latest` redirects to `development`, while release snapshots use full `X.Y.Z` directories.
+See [Documentation and plugin versioning](versioning.md) for eligibility and archival policy.
+
+The build wrapper creates the combined Pages artifact at `site/`, validates its links,
+and adds one byte-preserved installer repository at `/updates/latest/`. It never pushes
+branches itself. CI exports `docs-history.bundle` and only the trusted deployment job
+pushes generated history, without force-pushing or changing source branches.
+
+For local multi-version preview, activate the documentation environment and run:
+
+```bash
+python tools/docs/versioned_site.py
+mike serve --branch docs-versions
+```
+
+These commands create local history commits but do not push or deploy. `mike serve`
+previews documentation history only; the canonical p2 files are added to the assembled
+`site/` artifact. `mkdocs serve` remains the live, single-version source preview.
+Do not use `mike deploy --push` as a separate Pages publisher: that would omit the installer files.
 
 ### Eclipse p2 hosting
 
@@ -158,6 +190,9 @@ Release notes are generated thanks to [gren](https://github.com/github-tools/git
 
 Follow these steps to prepare, build, and publish a new release:
 
+Complete the [release documentation checklist](versioning.md#release-documentation-checklist)
+before tagging so the tag includes documentation matching the delivered artifacts.
+
 ### 1. Create a Release Branch
 Start from the latest `master` (or target development branch):
 ```bash
@@ -230,6 +265,10 @@ together. Once merged into `master`, the Pages workflow publishes it at the stab
 `updates/latest/` URL without rebuilding or re-signing it.
 
 ### 6. Commit and Tag Release
+Stage the reviewed `README.md`, `CHANGELOG.md`, and `docs/` changes alongside
+the synchronized release metadata. Do not tag a release with its matching
+documentation still uncommitted or add unrelated, unreviewed documentation files.
+
 ```bash
 git add pom.xml */pom.xml */META-INF/MANIFEST.MF */feature.xml updatesite/neon/
 git commit -m "chore(release): bump version to VERSION.RELEASE"

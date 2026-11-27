@@ -5,7 +5,7 @@ Install the plugin through the
 or use the hosted Eclipse p2 repository:
 
 ```text
-https://sap.github.io/hybris-commerce-eclipse-plugin/updates/latest/
+https://mikolayek.github.io/hybris-commerce-eclipse-plugin/updates/latest/
 ```
 
 ## Install from the update site
@@ -21,6 +21,9 @@ To update an existing installation, use **Help → Check for Updates** with this
 
 ## What is published
 
+The documentation version selector changes documentation pages only. The installer
+URL above remains stable and is independent of selected documentation releases.
+
 The hosted repository mirrors the committed `updatesite/latest` repository on `master`.
 That path currently points to `updatesite/neon`; the directory name is historical and
 does not by itself determine Eclipse compatibility. Consult the release notes and
@@ -33,7 +36,7 @@ The repository metadata determines the available plugin version.
 
 GitHub Pages serves the p2 metadata, feature JARs, and plugin JARs without modifying
 their bytes. Hosting does not sign artifacts or change their existing signatures.
-See the [release process](dev/development.md#4-sign-deliverable-eclipse-artifacts)
+See the [release process](dev/development.md#releasing-a-new-version)
 for signing requirements.
 
 The update URL is for Eclipse's installer, not a browsable documentation page.
