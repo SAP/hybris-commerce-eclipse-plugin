@@ -27,10 +27,6 @@ jobs:
   dependency-review:
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Maven
-        uses: stCarolas/setup-maven@v5.1
-        with:
-          maven-version: 3.9.15
       - name: 'Checkout repository'
         uses: actions/checkout@v7
       - name: 'Dependency Review'
