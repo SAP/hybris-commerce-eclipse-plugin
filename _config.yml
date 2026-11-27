@@ -1,0 +1,67 @@
+title: Eclipse Plugin for SAP Commerce
+description: User and developer documentation for the SAP Commerce Eclipse plugin.
+url: "https://mikolayek.github.io"
+baseurl: "/hybris-commerce-eclipse-plugin"
+
+theme: jekyll-theme-primer
+
+plugins:
+  - jekyll-optional-front-matter
+  - jekyll-readme-index
+  - jekyll-relative-links
+  - jekyll-titles-from-headings
+
+relative_links:
+  enabled: true
+  collections: true
+
+include:
+  - updatesite
+
+keep_files:
+  - updatesite
+
+exclude:
+  - AGENTS.md
+  - CLAUDE.md
+  - Makefile
+  - REUSE.toml
+  - docs.code-workspace
+  - mvnw
+  - mvnw.cmd
+  - pom.xml
+  - LICENSES/
+  - site/
+  - tools/
+  - docs/docker-compose.yml
+  - docs/start-sonar.sh
+  - docs/dev/eclipse-code-style.xml
+  - .claude/
+  - .github/
+  - .metals/
+  - .mvn/
+  - .project
+  - .settings/
+  - .venv-docs/
+  - .vscode/
+  - com.hybris.hyeclipse.commons/
+  - com.hybris.hyeclipse.emf.beans/
+  - com.hybris.hyeclipse.emf.beans.edit/
+  - com.hybris.hyeclipse.emf.beans.editor/
+  - com.hybris.hyeclipse.extgen/
+  - com.hybris.hyeclipse.feature/
+  - com.hybris.hyeclipse.hac/
+  - com.hybris.hyeclipse.impex/
+  - com.hybris.hyeclipse.impex.ls/
+  - com.hybris.hyeclipse.impex.tests/
+  - com.hybris.hyeclipse.impexed/
+  - com.hybris.hyeclipse.importer/
+  - com.hybris.hyeclipse.junit/
+  - com.hybris.hyeclipse.junit.tests/
+  - com.hybris.hyeclipse.platform/
+  - com.hybris.hyeclipse.property.configuration/
+  - com.hybris.hyeclipse.site/
+  - com.hybris.hyeclipse.tests/
+  - com.hybris.hyeclipse.tsv/
+  - com.hybris.hyeclipse.tsv.extended/
+  - com.hybris.hyeclipse.ytypesystem/

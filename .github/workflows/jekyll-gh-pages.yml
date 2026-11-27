@@ -1,12 +1,12 @@
-# Sample workflow for building and deploying a Jekyll site to GitHub Pages
+# Workflow for building and deploying the Jekyll site and Eclipse p2 update site to GitHub Pages
 name: Deploy Jekyll with GitHub Pages dependencies preinstalled
 
 on:
-  # Runs on pushes targeting the default branch
+  # Runs on pushes targeting the default branch or release branches
   push:
     branches:
-     - master
-     - release/*
+      - master
+      - release/*
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -34,6 +34,10 @@ jobs:
         uses: actions/configure-pages@v5
       - name: Build
         uses: actions/jekyll-build-pages@v1
+      - name: Copy Eclipse p2 repository as-is
+        run: |
+          rm -rf _site/updatesite
+          cp -rL updatesite _site/updatesite
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
 
@@ -45,11 +49,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v7.0.2
-        with:
-          name: hybris-commerce-eclipse-plugin
-          path: /updatesite/**
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
