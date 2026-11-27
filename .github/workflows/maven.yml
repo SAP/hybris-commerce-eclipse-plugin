@@ -20,14 +20,14 @@ jobs:
       artifact-metadata: write
       contents: write
       pull-requests: write
-      
+
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v7
 
     - name: Set up Maven
-      uses: stCarolas/setup-maven@v5
+      uses: stCarolas/setup-maven@v5.1
       with:
         maven-version: 3.9.15
 
