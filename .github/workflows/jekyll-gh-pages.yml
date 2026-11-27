@@ -30,10 +30,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Setup Node
-        uses: actions/setup-node@v7
-        with:
-          node-version: '24'
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Build
@@ -49,8 +45,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Install Dependencies
-        run: npm install
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v7.0.2
         with:
