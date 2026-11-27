@@ -34,10 +34,6 @@ jobs:
         uses: actions/configure-pages@v5
       - name: Build
         uses: actions/jekyll-build-pages@v1
-      - name: Copy Eclipse p2 repository as-is
-        run: |
-          rm -rf _site/updatesite
-          cp -rL updatesite _site/updatesite
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
 
